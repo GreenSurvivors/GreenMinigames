@@ -384,12 +384,12 @@ public class MultiplayerType extends MinigameTypeBase {
                         }
                         if (plugin.getConfig().getBoolean("multiplayer.broadcastwin")) {
                             if (drawTeams.size() == 2) {
-                                plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + MinigameUtils.formStr("player.end.team.tie",
+                                plugin.getServer().broadcastMessage(ChatColor.RED + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ " + MinigameUtils.formStr("player.end.team.tie",
                                         drawTeams.get(0).getChatColor() + drawTeams.get(0).getDisplayName() + ChatColor.WHITE,
                                         drawTeams.get(1).getChatColor() + drawTeams.get(1).getDisplayName() + ChatColor.WHITE,
                                         event.getMinigame().getName(true)));
                             } else {
-                                plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + MinigameUtils.formStr("player.end.team.tieCount",
+                                plugin.getServer().broadcastMessage(ChatColor.RED + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ " + MinigameUtils.formStr("player.end.team.tieCount",
                                         drawTeams.size(),
                                         event.getMinigame().getName(true)));
                             }
