@@ -130,7 +130,7 @@ public class BackendCommand implements ICommand {
             if (!begun) {
                 begun = true;
                 if (sender instanceof Player) {
-                    sender.sendMessage(ChatColor.GREEN + "[Minigames] Export started...");
+                    sender.sendMessage(ChatColor.GREEN + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ Exportieren startet...");
                 }
 
                 Minigames.getPlugin().getLogger().warning("Started exporting backend. Started by " + sender.getName());
@@ -141,13 +141,13 @@ public class BackendCommand implements ICommand {
 
         @Override
         public void onComplete() {
-            sender.sendMessage(ChatColor.GREEN + "[Minigames] Export complete!");
+            sender.sendMessage(ChatColor.GREEN + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ Exportieren erfolgreich!");
             Minigames.getPlugin().getLogger().info("Exporting complete");
         }
 
         @Override
         public void onError(Throwable e, String state, int count) {
-            sender.sendMessage(ChatColor.RED + "[Minigames] Export error. See console for details.");
+            sender.sendMessage(ChatColor.RED + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ Look at the Konsole für Errors Kappa.");
             Minigames.getPlugin().getLogger().log(Level.SEVERE, "Exporting error at " + state + ": " + count, e);
         }
     }
