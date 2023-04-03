@@ -1,4 +1,4 @@
-This is Minigames with modifications to better fit my server (unreach.me)
+This is Minigames with modifications to better fit my server (unreach.me)                                                                                 
 I'm no coder so this might be a pain to watch if you are :D
 
 
