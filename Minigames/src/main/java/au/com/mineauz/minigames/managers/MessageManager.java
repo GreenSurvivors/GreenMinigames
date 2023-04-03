@@ -176,7 +176,7 @@ public class MessageManager {
     }
 
     private static BaseComponent getMessageStart(MinigameMessageType type) {
-        BaseComponent init = new TextComponent("[Minigames]");
+        BaseComponent init = new TextComponent("§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋");
         switch (type) {
             case ERROR:
                 init.setColor(ChatColor.RED);
@@ -211,7 +211,7 @@ public class MessageManager {
      * @param permission - The permission required to see this broadcast message.
      */
     public static void broadcast(String message, Minigame minigame, String permission) {
-        MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(org.bukkit.ChatColor.AQUA + "[Minigames]" + org.bukkit.ChatColor.WHITE, message, minigame);
+        MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(org.bukkit.ChatColor.AQUA + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋" + org.bukkit.ChatColor.WHITE, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
 
         // Only send broadcast if event was not cancelled and is not empty
@@ -228,10 +228,10 @@ public class MessageManager {
      * @param prefixColor - The color to be used in the prefix.
      */
     public static void broadcast(String message, Minigame minigame, org.bukkit.ChatColor prefixColor) {
-        BaseComponent init = new TextComponent("[Minigames]");
+        BaseComponent init = new TextComponent("§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋");
         init.setColor(prefixColor.asBungee());
         TextComponent m = new TextComponent(" "+ message);
-        MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + org.bukkit.ChatColor.WHITE, message, minigame);
+        MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋" + org.bukkit.ChatColor.WHITE, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
 
         // Only send broadcast if event was not cancelled and is not empty
