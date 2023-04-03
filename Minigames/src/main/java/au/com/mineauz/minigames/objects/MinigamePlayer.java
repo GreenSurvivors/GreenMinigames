@@ -137,19 +137,19 @@ public class MinigamePlayer implements ScriptObject {
         String init = "";
         switch (type) {
             case ERROR:
-                init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
+                init = ChatColor.RED + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ " + ChatColor.WHITE;
                 break;
             case WIN:
-                init = ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE;
+                init = ChatColor.GREEN + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ " + ChatColor.WHITE;
                 break;
             case LOSS:
-                init = ChatColor.DARK_RED + "[Minigames] " + ChatColor.WHITE;
+                init = ChatColor.DARK_RED + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ " + ChatColor.WHITE;
                 break;
             case NONE:
                 break;
             case INFO:
             default:
-                init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
+                init = ChatColor.AQUA + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ " + ChatColor.WHITE;
         }
         this.sendMessage(init + msg);
     }
