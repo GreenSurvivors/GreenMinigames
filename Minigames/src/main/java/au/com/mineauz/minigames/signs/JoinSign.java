@@ -108,18 +108,18 @@ public class JoinSign implements MinigameSign {
                     plugin.getPlayerManager().joinMinigame(player, mgm, false, 0.0);
                     return true;
                 } else if (!mgm.isEnabled()) {
-                    player.sendInfoMessage(ChatColor.AQUA + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
+                    player.sendInfoMessage(ChatColor.AQUA + "" + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
                 }
             } else if (mgm == null) {
-                player.sendMessage(ChatColor.RED + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"), MinigameMessageType.ERROR);
+                player.sendMessage(ChatColor.RED + "" + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"), MinigameMessageType.ERROR);
             } else if (mgm.getUsePermissions()) {
-                player.sendMessage(ChatColor.RED + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()), MinigameMessageType.ERROR);
+                player.sendMessage(ChatColor.RED + "" + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()), MinigameMessageType.ERROR);
             }
         } else if (!MinigameUtils.isMinigameTool(player.getPlayer().getInventory().getItemInMainHand())) {
             if (fullInv) {
-                player.sendInfoMessage(ChatColor.AQUA + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyInv"));
+                player.sendInfoMessage(ChatColor.AQUA + "" + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyInv"));
             } else {
-                player.sendInfoMessage(ChatColor.AQUA + "§8§8⌈§x§1§9§f§b§0§0M§x§1§6§f§b§1§fi§x§1§3§f§c§3§en§x§1§0§f§c§5§di§x§0§d§f§c§7§cg§x§0§9§f§c§9§ba§x§0§6§f§d§b§am§x§0§3§f§d§d§9e§x§0§0§f§d§f§8s§8⌋ " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
+                player.sendInfoMessage(ChatColor.AQUA + "" + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
             }
         }
 
