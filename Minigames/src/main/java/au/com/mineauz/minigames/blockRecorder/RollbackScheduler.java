@@ -39,6 +39,11 @@ public class RollbackScheduler implements Runnable {
             //there might be odd cases when we don't apply physics. This smells like a bucket full of strange bugs. might change in the future.
             bdata.getLocation().getBlock().setBlockData(bdata.getBukkitBlockData(), false);
 
+            if (bdata.getItems() != null){
+                if (bdata.getLocation().getBlock().getState() instanceof InventoryHolder inventoryHolder)
+                    inventoryHolder.getInventory().setContents(bdata.getItems());
+            }
+
             if (System.nanoTime() - time > Minigames.getPlugin().getConfig().getDouble("regeneration.maxDelay") * 1000000)
                 return;
         }
