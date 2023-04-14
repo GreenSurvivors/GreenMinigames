@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import java.util.ArrayList;
@@ -9,19 +10,12 @@ import java.util.Collections;
 import java.util.ListIterator;
 import java.util.Map;
 
+import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.material.Directional;
-import org.bukkit.material.MaterialData;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -30,7 +24,7 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.actions.MemorySwapBlockAction.PhantomBlock;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Turidus  https://github.com/Turidus/Minigames
@@ -76,9 +70,7 @@ public class MemorySwapBlockAction extends AbstractAction {
 		}
 	}
 	
-	private StringFlag matchType = new StringFlag("WOOL", "matchtype");
-	private BooleanFlag matchData = new BooleanFlag(true, "matchdata");
-	private IntegerFlag matchDataValue = new IntegerFlag(2, "matchdatavalue");
+	private StringFlag matchType = new StringFlag("WHITE_WOOL", "matchtype");
 	private StringFlag blacklist = new StringFlag("", "blacklist");
 	
 	/*
@@ -306,13 +298,7 @@ public class MemorySwapBlockAction extends AbstractAction {
 
 	@Override
 	public void describe(Map<String, Object> out) {
-		
-		if (matchData.getFlag()) {
-			out.put("From", matchType.getFlag() + ":" + matchDataValue.getFlag());
-		} else {
-			out.put("From", matchType.getFlag() + ":all");
-		}
-		
+		out.put("From: ", matchType.getFlag());
 		out.put("Block pool size", blockPool.size());
 		out.put("Blacklist", blacklist.getFlag());
 	}
@@ -358,10 +344,6 @@ public class MemorySwapBlockAction extends AbstractAction {
 					Block block = region.getFirstPoint().getWorld().getBlockAt(x, y, z);
 					
 					if (block.getType() == Material.getMaterial(matchType.getFlag())) {
-						if (matchData.getFlag() && block.getData() != matchDataValue.getFlag().byteValue()) {
-							continue;
-						}
-						
 						blocksToSwap.add(block);
 					}
 				}
@@ -408,7 +390,11 @@ public class MemorySwapBlockAction extends AbstractAction {
 			
 			Block fromBlock = blocksToSwap.get(i);
 			PhantomBlock toBlock = targetBlocks.get(i);
-			
+
+			RecorderData data = player.getMinigame().getRecorderData();
+			if(data != null){
+				data.addBlock(fromBlock, null);
+			}
 			fromBlock.setType(Material.getMaterial(toBlock.blockName));
 		}
 		
@@ -425,8 +411,6 @@ public class MemorySwapBlockAction extends AbstractAction {
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
 		matchType.saveValue(path, config);
-		matchData.saveValue(path, config);
-		matchDataValue.saveValue(path, config);
 		blacklist.saveValue(path, config);
 		
 	}
@@ -434,8 +418,6 @@ public class MemorySwapBlockAction extends AbstractAction {
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
 		matchType.loadValue(path, config);
-		matchData.loadValue(path, config);
-		matchDataValue.loadValue(path, config);
 		blacklist.loadValue(path, config);
 		
 	}
@@ -462,13 +444,19 @@ public class MemorySwapBlockAction extends AbstractAction {
 			public String getValue() {
 				return matchType.getFlag();
 			}
-		}));
-		m.addItem(matchData.getMenuItem("Match Block Use Data?", Material.ENDER_PEARL));
-		m.addItem(matchDataValue.getMenuItem("Match Block Data Value", Material.ENDER_EYE, 0, 15));
+		}) {
+			@Override
+			public ItemStack getItem() {
+				ItemStack stack = super.getItem();
+				Material m = Material.matchMaterial(matchType.getFlag());
+				stack.setType(Objects.requireNonNullElse(m, Material.COBBLESTONE));
+				return stack;
+			}
+		});
 		
 		//Menu entry for the blacklist entry, aka the blocks that will be removed from the block pool
 		m.addItem(new MenuItemNewLine());
-		m.addItem(new MenuItemString("Blacklist", MinigameUtils.stringToList("Format: WOOL:15-,LOG"), Material.BOOK, new Callback<String>() {
+		m.addItem(new MenuItemString("Blacklist", MinigameUtils.stringToList("Format: WHITE_WOOL,OAK_LOG"), Material.BOOK, new Callback<String>() {
 			
 			
 			@Override
