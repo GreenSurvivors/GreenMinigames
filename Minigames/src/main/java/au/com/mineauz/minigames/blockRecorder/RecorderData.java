@@ -61,13 +61,13 @@ public class RecorderData implements Listener {
         supportedTags.add(Tag.FLOWERS);
         supportedTags.add(Tag.CORALS);
         supportedTags.add(Tag.CROPS);
+        supportedMats.add(Material.HANGING_ROOTS);
         supportedMats.add(Material.NETHER_WART);
         supportedMats.add(Material.SMALL_DRIPLEAF);
         supportedMats.add(Material.BIG_DRIPLEAF);
         supportedMats.add(Material.KELP_PLANT);
         supportedTags.add(Tag.CAVE_VINES);
         supportedMats.add(Material.VINE);
-        supportedMats.add(Material.HANGING_ROOTS);
     }
 
     private final Minigame minigame;
