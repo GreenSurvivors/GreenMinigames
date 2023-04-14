@@ -16,6 +16,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.block.data.Hangable;
+import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
@@ -30,69 +32,42 @@ import java.util.*;
 
 public class RecorderData implements Listener {
     private static Minigames plugin;
-    private static final ArrayList<Material> physBlocks = new ArrayList<>();
-    private static final ArrayList<Tag<Material>> physTags = new ArrayList<>();
+    private static final ArrayList<Material> supportedMats = new ArrayList<>();
+    private static final ArrayList<Tag<Material>> supportedTags = new ArrayList<>();
 
     static {
-        physTags.add(Tag.SIGNS);
-        physTags.add(Tag.DOORS);
-        physTags.add(Tag.TRAPDOORS);
-        physTags.add(Tag.RAILS);
-        physBlocks.add(Material.TRIPWIRE_HOOK);
-        physBlocks.add(Material.TRIPWIRE);
-        physTags.add(Tag.PRESSURE_PLATES);
-        physTags.add(Tag.BUTTONS);
-        physBlocks.add(Material.LEVER);
-        physBlocks.add(Material.COMPARATOR);
-        physBlocks.add(Material.REPEATER);
-        physBlocks.add(Material.REDSTONE_WIRE);
-        physBlocks.add(Material.REDSTONE_TORCH);
-        physBlocks.add(Material.REDSTONE_WALL_TORCH);
-        physBlocks.add(Material.NETHER_WART);
-        physBlocks.add(Material.TORCH);
-        physBlocks.add(Material.WALL_TORCH);
-        physBlocks.add(Material.BOWL);
-        physBlocks.add(Material.LADDER);
-        physBlocks.add(Material.RED_MUSHROOM);
-        physBlocks.add(Material.BROWN_MUSHROOM);
-        physTags.add(Tag.SAPLINGS);
-        physTags.add(Tag.FLOWERS);
-        physTags.add(Tag.CORALS);
-        physTags.add(Tag.CROPS);
-        physBlocks.add(Material.LILY_PAD);
-        physTags.add(Tag.WOOL_CARPETS);
-        physBlocks.add(Material.MOSS_CARPET);
-        physBlocks.add(Material.TALL_GRASS);
-        physBlocks.add(Material.TALL_SEAGRASS);
-        physBlocks.add(Material.DEAD_BUSH);
-        physBlocks.add(Material.WATER);
-        physBlocks.add(Material.LAVA);
-        physTags.add(Tag.ANVIL);
-        physBlocks.add(Material.SMALL_DRIPLEAF);
-        physBlocks.add(Material.BIG_DRIPLEAF);
-        physBlocks.add(Material.KELP_PLANT);
-        physBlocks.add(Material.BAMBOO);
-        physBlocks.add(Material.LANTERN);
-        physBlocks.add(Material.SOUL_LANTERN);
-        physTags.add(Tag.CAVE_VINES);
-        physBlocks.add(Material.DRAGON_EGG);
-        physBlocks.add(Material.ZOMBIE_HEAD);
-        physBlocks.add(Material.ZOMBIE_WALL_HEAD);
-        physBlocks.add(Material.WITHER_SKELETON_WALL_SKULL);
-        physBlocks.add(Material.WITHER_SKELETON_SKULL);
-        physBlocks.add(Material.CREEPER_HEAD);
-        physBlocks.add(Material.DRAGON_HEAD);
-        physBlocks.add(Material.PLAYER_HEAD);
-        physBlocks.add(Material.SKELETON_SKULL);
-        physBlocks.add(Material.SKELETON_WALL_SKULL);
-        physBlocks.add(Material.SNOW);
-        physBlocks.add(Material.VINE);
-        physBlocks.add(Material.NETHER_PORTAL);
-        physBlocks.add(Material.COCOA);
-        physBlocks.add(Material.HANGING_ROOTS);
-        physTags.add(Tag.BANNERS);
-        physBlocks.add(Material.PISTON_HEAD);
-        physBlocks.add(Material.MOVING_PISTON);
+        supportedMats.add(Material.WATER);
+        supportedMats.add(Material.LAVA);
+        supportedTags.add(Tag.DOORS);
+        supportedTags.add(Tag.RAILS);
+        supportedMats.add(Material.TRIPWIRE);
+        supportedTags.add(Tag.PRESSURE_PLATES);
+        supportedMats.add(Material.COMPARATOR);
+        supportedMats.add(Material.REPEATER);
+        supportedMats.add(Material.REDSTONE_WIRE);
+        supportedMats.add(Material.SNOW);
+        supportedMats.add(Material.NETHER_PORTAL);
+        supportedMats.add(Material.PISTON_HEAD);
+        supportedMats.add(Material.MOVING_PISTON);
+        supportedMats.add(Material.LILY_PAD);
+        supportedTags.add(Tag.WOOL_CARPETS);
+        supportedMats.add(Material.MOSS_CARPET);
+        supportedMats.add(Material.TALL_GRASS);
+        supportedMats.add(Material.TALL_SEAGRASS);
+        supportedMats.add(Material.DEAD_BUSH);
+        supportedMats.add(Material.RED_MUSHROOM);
+        supportedMats.add(Material.BROWN_MUSHROOM);
+        supportedTags.add(Tag.SAPLINGS);
+        supportedTags.add(Tag.FLOWERS);
+        supportedTags.add(Tag.CORALS);
+        supportedTags.add(Tag.CROPS);
+        supportedMats.add(Material.NETHER_WART);
+        supportedMats.add(Material.SMALL_DRIPLEAF);
+        supportedMats.add(Material.BIG_DRIPLEAF);
+        supportedMats.add(Material.KELP_PLANT);
+        supportedTags.add(Tag.CAVE_VINES);
+        supportedMats.add(Material.VINE);
+        supportedMats.add(Material.HANGING_ROOTS);
     }
 
     private final Minigame minigame;
@@ -271,9 +246,9 @@ public class RecorderData implements Listener {
                     invHolder.getInventory().clear();
                 }
 
-                if (physBlocks.contains(data.getBlockState().getType()) ||
-                        physTags.stream().anyMatch(tag -> tag.isTagged(data.getBlockState().getType())) ||
-                        data.getBlockState().getBlockData() instanceof Attachable) {
+                if (supportedMats.contains(data.getBlockState().getType()) ||
+                        supportedTags.stream().anyMatch(tag -> tag.isTagged(data.getBlockState().getType())) ||
+                        data.getBlockState().getBlockData() instanceof Attachable || data.getBlockState() instanceof Hangable) {
                     attachableBlocks.add(data);
                 } else if (data.getBukkitBlockData().getMaterial().hasGravity()) {
                     gravityBlocks.add(data);
