@@ -20,7 +20,7 @@ public class KillAction extends AbstractAction {
     public String getCategory() {
         return "World Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
     }
@@ -35,22 +35,22 @@ public class KillAction extends AbstractAction {
         return true;
     }
 
-    @Override
-    public void executeNodeAction(MinigamePlayer player,
-            Node node) {
-        debug(player,node);
-        if(player == null || !player.isInMinigame()) return;
-        if(!player.isDead())
-            player.getPlayer().damage(player.getPlayer().getHealth());
-    }
+		@Override
+		public void executeNodeAction(MinigamePlayer player,
+				Node node) {
+			debug(player,node);
+			if(player == null || !player.isInMinigame()) return;
+			if(!player.isDead())
+				player.getPlayer().setHealth(0.0);
+		}
 
-    @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player,region);
-        if(player == null || !player.isInMinigame()) return;
-        if(!player.isDead())
-            player.getPlayer().damage(player.getPlayer().getHealth());
-    }
+		@Override
+		public void executeRegionAction(MinigamePlayer player, Region region) {
+			debug(player,region);
+			if(player == null || !player.isInMinigame()) return;
+			if(!player.isDead())
+				player.getPlayer().setHealth(0.0);
+		}
 
     @Override
     public void saveArguments(FileConfiguration config, String path) {

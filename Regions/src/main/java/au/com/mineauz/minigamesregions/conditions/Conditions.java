@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class Conditions {
     private static Map<String, Class<? extends ConditionInterface>> conditions = new HashMap<>();
-    
+
     static{
         addCondition("PLAYER_HEALTH_RANGE", PlayerHealthRangeCondition.class);
         addCondition("HAS_REQUIRED_FLAGS", HasRequiredFlagsCondition.class);
@@ -37,16 +37,16 @@ public class Conditions {
         addCondition("HAS_FLAG", HasFlagCondition.class);
         addCondition("CONTAINS_ENTITY", ContainsEntityCondition.class);
         addCondition("HAS_LOADOUT", HasLoudOutCondition.class);
-    }
-    
+				addCondition("BLOCK_ON_AND_HELD", BlockOnAndHeldCondition.class);
+	}
     public static void addCondition(String name, Class<? extends ConditionInterface> condition){
         conditions.put(name, condition);
     }
-    
+
     public static boolean hasCondition(String condition){
         return conditions.containsKey(condition.toUpperCase());
     }
-    
+
     public static ConditionInterface getConditionByName(String name){
         if(hasCondition(name.toUpperCase())){
             try{
@@ -57,11 +57,11 @@ public class Conditions {
         }
         return null;
     }
-    
+
     public static Set<String> getAllConditionNames(){
         return conditions.keySet();
     }
-    
+
     public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev){
         Menu m = new Menu(3, "Conditions", player);
         m.setPreviousPage(prev);
@@ -72,7 +72,7 @@ public class Conditions {
         m.addItem(new MenuItemConditionAdd("Add Condition", MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);
         m.displayMenu(player);
     }
-    
+
     public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev){
         Menu m = new Menu(3, "Conditions", player);
         m.setPreviousPage(prev);
