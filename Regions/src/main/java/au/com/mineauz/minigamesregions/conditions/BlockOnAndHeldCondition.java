@@ -36,7 +36,7 @@ public class BlockOnAndHeldCondition extends ConditionInterface {
 
 	@Override
 	public String getName() {
-		return "BLOCK_ON_AMD_HELD";
+		return "BLOCK_ON_AND_HELD";
 	}
 	
 	@Override
@@ -72,9 +72,8 @@ public class BlockOnAndHeldCondition extends ConditionInterface {
 	
 	private boolean check(MinigamePlayer player){
 		
-		if(player.equals(null)) return false;
+		if(player == null) return false;
 		ItemStack heldItem = player.getPlayer().getInventory().getItemInMainHand();
-		if(heldItem.equals(null)) return false;		
 		
 		Location plyLoc = player.getPlayer().getLocation();
 		int plyY = plyLoc.getBlockY();
@@ -82,7 +81,7 @@ public class BlockOnAndHeldCondition extends ConditionInterface {
 		while(plyY >= 0) {
 			plyY -= 1;
 			Block tempBlock = player.getPlayer().getWorld().getBlockAt(plyLoc.getBlockX(), plyY, plyLoc.getBlockZ());
-			if(tempBlock.getType().equals(heldItem.getType()) && tempBlock.getState().getData().equals(heldItem.getData())){
+			if(tempBlock.getType().equals(heldItem.getType())){
 				return true;
 			} else if(!tempBlock.getType().equals(Material.AIR)) { 
 				return false;
