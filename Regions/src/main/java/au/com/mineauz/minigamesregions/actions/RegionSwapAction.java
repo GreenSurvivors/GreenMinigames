@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.material.MaterialData;
 
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
@@ -23,7 +21,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
-import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 /**
  * @author Turidus  https://github.com/Turidus/Minigames
