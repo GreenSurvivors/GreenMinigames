@@ -81,7 +81,7 @@ public class MoneyReward extends RewardType {
         }
 
         public void updateDescription() {
-            List<String> description = null;
+            List<String> description;
             if (options == null) {
                 options = new ArrayList<>();
                 for (RewardRarity rarity : RewardRarity.values()) {
@@ -160,7 +160,7 @@ public class MoneyReward extends RewardType {
         @Override
         public ItemStack onShiftClick() {
             Menu m = new Menu(3, "Set Money Amount", getContainer().getViewer());
-            MenuItemDecimal dec = new MenuItemDecimal("Money", Material.PAPER, new Callback<Double>() {
+            MenuItemDecimal dec = new MenuItemDecimal("Money", Material.PAPER, new Callback<>() {
 
                 @Override
                 public Double getValue() {

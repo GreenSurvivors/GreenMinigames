@@ -21,16 +21,12 @@ public class MinigameUtils {
      * @return The ItemStack referred to in the parameter.
      */
     public static ItemStack stringToItemStack(String item, int quantity) {
-        String itemName = "";
-        short itemData = 0;
-        String[] split = null;
+        String itemName;
+        String[] split;
 
         if (item.contains(":")) {
             split = item.split(":");
             itemName = split[0].toUpperCase();
-            if (split[1].matches("[0-9]+")) {
-                itemData = Short.parseShort(split[1]);
-            }
         } else {
             itemName = item.toUpperCase();
         }
@@ -200,24 +196,24 @@ public class MinigameUtils {
      * @return A string representation of the list
      */
     public static String listToString(List<String> list) {
-        String slist = "";
+        StringBuilder slist = new StringBuilder();
         boolean switchColour = false;
         for (String entry : list) {
             if (switchColour) {
-                slist += ChatColor.WHITE + entry;
+                slist.append(ChatColor.WHITE).append(entry);
                 if (!entry.equalsIgnoreCase(list.get(list.size() - 1))) {
-                    slist += ChatColor.WHITE + ", ";
+                    slist.append(ChatColor.WHITE + ", ");
                 }
                 switchColour = false;
             } else {
-                slist += ChatColor.GRAY + entry;
+                slist.append(ChatColor.GRAY).append(entry);
                 if (!entry.equalsIgnoreCase(list.get(list.size() - 1))) {
-                    slist += ChatColor.WHITE + ", ";
+                    slist.append(ChatColor.WHITE + ", ");
                 }
                 switchColour = true;
             }
         }
-        return slist;
+        return slist.toString();
     }
 
     /**
@@ -298,9 +294,10 @@ public class MinigameUtils {
      */
     public static boolean hasMinigameTool(MinigamePlayer player) {
         for (ItemStack i : player.getPlayer().getInventory().getContents()) {
-            if (i != null && i.getItemMeta() != null && i.getItemMeta().getDisplayName() != null &&
-                    i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")) {
-                return true;
+            if (i != null && i.getItemMeta() != null) {
+                if (i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")) {
+                    return true;
+                }
             }
         }
         return false;
@@ -313,7 +310,7 @@ public class MinigameUtils {
      * @return false if the item was not a Minigame tool
      */
     public static boolean isMinigameTool(ItemStack item) {
-        return item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool");
+        return item.getItemMeta() != null && item.getItemMeta().displayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool");
     }
 
     /**

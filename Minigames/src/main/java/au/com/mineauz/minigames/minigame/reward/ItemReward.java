@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -39,7 +40,7 @@ public class ItemReward extends RewardType {
         else
             player.getPlayer().getInventory().addItem(item);
         player.sendMessage(MessageManager.getMinigamesMessage("reward.item", item.getAmount(),
-                MinigameUtils.capitalize(item.getType().toString())), MinigameMessageType.WIN);
+                WordUtils.capitalize(item.getType().toString())), MinigameMessageType.WIN);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class ItemReward extends RewardType {
         public void setItem(ItemStack item) {
             super.setItem(item);
             ItemMeta meta = getItem().getItemMeta();
-            meta.setDisplayName(ChatColor.RESET + MinigameUtils.capitalize(item.getType().toString().replace("_", " ")));
+            meta.setDisplayName(ChatColor.RESET + WordUtils.capitalize(item.getType().toString().replace("_", " ")));
             getItem().setItemMeta(meta);
         }
 

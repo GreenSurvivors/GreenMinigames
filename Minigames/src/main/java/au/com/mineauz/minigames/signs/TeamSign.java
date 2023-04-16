@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.managers.MessageManager;
@@ -10,6 +9,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
@@ -52,7 +52,7 @@ public class TeamSign implements MinigameSign {
                 event.setLine(2, ChatColor.GRAY + "Neutral");
             } else {
                 TeamColor col = TeamColor.matchColor(event.getLine(2));
-                event.setLine(2, col.getColor() + MinigameUtils.capitalize(col.toString().replace("_", " ")));
+                event.setLine(2, col.getColor() + WordUtils.capitalize(col.toString().replace("_", " ")));
             }
             return true;
         }

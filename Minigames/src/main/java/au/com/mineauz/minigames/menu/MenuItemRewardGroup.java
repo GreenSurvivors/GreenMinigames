@@ -41,7 +41,7 @@ public class MenuItemRewardGroup extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description = null;
+        List<String> description;
         List<String> options = getOptions();
 
         int pos = options.indexOf(group.getRarity().toString());

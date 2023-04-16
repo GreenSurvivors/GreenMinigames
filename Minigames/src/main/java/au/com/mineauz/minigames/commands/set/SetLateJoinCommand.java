@@ -55,7 +55,7 @@ public class SetLateJoinCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         if (args != null) {
-            Boolean bool = Boolean.parseBoolean(args[0]);
+            boolean bool = Boolean.parseBoolean(args[0]);
             minigame.setLateJoin(bool);
             if (bool) {
                 sender.sendMessage(ChatColor.GRAY + "Late join has been enabled for " + minigame);

@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.entity.Player;
 
 public class SpectateMinigameEvent extends AbstractMinigameEvent {
-    private MinigamePlayer player;
+    private final MinigamePlayer player;
 
     public SpectateMinigameEvent(MinigamePlayer player, Minigame minigame) {
         super(minigame);

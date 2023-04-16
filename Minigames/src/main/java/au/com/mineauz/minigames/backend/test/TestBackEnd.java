@@ -54,9 +54,6 @@ public class TestBackEnd extends Backend {
     @Override
     public void saveGameStatus(StoredGameStats stats) {
         playerGameStats.add(stats);
-        for (StoredGameStats stat : playerGameStats) {
-
-        }
     }
 
     /**
@@ -76,13 +73,10 @@ public class TestBackEnd extends Backend {
                 result.add(new StoredStat(store.getPlayer().getUUID(), store.getPlayer().getName(), store.getPlayer().getDisplayName(true), store.getStat(stat)));
             }
         }
-        switch (order) {
-            case DESCENDING:
-                result.sort(Comparator.comparingLong(StoredStat::getValue).reversed());
-                break;
-            case ASCENDING:
-            default:
-                result.sort(Comparator.comparingLong(StoredStat::getValue));
+        if (Objects.requireNonNull(order) == ScoreboardOrder.DESCENDING) {
+            result.sort(Comparator.comparingLong(StoredStat::getValue).reversed());
+        } else {
+            result.sort(Comparator.comparingLong(StoredStat::getValue));
         }
         return result;
     }
@@ -178,7 +172,7 @@ public class TestBackEnd extends Backend {
      * Performs a conversion from a previous format
      *
      * @param notifier A notifier for progress updates
-     * @returns True if the conversion succeeded
+     * @return True if the conversion succeeded
      */
     @Override
     public boolean doConversion(ExportNotifier notifier) {

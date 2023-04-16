@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 
 public class JoinMinigameEvent extends AbstractMinigameEvent {
 
-    private MinigamePlayer player;
-    private boolean betting = false;
+    private final MinigamePlayer player;
+    private final boolean betting;
 
     public JoinMinigameEvent(MinigamePlayer player, Minigame minigame) {
         this(player, minigame, false);

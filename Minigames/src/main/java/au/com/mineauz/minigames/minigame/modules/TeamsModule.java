@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.StringFlag;
@@ -10,6 +9,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.Scoreboard;
@@ -172,7 +172,7 @@ public class TeamsModule extends MinigameModule {
     }
 
     public Callback<String> getDefaultWinnerCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
 
             @Override
             public String getValue() {
@@ -181,7 +181,7 @@ public class TeamsModule extends MinigameModule {
                         return "None";
                     }
 
-                    return MinigameUtils.capitalize(defaultWinner.getFlag().replace("_", " "));
+                    return WordUtils.capitalize(defaultWinner.getFlag().replace("_", " "));
                 }
                 return "None";
             }
@@ -224,7 +224,7 @@ public class TeamsModule extends MinigameModule {
         List<MenuItem> items = new ArrayList<>();
         List<String> teams = new ArrayList<>(this.teams.size() + 1);
         for (TeamColor t : this.teams.keySet()) {
-            teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
+            teams.add(WordUtils.capitalize(t.toString().replace("_", " ")));
         }
         teams.add("None");
         items.add(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), teams));

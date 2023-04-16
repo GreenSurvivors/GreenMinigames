@@ -63,7 +63,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
         Minigame mgm = ply.getMinigame();
         if (ply.isInMinigame() && mgm.getMechanicName().equals("kills")) {
-            MinigamePlayer attacker = null;
+            MinigamePlayer attacker;
             if (ply.getPlayer().getKiller() != null) {
                 attacker = pdata.getMinigamePlayer(ply.getPlayer().getKiller());
                 if (attacker == ply) {

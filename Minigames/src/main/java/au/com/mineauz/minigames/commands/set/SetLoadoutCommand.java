@@ -72,7 +72,7 @@ public class SetLoadoutCommand implements ICommand {
         List<String> des = new ArrayList<>();
         des.add("Shift + Right Click to Delete");
 
-        Material item = Material.WHITE_STAINED_GLASS_PANE;
+        Material item;
 
         for (String ld : mod.getLoadouts()) {
             item = Material.WHITE_STAINED_GLASS_PANE;

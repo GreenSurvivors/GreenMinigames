@@ -29,7 +29,7 @@ public class MenuItemPotion extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description = null;
+        List<String> description;
         if (getDescription() != null) {
             description = getDescription();
             if (getDescription().size() >= 2) {

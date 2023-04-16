@@ -20,7 +20,7 @@ public class RevertAction extends AbstractAction {
     public String getCategory() {
         return "Minigame Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
     }
@@ -54,7 +54,7 @@ public class RevertAction extends AbstractAction {
 
     @Override
     public void saveArguments(FileConfiguration config, String path) {
-    
+
     }
 
     @Override

@@ -11,14 +11,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class Menu {
-    private int rows = 2;
+    private final int rows;
     private final ItemStack[] pageView;
     private final Map<Integer, MenuItem> pageMap = new HashMap<>();
-    private String name = "Menu";
+    private final String name;
     private boolean allowModify = false;
     private Menu previousPage = null;
     private Menu nextPage = null;
-    private MinigamePlayer viewer = null;
+    private final MinigamePlayer viewer;
     private int reopenTimerID = -1;
     private Inventory inv = null;
 

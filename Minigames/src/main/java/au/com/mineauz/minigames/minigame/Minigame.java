@@ -513,11 +513,11 @@ public class Minigame implements ScriptObject {
     }
 
     private Callback<String> getTypeCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
 
             @Override
             public String getValue() {
-                return MinigameUtils.capitalize(type.getFlag().toString().replace("_", " "));
+                return WordUtils.capitalize(type.getFlag().toString().replace("_", " "));
             }
 
             @Override
@@ -736,11 +736,11 @@ public class Minigame implements ScriptObject {
     }
 
     public Callback<String> getDefaultGamemodeCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
 
             @Override
             public String getValue() {
-                return MinigameUtils.capitalize(defaultGamemode.getFlag().toString());
+                return WordUtils.capitalize(defaultGamemode.getFlag().toString());
             }
 
             @Override
@@ -1066,7 +1066,7 @@ public class Minigame implements ScriptObject {
         for (GameMechanicBase val : GameMechanics.getGameMechanics()) {
             scoreTypes.add(WordUtils.capitalize(val.getMechanic()));
         }
-        itemsMain.add(new MenuItemList("Game Mechanic", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<String>() {
+        itemsMain.add(new MenuItemList("Game Mechanic", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<>() {
 
             @Override
             public String getValue() {
@@ -1111,7 +1111,7 @@ public class Minigame implements ScriptObject {
                 .OAK_DOOR, lobby));
         itemsMain.add(new MenuItemNewLine());
         itemsMain.add(new MenuItemTime("Time Length", MinigameUtils.stringToList("Multiplayer Only"), Material.CLOCK, new
-                Callback<Integer>() {
+                Callback<>() {
 
                     @Override
                     public Integer getValue() {
@@ -1128,7 +1128,7 @@ public class Minigame implements ScriptObject {
         itemsMain.add(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
         itemsMain.add(new MenuItemTime("Start Wait Time", MinigameUtils.stringToList("Multiplayer Only"), Material
                 .CLOCK,
-                new Callback<Integer>() {
+                new Callback<>() {
 
                     @Override
                     public Integer getValue() {
@@ -1155,7 +1155,7 @@ public class Minigame implements ScriptObject {
         floorDegenOpt.add("Inward");
         floorDegenOpt.add("Circle");
         floorDegenOpt.add("Random");
-        itemsMain.add(new MenuItemList("Floor Degenerator Type", floorDegenDes, Material.SNOW_BLOCK, new Callback<String>() {
+        itemsMain.add(new MenuItemList("Floor Degenerator Type", floorDegenDes, Material.SNOW_BLOCK, new Callback<>() {
 
             @Override
             public String getValue() {
@@ -1176,7 +1176,7 @@ public class Minigame implements ScriptObject {
         itemsMain.add(degenRandomChance.getMenuItem("Random Floor Degen Chance", Material.SNOW, degenRandDes, 1, 100));
         itemsMain.add(floorDegenTime.getMenuItem("Floor Degenerator Delay", Material.CLOCK, 1, null));
         itemsMain.add(new MenuItemTime("Regeneration Delay", MinigameUtils.stringToList("Time in seconds before;" +
-                "Minigame regeneration starts"), Material.CLOCK, new Callback<Integer>() {
+                "Minigame regeneration starts"), Material.CLOCK, new Callback<>() {
 
             @Override
             public Integer getValue() {
@@ -1442,7 +1442,7 @@ public class Minigame implements ScriptObject {
         getScoreboardData().loadDisplays(minigame, this);
 
         ListenableFuture<Map<MinigameStat, StatSettings>> settingsFuture = Minigames.getPlugin().getBackend().loadStatSettings(this);
-        Minigames.getPlugin().getBackend().addServerThreadCallback(settingsFuture, new FutureCallback<Map<MinigameStat, StatSettings>>() {
+        Minigames.getPlugin().getBackend().addServerThreadCallback(settingsFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(Map<MinigameStat, StatSettings> result) {
                 statSettings.clear();
@@ -1452,7 +1452,7 @@ public class Minigame implements ScriptObject {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(@NotNull Throwable t) {
                 t.printStackTrace();
             }
         });

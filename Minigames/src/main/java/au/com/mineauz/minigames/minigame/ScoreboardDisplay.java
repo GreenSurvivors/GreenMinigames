@@ -21,6 +21,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -227,7 +228,7 @@ public class ScoreboardDisplay {
         fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + field.getTitle()));
 
         statisticChoice.setClick(object -> {
-            Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<MinigameStat>() {
+            Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<>() {
                 @Override
                 public MinigameStat getValue() {
                     throw new UnsupportedOperationException();
@@ -267,7 +268,7 @@ public class ScoreboardDisplay {
 
         fieldChoice.setClick(object -> {
             StatSettings settings1 = minigame.getSettings(stat);
-            Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, settings1.getFormat(), new Callback<StatValueField>() {
+            Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, settings1.getFormat(), new Callback<>() {
                 @Override
                 public StatValueField getValue() {
                     throw new UnsupportedOperationException();
@@ -291,7 +292,7 @@ public class ScoreboardDisplay {
         for (ScoreboardOrder o : ScoreboardOrder.values()) {
             sbotypes.add(o.toString().toLowerCase());
         }
-        setupMenu.addItem(new MenuItemList("Scoreboard Order", Material.ENDER_PEARL, new Callback<String>() {
+        setupMenu.addItem(new MenuItemList("Scoreboard Order", Material.ENDER_PEARL, new Callback<>() {
 
             @Override
             public String getValue() {
@@ -382,7 +383,7 @@ public class ScoreboardDisplay {
 
     // The update callback to be provided to the future. MUST be executed on the bukkit server thread
     private FutureCallback<List<StoredStat>> getUpdateCallback() {
-        return new FutureCallback<List<StoredStat>>() {
+        return new FutureCallback<>() {
             @Override
             public void onSuccess(List<StoredStat> result) {
                 stats = result;
@@ -391,7 +392,7 @@ public class ScoreboardDisplay {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(@NotNull Throwable t) {
                 t.printStackTrace();
                 stats = Collections.emptyList();
                 needsLoad = true;

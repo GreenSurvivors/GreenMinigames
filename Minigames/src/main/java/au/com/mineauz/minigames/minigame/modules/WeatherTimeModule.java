@@ -63,7 +63,7 @@ public class WeatherTimeModule extends MinigameModule {
     @Override
     public void addEditMenuOptions(Menu menu) {
         Menu m = new Menu(6, "Time and Weather", menu.getViewer());
-        m.addItem(new MenuItemBoolean("Use Custom Time", Material.CLOCK, new Callback<Boolean>() {
+        m.addItem(new MenuItemBoolean("Use Custom Time", Material.CLOCK, new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -77,7 +77,7 @@ public class WeatherTimeModule extends MinigameModule {
 
 
         }));
-        m.addItem(new MenuItemInteger("Time of Day", Material.CLOCK, new Callback<Integer>() {
+        m.addItem(new MenuItemInteger("Time of Day", Material.CLOCK, new Callback<>() {
 
             @Override
             public Integer getValue() {
@@ -91,7 +91,7 @@ public class WeatherTimeModule extends MinigameModule {
 
 
         }, 0, 24000));
-        m.addItem(new MenuItemBoolean("Use Custom Weather", Material.WATER_BUCKET, new Callback<Boolean>() {
+        m.addItem(new MenuItemBoolean("Use Custom Weather", Material.WATER_BUCKET, new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -105,7 +105,7 @@ public class WeatherTimeModule extends MinigameModule {
 
 
         }));
-        m.addItem(new MenuItemList("Weather Type", Material.WATER_BUCKET, new Callback<String>() {
+        m.addItem(new MenuItemList("Weather Type", Material.WATER_BUCKET, new Callback<>() {
 
             @Override
             public String getValue() {

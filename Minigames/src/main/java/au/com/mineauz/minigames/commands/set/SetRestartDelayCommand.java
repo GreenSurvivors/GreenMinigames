@@ -55,7 +55,7 @@ public class SetRestartDelayCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         if (args != null) {
-            if (args[0].matches("[0-9]+(m|h)?")) {
+            if (args[0].matches("[0-9]+([mh])?")) {
                 int time = Integer.parseInt(args[0].replaceAll("[mh]", ""));
                 String mod = args[0].replaceAll("[0-9]", "");
                 if (mod.equals("m"))

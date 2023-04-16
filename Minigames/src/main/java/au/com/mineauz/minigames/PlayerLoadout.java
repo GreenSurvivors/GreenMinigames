@@ -78,7 +78,7 @@ public class PlayerLoadout {
     }
 
     public Callback<Boolean> getUsePermissionsCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -204,7 +204,7 @@ public class PlayerLoadout {
     }
 
     public Callback<Boolean> getFallDamageCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -229,7 +229,7 @@ public class PlayerLoadout {
     }
 
     public Callback<Boolean> getHungerCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -254,7 +254,7 @@ public class PlayerLoadout {
     }
 
     public Callback<Integer> getLevelCallback() {
-        return new Callback<Integer>() {
+        return new Callback<>() {
 
             @Override
             public Integer getValue() {
@@ -288,7 +288,7 @@ public class PlayerLoadout {
     }
 
     public Callback<Boolean> getInventoryLockedCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -313,7 +313,7 @@ public class PlayerLoadout {
     }
 
     public Callback<Boolean> getArmourLockedCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -334,7 +334,7 @@ public class PlayerLoadout {
     }
 
     public Callback<Boolean> getAllowOffHandCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
             @Override
             public Boolean getValue() {
                 return allowOffHand;
@@ -362,7 +362,7 @@ public class PlayerLoadout {
     }
 
     public Callback<String> getTeamColorCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
 
             @Override
             public String getValue() {
@@ -385,7 +385,7 @@ public class PlayerLoadout {
     }
 
     public Callback<Boolean> getDisplayInMenuCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
 
             @Override
             public Boolean getValue() {

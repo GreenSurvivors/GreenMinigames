@@ -46,7 +46,7 @@ public class MenuItemDecimal extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description = null;
+        List<String> description;
         if (getDescription() != null) {
             description = getDescription();
             String desc = ChatColor.stripColor(getDescription().get(0));
