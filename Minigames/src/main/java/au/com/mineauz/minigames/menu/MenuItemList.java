@@ -12,8 +12,8 @@ import java.util.List;
 
 public class MenuItemList extends MenuItem {
 
-    private Callback<String> value = null;
-    private List<String> options = null;
+    private final Callback<String> value;
+    private final List<String> options;
 
     public MenuItemList(String name, Material displayItem, Callback<String> value, List<String> options) {
         super(name, displayItem);

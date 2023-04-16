@@ -511,7 +511,7 @@ public class Minigames extends JavaPlugin {
         final ListenableFuture<Long> winCountFuture = this.backend.loadSingleStat(saveData.getMinigame(), MinigameStats.Wins, StatValueField.Total, saveData.getPlayer().getUUID());
         this.backend.saveStats(saveData);
 
-        this.backend.addServerThreadCallback(winCountFuture, new FutureCallback<Long>() {
+        this.backend.addServerThreadCallback(winCountFuture, new FutureCallback<>() {
             @Override
             public void onFailure(final @NotNull Throwable t) {
             }

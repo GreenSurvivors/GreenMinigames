@@ -54,7 +54,7 @@ public class SetUnlimitedAmmoCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         if (args != null) {
-            Boolean bool = Boolean.parseBoolean(args[0]);
+            boolean bool = Boolean.parseBoolean(args[0]);
             minigame.setUnlimitedAmmo(bool);
             if (bool) {
                 sender.sendMessage(ChatColor.GRAY + "Unlimited ammo has been turned on for " + minigame);

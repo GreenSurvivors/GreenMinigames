@@ -11,6 +11,7 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scoreboard.Objective;
@@ -34,7 +35,7 @@ public class Team implements ScriptObject {
     private final BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final Minigame mgm;
-    private String displayName = null;
+    private String displayName;
     private TeamColor color;
     private int score = 0;
     private final String scoreboardName;
@@ -47,7 +48,7 @@ public class Team implements ScriptObject {
      */
     public Team(TeamColor color, Minigame minigame) {
         this.color = color;
-        displayName = MinigameUtils.capitalize(color.toString()) + " Team";
+        displayName = WordUtils.capitalize(color.toString()) + " Team";
         scoreboardName = color.toString().toLowerCase();
         mgm = minigame;
     }
@@ -70,7 +71,7 @@ public class Team implements ScriptObject {
     public boolean setColor(TeamColor color) {
         if (!TeamsModule.getMinigameModule(mgm).hasTeam(color)) {
             if (displayName.toLowerCase().equals(this.color.toString().toLowerCase() + " team"))
-                displayName = MinigameUtils.capitalize(color.toString()) + " Team";
+                displayName = WordUtils.capitalize(color.toString()) + " Team";
             TeamsModule.getMinigameModule(mgm).removeTeam(this.color);
             this.color = color;
             TeamsModule.getMinigameModule(mgm).addTeam(color, this);
@@ -341,7 +342,7 @@ public class Team implements ScriptObject {
     }
 
     public Callback<String> getNameTagVisibilityCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
 
             @Override
             public String getValue() {
@@ -358,7 +359,7 @@ public class Team implements ScriptObject {
     }
 
     public Callback<Boolean> getAutoBalanceCallBack() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
 
             @Override
             public Boolean getValue() {

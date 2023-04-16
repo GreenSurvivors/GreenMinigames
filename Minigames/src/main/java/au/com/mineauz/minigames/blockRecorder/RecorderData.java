@@ -439,7 +439,7 @@ public class RecorderData implements Listener {
             while (br.ready()) {
                 line = br.readLine();
 
-                blocks = line.split("\\}\\{");
+                blocks = line.split("}\\{");
 
                 for (String bl : blocks) {
                     args.clear();

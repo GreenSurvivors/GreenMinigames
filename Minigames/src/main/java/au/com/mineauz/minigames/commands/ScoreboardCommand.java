@@ -147,7 +147,7 @@ public class ScoreboardCommand implements ICommand {
         // Now load the values
         ListenableFuture<List<StoredStat>> future = plugin.getBackend().loadStats(minigame, stat, field, order, start, length);
 
-        Futures.addCallback(future, new FutureCallback<List<StoredStat>>() {
+        Futures.addCallback(future, new FutureCallback<>() {
             @Override
             public void onSuccess(List<StoredStat> result) {
                 sender.sendMessage(ChatColor.GREEN + minigame.getName(true) + " Scoreboard: " + settings.getDisplayName() + " - " + fField.getTitle() + " " + fOrder.toString().toLowerCase());

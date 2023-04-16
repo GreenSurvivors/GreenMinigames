@@ -55,9 +55,7 @@ public class Events implements Listener {
                 if (!module.isEnabled()) return;
                 if (!module.isForced()) return;
                 switch (event.getStatus()) {
-                    case ACCEPTED -> {
-                        required.remove(ply);
-                    }
+                    case ACCEPTED, SUCCESSFULLY_LOADED -> required.remove(ply);
                     case DECLINED -> {
                         Minigames.getPlugin().getPlayerManager().quitMinigame(ply, true);
                         MessageManager.sendMessage(ply, MinigameMessageType.ERROR, null, "minigames.resource.declined");
@@ -68,7 +66,6 @@ public class Events implements Listener {
                         MessageManager.sendMessage(ply, MinigameMessageType.ERROR, null, "minigames.resource.failed");
                         required.remove(ply);
                     }
-                    case SUCCESSFULLY_LOADED -> required.remove(ply);
                 }
             }
 
@@ -91,8 +88,7 @@ public class Events implements Listener {
                 }
                 event.getDrops().clear();
             }
-            String msg = "";
-            msg = event.getDeathMessage();
+            String msg = event.getDeathMessage();
             event.setDeathMessage(null);
             event.setDroppedExp(0);
 
@@ -623,28 +619,19 @@ public class Events implements Listener {
                 if (item != null) {
                     ItemStack disItem = null;
                     switch (event.getClick()) {
-                        case LEFT:
+                        case LEFT -> {
                             if (event.getCursor().getType() != Material.AIR)
                                 disItem = item.onClickWithItem(event.getCursor());
                             else
                                 disItem = item.onClick();
-                            break;
-                        case RIGHT:
-                            disItem = item.onRightClick();
-                            break;
-                        case SHIFT_LEFT:
-                            disItem = item.onShiftClick();
-                            break;
-                        case SHIFT_RIGHT:
-                            disItem = item.onShiftRightClick();
-                            break;
-                        case DOUBLE_CLICK:
-                            disItem = item.onDoubleClick();
-                            break;
+                        }
+                        case RIGHT -> disItem = item.onRightClick();
+                        case SHIFT_LEFT -> disItem = item.onShiftClick();
+                        case SHIFT_RIGHT -> disItem = item.onShiftRightClick();
+                        case DOUBLE_CLICK -> disItem = item.onDoubleClick();
                     }
 
-                    if (item != null)
-                        event.setCurrentItem(disItem);
+                    event.setCurrentItem(disItem);
                 }
             }
         } else if (ply.isInMinigame()) {

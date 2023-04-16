@@ -6,9 +6,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import java.util.List;
 
 public class EndMinigameEvent extends AbstractMinigameEvent {
-
-    private List<MinigamePlayer> winners = null;
-    private List<MinigamePlayer> losers = null;
+    private final List<MinigamePlayer> winners;
+    private final List<MinigamePlayer> losers;
 
 
     public EndMinigameEvent(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame minigame) {

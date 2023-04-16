@@ -13,8 +13,8 @@ import java.util.UUID;
 
 public class OfflineMinigamePlayer {
     private final UUID uuid;
-    private ItemStack[] storedItems;
-    private ItemStack[] storedArmour;
+    private final ItemStack[] storedItems;
+    private final ItemStack[] storedArmour;
     private int food = 20;
     private double health = 20;
     private float saturation = 15;

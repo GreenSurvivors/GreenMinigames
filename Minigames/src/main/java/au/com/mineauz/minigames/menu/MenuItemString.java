@@ -31,7 +31,7 @@ public class MenuItemString extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description = null;
+        List<String> description;
         String setting = str.getValue();
         if (setting == null)
             setting = "Not Set";

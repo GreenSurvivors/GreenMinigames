@@ -59,7 +59,7 @@ public class CommandReward extends RewardType {
         private final CommandReward reward;
 
         public CommandRewardItem(CommandReward reward) {
-            super("/" + command, Material.COMMAND_BLOCK, new Callback<String>() {
+            super("/" + command, Material.COMMAND_BLOCK, new Callback<>() {
 
 
                 @Override
@@ -95,7 +95,7 @@ public class CommandReward extends RewardType {
 
         @Override
         public void updateDescription() {
-            List<String> description = null;
+            List<String> description;
             if (options == null) {
                 options = new ArrayList<>();
                 for (RewardRarity rarity : RewardRarity.values()) {

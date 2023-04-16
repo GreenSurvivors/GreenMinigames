@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemBoolean extends MenuItem {
-
-    private Callback<Boolean> toggle = null;
+    private final Callback<Boolean> toggle;
 
     public MenuItemBoolean(String name, Material displayItem, Callback<Boolean> toggle) {
         super(name, displayItem);
@@ -24,8 +23,8 @@ public class MenuItemBoolean extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description = null;
-        String col = "";
+        List<String> description;
+        String col;
         if (toggle.getValue()) {
             col = ChatColor.GREEN + "true";
         } else {

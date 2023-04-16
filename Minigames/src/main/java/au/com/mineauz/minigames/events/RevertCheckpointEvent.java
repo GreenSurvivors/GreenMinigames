@@ -4,8 +4,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.entity.Player;
 
 public class RevertCheckpointEvent extends AbstractMinigameEvent {
-
-    private MinigamePlayer player;
+    private final MinigamePlayer player;
 
     public RevertCheckpointEvent(MinigamePlayer player) {
         super(null);

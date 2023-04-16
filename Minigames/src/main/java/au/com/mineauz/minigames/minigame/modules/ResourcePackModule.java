@@ -89,7 +89,7 @@ public class ResourcePackModule extends MinigameModule {
         Menu m = new Menu(3, "Teams", menu.getViewer());
         m.setPreviousPage(menu);
         m.addItem(enabled.getMenuItem("Enable Resource Pack", Material.MAP));
-        MenuItem item = new MenuItemString("Resource Pack Name", Material.PAPER, new Callback<String>() {
+        MenuItem item = new MenuItemString("Resource Pack Name", Material.PAPER, new Callback<>() {
             @Override
             public String getValue() {
                 return resourcePackName.getFlag();

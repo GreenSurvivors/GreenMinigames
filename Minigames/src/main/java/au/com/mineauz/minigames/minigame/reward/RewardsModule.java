@@ -82,11 +82,9 @@ public class RewardsModule extends MinigameModule {
         ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
         if (root != null) {
             String name = root.getString("reward-scheme", "standard");
-            if (name != null) {
-                scheme = RewardSchemes.createScheme(name);
-                if (scheme == null) {
-                    scheme = new StandardRewardScheme();
-                }
+            scheme = RewardSchemes.createScheme(name);
+            if (scheme == null) {
+                scheme = new StandardRewardScheme();
             }
             ConfigurationSection rewards = root.getConfigurationSection("rewards");
             scheme.load(rewards);
@@ -109,7 +107,7 @@ public class RewardsModule extends MinigameModule {
         final Menu submenu = new Menu(6, "Reward Settings", parent.getViewer());
         scheme.addMenuItems(submenu);
 
-        submenu.addItem(RewardSchemes.newMenuItem("Reward Scheme", Material.PAPER, new Callback<Class<? extends RewardScheme>>() {
+        submenu.addItem(RewardSchemes.newMenuItem("Reward Scheme", Material.PAPER, new Callback<>() {
             @Override
             public Class<? extends RewardScheme> getValue() {
                 return scheme.getClass();

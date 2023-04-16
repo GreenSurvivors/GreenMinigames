@@ -56,7 +56,7 @@ public class MenuItemTeam extends MenuItem {
     @Override
     public ItemStack onClick() {
         Menu m = new Menu(3, getName(), getContainer().getViewer());
-        m.addItem(new MenuItemString("Display Name", Material.NAME_TAG, new Callback<String>() {
+        m.addItem(new MenuItemString("Display Name", Material.NAME_TAG, new Callback<>() {
 
             @Override
             public String getValue() {
@@ -70,7 +70,7 @@ public class MenuItemTeam extends MenuItem {
 
 
         }));
-        m.addItem(new MenuItemInteger("Max Players", Material.STONE, new Callback<Integer>() {
+        m.addItem(new MenuItemInteger("Max Players", Material.STONE, new Callback<>() {
 
             @Override
             public Integer getValue() {

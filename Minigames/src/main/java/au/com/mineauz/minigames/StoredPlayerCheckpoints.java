@@ -191,8 +191,8 @@ public class StoredPlayerCheckpoints {
                     Double locx = (Double) save.getConfig().get(mgm + ".x");
                     Double locy = (Double) save.getConfig().get(mgm + ".y");
                     Double locz = (Double) save.getConfig().get(mgm + ".z");
-                    Float yaw = new Float(save.getConfig().get(mgm + ".yaw").toString());
-                    Float pitch = new Float(save.getConfig().get(mgm + ".pitch").toString());
+                    float yaw = (float) save.getConfig().getDouble(mgm + ".yaw");
+                    float pitch = (float) save.getConfig().getDouble(mgm + ".pitch");
                     String world = (String) save.getConfig().get(mgm + ".world");
 
                     World w = Minigames.getPlugin().getServer().getWorld(world);
@@ -230,8 +230,8 @@ public class StoredPlayerCheckpoints {
             double x = save.getConfig().getDouble("globalcheckpoint.x");
             double y = save.getConfig().getDouble("globalcheckpoint.y");
             double z = save.getConfig().getDouble("globalcheckpoint.z");
-            Float yaw = new Float(save.getConfig().get("globalcheckpoint.yaw").toString());
-            Float pitch = new Float(save.getConfig().get("globalcheckpoint.pitch").toString());
+            float yaw = (float) save.getConfig().getDouble("globalcheckpoint.yaw");
+            float pitch = (float) save.getConfig().getDouble("globalcheckpoint.pitch");
             String world = save.getConfig().getString("globalcheckpoint.world");
 
             World w = Minigames.getPlugin().getServer().getWorld(world);

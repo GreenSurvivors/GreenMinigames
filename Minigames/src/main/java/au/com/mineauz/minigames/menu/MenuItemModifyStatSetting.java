@@ -26,7 +26,7 @@ public class MenuItemModifyStatSetting extends MenuItem {
     public ItemStack onClick() {
         Menu subMenu = new Menu(6, "Edit " + stat.getDisplayName(), getContainer().getViewer());
 
-        subMenu.addItem(new MenuItemString("Display Name", Material.NAME_TAG, new Callback<String>() {
+        subMenu.addItem(new MenuItemString("Display Name", Material.NAME_TAG, new Callback<>() {
             @Override
             public String getValue() {
                 return minigame.getSettings(stat).getDisplayName();
@@ -40,7 +40,7 @@ public class MenuItemModifyStatSetting extends MenuItem {
 
         }));
         if (stat != MinigameStats.Losses) {
-            subMenu.addItem(new MenuItemList("Storage Format", Material.ENDER_CHEST, new Callback<String>() {
+            subMenu.addItem(new MenuItemList("Storage Format", Material.ENDER_CHEST, new Callback<>() {
                 @Override
                 public String getValue() {
                     return minigame.getSettings(stat).getFormat().toString();

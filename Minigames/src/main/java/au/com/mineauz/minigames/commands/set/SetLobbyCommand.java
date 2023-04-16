@@ -65,8 +65,7 @@ public class SetLobbyCommand implements ICommand {
             LobbySettingsModule lobby = LobbySettingsModule.getMinigameModule(minigame);
             if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("canmove")) {
-                    boolean v = true;
-                    v = Boolean.getBoolean(args[2]);
+                    boolean v = Boolean.getBoolean(args[2]);
                     if (args[1].equalsIgnoreCase("playerwait")) {
                         lobby.setCanMovePlayerWait(v);
                         if (v)
@@ -84,8 +83,7 @@ public class SetLobbyCommand implements ICommand {
                         return false;
                     }
                 } else if (args[0].equalsIgnoreCase("caninteract")) {
-                    boolean v = true;
-                    v = Boolean.getBoolean(args[2]);
+                    boolean v = Boolean.getBoolean(args[2]);
                     if (args[1].equalsIgnoreCase("playerwait")) {
                         lobby.setCanInteractPlayerWait(v);
                         if (v)
@@ -153,15 +151,14 @@ public class SetLobbyCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
         if (args != null && args.length > 0) {
-            switch (args.length) {
-
-                case 1:
-                    return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("canmove;caninteract;teleport;playerWait"), args[args.length - 1]);
-                case 2:
-                    return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("playerwait;startwait"), args[args.length - 1]);
-                default:
-                    return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[args.length - 1]);
-            }
+            return switch (args.length) {
+                case 1 ->
+                        MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("canmove;caninteract;teleport;playerWait"), args[args.length - 1]);
+                case 2 ->
+                        MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("playerwait;startwait"), args[args.length - 1]);
+                default ->
+                        MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[args.length - 1]);
+            };
         }
         return null;
     }

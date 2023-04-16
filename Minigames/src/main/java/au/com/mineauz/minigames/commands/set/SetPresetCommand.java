@@ -66,7 +66,7 @@ public class SetPresetCommand implements ICommand {
                 sender.sendMessage(PresetLoader.getPresetInfo(args[0]));
                 return true;
             } else {
-                sender.sendMessage(ChatColor.GRAY + "There is no preset by the name " + args[0]);
+                sender.sendMessage(ChatColor.GRAY + "There is no preset by the name ");
             }
 
         }

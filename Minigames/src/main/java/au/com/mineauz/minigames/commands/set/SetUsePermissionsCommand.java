@@ -27,8 +27,10 @@ public class SetUsePermissionsCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "Sets whether a player needs a specific permission to join a Minigame. " +
-                "\nPermissions as follows: \n\"minigame.join.<minigame>\" - must be all lower case";
+        return """
+                Sets whether a player needs a specific permission to join a Minigame.\s
+                Permissions as follows:\s
+                "minigame.join.<minigame>" - must be all lower case""";
     }
 
     @Override

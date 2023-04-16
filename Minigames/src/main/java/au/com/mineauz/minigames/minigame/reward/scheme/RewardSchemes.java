@@ -65,7 +65,7 @@ public final class RewardSchemes {
     }
 
     private static Callback<String> transformCallback(final Callback<Class<? extends RewardScheme>> callback) {
-        return new Callback<String>() {
+        return new Callback<>() {
             @Override
             public String getValue() {
                 return definedSchemes.inverse().get(callback.getValue());
