@@ -188,9 +188,9 @@ public class StoredPlayerCheckpoints {
             if (!mgm.equals("globalcheckpoint")) {
                 MinigameUtils.debugMessage("Attempting to load checkpoint for " + mgm + "...");
                 try {
-                    Double locx = (Double) save.getConfig().get(mgm + ".x");
-                    Double locy = (Double) save.getConfig().get(mgm + ".y");
-                    Double locz = (Double) save.getConfig().get(mgm + ".z");
+                    double locx = save.getConfig().getDouble(mgm + ".x");
+                    double locy = save.getConfig().getDouble(mgm + ".y");
+                    double locz = save.getConfig().getDouble(mgm + ".z");
                     float yaw = (float) save.getConfig().getDouble(mgm + ".yaw");
                     float pitch = (float) save.getConfig().getDouble(mgm + ".pitch");
                     String world = (String) save.getConfig().get(mgm + ".world");

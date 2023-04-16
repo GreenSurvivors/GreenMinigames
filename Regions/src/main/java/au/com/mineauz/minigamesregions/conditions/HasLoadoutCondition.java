@@ -15,7 +15,7 @@ import java.util.Map;
  * Created for the Ark: Survival Evolved.
  * Created by Narimm on 4/05/2017.
  */
-public class HasLoudOutCondition extends ConditionInterface {
+public class HasLoadoutCondition extends ConditionInterface {
     private final StringFlag loadOutName = new StringFlag("default", "loadout");
 
     @Override
