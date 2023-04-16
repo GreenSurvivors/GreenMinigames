@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.events;
 
-import java.util.List;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+
+import java.util.List;
 
 public class EndMinigameEvent extends AbstractMinigameEvent {
 

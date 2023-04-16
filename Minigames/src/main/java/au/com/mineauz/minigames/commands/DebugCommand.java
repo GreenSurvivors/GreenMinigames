@@ -64,10 +64,10 @@ public class DebugCommand implements ICommand {
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
-        if(args != null && args.length > 0) {
-            switch (args[0].toUpperCase()){
+        if (args != null && args.length > 0) {
+            switch (args[0].toUpperCase()) {
                 case "ON":
-                    if(Minigames.getPlugin().isDebugging()){
+                    if (Minigames.getPlugin().isDebugging()) {
                         sender.sendMessage(ChatColor.GRAY + "Debug mode already active.");
                     } else {
                         Minigames.getPlugin().toggleDebug();
@@ -75,7 +75,7 @@ public class DebugCommand implements ICommand {
                     }
                     break;
                 case "OFF":
-                    if(!Minigames.getPlugin().isDebugging()){
+                    if (!Minigames.getPlugin().isDebugging()) {
                         sender.sendMessage(ChatColor.GRAY + "Debug mode already inactive.");
                     } else {
                         Minigames.getPlugin().toggleDebug();
@@ -84,7 +84,7 @@ public class DebugCommand implements ICommand {
                     break;
                 case "PASTE":
                     sender.sendMessage(ChatColor.GRAY + "Generating a paste.....");
-                    generatePaste(sender,minigame);
+                    generatePaste(sender, minigame);
                     break;
                 default:
                     return false;
@@ -105,7 +105,7 @@ public class DebugCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
         List<String> out = new ArrayList<>();
-        if(args.length==0){
+        if (args.length == 0) {
             out.add("NO");
             out.add("YES");
             out.add("PASTE");
@@ -121,7 +121,7 @@ public class DebugCommand implements ICommand {
         }
     }
 
-    private void generatePaste(CommandSender sender, Minigame minigame){
+    private void generatePaste(CommandSender sender, Minigame minigame) {
         StringBuilder mainInfo = new StringBuilder();
         mainInfo.append(Bukkit.getName()).append(" version: ").append(Bukkit.getServer().getVersion()).append('\n');
         mainInfo.append("Plugin version: ").append(Minigames.getPlugin().getDescription().getVersion()).append('\n');
@@ -135,13 +135,13 @@ public class DebugCommand implements ICommand {
         Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () -> {
             Path dataPath = Minigames.getPlugin().getDataFolder().toPath();
 
-            String apiKey = Minigames.getPlugin().getConfig().getString("pasteApiKey",null);
+            String apiKey = Minigames.getPlugin().getConfig().getString("pasteApiKey", null);
             PasteFile config = new PasteFile("config.yml",
-                  new PasteContent(PasteContent.ContentType.TEXT,
-                        getFile(dataPath.resolve("config.yml"))));
+                    new PasteContent(PasteContent.ContentType.TEXT,
+                            getFile(dataPath.resolve("config.yml"))));
             PasteFile spigot = new PasteFile("spigot.yml",
-                  new PasteContent(PasteContent.ContentType.TEXT,
-                        getFile(Paths.get("spigot.yml"))));
+                    new PasteContent(PasteContent.ContentType.TEXT,
+                            getFile(Paths.get("spigot.yml"))));
             PasteFile startupLog = new PasteFile("startup.log", new PasteContent(PasteContent.ContentType.TEXT,
                     plugin.getStartupLog()));
             PasteFile startupExceptionsLog = new PasteFile("startupExceptions.log", new PasteContent(PasteContent.ContentType.TEXT,
@@ -159,23 +159,23 @@ public class DebugCommand implements ICommand {
             builder.addFile(startupExceptionsLog);
             try {
                 PasteBuilder.PasteResult result = builder
-                      .setApiKey(apiKey)
-                      .name("Minigames Debug Outpout")
-                      .visibility(Visibility.UNLISTED)
-                      .addFile(spigot)
-                      .addFile(config)
-                      .debug(Minigames.getPlugin().isDebugging())
-                      .build();
+                        .setApiKey(apiKey)
+                        .name("Minigames Debug Outpout")
+                        .visibility(Visibility.UNLISTED)
+                        .addFile(spigot)
+                        .addFile(config)
+                        .debug(Minigames.getPlugin().isDebugging())
+                        .build();
                 if (result.getPaste().isPresent()) {
                     Paste paste = result.getPaste().get();
                     sender.sendMessage("Debug Paste: https://paste.gg/" + paste.getId());
                     sender.sendMessage("Deletion Key: " + paste.getDeletionKey());
-                    plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  https://paste.gg/" + paste.getId()));
-                    plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  Deletion Key: " + paste.getDeletionKey()));
+                    plugin.getLogger().log(new LogRecord(Level.INFO, "Paste:  https://paste.gg/" + paste.getId()));
+                    plugin.getLogger().log(new LogRecord(Level.INFO, "Paste:  Deletion Key: " + paste.getDeletionKey()));
                 } else {
                     sender.sendMessage("Paste Failed.");
                 }
-            }catch (InvalidPasteException e) {
+            } catch (InvalidPasteException e) {
                 sender.sendMessage("Paste Failed" + e.getMessage());
                 Minigames.log().warning(e.getMessage());
             }

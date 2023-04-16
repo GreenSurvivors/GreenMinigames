@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
@@ -70,7 +70,7 @@ public class ScoreSign implements MinigameSign {
                 player.addScore(score);
                 mg.setScore(player, player.getScore());
                 player.sendInfoMessage(
-                    MessageManager.getMinigamesMessage("sign.score.addScore", score, player.getScore()));
+                        MessageManager.getMinigamesMessage("sign.score.addScore", score, player.getScore()));
                 if (mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= player.getScore()) {
                     Minigames.getPlugin().getPlayerManager().endMinigame(player);
                 }

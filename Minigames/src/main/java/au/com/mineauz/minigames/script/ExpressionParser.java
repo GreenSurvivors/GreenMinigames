@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ExpressionParser {
-    private static Pattern pathSegmentPattern = Pattern.compile("([a-z]+)(?:\\[([a-z0-9]+)\\])?");
+    private static final Pattern pathSegmentPattern = Pattern.compile("([a-z]+)(?:\\[([a-z0-9]+)\\])?");
 
     /**
      * Parses a path and resolves an object from the path.

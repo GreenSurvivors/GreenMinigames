@@ -12,7 +12,7 @@ public class MinigameSave {
     String minigame = null;
     private FileConfiguration minigameSave = null;
     private File minigameSaveFile = null;
-    private String name;
+    private final String name;
 
     public MinigameSave(String name) {
         this.name = name;

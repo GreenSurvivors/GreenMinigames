@@ -1,11 +1,10 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
+import com.google.common.base.Preconditions;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.common.base.Preconditions;
+import java.util.List;
 
 public class MenuItemPage extends MenuItem {
 

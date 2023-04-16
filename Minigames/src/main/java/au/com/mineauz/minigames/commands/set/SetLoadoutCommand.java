@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.menu.Menu;
@@ -9,6 +8,7 @@ import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

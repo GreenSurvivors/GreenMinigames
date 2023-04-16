@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.minigame;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -30,14 +30,13 @@ public class ScoreboardDisplay {
     public static final int defaultWidth = 3;
     public static final int defaultHeight = 3;
     private final Location rootBlock;
-    private MinigameStat stat;
-    private StatValueField field;
-    private ScoreboardOrder order;
     private final Minigame minigame;
     private final int width;
     private final int height;
     private final BlockFace facing;
-
+    private MinigameStat stat;
+    private StatValueField field;
+    private ScoreboardOrder order;
     private StatSettings settings;
 
     private List<StoredStat> stats;
@@ -297,7 +296,9 @@ public class ScoreboardDisplay {
             @Override
             public String getValue() {
                 return order.toString().toLowerCase();
-            }            @Override
+            }
+
+            @Override
             public void setValue(String value) {
                 order = ScoreboardOrder.valueOf(value.toUpperCase());
             }
@@ -355,8 +356,7 @@ public class ScoreboardDisplay {
         Block root = rootBlock.getBlock();
         if (Tag.SIGNS.isTagged(root.getType()) || Tag.WALL_SIGNS.isTagged(root.getType())) {
             BlockState state = root.getState();
-            if (state instanceof Sign) {
-                Sign sign = (Sign) state;
+            if (state instanceof Sign sign) {
 
                 sign.setLine(0, ChatColor.BLUE + minigame.getName(true));
                 sign.setLine(1, ChatColor.GREEN + settings.getDisplayName());
@@ -367,10 +367,10 @@ public class ScoreboardDisplay {
                 sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
                 sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.getPlugin(), minigame));
             } else {
-                Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation().toString());
+                Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation());
             }
         } else {
-            Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation().toString());
+            Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation());
         }
     }
 

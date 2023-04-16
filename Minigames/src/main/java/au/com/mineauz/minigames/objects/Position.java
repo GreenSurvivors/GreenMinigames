@@ -12,6 +12,54 @@ import org.jetbrains.annotations.NotNull;
 public record Position(double x, double y, double z) {
 
     /**
+     * Creates a position at the coordinates
+     *
+     * @param x x coord
+     * @param y y coord
+     * @param z z coord
+     * @return a position with those coords
+     */
+    @Contract(value = "_, _, _ -> new", pure = true)
+    public static @NotNull Position block(int x, int y, int z) {
+        return new Position(x, y, z);
+    }
+
+    /**
+     * Creates a position from the location.
+     *
+     * @param location the location to copy the position of
+     * @return a new position at that location
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public static @NotNull Position block(@NotNull Location location) {
+        return new Position(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    }
+
+    /**
+     * Creates a position at the coordinates
+     *
+     * @param x x coord
+     * @param y y coord
+     * @param z z coord
+     * @return a position with those coords
+     */
+    @Contract(value = "_, _, _ -> new", pure = true)
+    public static @NotNull Position fine(double x, double y, double z) {
+        return new Position(x, y, z);
+    }
+
+    /**
+     * Creates a position from the location.
+     *
+     * @param location the location to copy the position of
+     * @return a new position at that location
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public static @NotNull Position fine(@NotNull Location location) {
+        return new Position(location.getX(), location.getY(), location.getZ());
+    }
+
+    /**
      * Gets the block x value for this position
      * Returns:
      * the block x value
@@ -79,10 +127,10 @@ public record Position(double x, double y, double z) {
     }
 
     /**
-    * Returns a new position at the center of the block position this represents
-    * Returns:
-    * a new center position
-    */
+     * Returns a new position at the center of the block position this represents
+     * Returns:
+     * a new center position
+     */
     public Position toCenter() {
         return new Position(this.blockX() + 0.5, this.blockY() + 0.5, this.blockZ() + 0.5);
     }
@@ -93,7 +141,7 @@ public record Position(double x, double y, double z) {
      * @return the block position
      */
     @Contract(pure = true)
-    public @NotNull Position toBlock(){
+    public @NotNull Position toBlock() {
         return new Position(blockX(), blockY(), blockZ());
     }
 
@@ -116,54 +164,5 @@ public record Position(double x, double y, double z) {
     @Contract(value = "_ -> new", pure = true)
     public @NotNull Location toLocation(@NotNull World world) {
         return new Location(world, this.x(), this.y(), this.z());
-    }
-
-
-    /**
-     * Creates a position at the coordinates
-     *
-     * @param x x coord
-     * @param y y coord
-     * @param z z coord
-     * @return a position with those coords
-     */
-    @Contract(value = "_, _, _ -> new", pure = true)
-    public static @NotNull Position block(int x, int y, int z) {
-        return new Position(x, y, z);
-    }
-
-    /**
-     * Creates a position from the location.
-     *
-     * @param location the location to copy the position of
-     * @return a new position at that location
-     */
-    @Contract(value = "_ -> new", pure = true)
-    public static @NotNull Position block(@NotNull Location location) {
-        return new Position(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-    }
-
-    /**
-     * Creates a position at the coordinates
-     *
-     * @param x x coord
-     * @param y y coord
-     * @param z z coord
-     * @return a position with those coords
-     */
-    @Contract(value = "_, _, _ -> new", pure = true)
-    public static @NotNull Position fine(double x, double y, double z) {
-        return new Position(x, y, z);
-    }
-
-    /**
-     * Creates a position from the location.
-     *
-     * @param location the location to copy the position of
-     * @return a new position at that location
-     */
-    @Contract(value = "_ -> new", pure = true)
-    public static @NotNull Position fine(@NotNull Location location) {
-        return new Position(location.getX(), location.getY(), location.getZ());
     }
 }

@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.stats;
 
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import com.google.common.collect.Maps;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.google.common.collect.Maps;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.minigame.Minigame;
 
 public class StoredGameStats {
     private final MinigamePlayer player;

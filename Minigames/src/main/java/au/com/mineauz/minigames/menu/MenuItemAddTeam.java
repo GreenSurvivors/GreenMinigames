@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class MenuItemAddTeam extends MenuItem {
 
-    private TeamsModule tm;
+    private final TeamsModule tm;
 
     public MenuItemAddTeam(String name, Minigame minigame) {
         super(name, MenuUtility.getCreateMaterial());

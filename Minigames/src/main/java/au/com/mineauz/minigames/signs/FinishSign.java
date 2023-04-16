@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -9,6 +8,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class FinishSign implements MinigameSign {
 
-    private static Minigames plugin = Minigames.getPlugin();
+    private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
     public String getName() {

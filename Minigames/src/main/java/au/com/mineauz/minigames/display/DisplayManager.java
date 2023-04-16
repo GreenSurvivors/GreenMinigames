@@ -21,14 +21,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class DisplayManager {
-    private boolean isSpigot;
-
-    private BukkitTask refreshTask;
-
     private final Map<INonPersistantDisplay, Integer> nextTickDelay = new IdentityHashMap<>();
-
     private final SetMultimap<Player, AbstractDisplayObject> playerDisplays;
     private final SetMultimap<World, AbstractDisplayObject> worldDisplays;
+    private boolean isSpigot;
+    private BukkitTask refreshTask;
 
     public DisplayManager() {
         playerDisplays = HashMultimap.create();

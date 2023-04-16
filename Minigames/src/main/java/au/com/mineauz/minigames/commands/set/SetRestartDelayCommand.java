@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetRestartDelayCommand implements ICommand {
 

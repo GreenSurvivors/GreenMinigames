@@ -77,7 +77,9 @@ public class LobbySettingsModule extends MinigameModule {
             @Override
             public Boolean getValue() {
                 return canMovePlayerWait.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 canMovePlayerWait.setFlag(value);
             }
@@ -99,7 +101,9 @@ public class LobbySettingsModule extends MinigameModule {
             @Override
             public Boolean getValue() {
                 return canMoveStartWait.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 canMoveStartWait.setFlag(value);
             }
@@ -121,7 +125,9 @@ public class LobbySettingsModule extends MinigameModule {
             @Override
             public Boolean getValue() {
                 return canInteractPlayerWait.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 canInteractPlayerWait.setFlag(value);
             }
@@ -143,7 +149,9 @@ public class LobbySettingsModule extends MinigameModule {
             @Override
             public Boolean getValue() {
                 return canInteractStartWait.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 canInteractStartWait.setFlag(value);
             }
@@ -165,7 +173,9 @@ public class LobbySettingsModule extends MinigameModule {
             @Override
             public Boolean getValue() {
                 return teleportOnStart.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 teleportOnStart.setFlag(value);
             }
@@ -187,7 +197,9 @@ public class LobbySettingsModule extends MinigameModule {
             @Override
             public Boolean getValue() {
                 return teleportOnPlayerWait.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 teleportOnPlayerWait.setFlag(value);
             }
@@ -209,7 +221,9 @@ public class LobbySettingsModule extends MinigameModule {
             @Override
             public Integer getValue() {
                 return playerWaitTime.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Integer value) {
                 playerWaitTime.setFlag(value);
             }

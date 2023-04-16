@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetAllowEnderpearlsCommand implements ICommand {
 
@@ -55,12 +54,11 @@ public class SetAllowEnderpearlsCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         if (args != null) {
-            boolean bool = Boolean.parseBoolean(args[0]);
-            if (bool) {
-                minigame.setAllowEnderpearls(bool);
+            if (Boolean.parseBoolean(args[0])) {
+                minigame.setAllowEnderpearls(true);
                 sender.sendMessage(ChatColor.GRAY + "Allowed Enderpearl usage in " + minigame);
             } else {
-                minigame.setAllowEnderpearls(bool);
+                minigame.setAllowEnderpearls(false);
                 sender.sendMessage(ChatColor.GRAY + "Disallowed Enderpearl usage in " + minigame);
             }
             return true;

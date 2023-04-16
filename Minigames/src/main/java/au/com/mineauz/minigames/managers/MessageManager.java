@@ -129,16 +129,9 @@ public class MessageManager {
      */
     public static String getUnformattedMessage(@Nullable String identifier, @NotNull String key) throws MissingResourceException {
         ResourceBundle bundle;
-        if (identifier == null) {
-            bundle = propertiesHashMap.get("minigames");
-        } else {
-            bundle = propertiesHashMap.get(identifier);
-        }
+        bundle = propertiesHashMap.get(Objects.requireNonNullElse(identifier, "minigames"));
         if (bundle == null) {
             String err = (identifier == null) ? "NULL" : identifier;
-            Collection<String> errArgs = new ArrayList<>();
-            errArgs.add("Identifier was invalid: " + err);
-            errArgs.add(key);
             throw new MissingResourceException(err, "MessageManager", key);
         }
         return bundle.getString(key);
@@ -178,18 +171,10 @@ public class MessageManager {
     private static BaseComponent getMessageStart(MinigameMessageType type) {
         BaseComponent init = new TextComponent("[Minigames]");
         switch (type) {
-            case ERROR:
-                init.setColor(ChatColor.RED);
-                break;
-            case WIN:
-                init.setColor(ChatColor.GREEN);
-                break;
-            case LOSS:
-                init.setColor(ChatColor.DARK_RED);
-                break;
-            case INFO:
-            default:
-                init.setColor(ChatColor.AQUA);
+            case ERROR -> init.setColor(ChatColor.RED);
+            case WIN -> init.setColor(ChatColor.GREEN);
+            case LOSS -> init.setColor(ChatColor.DARK_RED);
+            default -> init.setColor(ChatColor.AQUA);
         }
         return init;
     }
@@ -230,7 +215,7 @@ public class MessageManager {
     public static void broadcast(String message, Minigame minigame, org.bukkit.ChatColor prefixColor) {
         BaseComponent init = new TextComponent("[Minigames]");
         init.setColor(prefixColor.asBungee());
-        TextComponent m = new TextComponent(" "+ message);
+        TextComponent m = new TextComponent(" " + message);
         MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + org.bukkit.ChatColor.WHITE, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
 

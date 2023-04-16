@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -145,10 +146,10 @@ public class Minigame implements ScriptObject {
 
     public Minigame(String name) {
         this.name = name;
-      if(sbManager == null) {
-        Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
-            "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
-      }
+        if (sbManager == null) {
+            Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
+                    "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
+        }
         setup(MinigameType.SINGLEPLAYER, null);
     }
 
@@ -166,9 +167,9 @@ public class Minigame implements ScriptObject {
 
         if (start != null)
             startLocations.getFlag().add(start);
-        if(sbManager != null) {
-          sbManager.registerNewObjective(this.name, "dummy", this.name);
-          sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
+        if (sbManager != null) {
+            sbManager.registerNewObjective(this.name, "dummy", this.name);
+            sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
         }
         for (Class<? extends MinigameModule> mod : Minigames.getPlugin().getMinigameManager().getModules()) {
             try {
@@ -490,12 +491,12 @@ public class Minigame implements ScriptObject {
         return showPlayerBroadcasts.getFlag();
     }
 
-    public void setShowCTFBroadcasts(Boolean showCTFBroadcasts) {
-        this.showCTFBroadcasts.setFlag(showCTFBroadcasts);
-    }
-
     public Boolean getShowCTFBroadcasts() {
         return showCTFBroadcasts.getFlag();
+    }
+
+    public void setShowCTFBroadcasts(Boolean showCTFBroadcasts) {
+        this.showCTFBroadcasts.setFlag(showCTFBroadcasts);
     }
 
     public MinigameType getType() {
@@ -512,7 +513,9 @@ public class Minigame implements ScriptObject {
             @Override
             public String getValue() {
                 return MinigameUtils.capitalize(type.getFlag().toString().replace("_", " "));
-            }            @Override
+            }
+
+            @Override
             public void setValue(String value) {
                 type.setFlag(MinigameType.valueOf(value.toUpperCase().replace(" ", "_")));
             }
@@ -603,15 +606,15 @@ public class Minigame implements ScriptObject {
     }
 
     public void setScore(MinigamePlayer ply, int amount) {
-        if (sbManager == null){
-          ScoreboardManager s  = Minigames.getPlugin().getServer().getScoreboardManager();
+        if (sbManager == null) {
+            ScoreboardManager s = Minigames.getPlugin().getServer().getScoreboardManager();
             sbManager = s.getNewScoreboard();
-            Minigames.getPlugin().getLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name );
+            Minigames.getPlugin().getLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name);
         }
-      Objective o = sbManager.getObjective(getName(false));
-      if(o != null){
-        o.getScore(ply.getName()).setScore(amount);
-      }
+        Objective o = sbManager.getObjective(getName(false));
+        if (o != null) {
+            o.getScore(ply.getName()).setScore(amount);
+        }
     }
 
     public int getMinScore() {
@@ -733,7 +736,9 @@ public class Minigame implements ScriptObject {
             @Override
             public String getValue() {
                 return MinigameUtils.capitalize(defaultGamemode.getFlag().toString());
-            }            @Override
+            }
+
+            @Override
             public void setValue(String value) {
                 defaultGamemode.setFlag(GameMode.valueOf(value.toUpperCase()));
             }
@@ -1009,9 +1014,13 @@ public class Minigame implements ScriptObject {
         allowDragonEggTeleport.setFlag(allow);
     }
 
-    public boolean getShowCompletionTime() {return showCompletionTime.getFlag();}
+    public boolean getShowCompletionTime() {
+        return showCompletionTime.getFlag();
+    }
 
-    public void setShowCompletionTime(boolean bool) {showCompletionTime.setFlag(bool);}
+    public void setShowCompletionTime(boolean bool) {
+        showCompletionTime.setFlag(bool);
+    }
 
     public StatSettings getSettings(MinigameStat stat) {
         StatSettings settings = statSettings.get(stat);
@@ -1045,19 +1054,21 @@ public class Minigame implements ScriptObject {
         itemsMain.add(usePermissions.getMenuItem("Use Permissions", Material.PAPER));
         List<String> mgTypes = new ArrayList<>();
         for (MinigameType val : MinigameType.values()) {
-            mgTypes.add(MinigameUtils.capitalize(val.toString().replace("_", " ")));
+            mgTypes.add(WordUtils.capitalize(val.toString().replace("_", " ")));
         }
         itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), mgTypes));
         List<String> scoreTypes = new ArrayList<>();
         for (GameMechanicBase val : GameMechanics.getGameMechanics()) {
-            scoreTypes.add(MinigameUtils.capitalize(val.getMechanic()));
+            scoreTypes.add(WordUtils.capitalize(val.getMechanic()));
         }
         itemsMain.add(new MenuItemList("Game Mechanic", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<String>() {
 
             @Override
             public String getValue() {
-                return MinigameUtils.capitalize(mechanic.getFlag());
-            }            @Override
+                return WordUtils.capitalize(mechanic.getFlag());
+            }
+
+            @Override
             public void setValue(String value) {
                 mechanic.setFlag(value.toLowerCase());
             }
@@ -1100,7 +1111,9 @@ public class Minigame implements ScriptObject {
                     @Override
                     public Integer getValue() {
                         return timer.getFlag();
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setValue(Integer value) {
                         timer.setFlag(value);
                     }
@@ -1115,7 +1128,9 @@ public class Minigame implements ScriptObject {
                     @Override
                     public Integer getValue() {
                         return startWaitTime.getFlag();
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setValue(Integer value) {
                         startWaitTime.setFlag(value);
                     }
@@ -1139,8 +1154,10 @@ public class Minigame implements ScriptObject {
 
             @Override
             public String getValue() {
-                return MinigameUtils.capitalize(degenType.getFlag());
-            }            @Override
+                return WordUtils.capitalize(degenType.getFlag());
+            }
+
+            @Override
             public void setValue(String value) {
                 degenType.setFlag(value.toLowerCase());
             }
@@ -1159,7 +1176,9 @@ public class Minigame implements ScriptObject {
             @Override
             public Integer getValue() {
                 return regenDelay.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Integer value) {
                 regenDelay.setFlag(value);
             }
@@ -1168,9 +1187,9 @@ public class Minigame implements ScriptObject {
         }, 0, null));
         itemsMain.add(new MenuItemNewLine());
         itemsMain.add(new MenuItemPage("Player Settings", Material.SKELETON_SKULL, playerMenu));
-        List<String> thDes = new ArrayList<>();
-        thDes.add("Treasure hunt related");
-        thDes.add("settings.");
+//        List<String> thDes = new ArrayList<>();
+//        thDes.add("Treasure hunt related");
+//        thDes.add("settings.");
 //        itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
 //        MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
 //        defLoad.setAllowDelete(false);
@@ -1219,7 +1238,7 @@ public class Minigame implements ScriptObject {
         List<MenuItem> itemsPlayer = new ArrayList<>(20);
         List<String> gmopts = new ArrayList<>();
         for (GameMode gm : GameMode.values()) {
-            gmopts.add(MinigameUtils.capitalize(gm.toString()));
+            gmopts.add(WordUtils.capitalize(gm.toString()));
         }
         itemsPlayer.add(new MenuItemList("Players Gamemode", Material.CRAFTING_TABLE, getDefaultGamemodeCallback(), gmopts));
         itemsPlayer.add(allowEnderpearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));

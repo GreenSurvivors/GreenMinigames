@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -99,7 +99,7 @@ public class HintCommand implements ICommand {
                         player.sendInfoMessage(ChatColor.GRAY + mgs.get(0).getName(false) + " is currently not running.");
                     }
                 }
-            } else if (mgs.isEmpty()) {
+            } else {
                 player.sendInfoMessage(ChatColor.LIGHT_PURPLE + "There are no Treasure Hunt minigames currently running.");
             }
         }

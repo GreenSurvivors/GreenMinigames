@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
@@ -9,6 +8,8 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.LongFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
@@ -67,7 +68,9 @@ public class WeatherTimeModule extends MinigameModule {
             @Override
             public Boolean getValue() {
                 return useCustomTime.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 useCustomTime.setFlag(value);
             }
@@ -79,7 +82,9 @@ public class WeatherTimeModule extends MinigameModule {
             @Override
             public Integer getValue() {
                 return time.getFlag().intValue();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Integer value) {
                 time.setFlag(value.longValue());
             }
@@ -91,7 +96,9 @@ public class WeatherTimeModule extends MinigameModule {
             @Override
             public Boolean getValue() {
                 return useCustomWeather.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 useCustomWeather.setFlag(value);
             }
@@ -102,8 +109,10 @@ public class WeatherTimeModule extends MinigameModule {
 
             @Override
             public String getValue() {
-                return MinigameUtils.capitalize(weather.getFlag().toString());
-            }            @Override
+                return WordUtils.capitalize(weather.getFlag().toString());
+            }
+
+            @Override
             public void setValue(String value) {
                 weather.setFlag(WeatherType.valueOf(value.toUpperCase()));
             }

@@ -152,7 +152,7 @@ public class SetLobbyCommand implements ICommand {
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
-        if (args != null && args.length > 0 ) {
+        if (args != null && args.length > 0) {
             switch (args.length) {
 
                 case 1:

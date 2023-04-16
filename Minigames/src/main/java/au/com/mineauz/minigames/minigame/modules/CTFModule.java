@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class CTFModule extends MinigameModule {
 
-    private BooleanFlag useFlagAsCapturePoint = new BooleanFlag(true, "useFlagAsCapturePoint");
+    private final BooleanFlag useFlagAsCapturePoint = new BooleanFlag(true, "useFlagAsCapturePoint");
 
     public CTFModule(Minigame mgm) {
         super(mgm);

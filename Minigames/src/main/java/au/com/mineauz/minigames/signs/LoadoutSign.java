@@ -1,13 +1,13 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -15,7 +15,7 @@ import org.bukkit.event.block.SignChangeEvent;
 
 public class LoadoutSign implements MinigameSign {
 
-    private static Minigames plugin = Minigames.getPlugin();
+    private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
     public String getName() {
@@ -60,15 +60,13 @@ public class LoadoutSign implements MinigameSign {
             }
 
             if (sign.getLine(2).equals(ChatColor.GREEN + "Menu")) {
-                boolean nores = true;
-                if (sign.getLine(3).equalsIgnoreCase("respawn"))
-                    nores = false;
+                boolean nores = !sign.getLine(3).equalsIgnoreCase("respawn");
                 LoadoutModule.getMinigameModule(mgm).displaySelectionMenu(player, nores);
             } else if (loadout.hasLoadout(sign.getLine(2))) {
                 if (!loadout.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())) {
                     if (player.setLoadout(loadout.getLoadout(sign.getLine(2)))) {
                         player.sendInfoMessage(
-                            MessageManager.getMinigamesMessage("sign.loadout.equipped", sign.getLine(2)));
+                                MessageManager.getMinigamesMessage("sign.loadout.equipped", sign.getLine(2)));
 
                         if (mgm.getType() == MinigameType.SINGLEPLAYER ||
                                 mgm.hasStarted()) {

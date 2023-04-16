@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.events;
 
-import org.bukkit.entity.Player;
-
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.bukkit.entity.Player;
 
 public class RevertCheckpointEvent extends AbstractMinigameEvent {
 
-    private MinigamePlayer player = null;
+    private MinigamePlayer player;
 
     public RevertCheckpointEvent(MinigamePlayer player) {
         super(null);

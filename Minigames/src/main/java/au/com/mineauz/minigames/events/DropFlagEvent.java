@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.events;
 
+import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.minigame.Minigame;
 
 
 /**

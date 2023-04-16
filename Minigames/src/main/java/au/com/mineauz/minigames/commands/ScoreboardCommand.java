@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +20,7 @@ import java.util.List;
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 
 public class ScoreboardCommand implements ICommand {
-    private Minigames plugin = Minigames.getPlugin();
+    private final Minigames plugin = Minigames.getPlugin();
 
     @Override
     public String getName() {
@@ -96,19 +97,11 @@ public class ScoreboardCommand implements ICommand {
         }
 
         // Prepare defaults for optionals
-        ScoreboardOrder order;
-        switch (field) {
-            case Last:
-            case Total:
-            case Max:
-                order = ScoreboardOrder.DESCENDING;
-                break;
-            case Min:
-                order = ScoreboardOrder.ASCENDING;
-                break;
-            default:
-                throw new AssertionError();
-        }
+        ScoreboardOrder order = switch (field) {
+            case Last, Total, Max -> ScoreboardOrder.DESCENDING;
+            case Min -> ScoreboardOrder.ASCENDING;
+            default -> throw new AssertionError();
+        };
 
         int start = 0;
         int length = 8;
@@ -164,7 +157,7 @@ public class ScoreboardCommand implements ICommand {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(@NotNull Throwable t) {
                 sender.sendMessage(ChatColor.RED + "An internal error occured while loading the statistics");
                 t.printStackTrace();
             }

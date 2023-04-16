@@ -11,10 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.regex.Pattern;
 
-//import net.minecraft.server.v1_6_R2.EntityPlayer;
-//
-//import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
-
 public class MinigameUtils {
 
     /**
@@ -243,14 +239,14 @@ public class MinigameUtils {
      * @param format - The location in the YAML of the string to format.
      * @param text   - What to replace the formatted variables with.
      * @return The formatted string. If not found, will return the format
-     * @deprecated use {@link MessageManager#getMinigamesMessage(String, String...)}
+     * @deprecated use {@link MessageManager#getMinigamesMessage(String, Object...)}
      */
     @Deprecated
     public static String formStr(String format, Object... text) {
         String lang = getLang(format);
         try {
             return String.format(lang, text);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return lang;
         }
     }
@@ -267,8 +263,8 @@ public class MinigameUtils {
         String out;
         try {
             out = MessageManager.getUnformattedMessage(null, arg1);
-        }catch (MissingResourceException e){
-            out = "No path found in: " +e.getMessage() +" for " + e.getKey();
+        } catch (MissingResourceException e) {
+            out = "No path found in: " + e.getMessage() + " for " + e.getKey();
         }
         return out;
     }
@@ -283,7 +279,7 @@ public class MinigameUtils {
         Material toolMat = Material.getMaterial(Minigames.getPlugin().getConfig().getString("tool"));
         if (toolMat == null) {
             toolMat = Material.BLAZE_ROD;
-            MessageManager.sendMessage(player,MinigameMessageType.ERROR,null,"minigame.error.noDefaultTool");
+            MessageManager.sendMessage(player, MinigameMessageType.ERROR, null, "minigame.error.noDefaultTool");
         }
 
         ItemStack tool = new ItemStack(toolMat);
@@ -457,7 +453,7 @@ public class MinigameUtils {
      */
     @Deprecated
     public static void broadcast(String message, Minigame minigame, String permission) {
-       MessageManager.broadcast(message,minigame,permission);
+        MessageManager.broadcast(message, minigame, permission);
     }
 
     /**
@@ -470,7 +466,7 @@ public class MinigameUtils {
      */
     @Deprecated
     public static void broadcast(String message, Minigame minigame, ChatColor prefixColor) {
-        MessageManager.broadcast(message,minigame,prefixColor);
+        MessageManager.broadcast(message, minigame, prefixColor);
     }
 
     public static void debugMessage(String message) {
