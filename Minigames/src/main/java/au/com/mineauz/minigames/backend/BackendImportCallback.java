@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.backend;
 
-import java.util.UUID;
-
 import au.com.mineauz.minigames.stats.StatFormat;
+
+import java.util.UUID;
 
 /**
  * This callback is used to take data from one backend and apply it to another backend.

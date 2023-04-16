@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.List;
 
 public class BooleanFlag extends Flag<Boolean> {
 
@@ -38,7 +37,9 @@ public class BooleanFlag extends Flag<Boolean> {
             @Override
             public Boolean getValue() {
                 return getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 setFlag(value);
             }
@@ -54,7 +55,9 @@ public class BooleanFlag extends Flag<Boolean> {
             @Override
             public Boolean getValue() {
                 return getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 setFlag(value);
             }

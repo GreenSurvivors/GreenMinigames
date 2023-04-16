@@ -21,7 +21,7 @@ public interface MinigameTag<T> {
 
         @Override
         public List<Collection<PotionEffectType>> getValues() {
-            List<Collection<PotionEffectType>> list = List.of(
+            return List.of(
                     List.of(PotionEffectType.SLOW),
                     List.of(PotionEffectType.HARM),
                     List.of(PotionEffectType.WEAKNESS),
@@ -37,7 +37,6 @@ public interface MinigameTag<T> {
                     List.of(PotionEffectType.UNLUCK),
                     List.of(PotionEffectType.WITHER)
             );
-            return list;
         }
     };
 
@@ -100,6 +99,7 @@ public interface MinigameTag<T> {
 
     /**
      * Returns whether this tag has an entry for the specified object
+     *
      * @param item to check
      * @return if it is tagged
      */
@@ -107,6 +107,7 @@ public interface MinigameTag<T> {
 
     /**
      * Returns a list of all tagged objects
+     *
      * @return
      */
     List<T> getValues();

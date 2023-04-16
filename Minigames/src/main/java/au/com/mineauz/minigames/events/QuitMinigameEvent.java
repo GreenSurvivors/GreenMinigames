@@ -1,9 +1,8 @@
 package au.com.mineauz.minigames.events;
 
-import org.bukkit.entity.Player;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.bukkit.entity.Player;
 
 public class QuitMinigameEvent extends AbstractMinigameEvent {
     private MinigamePlayer player = null;

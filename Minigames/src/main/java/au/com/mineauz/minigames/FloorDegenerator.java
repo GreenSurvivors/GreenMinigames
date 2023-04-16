@@ -35,12 +35,12 @@ public class FloorDegenerator {
         double minZ;
         double maxZ;
 
-        Double x1 = point1.getX();
-        Double x2 = point2.getX();
-        Double y1 = point1.getY();
-        Double y2 = point2.getY();
-        Double z1 = point1.getZ();
-        Double z2 = point2.getZ();
+        double x1 = point1.getX();
+        double x2 = point2.getX();
+        double y1 = point1.getY();
+        double y2 = point2.getY();
+        double z1 = point1.getZ();
+        double z2 = point2.getZ();
 
         if (x1 < x2) {
             minX = x1;
@@ -100,7 +100,7 @@ public class FloorDegenerator {
                     degenerateCircle(bottomCorner, topCorner);
                     break;
             }
-        }, timeDelay * 20, timeDelay * 20);
+        }, timeDelay * 20L, timeDelay * 20L);
     }
 
     private void incrementSide() {
@@ -164,7 +164,7 @@ public class FloorDegenerator {
     }
 
     private void degenerateCircle(Location lowest, Location highest) {
-        int middledist = (int) Math.abs(Math.floor((highest.getBlockX() - lowest.getBlockX()) / 2));
+        int middledist = (int) Math.abs(Math.floor((double) (highest.getBlockX() - lowest.getBlockX()) / 2));
         int radius = middledist - radiusModifier;
         Location centerBlock = lowest.clone();
         centerBlock.setX(centerBlock.getX() + middledist);

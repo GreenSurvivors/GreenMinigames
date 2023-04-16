@@ -42,10 +42,10 @@ public class ResourcePackCommand implements ICommand {
     public String[] getParameters() {
         List<String> result = new ArrayList<>();
         result.add("apply");
-        result.add( "addnew");
-        result.add( "clear");
-        result.add( "remove");
-        result.add( "list");
+        result.add("addnew");
+        result.add("clear");
+        result.add("remove");
+        result.add("list");
         String[] res = new String[result.size()];
         result.toArray(res);
         return res;
@@ -147,20 +147,16 @@ public class ResourcePackCommand implements ICommand {
                 break;
             case 2:
                 switch (args[0]) {
-                    case "apply":
-                    case "remove":
-                        result.addAll(plugin.getResourceManager().getResourceNames());
-                        break;
-                    case "addnew":
-                    case "clear":
+                    case "apply", "remove" -> result.addAll(plugin.getResourceManager().getResourceNames());
+                    case "addnew", "clear" -> {
                         return null;
+                    }
                 }
             case 3:
-                switch (args[0]) {
-                    case "apply":
-                        for (MinigamePlayer p : plugin.getPlayerManager().getAllMinigamePlayers()) {
-                            result.add(p.getName());
-                        }
+                if (args[0].equals("apply")) {
+                    for (MinigamePlayer p : plugin.getPlayerManager().getAllMinigamePlayers()) {
+                        result.add(p.getName());
+                    }
                 }
         }
         return result;

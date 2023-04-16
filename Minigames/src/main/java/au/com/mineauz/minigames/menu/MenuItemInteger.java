@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MenuItemInteger extends MenuItem {
 
-    private Callback<Integer> value;
+    private final Callback<Integer> value;
     private Integer min = null;
     private Integer max = null;
 

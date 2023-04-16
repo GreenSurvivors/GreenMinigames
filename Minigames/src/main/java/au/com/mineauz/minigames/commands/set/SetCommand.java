@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SetCommand implements ICommand {
-    private static Map<String, ICommand> parameterList = new HashMap<>();
+    private static final Map<String, ICommand> parameterList = new HashMap<>();
     private static BufferedWriter cmdFile;
 
     static {
@@ -246,7 +246,7 @@ public class SetCommand implements ICommand {
             }
 
             if (comd != null && mgm != null) {
-                if ((ply == null && comd.canBeConsole()) || ply != null) {
+                if (ply != null || comd.canBeConsole()) {
                     if (ply == null || (comd.getPermission() == null || ply.hasPermission(comd.getPermission()))) {
                         boolean returnValue = comd.onCommand(sender, mgm, label, shortArgs);
                         if (!returnValue) {

@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -45,24 +45,24 @@ public class MenuItemList extends MenuItem {
                 String desc = ChatColor.stripColor(getDescription().get(1));
 
                 if (options.contains(desc)) {
-                    description.set(0, ChatColor.GRAY.toString() + options.get(before));
-                    description.set(1, ChatColor.GREEN.toString() + value.getValue());
-                    description.set(2, ChatColor.GRAY.toString() + options.get(after));
+                    description.set(0, ChatColor.GRAY + options.get(before));
+                    description.set(1, ChatColor.GREEN + value.getValue());
+                    description.set(2, ChatColor.GRAY + options.get(after));
                 } else {
-                    description.add(0, ChatColor.GRAY.toString() + options.get(before));
-                    description.add(1, ChatColor.GREEN.toString() + value.getValue());
-                    description.add(2, ChatColor.GRAY.toString() + options.get(after));
+                    description.add(0, ChatColor.GRAY + options.get(before));
+                    description.add(1, ChatColor.GREEN + value.getValue());
+                    description.add(2, ChatColor.GRAY + options.get(after));
                 }
             } else {
-                description.add(0, ChatColor.GRAY.toString() + options.get(before));
-                description.add(1, ChatColor.GREEN.toString() + value.getValue());
-                description.add(2, ChatColor.GRAY.toString() + options.get(after));
+                description.add(0, ChatColor.GRAY + options.get(before));
+                description.add(1, ChatColor.GREEN + value.getValue());
+                description.add(2, ChatColor.GRAY + options.get(after));
             }
         } else {
             description = new ArrayList<>();
-            description.add(ChatColor.GRAY.toString() + options.get(before));
-            description.add(ChatColor.GREEN.toString() + value.getValue());
-            description.add(ChatColor.GRAY.toString() + options.get(after));
+            description.add(ChatColor.GRAY + options.get(before));
+            description.add(ChatColor.GREEN + value.getValue());
+            description.add(ChatColor.GRAY + options.get(after));
         }
 
         setDescription(description);

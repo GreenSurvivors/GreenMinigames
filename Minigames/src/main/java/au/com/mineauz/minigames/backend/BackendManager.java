@@ -25,8 +25,8 @@ public class BackendManager {
     private boolean debug;
 
     private Backend backend;
-    private ListeningExecutorService executorService;
-    private Executor bukkitThreadExecutor;
+    private final ListeningExecutorService executorService;
+    private final Executor bukkitThreadExecutor;
 
     public BackendManager(Logger logger) {
         this.logger = logger;
@@ -41,14 +41,11 @@ public class BackendManager {
         String serverType = Bukkit.getServer().getName();
         if (serverType.equals("ServerMock"))
             return new TestBackEnd();
-        switch (type) {
-            case "sqlite":
-                return new SQLiteBackend(logger);
-            case "mysql":
-                return new MySQLBackend(logger);
-            default:
-                return null;
-        }
+        return switch (type) {
+            case "sqlite" -> new SQLiteBackend(logger);
+            case "mysql" -> new MySQLBackend(logger);
+            default -> null;
+        };
     }
 
     /**

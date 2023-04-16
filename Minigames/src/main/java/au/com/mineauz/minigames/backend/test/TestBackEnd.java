@@ -1,7 +1,5 @@
 package au.com.mineauz.minigames.backend.test;
 
-import java.util.*;
-
 import au.com.mineauz.minigames.backend.Backend;
 import au.com.mineauz.minigames.backend.BackendImportCallback;
 import au.com.mineauz.minigames.backend.ExportNotifier;
@@ -10,12 +8,14 @@ import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.*;
+
 /**
  * Created for the AddstarMC Project. Created by Narimm on 7/02/2019.
  */
 public class TestBackEnd extends Backend {
-    private List<StoredGameStats> playerGameStats = new ArrayList<>();
-    private Map<Minigame, Collection<StatSettings>> gameSettings = new HashMap<>();
+    private final List<StoredGameStats> playerGameStats = new ArrayList<>();
+    private final Map<Minigame, Collection<StatSettings>> gameSettings = new HashMap<>();
 
 
     /**

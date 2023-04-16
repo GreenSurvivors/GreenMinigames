@@ -1,15 +1,15 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.LoadoutSetFlag;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import com.google.common.collect.Maps;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -26,9 +26,9 @@ import java.util.Set;
 
 public class LoadoutModule extends MinigameModule {
 
-    private static Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
-    private Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
-    private LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
+    private static final Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
+    private final Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
+    private final LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
 
     public LoadoutModule(Minigame mgm) {
         super(mgm);

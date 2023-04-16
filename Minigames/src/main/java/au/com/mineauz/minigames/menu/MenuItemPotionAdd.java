@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -64,8 +64,7 @@ public class MenuItemPotionAdd extends MenuItem {
 
                         PotionEffect peff = new PotionEffect(eff, dur, level);
                         for (int slot : getContainer().getSlotMap()) {
-                            if (getContainer().getClicked(slot) instanceof MenuItemPotion) {
-                                MenuItemPotion pot = (MenuItemPotion) getContainer().getClicked(slot);
+                            if (getContainer().getClicked(slot) instanceof MenuItemPotion pot) {
                                 if (pot.getEffect().getType() == peff.getType()) {
                                     pot.onShiftRightClick();
                                     break;

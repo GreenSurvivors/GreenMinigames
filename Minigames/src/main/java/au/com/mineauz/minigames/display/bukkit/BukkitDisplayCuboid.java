@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.display.bukkit;
 
+import au.com.mineauz.minigames.display.AbstractDisplayObject;
+import au.com.mineauz.minigames.display.DisplayManager;
+import au.com.mineauz.minigames.display.IDisplayCubiod;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-
-import au.com.mineauz.minigames.display.AbstractDisplayObject;
-import au.com.mineauz.minigames.display.DisplayManager;
-import au.com.mineauz.minigames.display.IDisplayCubiod;
 
 public class BukkitDisplayCuboid extends AbstractDisplayObject implements IDisplayCubiod {
     private final Location temp = new Location(null, 0, 0, 0);

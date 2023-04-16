@@ -1,24 +1,18 @@
 package au.com.mineauz.minigames.backend;
 
+import com.google.common.collect.Lists;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.Lists;
-
 public class ConnectionPool {
-    private String connectionString;
-    private Properties props;
-
-
-    private long maxIdleTime;
-
     private final List<ConnectionHandler> connections;
+    private final String connectionString;
+    private final Properties props;
+    private long maxIdleTime;
 
     @Deprecated
     public ConnectionPool(String connectionString, String username, String password) {
@@ -34,7 +28,7 @@ public class ConnectionPool {
     public ConnectionPool(String connectionString, Properties properties) {
         this.connectionString = connectionString;
         props = properties;
-        connections = Collections.synchronizedList(Lists.<ConnectionHandler>newArrayList());
+        connections = Collections.synchronizedList(new ArrayList<>());
         maxIdleTime = TimeUnit.SECONDS.toMillis(30);
     }
 

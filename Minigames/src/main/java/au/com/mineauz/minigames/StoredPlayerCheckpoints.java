@@ -7,12 +7,12 @@ import org.bukkit.World;
 import java.util.*;
 
 public class StoredPlayerCheckpoints {
-    private String uuid;
-    private Map<String, Location> checkpoints;
-    private Map<String, List<String>> flags;
-    private Map<String, Long> storedTime;
-    private Map<String, Integer> storedDeaths;
-    private Map<String, Integer> storedReverts;
+    private final String uuid;
+    private final Map<String, Location> checkpoints;
+    private final Map<String, List<String>> flags;
+    private final Map<String, Long> storedTime;
+    private final Map<String, Integer> storedDeaths;
+    private final Map<String, Integer> storedReverts;
     private Location globalCheckpoint;
 
     public StoredPlayerCheckpoints(String uuid) {

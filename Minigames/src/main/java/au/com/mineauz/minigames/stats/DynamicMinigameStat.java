@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.stats;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 
 /**
  * DynamicMinigameStats allow you to add stats that are always checked on win or loss.

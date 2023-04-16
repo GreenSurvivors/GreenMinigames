@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.backend.sqlite;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.*;
 import au.com.mineauz.minigames.backend.both.SQLExport;
 import au.com.mineauz.minigames.backend.both.SQLImport;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.collect.Maps;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,8 +30,8 @@ public class SQLiteBackend extends Backend {
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
     private boolean debug;
-    private SQLiteStatLoader loader;
-    private SQLiteStatSaver saver;
+    private final SQLiteStatLoader loader;
+    private final SQLiteStatSaver saver;
     private File database;
 
 
@@ -68,9 +68,9 @@ public class SQLiteBackend extends Backend {
             Properties properties = new Properties();
             properties.put("username", "");
             properties.put("password", "");
-            if (debug) logger.info("Properties: " + properties.toString());
+            if (debug) logger.info("Properties: " + properties);
             pool = new ConnectionPool(url, properties);
-            if (debug) logger.info("Pool: " + pool.toString());
+            if (debug) logger.info("Pool: " + pool);
             createStatements();
 
             // Test the connection

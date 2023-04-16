@@ -22,6 +22,7 @@ class StartUpLogHandler extends Handler {
     String getNormalLog() {
         return builder.toString();
     }
+
     @Override
     public void publish(LogRecord record) {
         builder.append('[').append(record.getLevel().getName()).append("] ").append(record.getMessage()).append('\n');
@@ -30,7 +31,7 @@ class StartUpLogHandler extends Handler {
             PrintWriter printWriter = new PrintWriter(stringWriter);
             record.getThrown().printStackTrace(printWriter);
             exceptionBuilder.append('[').append(record.getLevel().getName()).append("] ").append(record.getMessage()).append('\n')
-                    .append(stringWriter.toString()).append('\n');
+                    .append(stringWriter).append('\n');
         }
     }
 

@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDisplayCubiod, INonPersistantDisplay {
-    private static Location temp = new Location(null, 0, 0, 0);
+    private static final Location temp = new Location(null, 0, 0, 0);
 
-    private Vector minCorner;
-    private Vector maxCorner;
+    private final Vector minCorner;
+    private final Vector maxCorner;
 
     private int lastBarrier = 41;
 

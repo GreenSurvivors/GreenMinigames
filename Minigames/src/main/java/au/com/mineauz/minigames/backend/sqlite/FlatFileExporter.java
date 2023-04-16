@@ -27,7 +27,7 @@ public class FlatFileExporter {
 
     private SetMultimap<String, UUID> completions;
 
-    private Map<String, Integer> minigameIds;
+    private final Map<String, Integer> minigameIds;
     private int nextMinigameId;
 
     private String notifyState;

@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.List;
 
 public class IntegerFlag extends Flag<Integer> {
 
@@ -34,7 +33,9 @@ public class IntegerFlag extends Flag<Integer> {
             @Override
             public Integer getValue() {
                 return getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Integer value) {
                 setFlag(value);
             }
@@ -49,7 +50,9 @@ public class IntegerFlag extends Flag<Integer> {
             @Override
             public Integer getValue() {
                 return getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Integer value) {
                 setFlag(value);
             }
@@ -65,7 +68,9 @@ public class IntegerFlag extends Flag<Integer> {
             @Override
             public Integer getValue() {
                 return getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Integer value) {
                 setFlag(value);
             }
@@ -80,7 +85,9 @@ public class IntegerFlag extends Flag<Integer> {
             @Override
             public Integer getValue() {
                 return getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Integer value) {
                 setFlag(value);
             }

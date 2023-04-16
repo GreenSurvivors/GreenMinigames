@@ -1,18 +1,15 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
-import com.google.common.base.Functions;
-import com.google.common.collect.Lists;
-
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatFormat;
+import com.google.common.base.Functions;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class MenuItemModifyStatSetting extends MenuItem {
     private final Minigame minigame;
@@ -33,7 +30,9 @@ public class MenuItemModifyStatSetting extends MenuItem {
             @Override
             public String getValue() {
                 return minigame.getSettings(stat).getDisplayName();
-            }            @Override
+            }
+
+            @Override
             public void setValue(String value) {
                 minigame.getSettings(stat).setDisplayName(value);
             }
@@ -45,7 +44,9 @@ public class MenuItemModifyStatSetting extends MenuItem {
                 @Override
                 public String getValue() {
                     return minigame.getSettings(stat).getFormat().toString();
-                }                @Override
+                }
+
+                @Override
                 public void setValue(String value) {
                     StatFormat format = StatFormat.valueOf(value);
                     minigame.getSettings(stat).setFormat(format);

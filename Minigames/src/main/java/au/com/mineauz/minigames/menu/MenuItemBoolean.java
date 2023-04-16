@@ -27,9 +27,9 @@ public class MenuItemBoolean extends MenuItem {
         List<String> description = null;
         String col = "";
         if (toggle.getValue()) {
-            col = ChatColor.GREEN.toString() + "true";
+            col = ChatColor.GREEN + "true";
         } else {
-            col = ChatColor.RED.toString() + "false";
+            col = ChatColor.RED + "false";
         }
         if (getDescription() != null) {
             description = getDescription();
