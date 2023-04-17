@@ -22,7 +22,7 @@ import java.util.Set;
 public class BroadcastAction extends AbstractAction {
 
     private final StringFlag message = new StringFlag("Hello World", "message");
-    private final BooleanFlag excludeExecutor = new BooleanFlag(false, "excludeExecutor"); //TODO: BREAKING CHANGE
+    private final BooleanFlag excludeExecutor = new BooleanFlag(false, "exludeExecutor");
     private final BooleanFlag redText = new BooleanFlag(false, "redText");
 
     @Override
