@@ -205,7 +205,10 @@ public class RecorderData implements Listener {
     }
 
     public void restoreAll(MinigamePlayer modifier) {
-        if (!blockdata.isEmpty()) {
+        boolean isBlockDataEmpty;
+        isBlockDataEmpty = blockdata.isEmpty();
+
+        if (!isBlockDataEmpty) {
             restoreBlocks(modifier);
         }
 

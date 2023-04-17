@@ -221,7 +221,9 @@ public class MinigameUtils {
      *
      * @param toList - String to be turned into a list.
      * @return A List with the defined items.
+     * @deprecated use {@link List#of(Object[])} instead
      */
+    @Deprecated
     public static List<String> stringToList(String toList) {
         String[] st = toList.split(";");
         List<String> list = new ArrayList<>();

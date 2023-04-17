@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -108,9 +109,13 @@ public class RegenAreaMode implements ToolMode {
             MgRegion region = minigame.getRegenRegion(name);
 
             if (region == null) {
-                minigame.setRegenRegion(new MgRegion(name, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
-                player.sendInfoMessage(Component.text("Created a new regen region in " + minigame + " called " + name));
-                player.clearSelection();
+                boolean success = minigame.setRegenRegion(new MgRegion(name, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
+                if (success) {
+                    player.sendInfoMessage(Component.text("Created a new regen region in " + minigame + " called " + name));
+                    player.clearSelection();
+                } else {
+                    player.sendMessage(Component.text("Error: the limit of Blocks of all regen areas together has been reached. Pleas contact an admin if necessary.", NamedTextColor.RED), MinigameMessageType.ERROR);
+                }
             } else {
                 region.updateRegion(player.getSelectionPoints()[0], player.getSelectionPoints()[1]);
 
