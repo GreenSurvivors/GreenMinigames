@@ -7,10 +7,14 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -88,6 +92,21 @@ public class MockSign extends BlockStateMock implements Sign {
     @Override
     public boolean isCollidable() {
         return false;
+    }
+
+    @Override
+    public @Unmodifiable Collection<ItemStack> getDrops() {
+        return null;
+    }
+
+    @Override
+    public @Unmodifiable Collection<ItemStack> getDrops(@Nullable ItemStack tool) {
+        return null;
+    }
+
+    @Override
+    public @Unmodifiable Collection<ItemStack> getDrops(@NotNull ItemStack tool, @Nullable Entity entity) {
+        return null;
     }
 
     @Override

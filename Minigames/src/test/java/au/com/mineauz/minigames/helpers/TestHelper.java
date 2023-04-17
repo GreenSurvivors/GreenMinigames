@@ -14,7 +14,9 @@ import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockSupport;
+import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -80,6 +82,32 @@ public class TestHelper {
             @Override
             public @NotNull SoundGroup getSoundGroup() {
                 return null;
+            }
+
+            @Override
+            public int getLightEmission() {
+                return 0;
+            }
+
+            @Override
+            public boolean isOccluding() {
+                return false;
+            }
+
+            @Override
+            public boolean requiresCorrectToolForDrops() {
+                return false;
+            }
+
+
+            @Override
+            public boolean isPreferredTool(@NotNull ItemStack tool) {
+                return false;
+            }
+
+            @Override
+            public @NotNull PistonMoveReaction getPistonMoveReaction() {
+                return PistonMoveReaction.BREAK;
             }
 
             @Override
