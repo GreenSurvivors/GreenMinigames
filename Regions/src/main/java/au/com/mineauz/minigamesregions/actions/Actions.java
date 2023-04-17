@@ -57,8 +57,7 @@ public class Actions {
 
 		addAction("MEMORY_SWAP_BLOCK", MemorySwapBlockAction.class);
 		addAction("REGION_SWAP_ACTION", RegionSwapAction.class);
-		addAction("TIMED_TRIGGER_NODE", TimedTriggerNodeAction.class);
-		addAction("TIMED_TRIGGER_REGION", TimedTriggerRegionAction.class);
+		addAction("TIMED_TRIGGER_NODE", TimedTriggerAction.class);
 		addAction("RANDOM_FILLING", RandomFillingAction.class);
 	}
 

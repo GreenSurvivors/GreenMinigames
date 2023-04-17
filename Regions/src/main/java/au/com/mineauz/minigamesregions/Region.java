@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Region implements ScriptObject {
+public class Region implements ExecutableScriptObject {
     private String name;
     private Location point1;
     private Location point2;
@@ -224,7 +224,7 @@ public class Region implements ScriptObject {
         }
         return true;
     }
-    
+
     public void execute(RegionExecutor exec, MinigamePlayer player){
         for(ActionInterface act : exec.getActions()){
             if(!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
