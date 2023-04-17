@@ -10,13 +10,9 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 7/02/2019.
- */
 public class TestBackEnd extends Backend {
     private final List<StoredGameStats> playerGameStats = new ArrayList<>();
     private final Map<Minigame, Collection<StatSettings>> gameSettings = new HashMap<>();
-
 
     /**
      * Initializes the backend. This may include creating / converting tables as needed

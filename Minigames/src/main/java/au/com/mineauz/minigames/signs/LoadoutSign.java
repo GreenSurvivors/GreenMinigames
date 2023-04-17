@@ -54,10 +54,12 @@ public class LoadoutSign implements MinigameSign {
     public boolean signUse(Sign sign, MinigamePlayer player) {
         if (player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && player.isInMinigame()) {
             Minigame mgm = player.getMinigame();
-            LoadoutModule loadout = LoadoutModule.getMinigameModule(mgm);
+
             if (mgm == null || mgm.isSpectator(player)) {
                 return false;
             }
+
+            LoadoutModule loadout = LoadoutModule.getMinigameModule(mgm);
 
             if (sign.getLine(2).equals(ChatColor.GREEN + "Menu")) {
                 boolean nores = !sign.getLine(3).equalsIgnoreCase("respawn");

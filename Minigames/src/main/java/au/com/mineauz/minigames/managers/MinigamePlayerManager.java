@@ -36,7 +36,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -92,10 +92,10 @@ public class MinigamePlayerManager {
             return;
         }
         //Give them the game type name
-        if (minigame.getGametypeName() == null)
+        if (minigame.getGameTypeName() == null)
             player.sendMessage(MessageManager.getMinigamesMessage("player.join.plyInfo", minigame.getType().getName()), MinigameMessageType.WIN);
         else
-            player.sendMessage(MessageManager.getMinigamesMessage("player.join.plyInfo", minigame.getGametypeName()), MinigameMessageType.WIN);
+            player.sendMessage(MessageManager.getMinigamesMessage("player.join.plyInfo", minigame.getGameTypeName()), MinigameMessageType.WIN);
 
         //Give them the objective
         if (minigame.getObjective() != null) {
@@ -843,25 +843,31 @@ public class MinigamePlayerManager {
         minigamePlayers.remove(player.getName());
     }
 
-    @NotNull
-    public MinigamePlayer getMinigamePlayer(Player player) {
-        if (minigamePlayers.containsKey(player.getName())) {
-            return minigamePlayers.get(player.getName());
-        } else {
+    /**
+     * @return null, if the given player was null, the respecting MinigamePlayer object otherwise
+     */
+    public @Nullable MinigamePlayer getMinigamePlayer(Player player) {
+        if (player == null) {
+            return null;
+        }
+
+        if (!minigamePlayers.containsKey(player.getName())) {
             addMinigamePlayer(player);
         }
+
         return minigamePlayers.get(player.getName());
     }
 
-    public MinigamePlayer getMinigamePlayer(UUID uuid) {
+    public @Nullable MinigamePlayer getMinigamePlayer(UUID uuid) {
         for (MinigamePlayer p : minigamePlayers.values()) {
             if (p.getUUID() == uuid)
                 return p;
         }
-        return null;
+
+        return getMinigamePlayer(Bukkit.getPlayer(uuid));
     }
 
-    public MinigamePlayer getMinigamePlayer(String player) {
+    public @Nullable MinigamePlayer getMinigamePlayer(String player) {
         return minigamePlayers.get(player);
     }
 

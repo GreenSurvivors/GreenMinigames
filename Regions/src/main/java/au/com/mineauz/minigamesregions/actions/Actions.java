@@ -10,6 +10,7 @@ import au.com.mineauz.minigamesregions.menuitems.MenuItemActionAdd;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -63,8 +64,9 @@ public class Actions {
     public static ActionInterface getActionByName(String name) {
         if (actions.containsKey(name.toUpperCase()))
             try {
-                return actions.get(name.toUpperCase()).newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                return actions.get(name.toUpperCase()).getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
                 e.printStackTrace();
             }
         return null;

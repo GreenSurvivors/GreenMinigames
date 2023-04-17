@@ -181,7 +181,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     }
 
     private Callback<String> getConfigurationTypeCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
             @Override
             public String getValue() {
                 return comparisonType.getFlag().name();

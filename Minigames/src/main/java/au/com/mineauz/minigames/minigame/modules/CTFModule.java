@@ -13,12 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created for the Ark: Survival Evolved.
- * Created by Narimm on 19/01/2017.
- */
 public class CTFModule extends MinigameModule {
-
     private final BooleanFlag useFlagAsCapturePoint = new BooleanFlag(true, "useFlagAsCapturePoint");
 
     public CTFModule(Minigame mgm) {

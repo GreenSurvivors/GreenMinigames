@@ -70,7 +70,7 @@ public class TeamSign implements MinigameSign {
                         Team sm = null;
                         Team nt = matchTeam(mgm, sign.getLine(2));
                         if (nt != null) {
-                            if (!nt.isFull()) {
+                            if (nt.hasRoom()) {
                                 for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
                                     if (sm == null || t.getPlayers().size() < sm.getPlayers().size())
                                         sm = t;

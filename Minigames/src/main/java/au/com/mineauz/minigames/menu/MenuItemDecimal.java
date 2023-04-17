@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MenuItemDecimal extends MenuItem {
 
-    protected Callback<Double> value;
+    protected final Callback<Double> value;
     protected DecimalFormat form = new DecimalFormat("#.##");
     private final double lowerInc;
     private final double upperInc;

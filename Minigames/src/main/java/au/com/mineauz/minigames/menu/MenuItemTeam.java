@@ -91,9 +91,9 @@ public class MenuItemTeam extends MenuItem {
                 case "gameAssignMsg" -> m.addItem(flag.getMenuItem("Join Team Broadcast Message", Material.PAPER,
                         MinigameUtils.stringToList("Message sent to all players;when someone joins;a team.;Use %s for team/player name")));
                 case "autobalanceMsg" -> m.addItem(flag.getMenuItem("Autobalance Message", Material.PAPER,
-                        MinigameUtils.stringToList("Message sent to player;when they are;autobalanced.;Use %s for team name")));
+                        MinigameUtils.stringToList("Message sent to player;when they are;auto-balanced.;Use %s for team name")));
                 case "gameAutobalanceMsg" -> m.addItem(flag.getMenuItem("Autobalance Broadcast Message", Material.PAPER,
-                        MinigameUtils.stringToList("Message sent to all players;when someone is;autobalanced.;Use %s for team/player name")));
+                        MinigameUtils.stringToList("Message sent to all players;when someone is;auto-balanced.;Use %s for team/player name")));
             }
         }
         List<String> ntvo = new ArrayList<>();

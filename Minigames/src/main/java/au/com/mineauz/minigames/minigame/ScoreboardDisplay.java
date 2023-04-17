@@ -131,25 +131,14 @@ public class ScoreboardDisplay {
     }
 
     private List<Block> getSignBlocks(boolean onlySigns) {
-        // Find the horizontal direction (going across the the signs, left to right)
-        BlockFace horizontal;
-
-        switch (facing) {
-            case NORTH:
-                horizontal = BlockFace.WEST;
-                break;
-            case SOUTH:
-                horizontal = BlockFace.EAST;
-                break;
-            case WEST:
-                horizontal = BlockFace.SOUTH;
-                break;
-            case EAST:
-                horizontal = BlockFace.NORTH;
-                break;
-            default:
-                throw new AssertionError("Invalid facing " + facing);
-        }
+        // Find the horizontal direction (going across the signs, left to right)
+        BlockFace horizontal = switch (facing) {
+            case NORTH -> BlockFace.WEST;
+            case SOUTH -> BlockFace.EAST;
+            case WEST -> BlockFace.SOUTH;
+            case EAST -> BlockFace.NORTH;
+            default -> throw new AssertionError("Invalid facing " + facing);
+        };
 
         List<Block> blocks = Lists.newArrayListWithCapacity(width * height);
 

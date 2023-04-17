@@ -80,13 +80,8 @@ public class MenuItemAction extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        if (exec != null) {
-            if (act.displayMenu(getContainer().getViewer(), getContainer()))
-                return null;
-        } else {
-            if (act.displayMenu(getContainer().getViewer(), getContainer()))
-                return null;
-        }
+        if (act.displayMenu(getContainer().getViewer(), getContainer()))
+            return null;
         return getItem();
     }
 

@@ -24,7 +24,7 @@ public abstract class DynamicMinigameStat extends MinigameStat {
     public abstract boolean doesApply(Minigame minigame, MinigamePlayer player, boolean win);
 
     /**
-     * Gets the value of this stat so it can be saved.
+     * Gets the value of this stat, so it can be saved.
      *
      * @param minigame The minigame the player is in
      * @param player   The player

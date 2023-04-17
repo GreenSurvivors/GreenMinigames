@@ -80,8 +80,7 @@ public class SpawnEntityAction extends AbstractAction {
         final double vz = Double.parseDouble(settings.get("velocityz"));
         Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> ent.setVelocity(new Vector(vx, vy, vz)));
 
-        if (ent instanceof LivingEntity) {
-            LivingEntity lent = (LivingEntity) ent;
+        if (ent instanceof LivingEntity lent) {
             if (settings.containsKey("displayname")) {
                 lent.setCustomName(settings.get("displayname"));
                 lent.setCustomNameVisible(Boolean.getBoolean(settings.get("displaynamevisible")));

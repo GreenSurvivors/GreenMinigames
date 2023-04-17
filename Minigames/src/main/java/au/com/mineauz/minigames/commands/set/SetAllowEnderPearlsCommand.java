@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public class SetAllowEnderpearlsCommand implements ICommand {
+public class SetAllowEnderPearlsCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -27,7 +27,7 @@ public class SetAllowEnderpearlsCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "Sets whether players can use enderpearls in a Minigame.";
+        return "Sets whether players can use ender pearls in a Minigame.";
     }
 
     @Override
@@ -42,7 +42,7 @@ public class SetAllowEnderpearlsCommand implements ICommand {
 
     @Override
     public String getPermissionMessage() {
-        return "You don't have permission to change allow enderpearl usage!";
+        return "You don't have permission to change allow ender pearl usage!";
     }
 
     @Override
@@ -55,11 +55,11 @@ public class SetAllowEnderpearlsCommand implements ICommand {
                              String label, String[] args) {
         if (args != null) {
             if (Boolean.parseBoolean(args[0])) {
-                minigame.setAllowEnderpearls(true);
-                sender.sendMessage(ChatColor.GRAY + "Allowed Enderpearl usage in " + minigame);
+                minigame.setAllowEnderPearls(true);
+                sender.sendMessage(ChatColor.GRAY + "Allowed ender pearl usage in " + minigame);
             } else {
-                minigame.setAllowEnderpearls(false);
-                sender.sendMessage(ChatColor.GRAY + "Disallowed Enderpearl usage in " + minigame);
+                minigame.setAllowEnderPearls(false);
+                sender.sendMessage(ChatColor.GRAY + "Disallowed ender pearl usage in " + minigame);
             }
             return true;
         }

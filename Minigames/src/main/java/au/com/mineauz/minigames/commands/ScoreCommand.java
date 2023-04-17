@@ -136,7 +136,7 @@ public class ScoreCommand implements ICommand {
                     }
                 } else {
                     if (args.length >= 4) {
-                        Minigame mg = null;
+                        Minigame mg;
                         if (plugin.getMinigameManager().hasMinigame(args[3])) {
                             mg = plugin.getMinigameManager().getMinigame(args[3]);
                         } else {

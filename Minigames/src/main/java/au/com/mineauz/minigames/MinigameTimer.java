@@ -40,7 +40,7 @@ public class MinigameTimer {
     public void startTimer() {
         if (taskID != -1)
             stopTimer();
-        //a delay of 1 is used because bukkit doesnt gaurantee that it will run on the current tick if the scheduler has
+        //a delay of 1 is used because bukkit doesn't guarantee that it will run on the current tick if the scheduler has
         // already run that tick . In that case it runs next tick - a delay of 1 means the behaviour is consistent.
         /// this effectively means the timer runs 50ms behind expected.
         taskID = Bukkit.getScheduler().runTaskTimer(plugin, this::runTimer, 1L, 20L).getTaskId();

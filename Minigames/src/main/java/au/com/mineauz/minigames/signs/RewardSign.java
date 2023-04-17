@@ -87,7 +87,7 @@ public class RewardSign implements MinigameSign {
                 }
             }
         } else if (player.getPlayer().hasPermission("minigame.tool")) {
-            Rewards rew = null;
+            Rewards rew;
             if (!mdata.hasRewardSign(loc)) {
                 mdata.addRewardSign(loc);
             }

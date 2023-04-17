@@ -9,7 +9,6 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
 import java.util.Map;
 
@@ -53,17 +52,7 @@ public class PlayerFoodRangeCondition extends ConditionInterface {
     }
 
     private boolean checkCondition(MinigamePlayer player) {
-        if (player == null || !player.isInMinigame()) {
-            return false;
-        }
-
-        Player p = player.getPlayer();
-        int food = p.getFoodLevel();
-        if (food >= min.getFlag() && food <= max.getFlag()) {
-            return true;
-        } else {
-            return true;
-        }
+        return player != null && player.isInMinigame();
     }
 
     @Override

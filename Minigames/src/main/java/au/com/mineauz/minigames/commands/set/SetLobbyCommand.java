@@ -60,7 +60,6 @@ public class SetLobbyCommand implements ICommand {
         if (args == null) {
             minigame.setLobbyPosition(((Player) sender).getLocation());
             sender.sendMessage(ChatColor.GRAY + "Lobby position has been set for " + minigame);
-            return true;
         } else {
             LobbySettingsModule lobby = LobbySettingsModule.getMinigameModule(minigame);
             if (args.length == 3) {
@@ -143,8 +142,8 @@ public class SetLobbyCommand implements ICommand {
                     }
                 }
             }
-            return true;
         }
+        return true;
     }
 
     @Override

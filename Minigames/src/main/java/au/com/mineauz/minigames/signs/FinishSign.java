@@ -95,17 +95,17 @@ public class FinishSign implements MinigameSign {
                         }
                     } else {
                         List<String> requiredFlags = plugin.getPlayerManager().checkRequiredFlags(player, minigame.getName(false));
-                        String flags = "";
+                        StringBuilder flags = new StringBuilder();
                         int num = requiredFlags.size();
 
                         for (int i = 0; i < num; i++) {
-                            flags += requiredFlags.get(i);
+                            flags.append(requiredFlags.get(i));
                             if (i != num - 1) {
-                                flags += ", ";
+                                flags.append(", ");
                             }
                         }
                         player.sendInfoMessage(MinigameUtils.getLang("sign.finish.requireFlags"));
-                        player.sendInfoMessage(ChatColor.GRAY + flags);
+                        player.sendInfoMessage(ChatColor.GRAY + flags.toString());
                     }
                 }
                 return true;

@@ -153,7 +153,7 @@ public class StoredPlayerCheckpoints {
                 Minigames.getPlugin().getLogger().warning("Unable to save checkpoint for " + mgm + "! It has been been removed.");
                 e.printStackTrace();
 
-                // Remove the checkpoint from memory so it doesn't cause an error again
+                // Remove the checkpoint from memory, so it doesn't cause an error again
                 save.getConfig().set(mgm, null);
                 checkpoints.remove(mgm);
                 flags.remove(mgm);

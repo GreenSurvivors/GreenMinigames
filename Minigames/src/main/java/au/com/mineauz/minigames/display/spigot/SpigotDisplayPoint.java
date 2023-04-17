@@ -3,14 +3,14 @@ package au.com.mineauz.minigames.display.spigot;
 import au.com.mineauz.minigames.display.AbstractDisplayObject;
 import au.com.mineauz.minigames.display.DisplayManager;
 import au.com.mineauz.minigames.display.IDisplayPoint;
-import au.com.mineauz.minigames.display.INonPersistantDisplay;
+import au.com.mineauz.minigames.display.INonPersistentDisplay;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class SpigotDisplayPoint extends AbstractDisplayObject implements IDisplayPoint, INonPersistantDisplay {
+public class SpigotDisplayPoint extends AbstractDisplayObject implements IDisplayPoint, INonPersistentDisplay {
     private static final Location temp = new Location(null, 0, 0, 0);
 
     private final Vector position;

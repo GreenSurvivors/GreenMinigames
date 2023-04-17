@@ -57,7 +57,7 @@ public class RegionEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void playerMove(PlayerMoveEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
+
         if (ply.isInMinigame()) {
             Minigame mg = ply.getMinigame();
             executeRegionChanges(mg, ply);
@@ -67,7 +67,7 @@ public class RegionEvents implements Listener {
     @EventHandler
     private void playerSpawn(PlayerRespawnEvent event) {
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
+
         if (ply.isInMinigame()) {
             final Minigame mg = ply.getMinigame();
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
@@ -93,14 +93,13 @@ public class RegionEvents implements Listener {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
         boolean pvp = false;
         MinigamePlayer killer = null;
-        if (ply == null) return;
+
         if (ply.isInMinigame()) {
-            if (event.getEntity().getKiller() != null) {
-                killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
-                if (killer != null && killer.isInMinigame()) {
-                    pvp = true;
-                }
+            killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
+            if (killer != null && killer.isInMinigame()) {
+                pvp = true;
             }
+
             for (Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()) {
                 node.execute(Triggers.getTrigger("DEATH"), ply);
                 if (pvp) {
@@ -226,7 +225,7 @@ public class RegionEvents implements Listener {
     @EventHandler()
     private void interactNode(PlayerInteractEvent event) {
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null || !ply.isInMinigame()) {
+        if (!ply.isInMinigame()) {
             return;
         }
 
@@ -267,7 +266,6 @@ public class RegionEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void blockBreak(BlockBreakEvent event) {
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
 
         if (ply.isInMinigame()) {
             final Location loc2 = event.getBlock().getLocation();
@@ -299,7 +297,6 @@ public class RegionEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void blockPlace(BlockPlaceEvent event) {
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
 
         if (ply.isInMinigame()) {
             final Location loc2 = event.getBlock().getLocation();
@@ -384,7 +381,7 @@ public class RegionEvents implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void playerXpChange(PlayerExpChangeEvent event) {
         final MinigamePlayer player = pdata.getMinigamePlayer(event.getPlayer());
-        if (player == null || !player.isInMinigame()) {
+        if (!player.isInMinigame()) {
             return;
         }
 
@@ -393,30 +390,26 @@ public class RegionEvents implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void playerFoodChange(FoodLevelChangeEvent event) {
-        if (!(event.getEntity() instanceof Player)) {
-            return;
-        }
+        if (event.getEntity() instanceof Player player) {
+            final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(player);
+            if (!mgPlayer.isInMinigame()) {
+                return;
+            }
 
-        final MinigamePlayer player = pdata.getMinigamePlayer((Player) event.getEntity());
-        if (player == null || !player.isInMinigame()) {
-            return;
+            executeTrigger(Triggers.getTrigger("FOOD_CHANGE"), mgPlayer);
         }
-
-        executeTrigger(Triggers.getTrigger("FOOD_CHANGE"), player);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void playerDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player)) {
-            return;
-        }
+        if (event.getEntity() instanceof Player player) {
+            final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(player);
+            if (mgPlayer == null || !mgPlayer.isInMinigame()) {
+                return;
+            }
 
-        final MinigamePlayer player = pdata.getMinigamePlayer((Player) event.getEntity());
-        if (player == null || !player.isInMinigame()) {
-            return;
+            executeTrigger(Triggers.getTrigger("PLAYER_DAMAGE"), mgPlayer);
         }
-
-        executeTrigger(Triggers.getTrigger("PLAYER_DAMAGE"), player);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -432,17 +425,16 @@ public class RegionEvents implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void entityGlide(EntityToggleGlideEvent event) {
-        if (!(event.getEntity() instanceof Player)) {
-            return;
-        }
-        final MinigamePlayer player = pdata.getMinigamePlayer((Player) event.getEntity());
-        if (player == null || !player.isInMinigame()) {
-            return;
-        }
-        if (event.isGliding()) {
-            executeTrigger(Triggers.getTrigger("START_GLIDE"), player);
-        } else {
-            executeTrigger(Triggers.getTrigger("STOP_GLIDE"), player);
+        if (event.getEntity() instanceof Player player) {
+            final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(player);
+            if (mgPlayer == null || !mgPlayer.isInMinigame()) {
+                return;
+            }
+            if (event.isGliding()) {
+                executeTrigger(Triggers.getTrigger("START_GLIDE"), mgPlayer);
+            } else {
+                executeTrigger(Triggers.getTrigger("STOP_GLIDE"), mgPlayer);
+            }
         }
     }
 

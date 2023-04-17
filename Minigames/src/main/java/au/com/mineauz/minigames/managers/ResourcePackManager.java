@@ -12,12 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-
-/**
- * Created for the AddstarMC Project. Created by Narimm on 12/02/2019.
- */
 public class ResourcePackManager {
-
     final static Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
     private boolean enabled = true;
     private final Map<String, ResourcePack> resources = new HashMap<>();
@@ -86,7 +81,7 @@ public class ResourcePackManager {
         boolean emptyPresent = false;
         final List<ResourcePack> resources = new ArrayList<>();
         final Object objects = this.config.getConfig().get("resources");
-        if (objects instanceof List obj) {
+        if (objects instanceof List<?> obj) {
             for (final Object object : obj) {
                 if (object instanceof ResourcePack) {
                     resources.add((ResourcePack) object);
@@ -106,7 +101,6 @@ public class ResourcePackManager {
                 enabled = false;
                 return false;
             }
-            enabled = true;
         }
         enabled = true;
         return true;

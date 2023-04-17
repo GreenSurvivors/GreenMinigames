@@ -71,7 +71,7 @@ public class ScoreboardSign implements MinigameSign {
                 return false;
             }
 
-            // So we dont have to deal with even size scoreboards
+            // So we don't have to deal with even size scoreboards
             if (width % 2 == 0) {
                 event.getPlayer().sendMessage(ChatColor.RED + "Length must not be an even number!");
                 return false;

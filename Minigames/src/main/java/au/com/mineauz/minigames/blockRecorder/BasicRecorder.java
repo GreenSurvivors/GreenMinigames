@@ -178,7 +178,7 @@ public class BasicRecorder implements Listener {
 
     //remove fire
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void igniteblock(BlockIgniteEvent event) {
+    public void igniteBlock(BlockIgniteEvent event) {
         if (event.getPlayer() != null) {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
 
@@ -301,7 +301,7 @@ public class BasicRecorder implements Listener {
         }
     }
 
-    //remove enderperl entities (important if some where caught in bubble columns)
+    //remove ender perl entities (important if some where caught in bubble columns)
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void throwEnderpearl(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player player) {

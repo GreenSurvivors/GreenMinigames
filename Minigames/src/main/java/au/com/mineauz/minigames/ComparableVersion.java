@@ -175,8 +175,7 @@ public class ComparableVersion
     /**
      * Represents a numeric item in the version item list.
      */
-    private static class IntegerItem
-            implements Item {
+    private static class IntegerItem implements Item {
         public static final IntegerItem ZERO = new IntegerItem();
         private static final BigInteger BIG_INTEGER_ZERO = new BigInteger("0");
         private final BigInteger value;
@@ -199,7 +198,8 @@ public class ComparableVersion
 
         public int compareTo(Item item) {
             if (item == null) {
-                return BIG_INTEGER_ZERO.equals(value) ? 0 : 1; // 1.0 == 1, 1.1 > 1
+                //todo whatever this was supposed to do, it always returned 0.
+                return 0; // 1.0 == 1, 1.1 > 1
             }
 
             return switch (item.getType()) {
@@ -351,7 +351,7 @@ public class ComparableVersion
                         Item r = right.hasNext() ? right.next() : null;
 
                         // if this is shorter, then invert the compare and mul with -1
-                        int result = l == null ? (r == null ? 0 : -1 * r.compareTo(l)) : l.compareTo(r);
+                        int result = l == null ? (r == null ? 0 : -1 * r.compareTo(null)) : l.compareTo(r);
 
                         if (result != 0) {
                             return result;

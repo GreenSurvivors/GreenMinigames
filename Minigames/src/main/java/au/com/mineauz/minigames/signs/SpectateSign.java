@@ -61,7 +61,7 @@ public class SpectateSign implements MinigameSign {
                 } else if (!mgm.isEnabled()) {
                     player.sendInfoMessage(MinigameUtils.getLang("minigame.error.notEnabled"));
                 }
-            } else if (mgm == null) {
+            } else {
                 player.sendInfoMessage(MinigameUtils.getLang("minigame.error.noMinigame"));
             }
         } else if (!player.isInMinigame())

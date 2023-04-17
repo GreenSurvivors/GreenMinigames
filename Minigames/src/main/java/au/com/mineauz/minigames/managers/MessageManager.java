@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  */
 public class MessageManager {
     /**
-     * Stores each prop file with a identifier
+     * Stores each prop file with an identifier
      */
     private static final Hashtable<String, ResourceBundle> propertiesHashMap = new Hashtable<>();
     private static Locale locale = Locale.getDefault();
@@ -84,7 +84,6 @@ public class MessageManager {
      * Register a new Bundle
      * To load the bundle use the {@link UTF8Control instance as the resource control.
      * This loads the resource with UTF8
-     *
      * @param identifier Unique identifier for your resource bundle
      * @param bundle     the ResourceBundle
      * @return true on success.
@@ -154,7 +153,7 @@ public class MessageManager {
     }
 
     public static void sendMessage(MinigamePlayer target, MinigameMessageType type, String identifier, String key, String... args) {
-        sendMessage(target.getPlayer(), type, identifier, key, args);
+        sendMessage(target.getPlayer(), type, identifier, key, (Object[]) args);
     }
 
     public static void sendCoreMessage(CommandSender target, MinigameMessageType type, String key, Object... args) {

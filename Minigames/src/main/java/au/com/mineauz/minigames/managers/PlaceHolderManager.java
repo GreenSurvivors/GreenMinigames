@@ -8,16 +8,11 @@ import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-
-/**
- * Created for the AddstarMC Project.
- * Created by Narimm on 3/06/2020.
- */
 public class PlaceHolderManager extends PlaceholderExpansion {
-
     private final Minigames plugin;
     private final List<ModulePlaceHolderProvider> providers;
     private final Map<String, String> identifiers;
@@ -36,7 +31,7 @@ public class PlaceHolderManager extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer p, String params) {
+    public String onRequest(OfflinePlayer p, @NotNull String params) {
         return super.onRequest(p, params);
     }
 
@@ -51,23 +46,22 @@ public class PlaceHolderManager extends PlaceholderExpansion {
     }
 
     @Override
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return Minigames.getPlugin().getName();
     }
 
     @Override
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return Minigames.getPlugin().getDescription().getAuthors().toString();
     }
 
     @Override
-    public String getVersion() {
+    public @NotNull String getVersion() {
         return Minigames.getVERSION().toString();
     }
 
     @Override
-    public String onPlaceholderRequest(Player player, String identifier) {
-
+    public String onPlaceholderRequest(Player player, @NotNull String identifier) {
         if (player == null) {
             return "";
         }
@@ -104,7 +98,7 @@ public class PlaceHolderManager extends PlaceholderExpansion {
                             return minigame.getObjective();
                         }
                         case "gameType" -> {
-                            return minigame.getGametypeName();
+                            return minigame.getGameTypeName();
                         }
                         case "timeLeft" -> {
                             return Integer.toString(minigame.getMinigameTimer().getTimeLeft());

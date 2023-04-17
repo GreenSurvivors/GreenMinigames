@@ -17,7 +17,7 @@ public interface MinigameTag<T> {
         @Override
         public boolean isTagged(Object item) {
             List<PotionEffectType> list = getValues().stream().flatMap(Collection::stream).toList();
-            return ((Collection) item).stream().allMatch(list::contains);
+            return list.containsAll((Collection) item);
         }
 
         @Override
@@ -90,10 +90,9 @@ public interface MinigameTag<T> {
 
         @Override
         public List<Collection<PotionEffectType>> getValues() {
-            List<Collection<PotionEffectType>> list = List.of(
+            return List.of(
                     List.of(PotionEffectType.SLOW, PotionEffectType.DAMAGE_RESISTANCE)
             );
-            return list;
         }
     };
 
@@ -107,8 +106,6 @@ public interface MinigameTag<T> {
 
     /**
      * Returns a list of all tagged objects
-     *
-     * @return
      */
     List<T> getValues();
 }

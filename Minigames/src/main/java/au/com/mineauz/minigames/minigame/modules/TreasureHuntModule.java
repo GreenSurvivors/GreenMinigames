@@ -219,9 +219,9 @@ public class TreasureHuntModule extends MinigameModule {
             if (canUseHint(player)) {
                 if (distance > maxradius) {
                     player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance6"));
-                } else if (distance > maxradius / 2) {
+                } else if (distance > (double) maxradius / 2) {
                     player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance5"));
-                } else if (distance > maxradius / 4) {
+                } else if (distance > (double) maxradius / 4) {
                     player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance4"));
                 } else if (distance > 50) {
                     player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance3"));

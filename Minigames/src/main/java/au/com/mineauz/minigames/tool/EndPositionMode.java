@@ -85,9 +85,4 @@ public class EndPositionMode implements ToolMode {
     @Override
     public void onUnsetMode(MinigamePlayer player, MinigameTool tool) {
     }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 }

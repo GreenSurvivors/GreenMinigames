@@ -168,7 +168,7 @@ public class BackendManager {
      * Queues a task to save the stats to the backend. The stats will be saved asynchronously
      *
      * @param stats The stats to be saved
-     * @return A ListenableFuture that returns the inputed stats for chaining.
+     * @return A ListenableFuture that returns the inputted stats for chaining.
      */
     public ListenableFuture<StoredGameStats> saveStats(final StoredGameStats stats) {
         return executorService.submit(() -> {
@@ -181,7 +181,7 @@ public class BackendManager {
      * Retrieves the settings for all stats in a minigame. This is loaded asynchronously
      *
      * @param minigame The minigame to load settings for
-     * @return A ListenerableFuture that returns a map of minigame stats and their settings
+     * @return A ListenableFuture that returns a map of minigame stats and their settings
      */
     public ListenableFuture<Map<MinigameStat, StatSettings>> loadStatSettings(final Minigame minigame) {
 

@@ -92,7 +92,7 @@ public record Position(double x, double y, double z) {
      * true if block
      */
     public boolean isBlock() {
-        return false;
+        return (x % 1 == 0) && (y % 1 == 0) && (z % 1 == 0);
     }
 
     /**
@@ -101,7 +101,7 @@ public record Position(double x, double y, double z) {
      * true if fine
      */
     public boolean isFine() {
-        return true;
+        return (x % 1 != 0) || (y % 1 != 0) || (z % 1 != 0);
     }
 
     /**

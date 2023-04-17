@@ -22,11 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 12/02/2019.
- */
 public final class ResourcePack implements ConfigurationSerializable {
-
     private static final String ext = "resourcepack";
     private final String name;
     private final URL url;
@@ -159,7 +155,7 @@ public final class ResourcePack implements ConfigurationSerializable {
                         } catch (final IOException e) {
                             e.printStackTrace();
                         }
-                        //set the new hash as long as its not null its valid
+                        //set the new hash as long as it's not null its valid
                         this.setLocalHash();
                     } else {
                         this.download(this.local);

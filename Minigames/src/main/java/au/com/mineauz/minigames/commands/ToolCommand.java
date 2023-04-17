@@ -148,7 +148,7 @@ public class ToolCommand implements ICommand {
                 return false;
             }
         } else {
-            sender.sendMessage(ChatColor.RED + "You must have a Minigame Tool! Type \"/minigame tool\" to recieve one.");
+            sender.sendMessage(ChatColor.RED + "You must have a Minigame Tool! Type \"/minigame tool\" to receive one.");
         }
         return true;
     }

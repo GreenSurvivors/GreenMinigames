@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created for the AddstarMC Project. Created by Narimm on 13/02/2017.
@@ -63,7 +64,7 @@ public class AbstractMinigameEvent extends Event implements Cancellable {
      * @return HandlerList
      */
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 }

@@ -158,7 +158,7 @@ public class MinigameTool {
             teams.add(WordUtils.capitalize(col.toString().replace("_", " ")));
         teams.add("None");
 
-        men.addItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<String>() {
+        men.addItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {

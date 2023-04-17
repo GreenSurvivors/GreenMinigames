@@ -21,7 +21,7 @@ public class Rewards {
 
     public List<RewardType> getReward() {
         double rand = Math.random();
-        RewardRarity rarity = null;
+        RewardRarity rarity;
         List<Object> itemsCopy = new ArrayList<>();
         itemsCopy.addAll(items);
         itemsCopy.addAll(groups);

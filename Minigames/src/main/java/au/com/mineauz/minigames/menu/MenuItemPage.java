@@ -7,8 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class MenuItemPage extends MenuItem {
-
-    private Menu menu = null;
+    private Menu menu;
 
     public MenuItemPage(String name, Material displayItem, Menu menu) {
         super(name, displayItem);

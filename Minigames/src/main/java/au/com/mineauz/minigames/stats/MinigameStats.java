@@ -81,7 +81,7 @@ public final class MinigameStats {
     /**
      * Gets a stat by name
      *
-     * @param name The name of the stat case insensitive
+     * @param name The name of the stat case-insensitive
      * @return The found stat or null
      */
     public static MinigameStat getStat(String name) {
@@ -91,7 +91,7 @@ public final class MinigameStats {
     /**
      * Checks if a stat exists
      *
-     * @param name The name of the stat case insensitive
+     * @param name The name of the stat case-insensitive
      * @return True if it exists
      */
     public static boolean hasStat(String name) {
@@ -102,7 +102,7 @@ public final class MinigameStats {
      * Removes a previously registered stat. This can remove
      * any stat added through {@link #registerStat(DynamicMinigameStat)}
      *
-     * @param name The name of the stat case insensitive
+     * @param name The name of the stat case-insensitive
      * @return True if a stat was removed
      */
     public static boolean removeStat(String name) {

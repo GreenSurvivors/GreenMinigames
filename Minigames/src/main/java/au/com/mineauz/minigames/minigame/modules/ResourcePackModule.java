@@ -16,11 +16,7 @@ import java.util.Map;
 
 import static au.com.mineauz.minigames.menu.MenuUtility.getBackMaterial;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 12/02/2019.
- */
 public class ResourcePackModule extends MinigameModule {
-
     private final BooleanFlag enabled = new BooleanFlag(false, "resourcePackEnabled");
     private final StringFlag resourcePackName = new StringFlag("", "resourcePackName");
     private final BooleanFlag forced = new BooleanFlag(false, "forceResourcePack");

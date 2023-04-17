@@ -106,7 +106,7 @@ public class EndCommand implements ICommand {
 
                 if (ply != null && ply.isInMinigame()) {
                     forceEnd(sender, ply);
-                } else if (args.length >= 2 && team != null && mgm != null) {
+                } else if (args.length >= 2 && team != null) {
                     if (mgm.hasPlayers()) {
                         List<MinigamePlayer> w = new ArrayList<>(team.getPlayers());
                         int lcount = 0;
@@ -129,7 +129,7 @@ public class EndCommand implements ICommand {
                 } else {
                     sender.sendMessage(ChatColor.RED + "This player is not playing a Minigame.");
                 }
-            } else if (player != null) {
+            } else {
                 sender.sendMessage(ChatColor.RED + "Error: You don't have permission to force end another players Minigame!");
                 sender.sendMessage(ChatColor.RED + "minigame.end.other");
             }

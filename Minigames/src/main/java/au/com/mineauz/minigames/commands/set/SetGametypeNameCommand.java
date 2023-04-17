@@ -63,10 +63,10 @@ public class SetGametypeNameCommand implements ICommand {
                     if (count != args.length)
                         gtn.append(" ");
                 }
-                minigame.setGametypeName(gtn.toString());
+                minigame.setGameTypeName(gtn.toString());
                 sender.sendMessage(ChatColor.GRAY + "Gametype name for " + minigame + " has been set to " + gtn + ".");
             } else {
-                minigame.setGametypeName(null);
+                minigame.setGameTypeName(null);
                 sender.sendMessage(ChatColor.GRAY + "Gametype name for " + minigame + " has been removed.");
             }
             return true;
