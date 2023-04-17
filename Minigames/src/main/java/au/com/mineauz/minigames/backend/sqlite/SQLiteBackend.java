@@ -99,10 +99,10 @@ public class SQLiteBackend extends Backend {
         pool.removeExpired();
     }
 
-    private boolean checkForColumn(Statement statement, String tableName, String columnName) {
+    private boolean checkForColumn(Statement statement, String columnName) {
 
         try {
-            ResultSet rs = statement.executeQuery("Pragma table_info(`" + tableName + "`);");
+            ResultSet rs = statement.executeQuery("Pragma table_info(`PlayerStats`);");
 
             int nameColIndex = rs.findColumn("name");
 
@@ -114,7 +114,7 @@ public class SQLiteBackend extends Backend {
             return false;
 
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Exception looking for SQLite column " + columnName + " on table " + tableName, e);
+            logger.log(Level.SEVERE, "Exception looking for SQLite column " + columnName + " on table " + "PlayerStats", e);
             return false;
         }
 
@@ -147,7 +147,7 @@ public class SQLiteBackend extends Backend {
 
             // Check for column last_updated on the PlayerStats table
             try {
-                if (!checkForColumn(statement, "PlayerStats", "last_updated")) {
+                if (!checkForColumn(statement, "last_updated")) {
                     logger.info("Adding SQLite column 'last_updated' to table PlayerStats");
 
                     statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `last_updated` DATETIME default NULL;");
@@ -159,7 +159,7 @@ public class SQLiteBackend extends Backend {
 
             // Check for column entered on the PlayerStats table
             try {
-                if (!checkForColumn(statement, "PlayerStats", "entered")) {
+                if (!checkForColumn(statement, "entered")) {
                     logger.info("Adding SQLite column 'entered' to table PlayerStats");
 
                     statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `entered` DATETIME default NULL;");

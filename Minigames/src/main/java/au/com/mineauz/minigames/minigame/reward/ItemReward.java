@@ -97,7 +97,7 @@ public class ItemReward extends RewardType {
         }
 
         public void updateDescription() {
-            List<String> description = null;
+            List<String> description;
             if (options == null) {
                 options = new ArrayList<>();
                 for (RewardRarity rarity : RewardRarity.values()) {

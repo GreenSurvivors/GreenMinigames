@@ -5,7 +5,6 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule.LoadoutAddon;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import com.google.common.collect.Maps;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,7 +31,7 @@ public class PlayerLoadout {
     private TeamColor team = null;
     private boolean displayInMenu = true;
 
-    private final Map<Class<? extends LoadoutAddon>, Object> addonValues = Maps.newHashMap();
+    private final Map<Class<? extends LoadoutAddon>, Object> addonValues = new HashMap<>();
 
     public PlayerLoadout(String name) {
         loadoutName = name;

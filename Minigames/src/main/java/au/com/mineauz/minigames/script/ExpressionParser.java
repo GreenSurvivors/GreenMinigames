@@ -9,7 +9,7 @@ public class ExpressionParser {
 
     /**
      * Parses a path and resolves an object from the path.
-     * Example: path 'a.b.c' will resolve to the c object if given the a object
+     * Example: path 'a.b.c' will resolve to the c object
      *
      * @param pathString The path to resolve
      * @param root       The root object
@@ -157,7 +157,7 @@ public class ExpressionParser {
                 path = buffer.substring(start + 1, braceEnd);
                 start = braceEnd + 1;
             } else {
-                // Find a non alphanumeric char
+                // Find a non-alphanumeric char
                 path = null;
                 for (int i = start; i < buffer.length(); ++i) {
                     if (!Character.isLetterOrDigit(buffer.charAt(i))) {

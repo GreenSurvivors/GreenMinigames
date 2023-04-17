@@ -66,28 +66,29 @@ public class DebugCommand implements ICommand {
                              String label, String[] args) {
         if (args != null && args.length > 0) {
             switch (args[0].toUpperCase()) {
-                case "ON":
+                case "ON" -> {
                     if (Minigames.getPlugin().isDebugging()) {
                         sender.sendMessage(ChatColor.GRAY + "Debug mode already active.");
                     } else {
                         Minigames.getPlugin().toggleDebug();
                         sender.sendMessage(ChatColor.GRAY + "Debug mode active.");
                     }
-                    break;
-                case "OFF":
+                }
+                case "OFF" -> {
                     if (!Minigames.getPlugin().isDebugging()) {
                         sender.sendMessage(ChatColor.GRAY + "Debug mode already inactive.");
                     } else {
                         Minigames.getPlugin().toggleDebug();
                         sender.sendMessage(ChatColor.GRAY + "Debug mode inactive.");
                     }
-                    break;
-                case "PASTE":
+                }
+                case "PASTE" -> {
                     sender.sendMessage(ChatColor.GRAY + "Generating a paste.....");
                     generatePaste(sender, minigame);
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         } else {
             Minigames.getPlugin().toggleDebug();
@@ -115,14 +116,14 @@ public class DebugCommand implements ICommand {
 
     private String getFile(Path file) {
         try {
-            return new String(Files.readAllBytes(file), Charsets.UTF_8);
+            return Files.readString(file, Charsets.UTF_8);
         } catch (IOException e) {
             return ExceptionUtils.getFullStackTrace(e);
         }
     }
 
     private void generatePaste(CommandSender sender, Minigame minigame) {
-        StringBuilder mainInfo = new StringBuilder();
+        StringBuilder mainInfo = new StringBuilder(); //todo
         mainInfo.append(Bukkit.getName()).append(" version: ").append(Bukkit.getServer().getVersion()).append('\n');
         mainInfo.append("Plugin version: ").append(Minigames.getPlugin().getDescription().getVersion()).append('\n');
         mainInfo.append("Java version: ").append(System.getProperty("java.version")).append('\n');

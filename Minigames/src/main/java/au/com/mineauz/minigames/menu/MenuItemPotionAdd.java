@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemPotionAdd extends MenuItem {
-
-    PlayerLoadout loadout;
+    private final PlayerLoadout loadout;
 
     public MenuItemPotionAdd(String name, Material displayItem, PlayerLoadout loadout) {
         super(name, displayItem);
@@ -48,9 +47,9 @@ public class MenuItemPotionAdd extends MenuItem {
                 if (split[1].matches("[0-9]+") && Integer.parseInt(split[1]) != 0) {
                     int level = Integer.parseInt(split[1]) - 1;
                     if ((split[2].matches("[0-9]+") && Integer.parseInt(split[2]) != 0) || split[2].equalsIgnoreCase("inf")) {
-                        int dur = 0;
+                        int dur;
                         if (split[2].equalsIgnoreCase("inf"))
-                            dur = 100000;
+                            dur = 100000; //todo there is a new infinit long thing for potions
                         else
                             dur = Integer.parseInt(split[2]);
 

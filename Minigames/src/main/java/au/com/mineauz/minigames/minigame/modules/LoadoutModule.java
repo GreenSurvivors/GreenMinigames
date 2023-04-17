@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class LoadoutModule extends MinigameModule {
-
     private static final Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
     private final Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
     private final LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
@@ -37,7 +37,7 @@ public class LoadoutModule extends MinigameModule {
         extraLoadouts.put("default", def);
     }
 
-    public static LoadoutModule getMinigameModule(Minigame minigame) {
+    public static LoadoutModule getMinigameModule(@NotNull Minigame minigame) {
         return (LoadoutModule) minigame.getModule("Loadouts");
     }
 

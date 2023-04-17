@@ -111,7 +111,7 @@ public class PlaySoundAction extends AbstractAction {
 
             @Override
             public String getValue() {
-                Sound s = getSound(sound.getFlag());              //ENSURE CONFIG doesnt contain old enums replace if they do.
+                Sound s = getSound(sound.getFlag());              //ENSURE CONFIG doesn't contain old enums replace if they do.
                 if (!s.toString().equals(sound.getFlag())) {
                     sound.setFlag(s.toString());
                 }

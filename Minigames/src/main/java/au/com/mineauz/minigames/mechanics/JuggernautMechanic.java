@@ -131,21 +131,18 @@ public class JuggernautMechanic extends GameMechanicBase {
             if (jm.getJuggernaut() == ply) {
                 if (event.getEntity().getKiller() != null) {
                     MinigamePlayer pk = pdata.getMinigamePlayer(event.getEntity().getKiller());
-                    if (pk != null) {
-                        jm.setJuggernaut(pk);
-                        pk.addScore();
-                        pk.getMinigame().setScore(pk, pk.getScore());
-                        checkScore(pk);
-                    } else {
-                        jm.setJuggernaut(assignNewJuggernaut(ply.getMinigame().getPlayers(), ply));
-                    }
+                    jm.setJuggernaut(pk);
+                    pk.addScore();
+                    pk.getMinigame().setScore(pk, pk.getScore());
+                    checkScore(pk);
+
                 } else {
                     jm.setJuggernaut(assignNewJuggernaut(ply.getMinigame().getPlayers(), ply));
                 }
             } else {
                 if (event.getEntity().getKiller() != null) {
                     MinigamePlayer pk = pdata.getMinigamePlayer(event.getEntity().getKiller());
-                    if (pk != null && jm.getJuggernaut() == pk) {
+                    if (jm.getJuggernaut() == pk) {
                         pk.addScore();
                         pk.getMinigame().setScore(pk, pk.getScore());
                         checkScore(pk);

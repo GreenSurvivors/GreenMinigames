@@ -47,7 +47,7 @@ public class Minigame implements ScriptObject {
     private final Map<String, Flag<?>> configFlags = new HashMap<>();
     private final StringFlag displayName = new StringFlag(null, "displayName");
     private final StringFlag objective = new StringFlag(null, "objective");
-    private final StringFlag gametypeName = new StringFlag(null, "gametypeName");
+    private final StringFlag gameTypeName = new StringFlag(null, "gametypeName");
     private final EnumFlag<MinigameType> type = new EnumFlag<>(MinigameType.SINGLEPLAYER, "type");
     private final BooleanFlag enabled = new BooleanFlag(false, "enabled");
     private final IntegerFlag minPlayers = new IntegerFlag(2, "minplayers");
@@ -59,7 +59,7 @@ public class Minigame implements ScriptObject {
     private final RegionFlag floorDegen = new RegionFlag(null, "sfloor", "sfloorpos.1", "sfloorpos.2");
     private final StringFlag degenType = new StringFlag("inward", "degentype");
     private final IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
-    private FloorDegenerator sfloordegen;
+    private FloorDegenerator sFloorDegen;
     private final IntegerFlag floorDegenTime = new IntegerFlag(Minigames.getPlugin().getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
     // Respawn Module
     private final BooleanFlag respawn = new BooleanFlag(Minigames.getPlugin().getConfig().getBoolean("has-respawn"), "respawn");
@@ -67,7 +67,7 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag randomizeStart = new BooleanFlag(false, "ranndomizeStart");
     private final LocationFlag endPosition = new LocationFlag(null, "endpos");
     private final LocationFlag quitPosition = new LocationFlag(null, "quitpos");
-    private final LocationFlag lobbyPosisiton = new LocationFlag(null, "lobbypos");
+    private final LocationFlag lobbyPosition = new LocationFlag(null, "lobbypos");
     private final LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
 
     private final BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
@@ -82,8 +82,8 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag blockBreak = new BooleanFlag(false, "blockbreak");
     private final BooleanFlag blockPlace = new BooleanFlag(false, "blockplace");
     private final EnumFlag<GameMode> defaultGamemode = new EnumFlag<>(GameMode.ADVENTURE, "gamemode");
-    private final BooleanFlag blocksdrop = new BooleanFlag(true, "blocksdrop");
-    private final BooleanFlag allowEnderpearls = new BooleanFlag(false, "allowEnderpearls");
+    private final BooleanFlag blocksDrop = new BooleanFlag(true, "blocksdrop");
+    private final BooleanFlag allowEnderPearls = new BooleanFlag(false, "allowEnderpearls");
     private final BooleanFlag allowMPCheckpoints = new BooleanFlag(false, "allowMPCheckpoints");
     private final BooleanFlag allowFlight = new BooleanFlag(false, "allowFlight");
     private final BooleanFlag enableFlight = new BooleanFlag(false, "enableFlight");
@@ -181,12 +181,12 @@ public class Minigame implements ScriptObject {
 
         flags.setFlag(new ArrayList<>());
 
-        addConfigFlag(allowEnderpearls);
+        addConfigFlag(allowEnderPearls);
         addConfigFlag(allowFlight);
         addConfigFlag(allowMPCheckpoints);
         addConfigFlag(blockBreak);
         addConfigFlag(blockPlace);
-        addConfigFlag(blocksdrop);
+        addConfigFlag(blocksDrop);
         addConfigFlag(canSpectateFly);
         addConfigFlag(deathDrops);
         addConfigFlag(defaultGamemode);
@@ -199,12 +199,12 @@ public class Minigame implements ScriptObject {
         addConfigFlag(flags);
         addConfigFlag(floorDegen);
         addConfigFlag(floorDegenTime);
-        addConfigFlag(gametypeName);
+        addConfigFlag(gameTypeName);
         addConfigFlag(itemDrops);
         addConfigFlag(itemPickup);
         addConfigFlag(lateJoin);
         addConfigFlag(lives);
-        addConfigFlag(lobbyPosisiton);
+        addConfigFlag(lobbyPosition);
         addConfigFlag(maxChestRandom);
         addConfigFlag(maxPlayers);
         addConfigFlag(maxScore);
@@ -273,7 +273,7 @@ public class Minigame implements ScriptObject {
         return new ArrayList<>(modules.values());
     }
 
-    public MinigameModule getModule(String name) {
+    public @Nullable MinigameModule getModule(String name) {
         return modules.get(name);
     }
 
@@ -466,11 +466,11 @@ public class Minigame implements ScriptObject {
     }
 
     public Location getLobbyPosition() {
-        return lobbyPosisiton.getFlag();
+        return lobbyPosition.getFlag();
     }
 
     public void setLobbyPosition(Location lobbyPosisiton) {
-        this.lobbyPosisiton.setFlag(lobbyPosisiton);
+        this.lobbyPosition.setFlag(lobbyPosisiton);
     }
 
     public String getName(boolean useDisplay) {
@@ -634,7 +634,7 @@ public class Minigame implements ScriptObject {
     }
 
     public int getMaxScorePerPlayer() {
-        float scorePerPlayer = getMaxScore() / getMaxPlayers();
+        float scorePerPlayer = (float) getMaxScore() / getMaxPlayers();
         int score = Math.round(scorePerPlayer * getPlayers().size());
         if (score < minScore.getFlag()) {
             score = minScore.getFlag();
@@ -643,11 +643,11 @@ public class Minigame implements ScriptObject {
     }
 
     public FloorDegenerator getFloorDegenerator() {
-        return sfloordegen;
+        return sFloorDegen;
     }
 
     public void addFloorDegenerator() {
-        sfloordegen = new FloorDegenerator(floorDegen.getFlag(), this);
+        sFloorDegen = new FloorDegenerator(floorDegen.getFlag(), this);
     }
 
     public int getTimer() {
@@ -748,11 +748,11 @@ public class Minigame implements ScriptObject {
     }
 
     public boolean canBlocksdrop() {
-        return blocksdrop.getFlag();
+        return blocksDrop.getFlag();
     }
 
-    public void setBlocksdrop(boolean blocksdrop) {
-        this.blocksdrop.setFlag(blocksdrop);
+    public void setBlocksDrop(boolean blocksDrop) {
+        this.blocksDrop.setFlag(blocksDrop);
     }
 
     public String getMechanicName() {
@@ -947,11 +947,11 @@ public class Minigame implements ScriptObject {
     }
 
     public boolean isAllowedEnderpearls() {
-        return allowEnderpearls.getFlag();
+        return allowEnderPearls.getFlag();
     }
 
-    public void setAllowEnderpearls(boolean allowEnderpearls) {
-        this.allowEnderpearls.setFlag(allowEnderpearls);
+    public void setAllowEnderPearls(boolean allowEnderPearls) {
+        this.allowEnderPearls.setFlag(allowEnderPearls);
     }
 
     public boolean isAllowedMPCheckpoints() {
@@ -990,12 +990,12 @@ public class Minigame implements ScriptObject {
         this.objective.setFlag(objective);
     }
 
-    public String getGametypeName() {
-        return gametypeName.getFlag();
+    public String getGameTypeName() {
+        return gameTypeName.getFlag();
     }
 
-    public void setGametypeName(String gametypeName) {
-        this.gametypeName.setFlag(gametypeName);
+    public void setGameTypeName(String gameTypeName) {
+        this.gameTypeName.setFlag(gameTypeName);
     }
 
     public boolean canDisplayScoreboard() {
@@ -1088,7 +1088,7 @@ public class Minigame implements ScriptObject {
         MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
         obj.setAllowNull(true);
         itemsMain.add(obj);
-        obj = (MenuItemString) gametypeName.getMenuItem("Gametype Description", Material.OAK_WALL_SIGN);
+        obj = (MenuItemString) gameTypeName.getMenuItem("Gametype Description", Material.OAK_WALL_SIGN);
         obj.setAllowNull(true);
         itemsMain.add(obj);
         obj = (MenuItemString) displayName.getMenuItem("Display Name", Material.OAK_WALL_SIGN);
@@ -1241,13 +1241,13 @@ public class Minigame implements ScriptObject {
             gmopts.add(WordUtils.capitalize(gm.toString()));
         }
         itemsPlayer.add(new MenuItemList("Players Gamemode", Material.CRAFTING_TABLE, getDefaultGamemodeCallback(), gmopts));
-        itemsPlayer.add(allowEnderpearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));
+        itemsPlayer.add(allowEnderPearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));
         itemsPlayer.add(itemDrops.getMenuItem("Allow Item Drops", Material.DIAMOND_SWORD));
         itemsPlayer.add(deathDrops.getMenuItem("Allow Death Drops", Material.SKELETON_SKULL));
         itemsPlayer.add(itemPickup.getMenuItem("Allow Item Pickup", Material.DIAMOND));
         itemsPlayer.add(blockBreak.getMenuItem("Allow Block Break", Material.DIAMOND_PICKAXE));
         itemsPlayer.add(blockPlace.getMenuItem("Allow Block Place", Material.STONE));
-        itemsPlayer.add(blocksdrop.getMenuItem("Allow Block Drops", Material.COBBLESTONE));
+        itemsPlayer.add(blocksDrop.getMenuItem("Allow Block Drops", Material.COBBLESTONE));
         itemsPlayer.add(lives.getMenuItem("Lives", Material.APPLE, null));
         itemsPlayer.add(paintBallMode.getMenuItem("Paintball Mode", Material.SNOWBALL));
         itemsPlayer.add(paintBallDamage.getMenuItem("Paintball Damage", Material.ARROW, 1, null));

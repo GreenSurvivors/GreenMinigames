@@ -502,9 +502,6 @@ public class Minigames extends JavaPlugin {
         return null;
     }
 
-    private void loadLang() {
-    }
-
     public void queueStatSave(final StoredGameStats saveData, final boolean winner) {
         MinigameUtils.debugMessage("Scheduling SQL data save for " + saveData);
 

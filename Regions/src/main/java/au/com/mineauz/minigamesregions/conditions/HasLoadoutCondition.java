@@ -11,10 +11,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-/**
- * Created for the Ark: Survival Evolved.
- * Created by Narimm on 4/05/2017.
- */
 public class HasLoadoutCondition extends ConditionInterface {
     private final StringFlag loadOutName = new StringFlag("default", "loadout");
 

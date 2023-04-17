@@ -151,8 +151,8 @@ public class Team implements ScriptObject {
         this.maxPlayers.setFlag(maxPlayers);
     }
 
-    public boolean isFull() {
-        return maxPlayers.getFlag() != 0 && players.size() >= maxPlayers.getFlag();
+    public boolean hasRoom() {
+        return maxPlayers.getFlag() == 0 || players.size() < maxPlayers.getFlag();
     }
 
 

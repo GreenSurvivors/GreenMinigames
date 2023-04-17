@@ -321,7 +321,7 @@ public class MinigameUtils {
      */
     public static MinigameTool getMinigameTool(MinigamePlayer player) {
         for (ItemStack i : player.getPlayer().getInventory().getContents()) {
-            if (i != null && i.getItemMeta() != null && i.getItemMeta().getDisplayName() != null &&
+            if (i != null && i.getItemMeta() != null &&
                     i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")) {
                 return new MinigameTool(i);
             }
@@ -370,30 +370,6 @@ public class MinigameUtils {
         arr[0] = new Location(selection1.getWorld(), minx, miny, minz);
         arr[1] = new Location(selection1.getWorld(), maxx, maxy, maxz);
         return arr;
-    }
-
-    /**
-     * Capitalizes the first letter of every word in a sentence.
-     *
-     * @param toCapitalize The string to capitalize
-     * @return The capitalized string
-     * @deprecated use {@link org.apache.commons.lang.WordUtils#capitalize(String)}
-     */
-    @Deprecated
-    public static String capitalize(String toCapitalize) {
-        if (toCapitalize == null) return null;
-        String val = toCapitalize.toLowerCase();
-        String[] spl = val.split(" ");
-        val = "";
-        for (String s : spl) {
-            String c = Character.toString(s.charAt(0));
-            s = s.substring(1);
-            c = c.toUpperCase();
-            s = c + s;
-            val += s + " ";
-        }
-        val = val.trim();
-        return val;
     }
 
     /**
@@ -476,7 +452,7 @@ public class MinigameUtils {
      * Loads a short location (x, y, z, world) from a configuration section
      *
      * @param section The section that contains the fields
-     * @return A location with the the contents of that section, or null if the world is invalid
+     * @return A location with the contents of that section, or null if the world is invalid
      */
     public static Location loadShortLocation(ConfigurationSection section) {
         double x = section.getDouble("x");

@@ -30,7 +30,7 @@ public class MenuItemList extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description = null;
+        List<String> description;
         int pos = options.indexOf(value.getValue());
         int before = pos - 1;
         int after = pos + 1;

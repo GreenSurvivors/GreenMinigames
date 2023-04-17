@@ -1,7 +1,5 @@
 package au.com.mineauz.minigames.backend;
 
-import com.google.common.collect.Lists;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -13,17 +11,6 @@ public class ConnectionPool {
     private final String connectionString;
     private final Properties props;
     private long maxIdleTime;
-
-    @Deprecated
-    public ConnectionPool(String connectionString, String username, String password) {
-        props = new Properties();
-        props.put("username", username);
-        props.put("password", password);
-        props.put("useSSL", "false");
-        this.connectionString = connectionString;
-        connections = Collections.synchronizedList(Lists.newArrayList());
-        maxIdleTime = TimeUnit.SECONDS.toMillis(30);
-    }
 
     public ConnectionPool(String connectionString, Properties properties) {
         this.connectionString = connectionString;
@@ -54,7 +41,7 @@ public class ConnectionPool {
                     }
                 } else {
                     if (System.currentTimeMillis() - handler.getOpenTime() > maxIdleTime) {
-                        // So we dont just accumulate connections forever
+                        // So we don't just accumulate connections forever
                         handler.release();
                     }
                 }
@@ -86,7 +73,7 @@ public class ConnectionPool {
                     if (!healthy) {
                         con.closeConnection();
                         connections.remove(i--);
-                        // Its ok
+                        // It's ok
                     } else {
                         return con;
                     }

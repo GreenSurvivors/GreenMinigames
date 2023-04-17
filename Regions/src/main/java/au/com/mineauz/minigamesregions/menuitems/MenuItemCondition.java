@@ -91,13 +91,8 @@ public class MenuItemCondition extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        if (rexec != null) {
-            if (con.displayMenu(getContainer().getViewer(), getContainer()))
-                return null;
-        } else {
-            if (con.displayMenu(getContainer().getViewer(), getContainer()))
-                return null;
-        }
+        if (con.displayMenu(getContainer().getViewer(), getContainer()))
+            return null;
         return getItem();
     }
 

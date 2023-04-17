@@ -55,7 +55,7 @@ public class SetBlocksDropCommand implements ICommand {
                              String label, String[] args) {
         if (args != null) {
             boolean bool = Boolean.parseBoolean(args[0]);
-            minigame.setBlocksdrop(bool);
+            minigame.setBlocksDrop(bool);
             if (bool) {
                 sender.sendMessage(ChatColor.GRAY + "Blocks can now drop when broken in " + minigame);
             } else {

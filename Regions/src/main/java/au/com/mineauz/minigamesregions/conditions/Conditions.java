@@ -11,12 +11,13 @@ import au.com.mineauz.minigamesregions.menuitems.MenuItemConditionAdd;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class Conditions {
-    private static Map<String, Class<? extends ConditionInterface>> conditions = new HashMap<>();
+    private static final Map<String, Class<? extends ConditionInterface>> conditions = new HashMap<>();
 
     static {
         addCondition("PLAYER_HEALTH_RANGE", PlayerHealthRangeCondition.class);
@@ -50,8 +51,9 @@ public class Conditions {
     public static ConditionInterface getConditionByName(String name) {
         if (hasCondition(name.toUpperCase())) {
             try {
-                return conditions.get(name.toUpperCase()).newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                return conditions.get(name.toUpperCase()).getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                     InvocationTargetException e) {
                 e.printStackTrace();
             }
         }

@@ -74,7 +74,7 @@ public class CreateCommand implements ICommand {
                 }
                 Minigame mgm = new Minigame(mgmName, type, player.getLocation());
                 MessageManager.sendMessage(player, MinigameMessageType.INFO, null, "command.create.success", args[0]);
-                List<String> mgs = null;
+                List<String> mgs;
                 if (plugin.getConfig().contains("minigames")) {
                     mgs = plugin.getConfig().getStringList("minigames");
                 } else {

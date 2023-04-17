@@ -45,7 +45,7 @@ public class MenuItemConditionAdd extends MenuItem {
                 if (catname == null)
                     catname = "misc conditions";
                 catname = catname.toLowerCase();
-                Menu cat = null;
+                Menu cat;
                 if (!cats.containsKey(catname)) {
                     cat = new Menu(6, WordUtils.capitalize(catname), getContainer().getViewer());
                     cats.put(catname, cat);

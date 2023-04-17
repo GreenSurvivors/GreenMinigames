@@ -20,8 +20,8 @@ import java.util.List;
 
 public abstract class GameMechanicBase implements Listener {
     public static Minigames plugin;
-    public MinigamePlayerManager pdata;
-    public MinigameManager mdata;
+    public final MinigamePlayerManager pdata;
+    public final MinigameManager mdata;
 
     public GameMechanicBase() {
         plugin = Minigames.getPlugin();
@@ -60,7 +60,7 @@ public abstract class GameMechanicBase implements Listener {
      * to a specific team, usual games is evenly distributed, in the case of Infection,
      * only a specific percentage is assigned to one team by default. The default function
      * will assign teams automatically unless overridden.
-     * Additionally teams that are flagged as autoBalance false will not have players removed or added through a team switch...
+     * Additionally, teams that are flagged as autoBalance false will not have players removed or added through a team switch...
      *
      * @param players  The players to be balanced to a team
      * @param minigame The minigame in which the balancing occours
@@ -96,9 +96,9 @@ public abstract class GameMechanicBase implements Listener {
                 Team smt = null;
                 Team lgt = null;
                 for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
-                    if (smt == null || (t.getPlayers().size() < smt.getPlayers().size() - 1 && !t.isFull() && t.getAutoBalanceTeam()))
+                    if (smt == null || (t.getPlayers().size() < smt.getPlayers().size() - 1 && t.hasRoom() && t.getAutoBalanceTeam()))
                         smt = t;
-                    if ((lgt == null || (t.getPlayers().size() > lgt.getPlayers().size() && !t.isFull())) && t != smt && t.getAutoBalanceTeam())
+                    if ((lgt == null || (t.getPlayers().size() > lgt.getPlayers().size() && t.hasRoom())) && t != smt && t.getAutoBalanceTeam())
                         lgt = t;
                 }
                 if (smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1) {

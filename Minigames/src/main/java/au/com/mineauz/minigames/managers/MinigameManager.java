@@ -457,7 +457,7 @@ public class MinigameManager {
         } else if (!minigame.getMechanic().validTypes().contains(minigame.getType())) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.invalidType"), MinigameMessageType.ERROR);
             return false;
-        } else if (minigame.getStartLocations().size() <= 0 ||
+        } else if (minigame.getStartLocations().size() == 0 ||
                 minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), MinigameMessageType.ERROR);
             return false;

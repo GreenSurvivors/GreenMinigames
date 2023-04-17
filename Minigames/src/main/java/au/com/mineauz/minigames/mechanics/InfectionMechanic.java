@@ -54,19 +54,19 @@ public class InfectionMechanic extends GameMechanicBase {
             Team team = ply.getTeam();
             double percent = ((Integer) InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d;
             if (team == blue) {
-                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
+                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && red.hasRoom()) {
                     MultiplayerType.switchTeam(minigame, ply, red);
                     result.add(ply);
                     ply.sendInfoMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()));
                     mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
                 }
             } else if (team == null) {
-                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
+                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && red.hasRoom()) {
                     red.addPlayer(ply);
                     result.add(ply);
                     ply.sendInfoMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()));
                     mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
-                } else if (!blue.isFull()) {
+                } else if (blue.hasRoom()) {
                     blue.addPlayer(ply);
                     result.add(ply);
                     ply.sendInfoMessage(String.format(blue.getAssignMessage(), blue.getChatColor() + blue.getDisplayName()));
@@ -127,7 +127,7 @@ public class InfectionMechanic extends GameMechanicBase {
                 Team blue = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.BLUE);
                 Team red = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.RED);
                 if (blue.getPlayers().contains(player)) {
-                    if (!red.isFull()) {
+                    if (red.hasRoom()) {
                         MultiplayerType.switchTeam(mgm, player, red);
                         InfectionModule.getMinigameModule(mgm).addInfectedPlayer(player);
                         if (event.getEntity().getKiller() != null) {

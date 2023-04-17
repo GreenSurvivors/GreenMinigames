@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.objects;
 
 import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.display.IDisplayCubiod;
+import au.com.mineauz.minigames.display.IDisplayCuboid;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -65,7 +65,7 @@ public class MinigamePlayer implements ScriptObject {
     private MenuItem manualEntry;
     private Location selection1;
     private Location selection2;
-    private IDisplayCubiod selectionDisplay;
+    private IDisplayCuboid selectionDisplay;
     private OfflineMinigamePlayer oply;
     private final StoredPlayerCheckpoints spc;
     private List<String> claimedRewards = new ArrayList<>();
@@ -654,9 +654,8 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public boolean teleport(final @NotNull Location location) {
-        boolean bool = false;
         this.setAllowTeleport(true);
-        bool = this.getPlayer().teleport(location);
+        boolean bool = this.getPlayer().teleport(location);
         this.setAllowTeleport(false);
 
         return bool;

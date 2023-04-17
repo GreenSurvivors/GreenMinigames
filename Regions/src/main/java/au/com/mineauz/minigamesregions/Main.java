@@ -15,7 +15,7 @@ import java.util.logging.Level;
 
 public class Main extends JavaPlugin {
 
-    public static String LANG_KEY = "minigames-regions";
+    public final static String LANG_KEY = "minigames-regions";
     private static Minigames minigames;
     private static Main plugin;
     private RegionDisplayManager display;

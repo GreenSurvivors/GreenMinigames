@@ -18,10 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created for the AddstarMC
- * Created by Narimm on 10/10/2017.
- */
 public class SwitchTeamAction extends AbstractAction {
     private final StringFlag teamto = new StringFlag("ALL", "To");
     private final StringFlag teamfrom = new StringFlag("ALL", "From");
@@ -129,7 +125,7 @@ public class SwitchTeamAction extends AbstractAction {
 
             @Override
             public String getValue() {
-                return MinigameUtils.capitalize(teamto.getFlag());
+                return WordUtils.capitalize(teamto.getFlag());
             }
 
             @Override
