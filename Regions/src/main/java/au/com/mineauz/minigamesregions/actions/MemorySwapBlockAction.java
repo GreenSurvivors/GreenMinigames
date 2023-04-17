@@ -84,7 +84,22 @@ public class MemorySwapBlockAction extends AbstractAction {
     blockPool.addAll(Tag.WOOL.getValues());
 
     //Logs
-    blockPool.addAll(Tag.LOGS.getValues());
+    blockPool.add(Material.OAK_LOG);
+    blockPool.add(Material.STRIPPED_OAK_LOG);
+    blockPool.add(Material.SPRUCE_LOG);
+    blockPool.add(Material.STRIPPED_SPRUCE_LOG);
+    blockPool.add(Material.BIRCH_LOG);
+    blockPool.add(Material.STRIPPED_BIRCH_LOG);
+    blockPool.add(Material.JUNGLE_LOG);
+    blockPool.add(Material.STRIPPED_JUNGLE_LOG);
+    blockPool.add(Material.ACACIA_LOG);
+    blockPool.add(Material.STRIPPED_ACACIA_LOG);
+    blockPool.add(Material.DARK_OAK_LOG);
+    blockPool.add(Material.STRIPPED_DARK_OAK_LOG);
+    blockPool.add(Material.CRIMSON_STEM);
+    blockPool.add(Material.STRIPPED_CRIMSON_STEM);
+    blockPool.add(Material.WARPED_STEM);
+    blockPool.add(Material.STRIPPED_WARPED_STEM);
 
     //Planks
     blockPool.addAll(Tag.PLANKS.getValues());
@@ -96,7 +111,7 @@ public class MemorySwapBlockAction extends AbstractAction {
     blockPool.add(Material.SANDSTONE);
     blockPool.add(Material.RED_SANDSTONE);
     blockPool.add(Material.STONE_BRICKS);
-    blockPool.add(Material.NETHER_BRICK);
+    blockPool.add(Material.NETHER_BRICKS);
     blockPool.add(Material.RED_NETHER_BRICKS);
     blockPool.add(Material.STONE);
     blockPool.add(Material.DIRT);
@@ -214,13 +229,14 @@ public class MemorySwapBlockAction extends AbstractAction {
     // for every 2 blocks of the list, set a random material
     for (int i = 0; i < max; i += 2) {
       if (matIt.hasNext()) {
-        Material newMat = matIt.next();
-        blocksToSwap.get(i).setType(newMat);
-        blocksToSwap.get(i + 1).setType(newMat);
-
+        //save block data in recorder
         RecorderData data = player.getMinigame().getRecorderData();
         data.addBlock(blocksToSwap.get(i), null);
         data.addBlock(blocksToSwap.get(i + 1), null);
+
+        Material newMat = matIt.next();
+        blocksToSwap.get(i).setType(newMat);
+        blocksToSwap.get(i + 1).setType(newMat);
       } else {
         break;
       }
