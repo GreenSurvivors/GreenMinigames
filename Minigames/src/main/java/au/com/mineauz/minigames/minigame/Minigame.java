@@ -1080,7 +1080,7 @@ public class Minigame implements ScriptObject {
         for (GameMechanicBase val : GameMechanics.getGameMechanics()) {
             scoreTypes.add(WordUtils.capitalize(val.getMechanic()));
         }
-        itemsMain.add(new MenuItemList("Game Mechanic", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<>() {
+        itemsMain.add(new MenuItemList("Game Mechanic", List.of("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<>() {
 
             @Override
             public String getValue() {
