@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MgRegion;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,13 +49,16 @@ public class RegionMapFlag extends Flag<Map<String, MgRegion>> {
     @Override
     public void loadValue(String path, FileConfiguration config) {
         Map<String, MgRegion> regions = new HashMap<>();
-        Set<String> regionNames = config.getConfigurationSection(path + "." + getName()).getKeys(false);
-        RegionFlag regionFlag;
+        ConfigurationSection section = config.getConfigurationSection(path + "." + getName());
+        if (section != null) {
+            Set<String> regionNames = section.getKeys(false);
+            RegionFlag regionFlag;
 
-        for (String regionName : regionNames) {
-            regionFlag = new RegionFlag(null, getName() + "." + regionName);
-            regionFlag.loadValue(path, config);
-            regions.put(regionFlag.getFlag().getName(), regionFlag.getFlag());
+            for (String regionName : regionNames) {
+                regionFlag = new RegionFlag(null, getName() + "." + regionName);
+                regionFlag.loadValue(path, config);
+                regions.put(regionFlag.getFlag().getName(), regionFlag.getFlag());
+            }
         }
 
         //import legacy regions from before regions existed
