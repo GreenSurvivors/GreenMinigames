@@ -55,9 +55,9 @@ public class Minigame implements ScriptObject {
     private final StrListFlag flags = new StrListFlag(null, "flags");
     private MinigameState state = MinigameState.IDLE;
 
-    private final RegionFlag floorDegen = new RegionFlag(null, "sfloor", "sfloorpos.1", "sfloorpos.2");
     private final StringFlag degenType = new StringFlag("inward", "degentype");
     private final IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
+    private final RegionFlag floorDegen = new RegionFlag(null, "sfloor", "sfloorpos.1", "sfloorpos.2");
     private FloorDegenerator sfloordegen;
     private final IntegerFlag floorDegenTime = new IntegerFlag(Minigames.getPlugin().getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
     // Respawn Module
@@ -104,6 +104,7 @@ public class Minigame implements ScriptObject {
 
     private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions", "regenarea.1", "regenarea.2");
     private final IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
+    private final IntegerFlag maxBlocksRegenRegions = new IntegerFlag(300000, "maxBlocksRegenRegions");
 
     private final Map<String, MinigameModule> modules = new HashMap<>();
     private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
@@ -223,6 +224,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(randomizeChests);
         addConfigFlag(regenRegions);
         addConfigFlag(regenDelay);
+        addConfigFlag(maxBlocksRegenRegions);
         addConfigFlag(saveCheckpoints);
         addConfigFlag(mechanic);
         addConfigFlag(spMaxPlayers);
@@ -897,8 +899,25 @@ public class Minigame implements ScriptObject {
         return regenRegions.getFlag().remove(name) != null;
     }
 
-    public void setRegenRegion(MgRegion mgRegion) {
-        regenRegions.getFlag().put(mgRegion.getName(), mgRegion);
+    /**
+     * checks if the limit of all regen regions together, if we are still under it, add the new region to the list
+     *
+     * @param newRegenRegion new regeneration region.
+     * @return true, if the max block limit was not reached.
+     */
+    public boolean setRegenRegion(MgRegion newRegenRegion) {
+        long numOfBlocksTotal = (long) Math.ceil(newRegenRegion.getVolume());
+
+        for (MgRegion region : regenRegions.getFlag().values()) {
+            numOfBlocksTotal += (long) Math.ceil(region.getVolume());
+        }
+
+        if (numOfBlocksTotal > maxBlocksRegenRegions.getFlag()) {
+            return false;
+        } else {
+            regenRegions.getFlag().put(newRegenRegion.getName(), newRegenRegion);
+            return true;
+        }
     }
 
     public boolean hasRegenArea() {
