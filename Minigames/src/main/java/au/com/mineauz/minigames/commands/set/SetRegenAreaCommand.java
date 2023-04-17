@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
@@ -92,11 +93,15 @@ public class SetRegenAreaCommand implements ICommand {
                         case "create" -> {
                             if (mgPlayer.hasSelection()) {
                                 String name = args[1];
-                                minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
 
-                                mgPlayer.clearSelection();
+                                boolean success = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
 
-                                mgPlayer.sendInfoMessage(Component.text("Created new regen region for " + minigame.getName(false) + " named " + name, NamedTextColor.GRAY));
+                                if (success) {
+                                    mgPlayer.sendInfoMessage(Component.text("Created new regen region for " + minigame.getName(false) + " named " + name, NamedTextColor.GRAY));
+                                    mgPlayer.clearSelection();
+                                } else {
+                                    mgPlayer.sendMessage(Component.text("Error: the limit of Blocks of all regen areas together has been reached. Pleas contact an admin if necessary.", NamedTextColor.RED), MinigameMessageType.ERROR);
+                                }
                             } else {
                                 mgPlayer.sendInfoMessage(Component.text("You have not made a selection!", NamedTextColor.RED));
                             }

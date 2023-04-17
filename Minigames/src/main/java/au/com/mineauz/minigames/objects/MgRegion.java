@@ -110,12 +110,24 @@ public class MgRegion {
                 location.getBlockZ() >= getMinZ() && location.getBlockZ() <= getMaxZ();
     }
 
+    //todo ab 4-5 chunk großen Regionen mit subchunks arbeiten
+    //todo max 300.000 blocks
+    public double getBaseArea() {
+        return Math.abs((pos1.x() - pos2.x()) * (pos1.z() - pos2.z()));
+    }
+
+    public double getVolume() {
+        return Math.abs(getBaseArea() * (pos1.y() - pos2.y()));
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (MgRegion) obj;
-        return Objects.equals(this.world, that.world) &&
+
+        return this.name.equals(that.name) &&
+                Objects.equals(this.world, that.world) &&
                 Objects.equals(this.pos1, that.pos1) &&
                 Objects.equals(this.pos2, that.pos2);
     }

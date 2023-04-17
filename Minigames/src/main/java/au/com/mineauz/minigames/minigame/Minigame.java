@@ -104,6 +104,7 @@ public class Minigame implements ScriptObject {
 
     private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions", "regenarea.1", "regenarea.2");
     private final IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
+    private final IntegerFlag maxAmountRegenRegions = new IntegerFlag(300000, "maxAmountRegenRegions");
 
     private final Map<String, MinigameModule> modules = new HashMap<>();
     private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
@@ -902,8 +903,25 @@ public class Minigame implements ScriptObject {
         return regenRegions.getFlag().remove(name) != null;
     }
 
-    public void setRegenRegion(MgRegion mgRegion) {
-        regenRegions.getFlag().put(mgRegion.getName(), mgRegion);
+    /**
+     * checks if the limit of all regen regions together, if we are still under it, add the new region to the list
+     *
+     * @param newRegenRegion new regeneration region.
+     * @return true, if the max block limit was not reached.
+     */
+    public boolean setRegenRegion(MgRegion newRegenRegion) {
+        long numOfBlocksTotal = (long) Math.ceil(newRegenRegion.getVolume());
+
+        for (MgRegion region : regenRegions.getFlag().values()) {
+            numOfBlocksTotal += (long) Math.ceil(region.getVolume());
+        }
+
+        if (numOfBlocksTotal > maxAmountRegenRegions.getFlag()) {
+            return false;
+        } else {
+            regenRegions.getFlag().put(newRegenRegion.getName(), newRegenRegion);
+            return true;
+        }
     }
 
     public boolean hasRegenArea() {
