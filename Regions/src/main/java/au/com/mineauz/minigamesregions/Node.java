@@ -61,9 +61,7 @@ public class Node implements ExecutableScriptObject {
 	}
 	
 	public void removeExecutor(NodeExecutor executor){
-		if(executors.contains(executor)){
-			executors.remove(executor);
-		}
+		executors.remove(executor);
 	}
 	
 	public void setEnabled(boolean enabled){
