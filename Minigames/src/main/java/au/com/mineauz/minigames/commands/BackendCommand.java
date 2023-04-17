@@ -92,7 +92,7 @@ public class BackendCommand implements ICommand {
                 Futures.addCallback(future, new FutureCallback<>() {
                     @Override
                     public void onFailure(@NotNull Throwable t) {
-                        sender.sendMessage(ChatColor.RED + "An internal error occured while switching backend.");
+                        sender.sendMessage(ChatColor.RED + "An internal error occurred while switching backend.");
                     }
 
                     @Override

@@ -303,7 +303,7 @@ public class BasicRecorder implements Listener {
 
     //remove ender perl entities (important if some where caught in bubble columns)
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void throwEnderpearl(ProjectileLaunchEvent event) {
+    private void throwEnderPearl(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player player) {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
 

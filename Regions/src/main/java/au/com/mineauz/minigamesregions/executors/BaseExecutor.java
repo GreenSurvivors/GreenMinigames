@@ -11,12 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created for the AddstarMC.
- * Created by Narimm on 27/04/2017.
- */
 public class BaseExecutor {
-
     private final Trigger trigger;
     private final List<ConditionInterface> conditions = new ArrayList<>();
     private final List<ActionInterface> actions = new ArrayList<>();
