@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
@@ -31,13 +32,18 @@ public class MaterialListFlag extends Flag<List<Material>> {
     @Override
     public void loadValue(String path, FileConfiguration config) {
         List<Material> materials = new ArrayList<>();
-        Set<String> ids = config.getConfigurationSection(path + "." + getName()).getKeys(false);
-        MaterialFlag matFlag;
+        ConfigurationSection section = config.getConfigurationSection(path + "." + getName());
 
-        for (int i = 0; i < ids.size(); i++) {
-            matFlag = new MaterialFlag(null, getName() + "." + i);
-            matFlag.loadValue(path, config);
-            materials.add(matFlag.getFlag());
+        if (section != null) {
+            Set<String> ids = section.getKeys(false);
+            MaterialFlag matFlag;
+
+            for (String id : ids) {
+                matFlag = new MaterialFlag(null, getName() + "." + id);
+                matFlag.loadValue(path, config);
+
+                materials.add(matFlag.getFlag());
+            }
         }
         setFlag(materials);
     }
