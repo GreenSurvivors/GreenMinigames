@@ -1,6 +1,9 @@
 package au.com.mineauz.minigames.managers;
 
-import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.config.RewardsFlag;
@@ -13,6 +16,7 @@ import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
+import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import org.bukkit.Bukkit;
@@ -30,11 +34,10 @@ public class MinigameManager {
     private final Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<>();
     private final Map<String, PlayerLoadout> globalLoadouts = new HashMap<>();
     private final Map<String, RewardsFlag> rewardSigns = new HashMap<>();
-    private MinigameSave rewardSignsSave;
     private final Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<>();
     private final Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<>();
-
     private final List<Class<? extends MinigameModule>> modules = new ArrayList<>();
+    private MinigameSave rewardSignsSave;
 
     public MinigameManager() {
 
@@ -130,7 +133,7 @@ public class MinigameManager {
 
     public void addMinigame(final Minigame game) {
         this.minigames.put(game.getName(false), game);
-        if(Minigames.getPlugin().includesPapi()){
+        if (Minigames.getPlugin().includesPapi()) {
             Minigames.getPlugin().getPlaceHolderManager().addGameIdentifiers(game);
         }
 
@@ -190,36 +193,25 @@ public class MinigameManager {
         this.configs.remove(filename);
     }
 
-    public Location minigameLocations(final String minigame, final String type, final Configuration save) {
-        final double locx = save.getDouble(minigame + '.' + type + ".x");
-        final double locy = save.getDouble(minigame + '.' + type + ".y");
-        final double locz = save.getDouble(minigame + '.' + type + ".z");
-        final double yaw = save.getDouble(minigame + '.' + type + ".yaw",0F);
-        final double pitch = save.getDouble(minigame + '.' + type + ".pitch",0F);
-        final String world = save.getString(minigame + '.' + type + ".world");
-        return  new Location(PLUGIN.getServer().getWorld(world), locx, locy, locz, (float)yaw, (float)pitch);
-    }
-
     public void addBlockRecorderData(final Minigame minigame) {
-        if (minigame.getRecorderData().hasRegenArea() && !minigame.getRecorderData().hasCreatedRegenBlocks()) {
+        if (minigame.hasRegenArea() && !minigame.getRecorderData().hasCreatedRegenBlocks()) {
             final RecorderData recorderData = minigame.getRecorderData();
-            final Location currentLoc = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
 
             recorderData.setCreatedRegenBlocks(true);
 
-            for (double y = recorderData.getRegenMinY(); y <= recorderData.getRegenMaxY(); y++) {
-                currentLoc.setY(y);
-                for (double x = recorderData.getRegenMinX(); x <= recorderData.getRegenMaxX(); x++) {
-                    currentLoc.setX(x);
-                    for (double z = recorderData.getRegenMinZ(); z <= recorderData.getRegenMaxZ(); z++) {
-                        currentLoc.setZ(z);
-                        recorderData.addBlock(currentLoc.getBlock(), null);
+            for (MgRegion region : recorderData.getMinigame().getRegenRegions()) {
+                for (int x = (int) region.getMinX(); x <= region.getMinX(); x++) {
+                    for (int y = (int) region.getMinY(); y <= region.getMaxY(); y++) {
+                        for (int z = (int) region.getMinZ(); z <= region.getMaxZ(); z++) {
+                            //add block
+                            recorderData.addBlock(region.getWorld().getBlockAt(x, y, z), null);
+                        }
                     }
                 }
             }
-            Minigames.debugMessage("Block Regen Data has been created for "+minigame.getName(false));
-        }
 
+            Minigames.debugMessage("Block Regen Data has been created for " + minigame.getName(false));
+        }
     }
 
     public void addMinigameType(final MinigameTypeBase minigameType) {
@@ -286,10 +278,11 @@ public class MinigameManager {
 
     /**
      * Sending a general Broadcast
+     *
      * @param minigame The minigame in which this message shall be sent
-     * @param message The message
-     * @param type Message Type
-     * @param exclude Players, which shall not get this message
+     * @param message  The message
+     * @param type     Message Type
+     * @param exclude  Players, which shall not get this message
      */
     public void sendMinigameMessage(final Minigame minigame, final String message, MinigameMessageType type,
                                     final List<MinigamePlayer> exclude) {
@@ -301,10 +294,11 @@ public class MinigameManager {
 
     /**
      * Sending a ctf relevant message
+     *
      * @param minigame The minigame in which this message shall be sent
-     * @param message The message
-     * @param type Message Type
-     * @param exclude Players, which shall not get this message
+     * @param message  The message
+     * @param type     Message Type
+     * @param exclude  Players, which shall not get this message
      */
     public void sendCTFMessage(final Minigame minigame, final String message, MinigameMessageType type,
                                final List<MinigamePlayer> exclude) {
@@ -463,7 +457,7 @@ public class MinigameManager {
         } else if (!minigame.getMechanic().validTypes().contains(minigame.getType())) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.invalidType"), MinigameMessageType.ERROR);
             return false;
-        } else if (minigame.getStartLocations().size() <= 0 ||
+        } else if (minigame.getStartLocations().size() == 0 ||
                 minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), MinigameMessageType.ERROR);
             return false;
@@ -472,8 +466,8 @@ public class MinigameManager {
     }
 
     public boolean teleportPlayerOnJoin(@NotNull final Minigame minigame, final MinigamePlayer player) {
-        if(this.minigameType(minigame.getType()) == null) {
-            Minigames.log().warning(MessageManager.getMinigamesMessage("error.invalidType") + " : "+minigame.getName(true));
+        if (this.minigameType(minigame.getType()) == null) {
+            Minigames.log().warning(MessageManager.getMinigamesMessage("error.invalidType") + " : " + minigame.getName(true));
         }
         return this.minigameType(minigame.getType()).teleportOnJoin(player, minigame);
     }

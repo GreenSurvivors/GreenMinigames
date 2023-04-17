@@ -1,6 +1,9 @@
 package au.com.mineauz.minigames.managers;
 
-import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.MultiplayerBets;
 import au.com.mineauz.minigames.blockRecorder.RegenRecorder;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -17,6 +20,10 @@ import au.com.mineauz.minigames.sounds.PlayMGSound;
 import au.com.mineauz.minigames.stats.DynamicMinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.attribute.Attribute;
@@ -29,9 +36,10 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -39,13 +47,12 @@ import java.util.*;
  **/
 public class MinigamePlayerManager {
     private static final Minigames plugin = Minigames.getPlugin();
-    Map<Team, Integer> tpos;
     private final Map<String, MinigamePlayer> minigamePlayers = new HashMap<>();
     private final List<MinigamePlayer> applyingPack = new ArrayList<>();
-    private boolean partyMode = false;
-    private int pos;
-    private List<String> deniedCommands = new ArrayList<>();
     private final MinigameManager mgManager = plugin.getMinigameManager();
+    private boolean partyMode = false;
+    private List<String> deniedCommands = new ArrayList<>();
+
     public MinigamePlayerManager() {
     }
 
@@ -62,7 +69,7 @@ public class MinigamePlayerManager {
         JoinMinigameEvent event = new JoinMinigameEvent(player, minigame);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            Minigames.log.info("Start Event was cancelled..: " + event.toString());
+            Minigames.log.info("Start Event was cancelled..: " + event);
             return;
         }
         if (!mgManager.minigameStartStateCheck(minigame, player)) return;
@@ -85,17 +92,18 @@ public class MinigamePlayerManager {
             return;
         }
         //Give them the game type name
-        if (minigame.getGametypeName() == null)
+        if (minigame.getGameTypeName() == null)
             player.sendMessage(MessageManager.getMinigamesMessage("player.join.plyInfo", minigame.getType().getName()), MinigameMessageType.WIN);
         else
-            player.sendMessage(MessageManager.getMinigamesMessage("player.join.plyInfo", minigame.getGametypeName()), MinigameMessageType.WIN);
+            player.sendMessage(MessageManager.getMinigamesMessage("player.join.plyInfo", minigame.getGameTypeName()), MinigameMessageType.WIN);
 
         //Give them the objective
         if (minigame.getObjective() != null) {
-            player.sendUnprefixedMessage(ChatColor.GREEN + "----------------------------------------------------");
-            player.sendInfoMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MessageManager.getMinigamesMessage("player.join.objective",
-                    ChatColor.RESET.toString() + ChatColor.WHITE + minigame.getObjective()));
-            player.sendUnprefixedMessage(ChatColor.GREEN + "----------------------------------------------------");
+            player.sendUnprefixedMessage(Component.text("----------------------------------------------------", NamedTextColor.GREEN));
+            player.sendInfoMessage(Component.join(JoinConfiguration.noSeparators(),
+                    Component.text(MessageManager.getMinigamesMessage("player.join.objective"), NamedTextColor.AQUA, TextDecoration.BOLD),
+                    Component.text(minigame.getObjective(), NamedTextColor.WHITE)));
+            player.sendUnprefixedMessage(Component.text("----------------------------------------------------", NamedTextColor.GREEN));
         }
         //Prepare regeneration region for rollback.
         mgManager.addBlockRecorderData(minigame);
@@ -124,7 +132,7 @@ public class MinigamePlayerManager {
 
         if (minigame.getPlayers().size() == 1) {
             //Register regen recorder events
-            if (minigame.getRecorderData().hasRegenArea())
+            if (minigame.hasRegenArea())
                 Bukkit.getServer().getPluginManager().registerEvents(new RegenRecorder(minigame), plugin);
             if (mod != null) mod.startTimeLoop();
         }
@@ -215,7 +223,7 @@ public class MinigamePlayerManager {
                 player.getPlayer().removePotionEffect(potion.getType());
             }
             player.sendInfoMessage(MessageManager.getMinigamesMessage("player.spectate.join.plyMsg", minigame.getName(true)) + "\n" +
-                MessageManager.getMinigamesMessage("player.spectate.join.plyHelp", "\"/minigame quit\""));
+                    MessageManager.getMinigamesMessage("player.spectate.join.plyHelp", "\"/minigame quit\""));
             mgManager.sendMinigameMessage(minigame, MessageManager.getMinigamesMessage("player.spectate.join.minigameMsg", player.getName(), minigame.getName(true)), null, player);
         }
     }
@@ -223,7 +231,6 @@ public class MinigamePlayerManager {
     public void startMPMinigame(Minigame minigame) {
         startMPMinigame(minigame, LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart());
     }
-
 
     public void startMPMinigame(Minigame minigame, boolean teleport) {
         List<MinigamePlayer> players = new ArrayList<>(minigame.getPlayers());
@@ -275,7 +282,6 @@ public class MinigamePlayerManager {
         }
         return result;
     }
-
 
     public void teleportToStart(Minigame minigame) {
         List<MinigamePlayer> findStart = new ArrayList<>();
@@ -414,7 +420,7 @@ public class MinigamePlayerManager {
             if ((p != null) && (p.isOnline())) {
                 p.setFireTicks(0);
                 AttributeInstance maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-                if(maxHealth != null) {
+                if (maxHealth != null) {
                     p.setHealth(maxHealth.getValue());
                 }
                 p.setFoodLevel(20);
@@ -427,9 +433,7 @@ public class MinigamePlayerManager {
     public void quitMinigame(MinigamePlayer player, boolean forced) {
         Minigame minigame = player.getMinigame();
 
-        boolean isWinner = false;
-        if (GameOverModule.getMinigameModule(minigame).getWinners().contains(player))
-            isWinner = true;
+        boolean isWinner = GameOverModule.getMinigameModule(minigame).getWinners().contains(player);
 
         QuitMinigameEvent event = new QuitMinigameEvent(player, minigame, forced, isWinner);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -492,7 +496,7 @@ public class MinigamePlayerManager {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> fplayer.getPlayer().setFireTicks(0), 0L);
                 player.resetAllStats();
                 player.setStartPos(null);
-                if (!player.isDead()) {
+                if (player.isLiving()) {
                     player.restorePlayerData();
                     Location loc;
                     if (!isWinner) {
@@ -596,7 +600,7 @@ public class MinigamePlayerManager {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> fplayer.setFireTicks(0));
 
                 player.getPlayer().closeInventory();
-                if (!player.isDead()) {
+                if (player.isLiving()) {
                     player.restorePlayerData();
                 }
                 player.teleport(minigame.getQuitPosition());
@@ -655,7 +659,7 @@ public class MinigamePlayerManager {
                     if (!plys.isEmpty()) {
                         bets = minigame.getMpBets().claimMoneyBets() / (double) plys.size();
                         BigDecimal roundBets = new BigDecimal(bets);
-                        roundBets = roundBets.setScale(2, BigDecimal.ROUND_HALF_UP);
+                        roundBets = roundBets.setScale(2, RoundingMode.HALF_UP);
                         bets = roundBets.doubleValue();
                     }
                     minigame.setMpBets(null);
@@ -697,7 +701,7 @@ public class MinigamePlayerManager {
                 saveData.addStat(MinigameStats.CompletionTime, player.getEndTime() - player.getStartTime() + player.getStoredTime());
 
                 if (minigame.getShowCompletionTime()) {
-                    player.sendInfoMessage("Completion time: " + (double)(winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime())/1000+" seconds");
+                    player.sendInfoMessage("Completion time: " + (double) (winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime()) / 1000 + " seconds");
                 }
 
                 for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
@@ -839,25 +843,31 @@ public class MinigamePlayerManager {
         minigamePlayers.remove(player.getName());
     }
 
-    @NotNull
-    public MinigamePlayer getMinigamePlayer(Player player) {
-        if (minigamePlayers.containsKey(player.getName())) {
-            return minigamePlayers.get(player.getName());
-        } else {
+    /**
+     * @return null, if the given player was null, the respecting MinigamePlayer object otherwise
+     */
+    public @Nullable MinigamePlayer getMinigamePlayer(Player player) {
+        if (player == null) {
+            return null;
+        }
+
+        if (!minigamePlayers.containsKey(player.getName())) {
             addMinigamePlayer(player);
         }
+
         return minigamePlayers.get(player.getName());
     }
 
-    public MinigamePlayer getMinigamePlayer(UUID uuid) {
+    public @Nullable MinigamePlayer getMinigamePlayer(UUID uuid) {
         for (MinigamePlayer p : minigamePlayers.values()) {
             if (p.getUUID() == uuid)
                 return p;
         }
-        return null;
+
+        return getMinigamePlayer(Bukkit.getPlayer(uuid));
     }
 
-    public MinigamePlayer getMinigamePlayer(String player) {
+    public @Nullable MinigamePlayer getMinigamePlayer(String player) {
         return minigamePlayers.get(player);
     }
 

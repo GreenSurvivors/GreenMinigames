@@ -1,13 +1,13 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemAction;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemActionAdd;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import java.util.Set;
 public class Actions {
 	private static final Map<String, Class<? extends ActionInterface>> actions = new HashMap<>();
 
-	static{
+	static {
 		addAction("KILL", KillAction.class);
 		addAction("REVERT", RevertAction.class);
 		addAction("QUIT", QuitAction.class);
@@ -54,7 +54,6 @@ public class Actions {
 		addAction("SET_ENABLED", SetEnabledAction.class);
 		addAction("RESET_TRIGGER_COUNT", ResetTriggerCountAction.class);
 		addAction("TRIGGER_RANDOM", TriggerRandomAction.class);
-
 		addAction("MEMORY_SWAP_BLOCK", MemorySwapBlockAction.class);
 		addAction("REGION_SWAP_ACTION", RegionSwapAction.class);
 		addAction("TIMED_TRIGGER_NODE", TimedTriggerAction.class);
@@ -87,7 +86,7 @@ public class Actions {
 		Menu m = new Menu(3, "Actions", player);
 		m.setPreviousPage(prev);
 		for(ActionInterface act : exec.getActions()){
-			m.addItem(new MenuItemAction(MinigameUtils.capitalize(act.getName()), Material.PAPER, exec, act));
+			m.addItem(new MenuItemAction(WordUtils.capitalize(act.getName()), Material.PAPER, exec, act));
 		}
 		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
 		m.addItem(new MenuItemActionAdd("Add Action", MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);

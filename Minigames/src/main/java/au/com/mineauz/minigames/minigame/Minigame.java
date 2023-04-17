@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.CTFFlag;
+import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
@@ -24,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -34,6 +36,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -41,115 +44,113 @@ import java.util.logging.Level;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Minigame implements ScriptObject {
     private final String name;
-    private Map<String, Flag<?>> configFlags = new HashMap<>();
-    private StringFlag displayName = new StringFlag(null, "displayName");
-    private StringFlag objective = new StringFlag(null, "objective");
-    private StringFlag gametypeName = new StringFlag(null, "gametypeName");
-    private EnumFlag<MinigameType> type = new EnumFlag<>(MinigameType.SINGLEPLAYER, "type");
-    private BooleanFlag enabled = new BooleanFlag(false, "enabled");
-    private IntegerFlag minPlayers = new IntegerFlag(2, "minplayers");
-    private IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
-    private BooleanFlag spMaxPlayers = new BooleanFlag(false, "spMaxPlayers");
-    private ListFlag flags = new ListFlag(null, "flags");
+    private final Map<String, Flag<?>> configFlags = new HashMap<>();
+    private final StringFlag displayName = new StringFlag(null, "displayName");
+    private final StringFlag objective = new StringFlag(null, "objective");
+    private final StringFlag gameTypeName = new StringFlag(null, "gametypeName");
+    private final EnumFlag<MinigameType> type = new EnumFlag<>(MinigameType.SINGLEPLAYER, "type");
+    private final BooleanFlag enabled = new BooleanFlag(false, "enabled");
+    private final IntegerFlag minPlayers = new IntegerFlag(2, "minplayers");
+    private final IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
+    private final BooleanFlag spMaxPlayers = new BooleanFlag(false, "spMaxPlayers");
+    private final StrListFlag flags = new StrListFlag(null, "flags");
     private MinigameState state = MinigameState.IDLE;
 
-    private SimpleLocationFlag floorDegen1 = new SimpleLocationFlag(null, "sfloorpos.1");
-    private SimpleLocationFlag floorDegen2 = new SimpleLocationFlag(null, "sfloorpos.2");
-    private StringFlag degenType = new StringFlag("inward", "degentype");
-    private IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
-    private FloorDegenerator sfloordegen;
-    private IntegerFlag floorDegenTime = new IntegerFlag(Minigames.getPlugin().getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
+    private final StringFlag degenType = new StringFlag("inward", "degentype");
+    private final IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
+    private final RegionFlag floorDegen = new RegionFlag(null, "sfloor", "sfloorpos.1", "sfloorpos.2");
+    private FloorDegenerator sFloorDegen;
+    private final IntegerFlag floorDegenTime = new IntegerFlag(Minigames.getPlugin().getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
     // Respawn Module
-    private BooleanFlag respawn = new BooleanFlag(Minigames.getPlugin().getConfig().getBoolean("has-respawn"), "respawn");
-    private LocationListFlag startLocations = new LocationListFlag(null, "startpos");
-    private BooleanFlag randomizeStart = new BooleanFlag(false, "ranndomizeStart");
-    private LocationFlag endPosition = new LocationFlag(null, "endpos");
-    private LocationFlag quitPosition = new LocationFlag(null, "quitpos");
-    private LocationFlag lobbyPosisiton = new LocationFlag(null, "lobbypos");
-    private LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
+    private final BooleanFlag respawn = new BooleanFlag(Minigames.getPlugin().getConfig().getBoolean("has-respawn"), "respawn");
+    private final LocationListFlag startLocations = new LocationListFlag(null, "startpos");
+    private final BooleanFlag randomizeStart = new BooleanFlag(false, "ranndomizeStart");
+    private final LocationFlag endPosition = new LocationFlag(null, "endpos");
+    private final LocationFlag quitPosition = new LocationFlag(null, "quitpos");
+    private final LocationFlag lobbyPosition = new LocationFlag(null, "lobbypos");
+    private final LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
 
-    private BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
-    private IntegerFlag timer = new IntegerFlag(0, "timer");
-    private BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
-    private IntegerFlag startWaitTime = new IntegerFlag(0, "startWaitTime");
-    private BooleanFlag showCompletionTime = new BooleanFlag(false, "showCompletionTime");
+    private final BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
+    private final IntegerFlag timer = new IntegerFlag(0, "timer");
+    private final BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
+    private final IntegerFlag startWaitTime = new IntegerFlag(0, "startWaitTime");
+    private final BooleanFlag showCompletionTime = new BooleanFlag(false, "showCompletionTime");
 
-    private BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
-    private BooleanFlag deathDrops = new BooleanFlag(false, "deathdrops");
-    private BooleanFlag itemPickup = new BooleanFlag(true, "itempickup");
-    private BooleanFlag blockBreak = new BooleanFlag(false, "blockbreak");
-    private BooleanFlag blockPlace = new BooleanFlag(false, "blockplace");
-    private EnumFlag<GameMode> defaultGamemode = new EnumFlag<>(GameMode.ADVENTURE, "gamemode");
-    private BooleanFlag blocksdrop = new BooleanFlag(true, "blocksdrop");
-    private BooleanFlag allowEnderpearls = new BooleanFlag(false, "allowEnderpearls");
-    private BooleanFlag allowMPCheckpoints = new BooleanFlag(false, "allowMPCheckpoints");
-    private BooleanFlag allowFlight = new BooleanFlag(false, "allowFlight");
-    private BooleanFlag enableFlight = new BooleanFlag(false, "enableFlight");
-    private BooleanFlag allowDragonEggTeleport = new BooleanFlag(true, "allowDragonEggTeleport");
-    private BooleanFlag usePlayerDisplayNames = new BooleanFlag(true, "usePlayerDisplayNames");
-    private BooleanFlag showPlayerBroadcasts = new BooleanFlag(true, "showPlayerBroadcasts");
-    private BooleanFlag showCTFBroadcasts = new BooleanFlag(true, "showCTFBroadcasts");
-    private BooleanFlag keepInventory = new BooleanFlag(false, "keepInventory");
-    private BooleanFlag friendlyFireSplashPotions = new BooleanFlag(true, "friendlyFireSplashPotions");
-    private BooleanFlag friendlyFireLingeringPotions = new BooleanFlag(true, "friendlyFireLingeringPotions");
+    private final BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
+    private final BooleanFlag deathDrops = new BooleanFlag(false, "deathdrops");
+    private final BooleanFlag itemPickup = new BooleanFlag(true, "itempickup");
+    private final BooleanFlag blockBreak = new BooleanFlag(false, "blockbreak");
+    private final BooleanFlag blockPlace = new BooleanFlag(false, "blockplace");
+    private final EnumFlag<GameMode> defaultGamemode = new EnumFlag<>(GameMode.ADVENTURE, "gamemode");
+    private final BooleanFlag blocksDrop = new BooleanFlag(true, "blocksdrop");
+    private final BooleanFlag allowEnderPearls = new BooleanFlag(false, "allowEnderpearls");
+    private final BooleanFlag allowMPCheckpoints = new BooleanFlag(false, "allowMPCheckpoints");
+    private final BooleanFlag allowFlight = new BooleanFlag(false, "allowFlight");
+    private final BooleanFlag enableFlight = new BooleanFlag(false, "enableFlight");
+    private final BooleanFlag allowDragonEggTeleport = new BooleanFlag(true, "allowDragonEggTeleport");
+    private final BooleanFlag usePlayerDisplayNames = new BooleanFlag(true, "usePlayerDisplayNames");
+    private final BooleanFlag showPlayerBroadcasts = new BooleanFlag(true, "showPlayerBroadcasts");
+    private final BooleanFlag showCTFBroadcasts = new BooleanFlag(true, "showCTFBroadcasts");
+    private final BooleanFlag keepInventory = new BooleanFlag(false, "keepInventory");
+    private final BooleanFlag friendlyFireSplashPotions = new BooleanFlag(true, "friendlyFireSplashPotions");
+    private final BooleanFlag friendlyFireLingeringPotions = new BooleanFlag(true, "friendlyFireLingeringPotions");
 
-    private StringFlag mechanic = new StringFlag("custom", "scoretype");
-    private BooleanFlag paintBallMode = new BooleanFlag(false, "paintball");
-    private IntegerFlag paintBallDamage = new IntegerFlag(2, "paintballdmg");
-    private BooleanFlag unlimitedAmmo = new BooleanFlag(false, "unlimitedammo");
-    private BooleanFlag saveCheckpoints = new BooleanFlag(false, "saveCheckpoints");
-    private BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
-    private FloatFlag lives = new FloatFlag(0F, "lives");
+    private final StringFlag mechanic = new StringFlag("custom", "scoretype");
+    private final BooleanFlag paintBallMode = new BooleanFlag(false, "paintball");
+    private final IntegerFlag paintBallDamage = new IntegerFlag(2, "paintballdmg");
+    private final BooleanFlag unlimitedAmmo = new BooleanFlag(false, "unlimitedammo");
+    private final BooleanFlag saveCheckpoints = new BooleanFlag(false, "saveCheckpoints");
+    private final BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
+    private final FloatFlag lives = new FloatFlag(0F, "lives");
 
-    private LocationFlag regenArea1 = new LocationFlag(null, "regenarea.1");
-    private LocationFlag regenArea2 = new LocationFlag(null, "regenarea.2");
-    private IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
+    private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions", "regenarea.1", "regenarea.2");
+    private final IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
+    private final IntegerFlag maxBlocksRegenRegions = new IntegerFlag(300000, "maxBlocksRegenRegions");
 
-    private Map<String, MinigameModule> modules = new HashMap<>();
-    private Scoreboard sbManager = (Minigames.getPlugin().getServer().getScoreboardManager() != null)
-      ?Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard():null;
-    private IntegerFlag minScore = new IntegerFlag(5, "minscore");
-    private IntegerFlag maxScore = new IntegerFlag(10, "maxscore");
-    private BooleanFlag displayScoreboard = new BooleanFlag(true, "displayScoreboard");
+    private final Map<String, MinigameModule> modules = new HashMap<>();
+    private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
+    private final IntegerFlag minScore = new IntegerFlag(5, "minscore");
+    private final IntegerFlag maxScore = new IntegerFlag(10, "maxscore");
+    private final BooleanFlag displayScoreboard = new BooleanFlag(true, "displayScoreboard");
 
-    private BooleanFlag canSpectateFly = new BooleanFlag(false, "canspectatefly");
+    private final BooleanFlag canSpectateFly = new BooleanFlag(false, "canspectatefly");
 
-    private BooleanFlag randomizeChests = new BooleanFlag(false, "randomizechests");
-    private IntegerFlag minChestRandom = new IntegerFlag(5, "minchestrandom");
-    private IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
+    private final BooleanFlag randomizeChests = new BooleanFlag(false, "randomizechests");
+    private final IntegerFlag minChestRandom = new IntegerFlag(5, "minchestrandom");
+    private final IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
     @NotNull
-    private ScoreboardData sbData = new ScoreboardData();
-    private Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
+    private final ScoreboardData sbData = new ScoreboardData();
+    private final Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
 
     //Unsaved data
-    private List<MinigamePlayer> players = new ArrayList<>();
-    private List<MinigamePlayer> spectators = new ArrayList<>();
-    private RecorderData blockRecorder = new RecorderData(this);
+    private final List<MinigamePlayer> players = new ArrayList<>();
+    private final List<MinigamePlayer> spectators = new ArrayList<>();
+    private final RecorderData blockRecorder = new RecorderData(this);
     //Multiplayer
     private MultiplayerTimer mpTimer = null;
     private MinigameTimer miniTimer = null;
     private MultiplayerBets mpBets = null;
     //CTF
-    private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<>();
-    private Map<String, CTFFlag> droppedFlag = new HashMap<>();
+    private final Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<>();
+    private final Map<String, CTFFlag> droppedFlag = new HashMap<>();
     private boolean playersAtStart = false;
 
     public Minigame(String name, MinigameType type, Location start) {
         this.name = name;
-      if(sbManager == null) {
-        Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
-            "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
-      }
+        if (sbManager == null) {
+            Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
+                    "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
+        }
         setup(type, start);
 
     }
 
     public Minigame(String name) {
         this.name = name;
-      if(sbManager == null) {
-        Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
-            "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
-      }
+        if (sbManager == null) {
+            Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
+                    "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
+        }
         setup(MinigameType.SINGLEPLAYER, null);
     }
 
@@ -167,9 +168,9 @@ public class Minigame implements ScriptObject {
 
         if (start != null)
             startLocations.getFlag().add(start);
-        if(sbManager != null) {
-          sbManager.registerNewObjective(this.name, "dummy", this.name);
-          sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
+        if (sbManager != null) {
+            sbManager.registerNewObjective(this.name, "dummy", this.name);
+            sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
         }
         for (Class<? extends MinigameModule> mod : Minigames.getPlugin().getMinigameManager().getModules()) {
             try {
@@ -181,12 +182,12 @@ public class Minigame implements ScriptObject {
 
         flags.setFlag(new ArrayList<>());
 
-        addConfigFlag(allowEnderpearls);
+        addConfigFlag(allowEnderPearls);
         addConfigFlag(allowFlight);
         addConfigFlag(allowMPCheckpoints);
         addConfigFlag(blockBreak);
         addConfigFlag(blockPlace);
-        addConfigFlag(blocksdrop);
+        addConfigFlag(blocksDrop);
         addConfigFlag(canSpectateFly);
         addConfigFlag(deathDrops);
         addConfigFlag(defaultGamemode);
@@ -197,15 +198,14 @@ public class Minigame implements ScriptObject {
         addConfigFlag(enabled);
         addConfigFlag(endPosition);
         addConfigFlag(flags);
-        addConfigFlag(floorDegen1);
-        addConfigFlag(floorDegen2);
+        addConfigFlag(floorDegen);
         addConfigFlag(floorDegenTime);
-        addConfigFlag(gametypeName);
+        addConfigFlag(gameTypeName);
         addConfigFlag(itemDrops);
         addConfigFlag(itemPickup);
         addConfigFlag(lateJoin);
         addConfigFlag(lives);
-        addConfigFlag(lobbyPosisiton);
+        addConfigFlag(lobbyPosition);
         addConfigFlag(maxChestRandom);
         addConfigFlag(maxPlayers);
         addConfigFlag(maxScore);
@@ -223,9 +223,9 @@ public class Minigame implements ScriptObject {
         addConfigFlag(paintBallMode);
         addConfigFlag(quitPosition);
         addConfigFlag(randomizeChests);
-        addConfigFlag(regenArea1);
-        addConfigFlag(regenArea2);
+        addConfigFlag(regenRegions);
         addConfigFlag(regenDelay);
+        addConfigFlag(maxBlocksRegenRegions);
         addConfigFlag(saveCheckpoints);
         addConfigFlag(mechanic);
         addConfigFlag(spMaxPlayers);
@@ -275,7 +275,7 @@ public class Minigame implements ScriptObject {
         return new ArrayList<>(modules.values());
     }
 
-    public MinigameModule getModule(String name) {
+    public @Nullable MinigameModule getModule(String name) {
         return modules.get(name);
     }
 
@@ -416,27 +416,23 @@ public class Minigame implements ScriptObject {
     }
 
     public boolean isGameFull() {
-        if ((getType() == MinigameType.SINGLEPLAYER && isSpMaxPlayers()) || 
-                                    getType() == MinigameType.MULTIPLAYER) {
+        if ((getType() == MinigameType.SINGLEPLAYER && isSpMaxPlayers()) ||
+                getType() == MinigameType.MULTIPLAYER) {
             return getPlayers().size() >= getMaxPlayers();
         }
         return false;
     }
 
-    public Location getFloorDegen1() {
-        return floorDegen1.getFlag();
+    public @Nullable MgRegion getFloorDegen() {
+        return floorDegen.getFlag();
     }
 
-    public void setFloorDegen1(Location loc) {
-        this.floorDegen1.setFlag(loc);
+    public void setFloorDegen(@Nullable MgRegion region) {
+        floorDegen.setFlag(region);
     }
 
-    public Location getFloorDegen2() {
-        return floorDegen2.getFlag();
-    }
-
-    public void setFloorDegen2(Location loc) {
-        this.floorDegen2.setFlag(loc);
+    public void removeFloorDegen() {
+        floorDegen.setFlag(null);
     }
 
     public String getDegenType() {
@@ -472,11 +468,11 @@ public class Minigame implements ScriptObject {
     }
 
     public Location getLobbyPosition() {
-        return lobbyPosisiton.getFlag();
+        return lobbyPosition.getFlag();
     }
 
     public void setLobbyPosition(Location lobbyPosisiton) {
-        this.lobbyPosisiton.setFlag(lobbyPosisiton);
+        this.lobbyPosition.setFlag(lobbyPosisiton);
     }
 
     public String getName(boolean useDisplay) {
@@ -497,12 +493,12 @@ public class Minigame implements ScriptObject {
         return showPlayerBroadcasts.getFlag();
     }
 
-    public void setShowCTFBroadcasts(Boolean showCTFBroadcasts) {
-        this.showCTFBroadcasts.setFlag(showCTFBroadcasts);
-    }
-
     public Boolean getShowCTFBroadcasts() {
         return showCTFBroadcasts.getFlag();
+    }
+
+    public void setShowCTFBroadcasts(Boolean showCTFBroadcasts) {
+        this.showCTFBroadcasts.setFlag(showCTFBroadcasts);
     }
 
     public MinigameType getType() {
@@ -514,12 +510,14 @@ public class Minigame implements ScriptObject {
     }
 
     private Callback<String> getTypeCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
 
             @Override
             public String getValue() {
-                return MinigameUtils.capitalize(type.getFlag().toString().replace("_", " "));
-            }            @Override
+                return WordUtils.capitalize(type.getFlag().toString().replace("_", " "));
+            }
+
+            @Override
             public void setValue(String value) {
                 type.setFlag(MinigameType.valueOf(value.toUpperCase().replace(" ", "_")));
             }
@@ -610,20 +608,15 @@ public class Minigame implements ScriptObject {
     }
 
     public void setScore(MinigamePlayer ply, int amount) {
-        if (sbManager == null){
-          ScoreboardManager s  = Minigames.getPlugin().getServer().getScoreboardManager();
-          if(s !=null) {
+        if (sbManager == null) {
+            ScoreboardManager s = Minigames.getPlugin().getServer().getScoreboardManager();
             sbManager = s.getNewScoreboard();
-            Minigames.getPlugin().getLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name );
-          } else {
-            Minigames.getPlugin().getLogger().warning("ScoreBoardManager is null is the WORLD loaded!!! - Could not set Score!!!");
-            return;
-          }
+            Minigames.getPlugin().getLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name);
         }
-      Objective o = sbManager.getObjective(getName(false));
-      if(o != null){
-        o.getScore(ply.getName()).setScore(amount);
-      }
+        Objective o = sbManager.getObjective(getName(false));
+        if (o != null) {
+            o.getScore(ply.getName()).setScore(amount);
+        }
     }
 
     public int getMinScore() {
@@ -643,7 +636,7 @@ public class Minigame implements ScriptObject {
     }
 
     public int getMaxScorePerPlayer() {
-        float scorePerPlayer = getMaxScore() / getMaxPlayers();
+        float scorePerPlayer = (float) getMaxScore() / getMaxPlayers();
         int score = Math.round(scorePerPlayer * getPlayers().size());
         if (score < minScore.getFlag()) {
             score = minScore.getFlag();
@@ -652,11 +645,11 @@ public class Minigame implements ScriptObject {
     }
 
     public FloorDegenerator getFloorDegenerator() {
-        return sfloordegen;
+        return sFloorDegen;
     }
 
     public void addFloorDegenerator() {
-        sfloordegen = new FloorDegenerator(getFloorDegen1(), getFloorDegen2(), this);
+        sFloorDegen = new FloorDegenerator(floorDegen.getFlag(), this);
     }
 
     public int getTimer() {
@@ -744,12 +737,14 @@ public class Minigame implements ScriptObject {
     }
 
     public Callback<String> getDefaultGamemodeCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
 
             @Override
             public String getValue() {
-                return MinigameUtils.capitalize(defaultGamemode.getFlag().toString());
-            }            @Override
+                return WordUtils.capitalize(defaultGamemode.getFlag().toString());
+            }
+
+            @Override
             public void setValue(String value) {
                 defaultGamemode.setFlag(GameMode.valueOf(value.toUpperCase()));
             }
@@ -759,11 +754,11 @@ public class Minigame implements ScriptObject {
     }
 
     public boolean canBlocksdrop() {
-        return blocksdrop.getFlag();
+        return blocksDrop.getFlag();
     }
 
-    public void setBlocksdrop(boolean blocksdrop) {
-        this.blocksdrop.setFlag(blocksdrop);
+    public void setBlocksDrop(boolean blocksDrop) {
+        this.blocksDrop.setFlag(blocksDrop);
     }
 
     public String getMechanicName() {
@@ -901,20 +896,51 @@ public class Minigame implements ScriptObject {
         this.maxChestRandom.setFlag(maxChestRandom);
     }
 
-    public Location getRegenArea1() {
-        return regenArea1.getFlag();
+    public Collection<MgRegion> getRegenRegions() {
+        return regenRegions.getFlag().values();
     }
 
-    public void setRegenArea1(Location regenArea1) {
-        this.regenArea1.setFlag(regenArea1);
+    public MgRegion getRegenRegion(String name) {
+        return regenRegions.getFlag().get(name);
     }
 
-    public Location getRegenArea2() {
-        return regenArea2.getFlag();
+    public boolean removeRegenRegion(String name) {
+        return regenRegions.getFlag().remove(name) != null;
     }
 
-    public void setRegenArea2(Location regenArea2) {
-        this.regenArea2.setFlag(regenArea2);
+    /**
+     * checks if the limit of all regen regions together, if we are still under it, add the new region to the list
+     *
+     * @param newRegenRegion new regeneration region.
+     * @return true, if the max block limit was not reached.
+     */
+    public boolean setRegenRegion(MgRegion newRegenRegion) {
+        long numOfBlocksTotal = (long) Math.ceil(newRegenRegion.getVolume());
+
+        for (MgRegion region : regenRegions.getFlag().values()) {
+            numOfBlocksTotal += (long) Math.ceil(region.getVolume());
+        }
+
+        if (numOfBlocksTotal > maxBlocksRegenRegions.getFlag()) {
+            return false;
+        } else {
+            regenRegions.getFlag().put(newRegenRegion.getName(), newRegenRegion);
+            return true;
+        }
+    }
+
+    public boolean hasRegenArea() {
+        return !regenRegions.getFlag().isEmpty();
+    }
+
+    public boolean isInRegenArea(Location location) {
+        for (MgRegion region : regenRegions.getFlag().values()) {
+            if (region.isInRegen(location)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public int getRegenDelay() {
@@ -944,11 +970,11 @@ public class Minigame implements ScriptObject {
     }
 
     public boolean isAllowedEnderpearls() {
-        return allowEnderpearls.getFlag();
+        return allowEnderPearls.getFlag();
     }
 
-    public void setAllowEnderpearls(boolean allowEnderpearls) {
-        this.allowEnderpearls.setFlag(allowEnderpearls);
+    public void setAllowEnderPearls(boolean allowEnderPearls) {
+        this.allowEnderPearls.setFlag(allowEnderPearls);
     }
 
     public boolean isAllowedMPCheckpoints() {
@@ -987,12 +1013,12 @@ public class Minigame implements ScriptObject {
         this.objective.setFlag(objective);
     }
 
-    public String getGametypeName() {
-        return gametypeName.getFlag();
+    public String getGameTypeName() {
+        return gameTypeName.getFlag();
     }
 
-    public void setGametypeName(String gametypeName) {
-        this.gametypeName.setFlag(gametypeName);
+    public void setGameTypeName(String gameTypeName) {
+        this.gameTypeName.setFlag(gameTypeName);
     }
 
     public boolean canDisplayScoreboard() {
@@ -1011,9 +1037,13 @@ public class Minigame implements ScriptObject {
         allowDragonEggTeleport.setFlag(allow);
     }
 
-    public boolean getShowCompletionTime() {return showCompletionTime.getFlag();}
+    public boolean getShowCompletionTime() {
+        return showCompletionTime.getFlag();
+    }
 
-    public void setShowCompletionTime(boolean bool) {showCompletionTime.setFlag(bool);}
+    public void setShowCompletionTime(boolean bool) {
+        showCompletionTime.setFlag(bool);
+    }
 
     public StatSettings getSettings(MinigameStat stat) {
         StatSettings settings = statSettings.get(stat);
@@ -1047,19 +1077,21 @@ public class Minigame implements ScriptObject {
         itemsMain.add(usePermissions.getMenuItem("Use Permissions", Material.PAPER));
         List<String> mgTypes = new ArrayList<>();
         for (MinigameType val : MinigameType.values()) {
-            mgTypes.add(MinigameUtils.capitalize(val.toString().replace("_", " ")));
+            mgTypes.add(WordUtils.capitalize(val.toString().replace("_", " ")));
         }
         itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), mgTypes));
         List<String> scoreTypes = new ArrayList<>();
         for (GameMechanicBase val : GameMechanics.getGameMechanics()) {
-            scoreTypes.add(MinigameUtils.capitalize(val.getMechanic()));
+            scoreTypes.add(WordUtils.capitalize(val.getMechanic()));
         }
-        itemsMain.add(new MenuItemList("Game Mechanic", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<String>() {
+        itemsMain.add(new MenuItemList("Game Mechanic", List.of("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<>() {
 
             @Override
             public String getValue() {
-                return MinigameUtils.capitalize(mechanic.getFlag());
-            }            @Override
+                return WordUtils.capitalize(mechanic.getFlag());
+            }
+
+            @Override
             public void setValue(String value) {
                 mechanic.setFlag(value.toLowerCase());
             }
@@ -1079,7 +1111,7 @@ public class Minigame implements ScriptObject {
         MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
         obj.setAllowNull(true);
         itemsMain.add(obj);
-        obj = (MenuItemString) gametypeName.getMenuItem("Gametype Description", Material.OAK_WALL_SIGN);
+        obj = (MenuItemString) gameTypeName.getMenuItem("Gametype Description", Material.OAK_WALL_SIGN);
         obj.setAllowNull(true);
         itemsMain.add(obj);
         obj = (MenuItemString) displayName.getMenuItem("Display Name", Material.OAK_WALL_SIGN);
@@ -1097,12 +1129,14 @@ public class Minigame implements ScriptObject {
                 .OAK_DOOR, lobby));
         itemsMain.add(new MenuItemNewLine());
         itemsMain.add(new MenuItemTime("Time Length", MinigameUtils.stringToList("Multiplayer Only"), Material.CLOCK, new
-                Callback<Integer>() {
+                Callback<>() {
 
                     @Override
                     public Integer getValue() {
                         return timer.getFlag();
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setValue(Integer value) {
                         timer.setFlag(value);
                     }
@@ -1112,12 +1146,14 @@ public class Minigame implements ScriptObject {
         itemsMain.add(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
         itemsMain.add(new MenuItemTime("Start Wait Time", MinigameUtils.stringToList("Multiplayer Only"), Material
                 .CLOCK,
-                new Callback<Integer>() {
+                new Callback<>() {
 
                     @Override
                     public Integer getValue() {
                         return startWaitTime.getFlag();
-                    }                    @Override
+                    }
+
+                    @Override
                     public void setValue(Integer value) {
                         startWaitTime.setFlag(value);
                     }
@@ -1137,12 +1173,14 @@ public class Minigame implements ScriptObject {
         floorDegenOpt.add("Inward");
         floorDegenOpt.add("Circle");
         floorDegenOpt.add("Random");
-        itemsMain.add(new MenuItemList("Floor Degenerator Type", floorDegenDes, Material.SNOW_BLOCK, new Callback<String>() {
+        itemsMain.add(new MenuItemList("Floor Degenerator Type", floorDegenDes, Material.SNOW_BLOCK, new Callback<>() {
 
             @Override
             public String getValue() {
-                return MinigameUtils.capitalize(degenType.getFlag());
-            }            @Override
+                return WordUtils.capitalize(degenType.getFlag());
+            }
+
+            @Override
             public void setValue(String value) {
                 degenType.setFlag(value.toLowerCase());
             }
@@ -1156,12 +1194,14 @@ public class Minigame implements ScriptObject {
         itemsMain.add(degenRandomChance.getMenuItem("Random Floor Degen Chance", Material.SNOW, degenRandDes, 1, 100));
         itemsMain.add(floorDegenTime.getMenuItem("Floor Degenerator Delay", Material.CLOCK, 1, null));
         itemsMain.add(new MenuItemTime("Regeneration Delay", MinigameUtils.stringToList("Time in seconds before;" +
-                "Minigame regeneration starts"), Material.CLOCK, new Callback<Integer>() {
+                "Minigame regeneration starts"), Material.CLOCK, new Callback<>() {
 
             @Override
             public Integer getValue() {
                 return regenDelay.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Integer value) {
                 regenDelay.setFlag(value);
             }
@@ -1170,9 +1210,9 @@ public class Minigame implements ScriptObject {
         }, 0, null));
         itemsMain.add(new MenuItemNewLine());
         itemsMain.add(new MenuItemPage("Player Settings", Material.SKELETON_SKULL, playerMenu));
-        List<String> thDes = new ArrayList<>();
-        thDes.add("Treasure hunt related");
-        thDes.add("settings.");
+//        List<String> thDes = new ArrayList<>();
+//        thDes.add("Treasure hunt related");
+//        thDes.add("settings.");
 //        itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
 //        MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
 //        defLoad.setAllowDelete(false);
@@ -1221,16 +1261,16 @@ public class Minigame implements ScriptObject {
         List<MenuItem> itemsPlayer = new ArrayList<>(20);
         List<String> gmopts = new ArrayList<>();
         for (GameMode gm : GameMode.values()) {
-            gmopts.add(MinigameUtils.capitalize(gm.toString()));
+            gmopts.add(WordUtils.capitalize(gm.toString()));
         }
         itemsPlayer.add(new MenuItemList("Players Gamemode", Material.CRAFTING_TABLE, getDefaultGamemodeCallback(), gmopts));
-        itemsPlayer.add(allowEnderpearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));
+        itemsPlayer.add(allowEnderPearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));
         itemsPlayer.add(itemDrops.getMenuItem("Allow Item Drops", Material.DIAMOND_SWORD));
         itemsPlayer.add(deathDrops.getMenuItem("Allow Death Drops", Material.SKELETON_SKULL));
         itemsPlayer.add(itemPickup.getMenuItem("Allow Item Pickup", Material.DIAMOND));
         itemsPlayer.add(blockBreak.getMenuItem("Allow Block Break", Material.DIAMOND_PICKAXE));
         itemsPlayer.add(blockPlace.getMenuItem("Allow Block Place", Material.STONE));
-        itemsPlayer.add(blocksdrop.getMenuItem("Allow Block Drops", Material.COBBLESTONE));
+        itemsPlayer.add(blocksDrop.getMenuItem("Allow Block Drops", Material.COBBLESTONE));
         itemsPlayer.add(lives.getMenuItem("Lives", Material.APPLE, null));
         itemsPlayer.add(paintBallMode.getMenuItem("Paintball Mode", Material.SNOWBALL));
         itemsPlayer.add(paintBallDamage.getMenuItem("Paintball Damage", Material.ARROW, 1, null));
@@ -1420,7 +1460,7 @@ public class Minigame implements ScriptObject {
         getScoreboardData().loadDisplays(minigame, this);
 
         ListenableFuture<Map<MinigameStat, StatSettings>> settingsFuture = Minigames.getPlugin().getBackend().loadStatSettings(this);
-        Minigames.getPlugin().getBackend().addServerThreadCallback(settingsFuture, new FutureCallback<Map<MinigameStat, StatSettings>>() {
+        Minigames.getPlugin().getBackend().addServerThreadCallback(settingsFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(Map<MinigameStat, StatSettings> result) {
                 statSettings.clear();
@@ -1430,7 +1470,7 @@ public class Minigame implements ScriptObject {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(@NotNull Throwable t) {
                 t.printStackTrace();
             }
         });

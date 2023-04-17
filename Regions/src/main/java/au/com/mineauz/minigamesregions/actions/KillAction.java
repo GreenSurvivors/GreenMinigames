@@ -1,13 +1,12 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class KillAction extends AbstractAction {
 
@@ -40,7 +39,7 @@ public class KillAction extends AbstractAction {
 				Node node) {
 			debug(player,node);
 			if(player == null || !player.isInMinigame()) return;
-			if(!player.isDead())
+			if(!player.isLiving())
 				player.getPlayer().setHealth(0.0);
 		}
 
@@ -48,7 +47,7 @@ public class KillAction extends AbstractAction {
 		public void executeRegionAction(MinigamePlayer player, Region region) {
 			debug(player,region);
 			if(player == null || !player.isInMinigame()) return;
-			if(!player.isDead())
+			if(player.isLiving())
 				player.getPlayer().setHealth(0.0);
 		}
 

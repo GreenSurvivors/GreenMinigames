@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.blockRecorder;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.Position;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-
 import io.papermc.lib.PaperLib;
 import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 import org.bukkit.*;
@@ -17,7 +17,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.data.Hangable;
-import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
@@ -31,9 +30,9 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class RecorderData implements Listener {
-    private static Minigames plugin;
     private static final ArrayList<Material> supportedMats = new ArrayList<>();
     private static final ArrayList<Tag<Material>> supportedTags = new ArrayList<>();
+    private static Minigames plugin;
 
     static {
         supportedMats.add(Material.WATER);
@@ -71,11 +70,11 @@ public class RecorderData implements Listener {
     }
 
     private final Minigame minigame;
+    private final Map<UUID, EntityData> entdata = new HashMap<>();
+    private final List<Material> wbBlocks = new ArrayList<>();
     private boolean whitelistMode = false;
     private boolean hasCreatedRegenBlocks = false;
     private Map<Position, MgBlockData> blockdata = new HashMap<>();
-    private final Map<UUID, EntityData> entdata = new HashMap<>();
-    private final List<Material> wbBlocks = new ArrayList<>();
 
     public RecorderData(Minigame minigame) {
         plugin = Minigames.getPlugin();
@@ -159,19 +158,20 @@ public class RecorderData implements Listener {
                             secondChest.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
                     }
                 } else if (invHolder instanceof Chest) {
-                        addInventory(bdata, invHolder);
-                        if (minigame.isRandomizeChests())
-                            bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
+                    addInventory(bdata, invHolder);
+                    if (minigame.isRandomizeChests())
+                        bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
                 } else {
                     addInventory(bdata, invHolder);
                 }
             }
 
             blockdata.put(pos, bdata);
+
             return bdata;
         } else { //already known
             //set last modifier of a not random inventory
-            if (block.getType() != Material.CHEST || !blockdata.get(pos).hasRandomized()){
+            if (block.getType() != Material.CHEST || !blockdata.get(pos).hasRandomized()) {
                 blockdata.get(pos).setModifier(modifier);
             }
 
@@ -189,8 +189,8 @@ public class RecorderData implements Listener {
     //add an entity to get reset
     public void addEntity(Entity ent, MinigamePlayer player, boolean created) {
         EntityData oldData = entdata.get(ent.getUniqueId());
-        if (oldData != null){
-            if (oldData.wasCreated() && !created){
+        if (oldData != null) {
+            if (oldData.wasCreated() && !created) {
                 entdata.remove(ent.getUniqueId());
 
                 return;
@@ -229,8 +229,8 @@ public class RecorderData implements Listener {
         if (modifier == null) {
             minigame.setState(MinigameState.REGENERATING);
         }
-
         Iterator<MgBlockData> it = blockdata.values().iterator();
+
         final List<MgBlockData> baseBlocks = Lists.newArrayList();
         final List<MgBlockData> gravityBlocks = Lists.newArrayList();
         final List<MgBlockData> attachableBlocks = Lists.newArrayList();
@@ -342,44 +342,10 @@ public class RecorderData implements Listener {
         return false;
     }
 
-    public boolean hasRegenArea() {
-        return minigame.getRegenArea1() != null && minigame.getRegenArea2() != null;
-    }
-
-    public double getRegenMinX() {
-        return Math.min(minigame.getRegenArea1().getX(), minigame.getRegenArea2().getX());
-    }
-
-    public double getRegenMaxX() {
-        return Math.max(minigame.getRegenArea1().getX(), minigame.getRegenArea2().getX());
-    }
-
-    public double getRegenMinY() {
-        return Math.min(minigame.getRegenArea1().getY(), minigame.getRegenArea2().getY());
-    }
-
-    public double getRegenMaxY() {
-        return Math.max(minigame.getRegenArea1().getY(), minigame.getRegenArea2().getY());
-    }
-
-    public double getRegenMinZ() {
-        return Math.min(minigame.getRegenArea1().getZ(), minigame.getRegenArea2().getZ());
-    }
-
-    public double getRegenMaxZ() {
-        return Math.max(minigame.getRegenArea1().getZ(), minigame.getRegenArea2().getZ());
-    }
-
-    public boolean isInRegenArea(Location location) {
-        return location.getWorld() == minigame.getRegenArea1().getWorld() &&
-                location.getBlockX() >= getRegenMinX() && location.getBlockX() <= getRegenMaxX() &&
-                location.getBlockY() >= getRegenMinY() && location.getBlockY() <= getRegenMaxY() &&
-                location.getBlockZ() >= getRegenMinZ() && location.getBlockZ() <= getRegenMaxZ();
-    }
-
     public void saveAllBlockData() { //todo save entity data as well and use hasData() instead of blockdata.isEmpty()
-        if (blockdata.isEmpty())
+        if (blockdata.isEmpty()) {
             return;
+        }
 
         File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
 
@@ -417,15 +383,15 @@ public class RecorderData implements Listener {
             GsonBuilder gsonBuilder = new GsonBuilder();
             JsonDeserializer<Position> deserializer = (json, typeOfT, context) -> {
                 try {
-                String posStr = json.getAsString(); //throws JsonParseException
+                    String posStr = json.getAsString(); //throws JsonParseException
 
-                 String[] args = posStr.split(":");
-                 if (args.length < 3){
-                     throw new JsonParseException("'" + posStr + "' is not a valid position.");
-                 }
+                    String[] args = posStr.split(":");
+                    if (args.length < 3) {
+                        throw new JsonParseException("'" + posStr + "' is not a valid position.");
+                    }
 
-                return new Position(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
-                } catch (JsonParseException | NumberFormatException exception){
+                    return new Position(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
+                } catch (JsonParseException | NumberFormatException exception) {
                     exception.printStackTrace();
                     return null;
                 }
@@ -470,7 +436,7 @@ public class RecorderData implements Listener {
             while (br.ready()) {
                 line = br.readLine();
 
-                blocks = line.split("\\}\\{");
+                blocks = line.split("}\\{");
 
                 for (String bl : blocks) {
                     args.clear();
