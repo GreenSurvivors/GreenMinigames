@@ -20,7 +20,7 @@ public abstract class Backend {
     public abstract boolean initialize(ConfigurationSection config, boolean debug);
 
     /**
-     * Shutsdown the backend cleaning up resources
+     * Shutdown the backend cleaning up resources
      */
     public abstract void shutdown();
 

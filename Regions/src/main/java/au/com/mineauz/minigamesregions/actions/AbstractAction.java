@@ -10,10 +10,6 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 19/12/2017.
- */
 public abstract class AbstractAction implements ActionInterface {
     /**
      * Logs Debug re these 2 items.

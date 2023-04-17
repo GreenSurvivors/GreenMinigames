@@ -6,11 +6,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 13/02/2017.
- */
 public class AbstractMinigameEvent extends Event implements Cancellable {
-
     private static final HandlerList HANDLERS = new HandlerList();
     private final Minigame mgm;
     private boolean cancelled = false;
