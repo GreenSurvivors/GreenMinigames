@@ -104,7 +104,7 @@ public class Minigame implements ScriptObject {
 
     private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions", "regenarea.1", "regenarea.2");
     private final IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
-    private final IntegerFlag maxAmountRegenRegions = new IntegerFlag(300000, "maxAmountRegenRegions");
+    private final IntegerFlag maxBlocksRegenRegions = new IntegerFlag(300000, "maxBlocksRegenRegions");
 
     private final Map<String, MinigameModule> modules = new HashMap<>();
     private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
@@ -225,6 +225,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(randomizeChests);
         addConfigFlag(regenRegions);
         addConfigFlag(regenDelay);
+        addConfigFlag(maxBlocksRegenRegions);
         addConfigFlag(saveCheckpoints);
         addConfigFlag(mechanic);
         addConfigFlag(spMaxPlayers);
@@ -916,7 +917,7 @@ public class Minigame implements ScriptObject {
             numOfBlocksTotal += (long) Math.ceil(region.getVolume());
         }
 
-        if (numOfBlocksTotal > maxAmountRegenRegions.getFlag()) {
+        if (numOfBlocksTotal > maxBlocksRegenRegions.getFlag()) {
             return false;
         } else {
             regenRegions.getFlag().put(newRegenRegion.getName(), newRegenRegion);

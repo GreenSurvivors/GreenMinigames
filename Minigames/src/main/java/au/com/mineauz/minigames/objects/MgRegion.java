@@ -110,8 +110,6 @@ public class MgRegion {
                 location.getBlockZ() >= getMinZ() && location.getBlockZ() <= getMaxZ();
     }
 
-    //todo ab 4-5 chunk großen Regionen mit subchunks arbeiten
-    //todo max 300.000 blocks
     public double getBaseArea() {
         return Math.abs((pos1.x() - pos2.x()) * (pos1.z() - pos2.z()));
     }
