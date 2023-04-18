@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.*;
@@ -91,8 +92,13 @@ public class SwapBlockAction extends AbstractAction {
                                 facing = ((Directional) data).getFacing();
                             }
                         }
-                        if (newBlockData instanceof Directional)
+                        if (newBlockData instanceof Directional) {
                             ((Directional) newBlockData).setFacingDirection(facing);
+                        }
+
+                        RecorderData data = player.getMinigame().getRecorderData();
+                        data.addBlock(block, null);
+
                         // Update block type
                         block.setBlockData(newBlockData);
                     }
