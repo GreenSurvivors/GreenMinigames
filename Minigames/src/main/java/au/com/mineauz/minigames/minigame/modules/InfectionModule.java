@@ -1,17 +1,13 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.*;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
-import org.apache.commons.lang.WordUtils;
+import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -174,10 +170,6 @@ public class InfectionModule extends MinigameModule {
             return null;
     }
 
-    public TeamColor getDefaultInfectedTeam() {
-        return TeamColor.matchColor(infectedTeam.getDefaultFlag());
-    }
-
     public void setInfectedTeam(String iTeam) {
         if (iTeam != null) {
             if (iTeam.equalsIgnoreCase("None")) {
@@ -190,6 +182,10 @@ public class InfectionModule extends MinigameModule {
                 this.infectedTeam.setFlag(null);
         } else
             this.infectedTeam.setFlag(null);
+    }
+
+    public TeamColor getDefaultInfectedTeam() {
+        return TeamColor.matchColor(infectedTeam.getDefaultFlag());
     }
 
     public TeamColor getSurvivorTeam() {
@@ -205,10 +201,6 @@ public class InfectionModule extends MinigameModule {
             return null;
     }
 
-    public TeamColor getDefaultSurvivorTeam() {
-        return TeamColor.matchColor(survivorTeam.getDefaultFlag());
-    }
-
     public void setSurvivorTeam(String sTeam) {
         if (sTeam != null) {
             if (sTeam.equalsIgnoreCase("None")) {
@@ -221,6 +213,10 @@ public class InfectionModule extends MinigameModule {
                 this.survivorTeam.setFlag(null);
         } else
             this.survivorTeam.setFlag(null);
+    }
+
+    public TeamColor getDefaultSurvivorTeam() {
+        return TeamColor.matchColor(survivorTeam.getDefaultFlag());
     }
 
     public void addInfectedPlayer(MinigamePlayer ply) {
