@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -66,7 +65,7 @@ public class InfectionModule extends MinigameModule {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 
         m.addItem(infectedPercent.getMenuItem("Infected Percent", Material.ZOMBIE_HEAD,
-                MinigameUtils.stringToList("The percentage of players;chosen to start as;infected"), 1, 99));
+                List.of("The percentage of players", "chosen to start as", "infected"), 1, 99));
         m.displayMenu(previous.getViewer());
         return true;
     }
