@@ -92,8 +92,6 @@ public class SetCommand implements ICommand {
         registerSetCommand(new SetInfectedPercentCommand());
         registerSetCommand(new SetGameOverCommand());
         registerSetCommand(new SetDisplayScoreboardCommand());
-        registerSetCommand(new SetInfectedTeamCommand());
-        registerSetCommand(new SetSurvivorTeamCommand());
 
         if (plugin.getConfig().getBoolean("outputCMDToFile")) {
             try {
