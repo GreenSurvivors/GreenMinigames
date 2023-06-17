@@ -33,38 +33,41 @@ public class RegionFlag extends Flag<MgRegion> {
 
     @Override
     public void saveValue(String path, FileConfiguration config) {
-        config.set(path + "." + getName() + ".name", getFlag().getName());
-        config.set(path + "." + getName() + ".world", getFlag().getWorld().getName());
-        config.set(path + "." + getName() + ".pos1", getFlag().getPos1().x() + ":" + getFlag().getPos1().y() + ":" + getFlag().getPos1().z());
-        config.set(path + "." + getName() + ".pos2", getFlag().getPos2().x() + ":" + getFlag().getPos2().y() + ":" + getFlag().getPos2().z());
+        config.set(path + "." + getName(), getFlag() == null ? null : getFlag());
     }
 
     @Override
     public void loadValue(String path, FileConfiguration config) {
-        String name = config.getString(path + "." + getName() + ".name");
-        if (name != null) {
-            String world = config.getString(path + "." + getName() + ".world");
+        MgRegion region = config.getObject(path + "." + getName(), MgRegion.class);
+        setFlag(region);
 
-            String[] sliptPos1 = config.getString(path + "." + getName() + ".pos1").split(":");
-            String[] sliptPos2 = config.getString(path + "." + getName() + ".pos2").split(":");
+        if (region == null) {
+            //todo remove next release - this was just a temporary snapshot thing.
+            String name = config.getString(path + "." + getName() + ".name");
+            if (name != null) {
+                String world = config.getString(path + "." + getName() + ".world");
 
-            double x1 = Double.parseDouble(sliptPos1[0]);
-            double y1 = Double.parseDouble(sliptPos1[1]);
-            double z1 = Double.parseDouble(sliptPos1[2]);
+                String[] sliptPos1 = config.getString(path + "." + getName() + ".pos1").split(":");
+                String[] sliptPos2 = config.getString(path + "." + getName() + ".pos2").split(":");
 
-            double x2 = Double.parseDouble(sliptPos2[0]);
-            double y2 = Double.parseDouble(sliptPos2[1]);
-            double z2 = Double.parseDouble(sliptPos2[2]);
+                double x1 = Double.parseDouble(sliptPos1[0]);
+                double y1 = Double.parseDouble(sliptPos1[1]);
+                double z1 = Double.parseDouble(sliptPos1[2]);
 
-            setFlag(new MgRegion(Bukkit.getWorld(world), name, new Position(x1, y1, z1), new Position(x2, y2, z2)));
-        } else {
-            //import legacy regions from before regions existed
-            if (legacyFistPointLabel != null && legacySecondPointLabel != null) {
-                SimpleLocationFlag locFlag1 = new SimpleLocationFlag(null, legacyFistPointLabel);
-                SimpleLocationFlag locFlag2 = new SimpleLocationFlag(null, legacySecondPointLabel);
+                double x2 = Double.parseDouble(sliptPos2[0]);
+                double y2 = Double.parseDouble(sliptPos2[1]);
+                double z2 = Double.parseDouble(sliptPos2[2]);
 
-                if (locFlag1.getFlag() != null && locFlag2.getFlag() != null) {
-                    setFlag(new MgRegion("legacy", locFlag1.getFlag(), locFlag2.getFlag()));
+                setFlag(new MgRegion(Bukkit.getWorld(world), name, new Position(x1, y1, z1), new Position(x2, y2, z2)));
+            } else { //todo end of snapshot code
+                //import legacy regions from before regions existed
+                if (legacyFistPointLabel != null && legacySecondPointLabel != null) {
+                    SimpleLocationFlag locFlag1 = new SimpleLocationFlag(null, legacyFistPointLabel);
+                    SimpleLocationFlag locFlag2 = new SimpleLocationFlag(null, legacySecondPointLabel);
+
+                    if (locFlag1.getFlag() != null && locFlag2.getFlag() != null) {
+                        setFlag(new MgRegion("legacy", locFlag1.getFlag(), locFlag2.getFlag()));
+                    }
                 }
             }
         }

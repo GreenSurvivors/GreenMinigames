@@ -2,14 +2,19 @@ package au.com.mineauz.minigames.objects;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 //io.papermc.paper.math.FinePosition
 //please note: This is a copy of an experimental implementation. It is most likely not compatible with later versions or even the original.
-public record Position(double x, double y, double z) {
+public record Position(double x, double y, double z) implements ConfigurationSerializable {
 
     /**
      * Creates a position at the coordinates
@@ -164,5 +169,48 @@ public record Position(double x, double y, double z) {
     @Contract(value = "_ -> new", pure = true)
     public @NotNull Location toLocation(@NotNull World world) {
         return new Location(world, this.x(), this.y(), this.z());
+    }
+
+    /**
+     * Creates a Map representation of this class.
+     *
+     * @return Map containing the current state of this class
+     */
+    @Override
+    public @NotNull Map<String, Object> serialize() {
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("x", this.x);
+        result.put("y", this.y);
+        result.put("z", this.z);
+
+        return result;
+    }
+
+    /**
+     * tries to recreate a position from a map representation
+     *
+     * @return the fitting position or null if it fails.
+     */
+    public static @Nullable Position deserialize(@Nullable Map<String, Object> map) {
+        if (map != null) {
+            Double x = null, y = null, z = null;
+
+            if (map.get("x") instanceof Number numX) {
+                x = numX.doubleValue();
+            }
+            if (map.get("y") instanceof Number numY) {
+                y = numY.doubleValue();
+            }
+            if (map.get("z") instanceof Number numZ) {
+                z = numZ.doubleValue();
+            }
+
+            if (x != null && y != null && z != null) {
+                return new Position(x, y, z);
+            }
+        }
+
+        return null;
     }
 }

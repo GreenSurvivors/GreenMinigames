@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class MinigameUtils {
@@ -51,47 +52,16 @@ public class MinigameUtils {
      * displayed.
      *
      * @param time  - The time in seconds to be converted
-     * @param small - If the time should be shortened to: hh:mm:ss
+     * @param small - If the time should be shortened to: ww:dd:hh:mm:ss
      * @return A message with a neat time
      */
-    public static String convertTime(int time, boolean small) {
-        int weeks = 0;
-        int days = 0;
-        int hours = 0;
-        int minutes = 0;
-        int seconds = 0;
-        int rtime = time;
+    public static String convertTime(long time, boolean small) {
+        long weeks = TimeUnit.SECONDS.toDays(time) / 7;
+        long days = TimeUnit.SECONDS.toDays(time) % 7;
+        long hours = TimeUnit.SECONDS.toHours(time) % 24;
+        long minutes = TimeUnit.SECONDS.toMinutes(time) % 60;
+        long seconds = time % 60;
         String msg = "";
-
-        if (time > 604800) {
-            weeks = rtime / 604800;
-            rtime = rtime - weeks * 604800;
-            days = rtime / 86400;
-            rtime = rtime - days * 86400;
-            hours = rtime / 3600;
-            rtime = rtime - hours * 3600;
-            minutes = rtime / 60;
-            rtime = rtime - minutes * 60;
-            seconds = rtime;
-        } else if (time > 86400) {
-            days = rtime / 86400;
-            rtime = rtime - days * 86400;
-            hours = rtime / 3600;
-            rtime = rtime - hours * 3600;
-            minutes = rtime / 60;
-            rtime = rtime - minutes * 60;
-            seconds = rtime;
-        } else if (time > 3600) {
-            hours = rtime / 3600;
-            rtime = rtime - hours * 3600;
-            minutes = rtime / 60;
-            seconds = rtime - minutes * 60;
-        } else if (time > 60) {
-            minutes = time / 60;
-            seconds = rtime - minutes * 60;
-        } else {
-            seconds = time;
-        }
 
         if (weeks != 0) {
             if (!small)
@@ -316,7 +286,6 @@ public class MinigameUtils {
 
         //was not in hands, search in inventory.
         for (ItemStack item : player.getPlayer().getInventory().getContents()) {
-            ;
             if (isMinigameTool(item)) {
                 return new MinigameTool(item);
             }

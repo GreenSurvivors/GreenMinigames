@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.*;
@@ -57,16 +56,8 @@ public class RegionModule extends MinigameModule {
         Set<String> rs = regions.keySet();
         for (String name : rs) {
             Region r = regions.get(name);
-            Map<String, Object> sloc = MinigameUtils.serializeLocation(r.getFirstPoint());
-            for (String i : sloc.keySet()) {
-                if (!i.equals("yaw") && !i.equals("pitch"))
-                    config.set(getMinigame() + ".regions." + name + ".point1." + i, sloc.get(i));
-            }
-            sloc = MinigameUtils.serializeLocation(r.getSecondPoint());
-            for (String i : sloc.keySet()) {
-                if (!i.equals("yaw") && !i.equals("pitch"))
-                    config.set(getMinigame() + ".regions." + name + ".point2." + i, sloc.get(i));
-            }
+
+            config.set(getMinigame() + ".regions." + name + ".region", r);
 
             if (r.getTickDelay() != 20) {
                 config.set(getMinigame() + ".regions." + name + ".tickDelay", r.getTickDelay());
@@ -136,25 +127,43 @@ public class RegionModule extends MinigameModule {
         }
     }
 
+    /**
+     * loads the legacy way of saving a (Mg)region
+     *
+     * @param config config file where the region was saved
+     * @param name   name of the region to get its path
+     * @return
+     */
+    private Region getLegacyRegion(FileConfiguration config, String name) {
+        String cloc1 = getMinigame() + ".regions." + name + ".point1.";
+        String cloc2 = getMinigame() + ".regions." + name + ".point2.";
+        World w1 = Minigames.getPlugin().getServer().getWorld(config.getString(cloc1 + "world"));
+        World w2 = Minigames.getPlugin().getServer().getWorld(config.getString(cloc2 + "world"));
+        double x1 = config.getDouble(cloc1 + "x");
+        double x2 = config.getDouble(cloc2 + "x");
+        double y1 = config.getDouble(cloc1 + "y");
+        double y2 = config.getDouble(cloc2 + "y");
+        double z1 = config.getDouble(cloc1 + "z");
+        double z2 = config.getDouble(cloc2 + "z");
+        Location loc1 = new Location(w1, x1, y1, z1);
+        Location loc2 = new Location(w2, x2, y2, z2);
+
+        return new Region(name, loc1, loc2);
+    }
+
     @Override
     public void load(FileConfiguration config) {
         if (config.contains(getMinigame() + ".regions")) {
             Set<String> rs = config.getConfigurationSection(getMinigame() + ".regions").getKeys(false);
             for (String name : rs) {
-                String cloc1 = getMinigame() + ".regions." + name + ".point1.";
-                String cloc2 = getMinigame() + ".regions." + name + ".point2.";
-                World w1 = Minigames.getPlugin().getServer().getWorld(config.getString(cloc1 + "world"));
-                World w2 = Minigames.getPlugin().getServer().getWorld(config.getString(cloc2 + "world"));
-                double x1 = config.getDouble(cloc1 + "x");
-                double x2 = config.getDouble(cloc2 + "x");
-                double y1 = config.getDouble(cloc1 + "y");
-                double y2 = config.getDouble(cloc2 + "y");
-                double z1 = config.getDouble(cloc1 + "z");
-                double z2 = config.getDouble(cloc2 + "z");
-                Location loc1 = new Location(w1, x1, y1, z1);
-                Location loc2 = new Location(w2, x2, y2, z2);
+                Region region = (Region) config.getObject(getMinigame() + ".regions." + name + ".region", MgRegion.class);
 
-                regions.put(name, new Region(name, loc1, loc2));
+                if (region == null) {
+                    region = getLegacyRegion(config, name);
+                }
+
+                regions.put(name, region);
+
                 Region r = regions.get(name);
                 if (config.contains(getMinigame() + ".regions." + name + ".tickDelay")) {
                     r.changeTickDelay(config.getLong(getMinigame() + ".regions." + name + ".tickDelay"));

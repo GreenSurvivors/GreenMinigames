@@ -1,16 +1,20 @@
 package au.com.mineauz.minigames.objects;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * This is the base class for all regions in the minigames plugin and its regions & nodes addon.
  * It is a cuboid region defined by 2 Positions, a World and a name
  */
-public class MgRegion {
+public class MgRegion implements ConfigurationSerializable {
     private final @NotNull String name;
     private @NotNull World world;
     private @NotNull Position pos1;
@@ -158,5 +162,89 @@ public class MgRegion {
                 "world=" + world + ", " +
                 "pos1=" + pos1 + ", " +
                 "pos2=" + pos2 + ']';
+    }
+
+    /**
+     * Creates a Map representation of this class.
+     *
+     * @return Map containing the current state of this class
+     */
+    @Override
+    public @NotNull Map<String, Object> serialize() {
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("name", name);
+        result.put("world", world.getName());
+        result.put("pos1", pos1.serialize());
+        result.put("pos2", pos2.serialize());
+
+        return result;
+    }
+
+    /**
+     * tries to recreate a MgRegion from a map representation
+     *
+     * @return the fitting MgRegion or null if it fails.
+     * @see ConfigurationSerializable
+     */
+    @NotNull
+    public static MgRegion deserialize(@NotNull Map<String, Object> map) {
+        String name;
+        World world;
+        Position pos1, pos2;
+
+        if (map.get("name") instanceof String temp) {
+            name = temp;
+        } else {
+            throw new IllegalArgumentException("no name");
+        }
+
+        if (map.get("world") instanceof String worldName) {
+            world = Bukkit.getWorld(worldName);
+
+            if (world == null) {
+                throw new IllegalArgumentException("unknown world");
+            }
+        } else {
+            throw new IllegalArgumentException("no world");
+        }
+
+        if (map.get("pos1") instanceof Map<?, ?> posObjMap) {
+            HashMap<String, Object> posStrMap = new HashMap<>();
+
+            for (Map.Entry<?, ?> objEntry : posObjMap.entrySet()) {
+                if (objEntry.getKey() instanceof String key) {
+                    posStrMap.put(key, objEntry.getValue());
+                }
+            }
+
+            pos1 = Position.deserialize(posStrMap);
+
+            if (pos1 == null) {
+                throw new IllegalArgumentException("broken position 1");
+            }
+        } else {
+            throw new IllegalArgumentException("no position 1");
+        }
+
+        if (map.get("pos2") instanceof Map<?, ?> posObjMap2) {
+            HashMap<String, Object> posStrMap = new HashMap<>();
+
+            for (Map.Entry<?, ?> objEntry : posObjMap2.entrySet()) {
+                if (objEntry.getKey() instanceof String key) {
+                    posStrMap.put(key, objEntry.getValue());
+                }
+            }
+
+            pos2 = Position.deserialize(posStrMap);
+
+            if (pos2 == null) {
+                throw new IllegalArgumentException("broken position 2");
+            }
+        } else {
+            throw new IllegalArgumentException("no position 2");
+        }
+
+        return new MgRegion(world, name, pos1, pos2);
     }
 }

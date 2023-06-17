@@ -11,7 +11,9 @@ import au.com.mineauz.minigames.managers.*;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
+import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.Position;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import au.com.mineauz.minigames.recorder.BasicRecorder;
 import au.com.mineauz.minigames.signs.SignBase;
@@ -75,6 +77,10 @@ public class Minigames extends JavaPlugin {
         super();
         log = this.getLogger();
         startUpHandler = new StartUpLogHandler();
+
+        //register ConfigurationSerializable
+        ConfigurationSerialization.registerClass(Position.class);
+        ConfigurationSerialization.registerClass(MgRegion.class);
     }
 
     protected Minigames(final JavaPluginLoader loader, final PluginDescriptionFile description, final File dataFolder, final File file) {
