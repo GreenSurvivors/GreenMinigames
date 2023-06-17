@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -51,26 +52,31 @@ public class SignBase implements Listener {
             signinfo[i] = ChatColor.stripColor(event.getLine(i));
         }
         if ("[minigame]".equalsIgnoreCase(signinfo[0]) || "[mgm]".equalsIgnoreCase(signinfo[0]) || "[mg]".equals(signinfo[0])) {
-            if (minigameSigns.containsKey(signinfo[1].toLowerCase())) {
-                event.setLine(0, ChatColor.DARK_BLUE + "[Minigame]");
-                MinigameSign mgSign = minigameSigns.get(signinfo[1].toLowerCase());
+            if (event.getSide() == Side.FRONT) {
+                if (minigameSigns.containsKey(signinfo[1].toLowerCase())) {
+                    event.setLine(0, ChatColor.DARK_BLUE + "[Minigame]");
+                    MinigameSign mgSign = minigameSigns.get(signinfo[1].toLowerCase());
 
-                if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
+                    if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
+                        event.setCancelled(true);
+                        event.getBlock().breakNaturally();
+                        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + mgSign.getCreatePermissionMessage());
+                        return;
+                    }
+
+                    if (!mgSign.signCreate(event)) {
+                        event.setCancelled(true);
+                        event.getBlock().breakNaturally();
+                        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Invalid Minigames sign!");
+                    }
+                } else {
+                    Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign!", MinigameMessageType.ERROR);
                     event.setCancelled(true);
                     event.getBlock().breakNaturally();
-                    event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + mgSign.getCreatePermissionMessage());
-                    return;
                 }
-
-                if (!mgSign.signCreate(event)) {
-                    event.setCancelled(true);
-                    event.getBlock().breakNaturally();
-                    event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Invalid Minigames sign!");
-                }
-            } else {
-                Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign!", MinigameMessageType.ERROR);
+            } else { //just gives an error but doesn't break the sign in case the front was important
+                Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign - used Backside!", MinigameMessageType.ERROR);
                 event.setCancelled(true);
-                event.getBlock().breakNaturally();
             }
         }
     }

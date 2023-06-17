@@ -10,6 +10,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 
 public class CTFFlag {
@@ -29,7 +30,7 @@ public class CTFFlag {
     public CTFFlag(Location spawn, Team team, Player carrier, Minigame minigame) {
         spawnLocation = spawn;
         spawnData = spawnLocation.getBlock().getState();
-        signText = ((Sign) spawnLocation.getBlock().getState()).getLines();
+        signText = ((Sign) spawnLocation.getBlock().getState()).getSide(Side.FRONT).getLines();
         this.team = team;
         this.setMinigame(minigame);
         respawnTime = Minigames.getPlugin().getConfig().getInt("multiplayer.ctf.flagrespawntime");
@@ -119,7 +120,7 @@ public class CTFFlag {
         atHome = false;
 
         for (int i = 0; i < 4; i++) {
-            sign.setLine(i, signText[i]);
+            sign.getSide(Side.FRONT).setLine(i, signText[i]);
         }
         sign.update();
         currentLocation = newLocation.clone();
@@ -155,7 +156,7 @@ public class CTFFlag {
         Sign sign = (Sign) spawnLocation.getBlock().getState();
 
         for (int i = 0; i < 4; i++) {
-            sign.setLine(i, signText[i]);
+            sign.getSide(Side.FRONT).setLine(i, signText[i]);
         }
         sign.update();
     }
