@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
@@ -30,7 +29,7 @@ public class MenuItemAddTeam extends MenuItem {
         MinigamePlayer ply = getContainer().getViewer();
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
-        ply.sendInfoMessage(MessageManager.getUnformattedMessage(null, "team.add"));
+        ply.sendMessage("Enter the color of the team you wish to add. All colors available below:", MinigameMessageType.INFO);
         List<String> teams = new ArrayList<>();
         for (TeamColor col : TeamColor.values())
             teams.add(col.getColor() + WordUtils.capitalize(col.toString().replace("_", " ")));
@@ -53,7 +52,7 @@ public class MenuItemAddTeam extends MenuItem {
 
                 getContainer().addItem(new MenuItemTeam(t.getChatColor() + t.getDisplayName(), t));
             } else {
-                getContainer().getViewer().sendInfoMessage(ChatColor.RED + MessageManager.getUnformattedMessage(null, "team.alreadyUsedColor"));
+                getContainer().getViewer().sendInfoMessage(ChatColor.RED + "A team already exists using that color!");
             }
 
             List<String> teams = new ArrayList<>(tm.getTeams().size() + 1);
@@ -72,7 +71,7 @@ public class MenuItemAddTeam extends MenuItem {
         getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());
 
-        getContainer().getViewer().sendMessage(MessageManager.getMessage(null, "team.invalidColor", entry.toLowerCase().replace("_", " ")), MinigameMessageType.ERROR);
+        getContainer().getViewer().sendMessage("There is no team color by the name of " + entry.toLowerCase().replace("_", " "), MinigameMessageType.ERROR);
     }
 
 }
