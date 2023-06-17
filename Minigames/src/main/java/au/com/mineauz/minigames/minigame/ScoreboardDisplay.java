@@ -344,7 +344,7 @@ public class ScoreboardDisplay {
         }
 
         Block root = rootBlock.getBlock();
-        if (Tag.SIGNS.isTagged(root.getType()) || Tag.WALL_SIGNS.isTagged(root.getType())) {
+        if (Tag.ALL_SIGNS.isTagged(root.getType())) {
             BlockState state = root.getState();
             if (state instanceof Sign sign) {
 

@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignBase implements Listener {
-
     private static final Map<String, MinigameSign> minigameSigns = new HashMap<>();
 
     static {
@@ -101,7 +100,7 @@ public class SignBase implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void signBreak(BlockBreakEvent event) {
-        if (Tag.SIGNS.isTagged(event.getBlock().getType()) || Tag.WALL_SIGNS.isTagged(event.getBlock().getType())) {
+        if (Tag.ALL_SIGNS.isTagged(event.getBlock().getType())) {
             Sign sign = (Sign) event.getBlock().getState();
             if (sign.getLine(0).equals(ChatColor.DARK_BLUE + "[Minigame]") &&
                     minigameSigns.containsKey(ChatColor.stripColor(sign.getLine(1).toLowerCase()))) {

@@ -103,7 +103,7 @@ public class Events implements Listener {
                     killer.addKill();
             }
 
-            if (!msg.equals("")) {
+            if (msg != null && !msg.equals("")) {
                 mdata.sendMinigameMessage(mgm, msg, MinigameMessageType.ERROR);
             }
             if (mgm.getState() == MinigameState.STARTED) {
@@ -240,7 +240,7 @@ public class Events implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void playerInterract(PlayerInteractEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 
@@ -266,7 +266,7 @@ public class Events implements Listener {
 
         if (event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("minigame.sign.use.details")) {
             Block cblock = event.getClickedBlock();
-            if (cblock.getState() instanceof Sign sign && !event.isCancelled()) {
+            if (cblock.getState() instanceof Sign sign) {
                 if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")) {
                     if ((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !ply.isInMinigame()) {
                         Minigame mgm = mdata.getMinigame(sign.getLine(2));
@@ -347,14 +347,15 @@ public class Events implements Listener {
         }
 
         ItemStack item = event.getItem();
-        if (item != null && MinigameUtils.isMinigameTool(item) && ply.getPlayer().hasPermission("minigame.tool")) {
+        //nullcheck in isMinigameTool()
+        if (MinigameUtils.isMinigameTool(item) && ply.getPlayer().hasPermission("minigame.tool")) {
             MinigameTool tool = new MinigameTool(item);
             event.setCancelled(true);
 
             if (event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
                 tool.openMenu(ply);
                 event.setCancelled(true);
-            } else if (event.getClickedBlock() != null && (Tag.WALL_SIGNS.isTagged(event.getClickedBlock().getType()) || Tag.SIGNS.isTagged(event.getClickedBlock().getType()))) {
+            } else if (event.getClickedBlock() != null && (Tag.ALL_SIGNS.isTagged(event.getClickedBlock().getType()))) {
                 Sign sign = (Sign) event.getClickedBlock().getState();
                 if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")) {
                     Minigame minigame = mdata.getMinigame(sign.getLine(2));

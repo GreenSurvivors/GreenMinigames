@@ -96,8 +96,7 @@ public class CTFFlag {
         }
 
         if (blockBelow.getBlock().getState() instanceof Container ||
-                Tag.SIGNS.isTagged(blockBelow.getBlock().getType()) ||
-                Tag.WALL_SIGNS.isTagged(blockBelow.getBlock().getType())) {
+                Tag.ALL_SIGNS.isTagged(blockBelow.getBlock().getType())) {
             blockBelow.setY(blockBelow.getY() + 1);
         }
 
