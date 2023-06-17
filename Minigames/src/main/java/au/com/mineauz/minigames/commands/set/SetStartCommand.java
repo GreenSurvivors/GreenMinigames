@@ -116,9 +116,9 @@ public class SetStartCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
         if (args.length == 1)
-            return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("red;blue;clear"), args[0]);
+            return MinigameUtils.tabCompleteMatch(List.of("red", "blue", "clear"), args[0]); //todo allow more colors
         else if (args.length == 2 && args[0].equalsIgnoreCase("clear"))
-            return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("red;blue"), args[1]);
+            return MinigameUtils.tabCompleteMatch(List.of("red", "blue"), args[1]);
         return null;
     }
 }
