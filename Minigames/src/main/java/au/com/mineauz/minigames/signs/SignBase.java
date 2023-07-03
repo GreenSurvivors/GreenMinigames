@@ -57,6 +57,8 @@ public class SignBase implements Listener {
                     event.setLine(0, ChatColor.DARK_BLUE + "[Minigame]");
                     MinigameSign mgSign = minigameSigns.get(signinfo[1].toLowerCase());
 
+                    ((Sign) event.getBlock().getState()).setWaxed(true);
+
                     if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
                         event.setCancelled(true);
                         event.getBlock().breakNaturally();

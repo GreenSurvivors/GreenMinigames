@@ -19,7 +19,9 @@ import au.com.mineauz.minigames.tool.MinigameTool;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.*;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -240,7 +242,7 @@ public class Events implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void playerInterract(PlayerInteractEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 
@@ -264,10 +266,12 @@ public class Events implements Listener {
             }
         }
 
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("minigame.sign.use.details")) {
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK && !(event.useInteractedBlock() == Event.Result.DENY)) {
             Block cblock = event.getClickedBlock();
-            if (cblock.getState() instanceof Sign sign) {
-                if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")) {
+            if (cblock.getState() instanceof Sign sign && sign.getSide(Side.FRONT).getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")) {
+                // wax signs automatically
+                sign.setWaxed(true);
+                if (event.getPlayer().hasPermission("minigame.sign.use.details")) {
                     if ((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !ply.isInMinigame()) {
                         Minigame mgm = mdata.getMinigame(sign.getLine(2));
                         if (mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
