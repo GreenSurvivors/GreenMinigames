@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Nullable;
 public class TakeFlagEvent extends AbstractCancellableMinigameEvent {
     private final @Nullable CTFFlag flag;
     private final String flagName;
-    private boolean displayMessage = true;
     private final MinigamePlayer player;
+    private boolean displayMessage = true;
 
     public TakeFlagEvent(Minigame minigame, MinigamePlayer player, @Nullable CTFFlag flag) {
         this(minigame, player, flag, null);
