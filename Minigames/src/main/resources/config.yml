@@ -34,19 +34,19 @@ disabledCommands:
   - home
   - warp
   - spawn
-  
+
 broadcastCompletion: true
 playSounds: true
-  
+
 regeneration:
   maxDelay: 10
-  
+
 updateChecker: false
 # Whether the plugin should check for updates
 
 lang: 'en_AU'
-# Select language
-  
+  # Select language
+
 backend:
   # Can be sqlite, or mysql
   type: sqlite
@@ -64,4 +64,4 @@ warnings: true
 outputCMDToFile: false
 
 minigames:
-  {}
+  { }

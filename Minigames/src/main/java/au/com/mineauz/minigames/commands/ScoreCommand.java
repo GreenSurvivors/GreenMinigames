@@ -9,6 +9,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +61,8 @@ public class ScoreCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args != null && args.length >= 2) {
             MinigamePlayer ply = null;
             TeamColor color = TeamColor.matchColor(args[1]);
@@ -151,7 +153,7 @@ public class ScoreCommand implements ICommand {
                             if (tmod.hasTeam(color)) {
                                 t = tmod.getTeam(color);
                                 t.setScore(score);
-                                sender.sendMessage(t.getChatColor() + t.getDisplayName() + ChatColor.GRAY + " score has been set to " + score);
+                                sender.sendMessage(t.getTextColor() + t.getDisplayName() + ChatColor.GRAY + " score has been set to " + score);
                             } else {
                                 sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");
                                 return true;
@@ -223,7 +225,7 @@ public class ScoreCommand implements ICommand {
                         if (tmod.hasTeam(color)) {
                             team = tmod.getTeam(color);
                             team.addScore(score);
-                            sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + team.getChatColor() + team.getDisplayName() +
+                            sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + team.getTextColor() + team.getDisplayName() +
                                     ChatColor.GRAY + " score, new score: " + team.getScore());
                         } else {
                             sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");

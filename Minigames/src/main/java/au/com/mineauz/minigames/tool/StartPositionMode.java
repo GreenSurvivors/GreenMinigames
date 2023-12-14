@@ -63,10 +63,10 @@ public class StartPositionMode implements ToolMode {
                 }
                 if (delLoc != null) {
                     team.getStartLocations().remove(delLoc);
-                    player.sendInfoMessage("Removed selected " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE +
+                    player.sendInfoMessage("Removed selected " + team.getTextColor() + team.getDisplayName() + ChatColor.WHITE +
                             " start location.");
                 } else {
-                    player.sendMessage("Could not find a " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE +
+                    player.sendMessage("Could not find a " + team.getTextColor() + team.getDisplayName() + ChatColor.WHITE +
                             " start location at that point.", MinigameMessageType.ERROR);
                 }
             } else {
@@ -97,7 +97,7 @@ public class StartPositionMode implements ToolMode {
             player.sendInfoMessage("Added start location for " + minigame);
         } else {
             team.addStartLocation(player.getLocation());
-            player.sendInfoMessage("Added " + team.getChatColor() +
+            player.sendInfoMessage("Added " + team.getTextColor() +
                     team.getDisplayName() + ChatColor.WHITE + " start location to " + minigame);
         }
     }
@@ -118,7 +118,7 @@ public class StartPositionMode implements ToolMode {
             for (Location loc : team.getStartLocations()) {
                 player.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL.createBlockData());
             }
-            player.sendInfoMessage("Selected " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE +
+            player.sendInfoMessage("Selected " + team.getTextColor() + team.getDisplayName() + ChatColor.WHITE +
                     " start points in " + minigame);
         } else {
             for (Location loc : minigame.getStartLocations()) {
@@ -135,7 +135,7 @@ public class StartPositionMode implements ToolMode {
             for (Location loc : team.getStartLocations()) {
                 player.getPlayer().sendBlockChange(loc, loc.getBlock().getBlockData());
             }
-            player.sendInfoMessage("Deselected " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE +
+            player.sendInfoMessage("Deselected " + team.getTextColor() + team.getDisplayName() + ChatColor.WHITE +
                     " start points in " + minigame);
         } else {
             for (Location loc : minigame.getStartLocations()) {

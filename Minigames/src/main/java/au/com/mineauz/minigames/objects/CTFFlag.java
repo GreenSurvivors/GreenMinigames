@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.objects;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import org.bukkit.*;
@@ -193,7 +193,7 @@ public class CTFFlag {
             for (MinigamePlayer pl : minigame.getPlayers()) {
                 if (getTeam() != null)
                     pl.sendInfoMessage(
-                            MessageManager.getMinigamesMessage("minigame.flag.returnedTeam", getTeam().getChatColor() + getTeam().getDisplayName() + ChatColor.WHITE));
+                            MinigameMessageManager.getMinigamesMessage("minigame.flag.returnedTeam", getTeam().getTextColor() + getTeam().getDisplayName() + ChatColor.WHITE));
                 else
                     pl.sendInfoMessage(MinigameUtils.getLang("minigame.flag.returnedNeutral"));
             }
