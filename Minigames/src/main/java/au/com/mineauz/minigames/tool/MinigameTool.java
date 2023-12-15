@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +107,7 @@ public class MinigameTool {
         addSetting(name, setting);
     }
 
-    public String getSetting(String name) {
+    public @NotNull String getSetting(@NotNull String name) {
         ItemMeta meta = tool.getItemMeta();
         List<String> lore = meta.getLore();
         for (String l : lore) {
