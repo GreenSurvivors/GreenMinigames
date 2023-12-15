@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import org.bukkit.ChatColor;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;

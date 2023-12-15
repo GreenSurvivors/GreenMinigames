@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.managers;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerLoadout;
@@ -12,6 +11,7 @@ import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
@@ -147,7 +147,7 @@ public class MinigameManager {
 
     }
 
-    public Minigame getMinigame(final String minigame) {
+    public @Nullable Minigame getMinigame(final @NotNull String minigame) {
         if (this.minigames.containsKey(minigame)) {
             return this.minigames.get(minigame);
         }
