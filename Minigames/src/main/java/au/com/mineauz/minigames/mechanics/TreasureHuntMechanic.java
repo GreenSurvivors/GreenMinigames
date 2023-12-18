@@ -164,7 +164,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         if (thm.getLocation() != null) {
             spawnTreasure(minigame);
 
-            if (Bukkit.getOnlinePlayers().size() == 0)
+            if (Bukkit.getOnlinePlayers().isEmpty())
                 minigame.getMinigameTimer().stopTimer();
         } else {
             if (caller == null)

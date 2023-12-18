@@ -35,7 +35,7 @@ public class SingleplayerType extends MinigameTypeBase {
     public boolean cannotStart(@NotNull Minigame mgm, @NotNull MinigamePlayer mgPlayer) {
         boolean cannotStart = mgm.isSpMaxPlayers() && mgm.getPlayers().size() >= mgm.getMaxPlayers();
         if (cannotStart) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_FULL);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_FULL);
         }
 
         return cannotStart;
@@ -48,7 +48,7 @@ public class SingleplayerType extends MinigameTypeBase {
         boolean result = mgPlayer.teleport(locs.get(0));
         if (plugin.getConfig().getBoolean("warnings") && mgPlayer.getPlayer().getWorld() != locs.get(0).getWorld() &&
                 mgPlayer.getPlayer().hasPermission("minigame.set.start")) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
         }
         return result;
     }
@@ -57,7 +57,7 @@ public class SingleplayerType extends MinigameTypeBase {
     public boolean joinMinigame(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {
 
         if (mgm.getLives() > 0 && !Float.isFinite(mgm.getLives())) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_LIVESLEFT,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_LIVESLEFT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(mgm.getLives())));
         }
         if (!mgm.isAllowedFlight()) {
@@ -151,7 +151,7 @@ public class SingleplayerType extends MinigameTypeBase {
             Minigame mgm = mgPlayer.getMinigame();
             if (mgm.getType() == MinigameType.SINGLEPLAYER) {
                 event.setRespawnLocation(mgPlayer.getCheckpoint());
-                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_CHECKPOINT_DEATHREVERT);
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_CHECKPOINT_DEATHREVERT);
 
                 mgPlayer.getLoadout().equiptLoadout(mgPlayer);
             }
