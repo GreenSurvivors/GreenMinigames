@@ -40,7 +40,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Manager Class of all players playing Minigames.
@@ -689,7 +688,7 @@ public class MinigamePlayerManager {
             }
             if (ResourcePackModule.getMinigameModule(minigame).isEnabled()) {
                 if (mgPlayer.applyResourcePack(plugin.getResourceManager().getResourcePack("empty"))) {
-                    Minigames.log().warning("Could not apply empty resource pack to " + mgPlayer.getDisplayName());
+                    Minigames.getCmpnntLogger().warn("Could not apply empty resource pack to " + mgPlayer.getDisplayName());
                 } else {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_RESSOURCEPACK_REMOVE);
                 }
@@ -764,7 +763,7 @@ public class MinigamePlayerManager {
             }
 
             if (minigame.getEndPosition() == null) {
-                Minigames.log().log(Level.WARNING, "The Minigame \"" + minigame.getName(false) + "\" has no end position!");
+                Minigames.getCmpnntLogger().warn("The Minigame \"" + minigame.getName(false) + "\" has no end position!");
             }
 
             for (MinigamePlayer mgWinner : winners) {
