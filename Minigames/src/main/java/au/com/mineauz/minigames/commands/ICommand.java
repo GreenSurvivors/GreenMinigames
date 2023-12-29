@@ -10,26 +10,41 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public interface ICommand {
-    //    public MinigamePlayerManager playerManager = Minigames.plugin.getPlayerData();
-//    public MinigameManager minigameManager = Minigames.plugin.getMinigameData();
     Minigames plugin = Minigames.getPlugin();
 
-    String getName();
+    @NotNull String getName();
 
-    String[] getAliases();
+    @NotNull String @Nullable [] getAliases();
 
     boolean canBeConsole();
 
-    Component getDescription();
+    @NotNull Component getDescription();
 
-    String[] getParameters();
+    @NotNull String @Nullable [] getParameters();
 
     Component getUsage();
 
-    String getPermission();
+    /**
+     * If this returns null, everyone should be able to use this command!
+     */
+    @Nullable String getPermission();
 
-    boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
+    /**
+     * @param sender
+     * @param minigame all set commands are guarantied to have not null minigame parameter. Everything else probably is null.
+     * @param label
+     * @param args
+     * @return
+     */
+    boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
                       @NotNull String label, @NotNull String @Nullable [] args);
 
-    List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args);
+    /**
+     * @param sender
+     * @param minigame
+     * @param alias    not null for all set commands, else wise may or may not be null
+     * @param args
+     * @return
+     */
+    List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String[] args);
 }

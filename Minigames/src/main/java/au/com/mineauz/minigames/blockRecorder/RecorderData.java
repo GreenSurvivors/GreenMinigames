@@ -8,8 +8,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import io.papermc.lib.PaperLib;
-import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 import io.papermc.paper.math.Position;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -147,16 +145,15 @@ public class RecorderData implements Listener {
     }
 
     public MgBlockData addBlock(Block block, MinigamePlayer modifier) {
-        BlockStateSnapshotResult blockstate = PaperLib.getBlockState(block, true);
-        return addBlock(blockstate.getState(), modifier);
+        return addBlock(block.getState(true), modifier);
     }
 
-    public MgBlockData addBlock(BlockState block, MinigamePlayer modifier) {
-        MgBlockData bdata = new MgBlockData(block, modifier);
-        Position pos = Position.block(block.getLocation());
+    public MgBlockData addBlock(BlockState blockstate, MinigamePlayer modifier) {
+        MgBlockData bdata = new MgBlockData(blockstate, modifier);
+        Position pos = Position.block(blockstate.getLocation());
 
         if (!blockdata.containsKey(pos)) {
-            if (block instanceof InventoryHolder invHolder) {
+            if (blockstate instanceof InventoryHolder invHolder) {
                 if (invHolder instanceof DoubleChest doubleChest) {
                     Location left = doubleChest.getLeftSide().getInventory().getLocation().clone();
                     Location right = doubleChest.getRightSide().getInventory().getLocation().clone();
@@ -188,7 +185,7 @@ public class RecorderData implements Listener {
             return bdata;
         } else { //already known
             //set last modifier of a not random inventory
-            if (block.getType() != Material.CHEST || !blockdata.get(pos).hasRandomized()) {
+            if (blockstate.getType() != Material.CHEST || !blockdata.get(pos).hasRandomized()) {
                 blockdata.get(pos).setModifier(modifier);
             }
 

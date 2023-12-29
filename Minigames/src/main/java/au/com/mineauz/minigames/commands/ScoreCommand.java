@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,12 +19,12 @@ import java.util.List;
 public class ScoreCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "score";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -33,12 +34,12 @@ public class ScoreCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Gets, sets or adds to a player's or team's score. The Minigame name is only required if not assigning the score to a player.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return new String[]{"get", "set", "add"};
     }
 
@@ -56,13 +57,13 @@ public class ScoreCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.score";
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null && args.length >= 2) {
             MinigamePlayer ply = null;
             TeamColor color = TeamColor.matchColor(args[1]);
@@ -255,8 +256,8 @@ public class ScoreCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("get", "set", "add"), args[0]);
         } else if (args.length == 2) {

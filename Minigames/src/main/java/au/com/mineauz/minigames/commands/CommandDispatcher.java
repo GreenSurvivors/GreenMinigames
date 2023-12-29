@@ -222,11 +222,10 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                         sender.sendMessage(ChatColor.RED + comd.getPermissionMessage());
                         sender.sendMessage(ChatColor.RED + comd.getPermission());
                     }
-                    return true;
                 } else {
                     sender.sendMessage(ChatColor.RED + "You must be a player to execute this command!");
-                    return true;
                 }
+                return true;
             }
         } else {
             sender.sendMessage(ChatColor.GREEN + "Minigames");

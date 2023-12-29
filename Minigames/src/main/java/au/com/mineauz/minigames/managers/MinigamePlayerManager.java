@@ -250,7 +250,7 @@ public class MinigamePlayerManager {
                 return;
             }
             if (!tpd) {
-                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTELEPORT);
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTELEPORTALLOWED);
                 return;
             }
             mgPlayer.storePlayerData();
@@ -452,7 +452,7 @@ public class MinigamePlayerManager {
                         }
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTEAM);
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTEAMASSIGNED);
                 }
             }
 
