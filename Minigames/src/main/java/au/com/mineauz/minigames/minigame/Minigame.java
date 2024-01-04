@@ -1026,6 +1026,7 @@ public class Minigame implements ScriptObject {
     }
 
     public Scoreboard getScoreboardManager() {
+
         return sbManager;
     }
 
