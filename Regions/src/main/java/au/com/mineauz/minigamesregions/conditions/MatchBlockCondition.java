@@ -92,7 +92,7 @@ public class MatchBlockCondition extends ConditionInterface {
                 List.of("Click here with a", "block you wish to", "match to."), Material.ITEM_FRAME);
         m.addItem(autoSetBlockMenuItem, m.getSize() - 1);
 
-        final MenuItemBlockData btype = new MenuItemBlockData("Block Type", Material.STONE, new Callback<>() {
+        final MenuItemBlockData btype = new MenuItemBlockData("Block Type", type.getFlag().getMaterial(), new Callback<>() {
 
             @Override
             public BlockData getValue() {
