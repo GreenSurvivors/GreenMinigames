@@ -47,7 +47,7 @@ public class MinigameTimerCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+    public boolean checkRegionCondition(MinigamePlayer player, Region region) { //todo add minigame to nodes, so this doesn't need players anymore to check
         return check(player.getMinigame());
     }
 
@@ -99,7 +99,7 @@ public class MinigameTimerCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
+    public boolean PlayerNeeded() {
         return true;
     }
 }

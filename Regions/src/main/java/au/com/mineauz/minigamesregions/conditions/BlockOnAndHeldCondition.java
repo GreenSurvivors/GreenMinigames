@@ -97,8 +97,7 @@ public class BlockOnAndHeldCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
-        return false;
+    public boolean PlayerNeeded() {
+        return true;
     }
-
 }
