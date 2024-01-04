@@ -95,7 +95,7 @@ public class SetRegionCommand implements ICommand {
                 } else if (args[0].equalsIgnoreCase("create")) {
                     if (mgPlayer.hasSelection()) {
                         String name = args[1];
-                        rmod.addRegion(name, new Region(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
+                        rmod.addRegion(name, new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
                         mgPlayer.clearSelection();
 
                         MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
