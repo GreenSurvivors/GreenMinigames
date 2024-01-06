@@ -256,8 +256,8 @@ public class ScoreCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("get", "set", "add"), args[0]);
         } else if (args.length == 2) {

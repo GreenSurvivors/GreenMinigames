@@ -20,8 +20,6 @@ public interface ICommand {
 
     @NotNull Component getDescription();
 
-    @NotNull String @Nullable [] getParameters();
-
     Component getUsage();
 
     /**
@@ -43,8 +41,8 @@ public interface ICommand {
      * @param sender
      * @param minigame
      * @param alias    not null for all set commands, else wise may or may not be null
-     * @param args
+     * @param args     might be null for all set commands, else wise shouldn't be
      * @return
      */
-    List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String[] args);
+    @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String[] args);
 }
