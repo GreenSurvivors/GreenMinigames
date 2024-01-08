@@ -84,12 +84,7 @@ public class TimedTriggerAction extends AbstractAction {
             return;
         }
         ExecutableScriptObject toExecute = isRegion.getFlag() ? rMod.getRegion(toTrigger.getFlag()) : rMod.getNode(toTrigger.getFlag());
-        Bukkit.getScheduler().runTaskLater(Main.getPlugin(), new Runnable() {
-            @Override
-            public void run() {
-                toExecute.execute(Triggers.getTrigger("TIMED_REMOTE"), player);
-            }
-        }, delay.getFlag());
+        Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> toExecute.execute(Triggers.getTrigger("TIMED_REMOTE"), player), delay.getFlag());
     }
 
     @Override

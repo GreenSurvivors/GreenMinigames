@@ -33,7 +33,7 @@ public class TestHelper {
         Location quit = new Location(world, 0, 20, 0);
         game.setQuitPosition(quit);
         Location lobby = new Location(world, 0, 5., 0);
-        game.setLobbyPosition(lobby);
+        game.setLobbyLocation(lobby);
         Location end = new Location(world, 0, 25, 0);
         game.setEndPosition(end);
         game.setEnabled(true);
@@ -57,12 +57,12 @@ public class TestHelper {
             }
 
             @Override
-            public String getAsString() {
-                return null;
+            public @NotNull String getAsString() {
+                return "TestGame";
             }
 
             @Override
-            public String getAsString(boolean b) {
+            public @NotNull String getAsString(boolean b) {
                 return "SIGN";
             }
 

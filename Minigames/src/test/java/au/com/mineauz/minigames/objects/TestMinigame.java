@@ -20,7 +20,7 @@ public class TestMinigame extends Minigame {
         setMechanic(GameMechanics.MG_MECHANICS.CTF.getMechanic());
         setDeathDrops(true);
         setQuitPosition(quit);
-        setLobbyPosition(lobby);
+        setLobbyLocation(lobby);
         setEndPosition(end);
         setEnabled(true);
         setStartWaitTime(5);

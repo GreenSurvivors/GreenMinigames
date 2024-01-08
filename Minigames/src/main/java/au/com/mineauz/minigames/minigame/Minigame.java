@@ -446,7 +446,7 @@ public class Minigame implements ScriptObject {
         return lobbyPosition.getFlag();
     }
 
-    public void setLobbyPosition(Location lobbyPosisiton) {
+    public void setLobbyLocation(Location lobbyPosisiton) {
         this.lobbyPosition.setFlag(lobbyPosisiton);
     }
 
