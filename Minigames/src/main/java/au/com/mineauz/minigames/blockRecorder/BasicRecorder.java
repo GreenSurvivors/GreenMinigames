@@ -38,7 +38,6 @@ import org.bukkit.inventory.InventoryHolder;
  * This class records all relevant changes the player does in the world while in a minigame
  */
 public class BasicRecorder implements Listener {
-
     private final MinigamePlayerManager playerManager = Minigames.getPlugin().getPlayerManager();
 
     //helper methode to not write code double

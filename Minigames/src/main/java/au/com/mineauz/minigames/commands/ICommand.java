@@ -14,6 +14,11 @@ public interface ICommand {
 
     @NotNull String getName();
 
+    /**
+     * if this returns null, no aliases exists. Only {@link #getName()} is always valid
+     *
+     * @return
+     */
     @NotNull String @Nullable [] getAliases();
 
     boolean canBeConsole();
@@ -30,19 +35,16 @@ public interface ICommand {
     /**
      * @param sender
      * @param minigame all set commands are guarantied to have not null minigame parameter. Everything else probably is null.
-     * @param label
      * @param args
      * @return
      */
-    boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                      @NotNull String label, @NotNull String @Nullable [] args);
+    boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String @Nullable [] args);
 
     /**
      * @param sender
      * @param minigame
-     * @param alias    not null for all set commands, else wise may or may not be null
      * @param args     might be null for all set commands, else wise shouldn't be
      * @return
      */
-    @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String[] args);
+    @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String[] args);
 }

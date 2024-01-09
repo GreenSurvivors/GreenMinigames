@@ -63,7 +63,7 @@ public class ScoreCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable [] args) {
+                             @NotNull String @Nullable [] args) {
         if (args != null && args.length >= 2) {
             MinigamePlayer ply = null;
             TeamColor color = TeamColor.matchColor(args[1]);
@@ -257,7 +257,7 @@ public class ScoreCommand implements ICommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                                         String alias, @NotNull String @NotNull [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("get", "set", "add"), args[0]);
         } else if (args.length == 2) {

@@ -161,8 +161,9 @@ public class RecorderData implements Listener {
                     if (bdata.getLocation() == left) {
 
                         addInventory(bdata, doubleChest.getLeftSide());
-                        if (minigame.isRandomizeChests())
+                        if (minigame.isRandomizeChests()) {
                             bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
+                        }
                     }
 
                     MgBlockData secondChest = addBlock(right.getBlock(), modifier);
@@ -173,8 +174,9 @@ public class RecorderData implements Listener {
                     }
                 } else if (invHolder instanceof Chest) {
                     addInventory(bdata, invHolder);
-                    if (minigame.isRandomizeChests())
+                    if (minigame.isRandomizeChests()) {
                         bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
+                    }
                 } else {
                     addInventory(bdata, invHolder);
                 }
