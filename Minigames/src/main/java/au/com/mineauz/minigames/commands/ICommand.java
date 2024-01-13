@@ -19,7 +19,9 @@ public interface ICommand {
      *
      * @return
      */
-    @NotNull String @Nullable [] getAliases();
+    default @NotNull String @Nullable [] getAliases() {
+        return null;
+    }
 
     boolean canBeConsole();
 
