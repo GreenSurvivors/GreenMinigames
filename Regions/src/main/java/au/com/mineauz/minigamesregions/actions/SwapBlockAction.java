@@ -27,17 +27,17 @@ public class SwapBlockAction extends AbstractAction {
 
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "SWAP_BLOCK";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Block Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("From", matchType.getFlag());
 
         out.put("To", toType.getFlag());
@@ -99,16 +99,16 @@ public class SwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config,
-                              String path) {
+    public void saveArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         matchType.saveValue(path, config);
         toType.saveValue(path, config);
         keepAttachment.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config,
-                              String path) {
+    public void loadArguments(@NotNull FileConfiguration config,
+                              @NotNull String path) {
         matchType.loadValue(path, config);
         toType.loadValue(path, config);
         keepAttachment.loadValue(path, config);
@@ -151,5 +151,4 @@ public class SwapBlockAction extends AbstractAction {
         m.displayMenu(mgPlayer);
         return true;
     }
-
 }

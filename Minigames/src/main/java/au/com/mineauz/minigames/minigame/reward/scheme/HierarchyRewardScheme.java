@@ -235,7 +235,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
                     "Shift + Right click to remove"
             );
 
-            setDescription(description);
+            setDescriptionStr(description);
 
             // Update name
             ItemStack item = getItem();

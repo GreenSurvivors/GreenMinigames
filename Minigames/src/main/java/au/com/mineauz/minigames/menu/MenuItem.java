@@ -44,6 +44,13 @@ public class MenuItem {
         displayItem.setItemMeta(meta);
     }
 
+    public void setDescriptionComp(List<Component> description) {
+        ItemMeta meta = displayItem.getItemMeta();
+
+        meta.lore(description);
+        displayItem.setItemMeta(meta);
+    }
+
     public Component getName() {
         return displayItem.getItemMeta().displayName();
     }
@@ -54,7 +61,7 @@ public class MenuItem {
 
     public void setItem(ItemStack item) {
         if (item == null) {
-            Bukkit.getLogger().fine("Item Stack was null on: " + this.getDescription().toString());
+            Bukkit.getLogger().fine("Item Stack was null on: " + this.getDescriptionStr().toString());
             return;
         }
         ItemMeta ometa = displayItem.getItemMeta();

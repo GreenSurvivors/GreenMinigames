@@ -219,17 +219,17 @@ public class MemorySwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "MEMORY_SWAP_BLOCK";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Block Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("From: ", matchType.getFlag());
         out.put("Block pool size", blockPool.size());
         out.put("Whitelist mode", whitelistMode.getFlag()); //todo this can be quite long, maybe cut it off
@@ -331,7 +331,7 @@ public class MemorySwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         matchType.saveValue(path, config);
         wbList.saveValue(path, config);
         whitelistMode.saveValue(path, config);
@@ -339,7 +339,7 @@ public class MemorySwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         matchType.loadValue(path, config);
         wbList.loadValue(path, config);
         whitelistMode.loadValue(path, config);

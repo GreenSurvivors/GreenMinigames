@@ -19,17 +19,17 @@ public class SetLives extends AbstractAction { //todo unused!
     private final IntegerFlag amount = new IntegerFlag(1, "amount");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "SET_LIVES";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Minigame Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Set Lives to:", amount.getFlag());
     }
 
@@ -50,16 +50,15 @@ public class SetLives extends AbstractAction { //todo unused!
 
     @Override
     public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    }
+
+    @Override
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
 
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
-
-    }
-
-    @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
 
     }
 

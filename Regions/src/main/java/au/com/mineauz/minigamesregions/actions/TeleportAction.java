@@ -13,17 +13,17 @@ import java.util.Map;
 public class TeleportAction extends AbstractAction {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "TELEPORT";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Player Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
     }
 
     @Override
@@ -48,7 +48,7 @@ public class TeleportAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
     }
 
     @Override
@@ -59,5 +59,4 @@ public class TeleportAction extends AbstractAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         return false;
     }
-
 }
