@@ -19,8 +19,6 @@ import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.text.WordUtils;
@@ -104,7 +102,7 @@ public class Minigame implements ScriptObject {
     private final IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
     @NotNull
     private final ScoreboardData sbData = new ScoreboardData();
-    private final Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
+    private final Map<MinigameStat, StatSettings> statSettings = new HashMap<>();
     private final BooleanFlag activatePlayerRecorder = new BooleanFlag(true, "activatePlayerRecorder");
     //Unsaved data
     private final List<MinigamePlayer> players = new ArrayList<>();
@@ -1075,7 +1073,7 @@ public class Minigame implements ScriptObject {
     }
 
     public Map<MinigameStat, StatSettings> getStatSettings(StoredGameStats stats) {
-        Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
+        Map<MinigameStat, StatSettings> settings = new HashMap<>();
 
         for (MinigameStat stat : stats.getStats().keySet()) {
             settings.put(stat, getSettings(stat));
@@ -1526,7 +1524,7 @@ public class Minigame implements ScriptObject {
 
     @Override
     public Set<String> getKeys() {
-        return ImmutableSet.of("players", "teams", "name", "displayname");
+        return Set.of("players", "teams", "name", "displayname");
     }
 
     @Override
