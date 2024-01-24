@@ -44,20 +44,19 @@ public class SetRegionCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return List.of("Creates, edits and deletes Minigame regions");
+        return List.of("Creates, edits and removes Minigame regions");
     }
 
     @Override
     public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"select", "create", "delete", "modify"};
+        return new String[]{"create", "remove", "modify"};
     }
 
     @Override
     public Component getUsage() {
         return new String[]{
-                "/minigame set <Minigame> region select <1/2>",
                 "/minigame set <Minigame> region create <name>",
-                "/minigame set <Minigame> region delete <name>",
+                "/minigame set <Minigame> region remove <name>",
                 "/minigame set <Minigame> region modify"
         };
     }
@@ -74,26 +73,8 @@ public class SetRegionCommand implements ICommand {
             MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
             RegionModule rmod = RegionModule.getMinigameModule(minigame);
             if (args.length == 2) {
-                if (args[0].equalsIgnoreCase("select")) {
-                    Location ploc = mgPlayer.getLocation();
-                    ploc.setY(ploc.getY() - 1);
-
-                    if (args[1].equals("1")) {
-                        Location p2 = mgPlayer.getSelectionLocations()[1];
-                        mgPlayer.clearSelection();
-                        mgPlayer.setSelection(ploc, p2);
-
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS1);
-                    } else {
-                        Location p2 = mgPlayer.getSelectionLocations()[0];
-                        mgPlayer.clearSelection();
-                        mgPlayer.setSelection(p2, ploc);
-
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS2);
-                    }
-                    return true;
-                } else if (args[0].equalsIgnoreCase("create")) {
-                    if (mgPlayer.hasSelection()) {
+                if (args[0].equalsIgnoreCase("create")) {
+                    if (ply.hasSelection()) {
                         String name = args[1];
                         rmod.addRegion(name, new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
                         mgPlayer.clearSelection();
@@ -107,7 +88,7 @@ public class SetRegionCommand implements ICommand {
                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOSELECTION);
                     }
                     return true;
-                } else if (args[0].equalsIgnoreCase("delete")) {
+                } else if (args[0].equalsIgnoreCase("remove")) {
                     if (rmod.hasRegion(args[1])) {
                         rmod.removeRegion(args[1]);
                         MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
@@ -139,17 +120,13 @@ public class SetRegionCommand implements ICommand {
 
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();
-            tab.add("select");
             tab.add("create");
             tab.add("modify");
-            tab.add("delete");
+            tab.add("remove");
             return MinigameUtils.tabCompleteMatch(tab, args[0]);
         } else if (args.length == 2) {
             List<String> tab = new ArrayList<>();
-            if (args[0].equalsIgnoreCase("select")) {
-                tab.add("1");
-                tab.add("2");
-            } else if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("delete")) {
+            if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("remove")) {
                 RegionModule rmod = RegionModule.getMinigameModule(minigame);
                 for (Region reg : rmod.getRegions()) {
                     tab.add(reg.getName());
@@ -159,5 +136,4 @@ public class SetRegionCommand implements ICommand {
         }
         return null;
     }
-
 }
