@@ -117,5 +117,4 @@ public class MenuItemBlockData extends MenuItem {
         getContainer().startReopenTimer(10);
         return null;
     }
-
 }
