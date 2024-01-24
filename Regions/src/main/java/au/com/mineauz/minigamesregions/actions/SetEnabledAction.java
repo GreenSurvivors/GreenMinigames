@@ -17,17 +17,17 @@ public class SetEnabledAction extends AbstractAction {
     private final BooleanFlag state = new BooleanFlag(false, "state");
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "SET_ENABLED";
     }
 
     @Override
-    public String getCategory() {
+    public @NotNull String getCategory() {
         return "Region/Node Actions";
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
         out.put("Enabled", state.getFlag());
     }
 
@@ -55,12 +55,12 @@ public class SetEnabledAction extends AbstractAction {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         state.saveValue(path, config);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         state.loadValue(path, config);
     }
 
@@ -72,5 +72,4 @@ public class SetEnabledAction extends AbstractAction {
         m.displayMenu(mgPlayer);
         return true;
     }
-
 }
