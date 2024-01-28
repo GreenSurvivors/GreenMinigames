@@ -43,9 +43,9 @@ public class MenuItem {
         this.displayItem.setItemMeta(meta);
     }
 
-    public MenuItem(@NotNull String name, @NotNull ItemStack displayItem) {
+    public MenuItem(@NotNull Component name, @NotNull ItemStack displayItem) {
         ItemMeta meta = displayItem.getItemMeta();
-        meta.setDisplayName(ChatColor.RESET + name);
+        meta.displayName(name);
         displayItem.setItemMeta(meta);
         this.displayItem = displayItem;
     }
@@ -139,7 +139,7 @@ public class MenuItem {
                         startingPoint += length;
                     } else {
                         // well crap. invalid data!
-                        Minigames.log().warning("Found empty description data. Ignoring it for now.");
+                        Minigames.getCmpnntLogger().warn("Found empty description data. Ignoring it for now.");
                         //todo we need a iterator of IndexedMap --> code it!
                     }
                 }
@@ -178,7 +178,7 @@ public class MenuItem {
                             startingPoint += entryBefore.getValue();
                         } else {
                             // well crap. invalid data!
-                            Minigames.log().warning("Found empty description data. Ignoring it for now.");
+                            Minigames.getCmpnntLogger().warn("Found empty description data. Ignoring it for now.");
                             //todo we need a iterator of IndexedMap --> code it!
                         }
                     }
@@ -191,17 +191,20 @@ public class MenuItem {
                     }
                 } else {
                     // well crap. invalid data!
-                    Minigames.log().severe("Menu item has empty lore but tried to remove a part of it. Clearing all parts mow. Please open an Issue!");
+                    Minigames.getCmpnntLogger().error("Menu item has empty lore but tried to remove a part of it. Clearing all parts mow. Please open an Issue!");
                     descriptionRegistry.clear();
                 }
             } else {
                 // well crap. invalid data!
-                Minigames.log().warning("Menu item trying to remove empty description data.");
+                Minigames.getCmpnntLogger().warn("Menu item trying to remove empty description data.");
                 descriptionRegistry.remove(typeStr);
             }
         }
     }
 
+    public List<Component> getDescription() {
+        return displayItem.getItemMeta().lore();
+    }
 
     public void setDescription(@Nullable List<@NotNull Component> description) {
         ItemMeta meta = displayItem.getItemMeta();
