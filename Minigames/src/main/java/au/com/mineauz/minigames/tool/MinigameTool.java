@@ -57,7 +57,7 @@ public class MinigameTool {
     public void setMode(ToolMode mode) {
         ItemMeta meta = tool.getItemMeta();
         List<String> lore = meta.getLore();
-        lore.set(1, ChatColor.AQUA + "Mode: " + ChatColor.WHITE + WordUtils.capitalize(mode.getName().replace("_", " ")));
+        lore.set(1, ChatColor.AQUA + "Mode: " + ChatColor.WHITE + WordUtils.capitalizeFully(mode.getName().replace("_", " ")));
         meta.setLore(lore);
         tool.setItemMeta(meta);
         this.mode = mode;
@@ -87,7 +87,7 @@ public class MinigameTool {
         if (color == null) {
             lore.set(2, ChatColor.AQUA + "Team: " + ChatColor.WHITE + "None");
         } else {
-            lore.set(2, ChatColor.AQUA + "Team: " + color.getColor() + WordUtils.capitalize(color.toString().replace("_", " ")));
+            lore.set(2, ChatColor.AQUA + "Team: " + color.getColor() + WordUtils.capitalizeFully(color.toString().replace("_", " ")));
         }
 
         meta.setLore(lore);
@@ -162,7 +162,7 @@ public class MinigameTool {
             @Override
             public String getValue() {
                 if (getTeam() != null)
-                    return WordUtils.capitalize(getTeam().toString().replace("_", " "));
+                    return WordUtils.capitalizeFully(getTeam().toString().replace("_", " "));
                 return "None";
             }
 

@@ -69,6 +69,7 @@ public class MenuItemString extends MenuItem {
         return null;
     }
 
+
     @Override
     public void checkValidEntry(String entry) {
         if (entry.equals("null") && allowNull) {

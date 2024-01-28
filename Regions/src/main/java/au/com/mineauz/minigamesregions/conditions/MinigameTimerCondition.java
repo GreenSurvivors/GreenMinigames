@@ -13,6 +13,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class MinigameTimerCondition extends ConditionInterface {
     }
 
     @Override
-    public void describe(Map<String, Object> out) {
+    public void describe(@NotNull Map<String, Object> out) {
         out.put("Time", MinigameUtils.convertTime(minTime.getFlag(), true) + " - " + MinigameUtils.convertTime(maxTime.getFlag(), true));
     }
 
@@ -46,12 +47,12 @@ public class MinigameTimerCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
         return check(region.getMinigame());
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
         return check(node.getMinigame());
     }
 
@@ -71,14 +72,14 @@ public class MinigameTimerCondition extends ConditionInterface {
     }
 
     @Override
-    public void saveArguments(FileConfiguration config, String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         minTime.saveValue(path, config);
         maxTime.saveValue(path, config);
         saveInvert(config, path);
     }
 
     @Override
-    public void loadArguments(FileConfiguration config, String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         minTime.loadValue(path, config);
         maxTime.loadValue(path, config);
         loadInvert(config, path);
