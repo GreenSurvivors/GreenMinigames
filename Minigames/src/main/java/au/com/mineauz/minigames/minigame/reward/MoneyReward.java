@@ -84,9 +84,9 @@ public class MoneyReward extends RewardType {
         }
 
         public void updateName(String newName) {
-            ItemMeta meta = getItem().getItemMeta();
+            ItemMeta meta = getDisplayItem().getItemMeta();
             meta.setDisplayName(ChatColor.RESET + newName);
-            getItem().setItemMeta(meta);
+            getDisplayItem().setItemMeta(meta);
         }
 
         public void updateDescription() {
@@ -150,7 +150,7 @@ public class MoneyReward extends RewardType {
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
 
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override
@@ -163,7 +163,7 @@ public class MoneyReward extends RewardType {
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
 
-            return getItem();
+            return getDisplayItem();
         }
 
         @Override

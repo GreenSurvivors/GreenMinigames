@@ -11,6 +11,7 @@ import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +79,7 @@ public class MatchTeamCondition extends ConditionInterface {
         m.addItem(new MenuItemList("Team Color", getTeamMaterial(), new Callback<>() {
             @Override
             public String getValue() {
-                return WordUtils.capitalize(team.getFlag().replace("_", " "));
+                return WordUtils.capitalizeFully(team.getFlag().replace("_", " "));
             }
 
             @Override
@@ -87,8 +88,8 @@ public class MatchTeamCondition extends ConditionInterface {
             }
         }, teams) {
             @Override
-            public ItemStack getItem() {
-                ItemStack stack = super.getItem();
+            public @NotNull ItemStack getDisplayItem() {
+                ItemStack stack = super.getDisplayItem();
                 stack.setType(getTeamMaterial());
                 return stack;
             }

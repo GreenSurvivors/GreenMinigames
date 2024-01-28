@@ -143,13 +143,13 @@ public class MinigameTool {
 
                 mode.select(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
             }
-            return miselect.getItem();
+            return miselect.getDisplayItem();
         });
         mideselect.setClick(object -> {
             if (mode != null) {
                 mode.deselect(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
             }
-            return mideselect.getItem();
+            return mideselect.getDisplayItem();
         });
 
         men.addItem(mideselect, men.getSize() - 1);
