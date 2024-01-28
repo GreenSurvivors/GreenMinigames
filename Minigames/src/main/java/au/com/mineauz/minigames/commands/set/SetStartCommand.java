@@ -126,7 +126,7 @@ public class SetStartCommand implements ICommand {
                                       String alias, String[] args) {
         List<String> teams = new ArrayList<>(TeamsModule.getMinigameModule(minigame).getTeamsNameMap().size() + 1);
         if (args.length == 1) {
-            TeamsModule.getMinigameModule(minigame).getTeamsNameMap().keySet().forEach(teamName -> teams.add(WordUtils.capitalize(teamName)));
+            TeamsModule.getMinigameModule(minigame).getTeamsNameMap().keySet().forEach(teamName -> teams.add(WordUtils.capitalizeFully(teamName)));
             teams.add("Clear");
             return MinigameUtils.tabCompleteMatch(teams, args[0]);
         } else if (args.length == 2 && args[0].equalsIgnoreCase("clear")) {
