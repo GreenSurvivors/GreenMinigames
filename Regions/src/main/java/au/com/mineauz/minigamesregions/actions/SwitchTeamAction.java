@@ -108,7 +108,7 @@ public class SwitchTeamAction extends AbstractAction {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(teamfrom.getFlag());
+                return WordUtils.capitalizeFully(teamfrom.getFlag());
             }
 
             @Override
@@ -122,7 +122,7 @@ public class SwitchTeamAction extends AbstractAction {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(teamto.getFlag());
+                return WordUtils.capitalizeFully(teamto.getFlag());
             }
 
             @Override

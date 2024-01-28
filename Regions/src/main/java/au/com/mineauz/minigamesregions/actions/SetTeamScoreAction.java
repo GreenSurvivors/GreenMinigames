@@ -101,7 +101,7 @@ public class SetTeamScoreAction extends ScoreAction {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalize(team.getFlag());
+                return WordUtils.capitalizeFully(team.getFlag());
             }
 
             @Override
@@ -112,5 +112,4 @@ public class SetTeamScoreAction extends ScoreAction {
         m.displayMenu(mgPlayer);
         return true;
     }
-
 }
