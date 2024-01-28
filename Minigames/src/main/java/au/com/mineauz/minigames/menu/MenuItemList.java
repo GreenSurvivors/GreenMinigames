@@ -77,7 +77,7 @@ public class MenuItemList extends MenuItem {
         value.setValue(options.get(ind));
         updateDescription();
 
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -90,7 +90,7 @@ public class MenuItemList extends MenuItem {
         value.setValue(options.get(ind));
         updateDescription();
 
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override

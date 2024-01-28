@@ -161,7 +161,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
             return null;
         }
 
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override

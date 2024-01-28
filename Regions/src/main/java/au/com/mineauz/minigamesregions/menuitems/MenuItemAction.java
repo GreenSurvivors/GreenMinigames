@@ -85,7 +85,7 @@ public class MenuItemAction extends MenuItem {
         if (act.displayMenu(getContainer().getViewer(), getContainer())) {
             return null;
         }
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override

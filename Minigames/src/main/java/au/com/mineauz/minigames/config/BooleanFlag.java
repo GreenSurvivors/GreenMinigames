@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -31,7 +30,7 @@ public class BooleanFlag extends Flag<Boolean> {
     }
 
     @Override
-    public MenuItem getMenuItem(Component name, Material displayItem) {
+    public MenuItemBoolean getMenuItem(Component name, Material displayItem) {
         return new MenuItemBoolean(name, displayItem, new Callback<>() {
 
             @Override
@@ -43,13 +42,11 @@ public class BooleanFlag extends Flag<Boolean> {
             public void setValue(Boolean value) {
                 setFlag(value);
             }
-
-
         });
     }
 
     @Override
-    public MenuItem getMenuItem(Component name, Material displayItem, List<Component> description) {
+    public MenuItemBoolean getMenuItem(Component name, Material displayItem, List<Component> description) {
         return new MenuItemBoolean(name, description, displayItem, new Callback<>() {
 
             @Override
@@ -61,9 +58,6 @@ public class BooleanFlag extends Flag<Boolean> {
             public void setValue(Boolean value) {
                 setFlag(value);
             }
-
-
         });
     }
-
 }

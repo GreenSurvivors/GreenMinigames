@@ -55,6 +55,6 @@ public class MenuItemBoolean extends MenuItem {
             toggle.setValue(true);
 
         updateDescription();
-        return getItem();
+        return getDisplayItem();
     }
 }

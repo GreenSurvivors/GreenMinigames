@@ -94,7 +94,7 @@ public class MenuItemRewardGroup extends MenuItem {
         group.setRarity(RewardRarity.valueOf(options.get(ind)));
         updateDescription();
 
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
@@ -108,7 +108,7 @@ public class MenuItemRewardGroup extends MenuItem {
         group.setRarity(RewardRarity.valueOf(options.get(ind)));
         updateDescription();
 
-        return getItem();
+        return getDisplayItem();
     }
 
     @Override
