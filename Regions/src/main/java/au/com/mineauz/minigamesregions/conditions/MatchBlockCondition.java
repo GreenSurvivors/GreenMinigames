@@ -106,7 +106,7 @@ public class MatchBlockCondition extends ConditionInterface {
             }
         });
         m.addItem(btype);
-        final MenuItemBoolean busedur = (MenuItemBoolean) useBlockData.getMenuItem("Use Data Values", Material.ENDER_PEARL);
+        final MenuItemBoolean busedur = useBlockData.getMenuItem("Use Data Values", Material.ENDER_PEARL);
         m.addItem(busedur);
         autoSetBlockMenuItem.setClickItem(object -> {
             ItemStack itemStack = (ItemStack) object;
