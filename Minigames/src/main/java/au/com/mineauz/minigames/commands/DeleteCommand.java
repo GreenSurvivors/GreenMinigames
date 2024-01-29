@@ -54,12 +54,14 @@ public class DeleteCommand extends ACommand {
 
             if (mgm != null) {
                 File save = new File(PLUGIN.getDataFolder() + "/minigames/" + mgm.getName(false));
+
                 if (save.exists() && save.isDirectory()) {
                     try {
                         FileUtils.deleteDirectory(save);
                     } catch (IOException e) {
                         PLUGIN.getComponentLogger().warn("couldn't delete files for minigame " + save.getPath() + ". Still going to try to delete from config.");
                     }
+
                     List<String> ls = PLUGIN.getConfig().getStringList("minigames");
                     ls.remove(mgm.getName(false));
                     PLUGIN.getConfig().set("minigames", ls);
@@ -83,5 +85,4 @@ public class DeleteCommand extends ACommand {
         }
         return null;
     }
-
 }

@@ -16,8 +16,6 @@ import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemNode;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemRegion;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
@@ -26,6 +24,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -82,7 +81,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 
         // Prepare region and node bounds for efficiency
         RegionModule module = RegionModule.getMinigameModule(minigame);
-        Map<Region, Vector[]> regionBBs = Maps.newIdentityHashMap();
+        Map<Region, Vector[]> regionBBs = new IdentityHashMap<>();
         for (Region region : module.getRegions()) {
             Vector point1 = region.getFirstPoint().toVector();
             Vector point2 = region.getSecondPoint().toVector();
@@ -90,7 +89,7 @@ public class RegionNodeEditToolMode implements ToolMode {
             regionBBs.put(region, new Vector[]{Vector.getMinimum(point1, point2), Vector.getMaximum(point1, point2).add(new Vector(1, 1, 1))});
         }
 
-        Map<Node, Vector> nodeLocs = Maps.newIdentityHashMap();
+        Map<Node, Vector> nodeLocs = new IdentityHashMap<>();
         for (Node node : module.getNodes()) {
             nodeLocs.put(node, node.getLocation().toVector());
         }
