@@ -59,6 +59,7 @@ public class MinigameManager {
     public void addModule(final @NotNull ModuleFactory moduleFactory) {
         this.modules.put(moduleFactory.getName(), moduleFactory);
     }
+
     public void removeModule(final @NotNull String moduleName) {
         for (final Minigame mg : this.minigames.values()) {
             mg.removeModule(moduleName);
