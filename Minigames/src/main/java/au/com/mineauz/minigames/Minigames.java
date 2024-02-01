@@ -48,8 +48,8 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class Minigames extends JavaPlugin {
-    private static ComponentLogger componentLogger = null;
     private static final Pattern COMPILE = Pattern.compile("-?[0-9]+");
+    private static ComponentLogger componentLogger = null;
     private static Minigames plugin;
     private static Economy econ;
     private static SignBase minigameSigns;
@@ -101,7 +101,7 @@ public class Minigames extends JavaPlugin {
         return placeHolderManager;
     }
 
-    public CommandDispatcher getCommandDispatcher(){
+    public CommandDispatcher getCommandDispatcher() {
         return disp;
     }
 
