@@ -59,7 +59,7 @@ public class Minigame implements ScriptObject {
     private final LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
     private final BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
     private final LongFlag timer = new LongFlag(0L, "timer");
-    private final BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
+    private final EnumFlag<MinigameTimer.DisplayType> timerDisplayType = new EnumFlag<>(MinigameTimer.DisplayType.XP_BAR, "timerDisplayType");
     private final LongFlag startWaitTime = new LongFlag(0L, "startWaitTime");
     private final BooleanFlag showCompletionTime = new BooleanFlag(false, "showCompletionTime");
     private final BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
@@ -209,7 +209,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(this.type);
         addConfigFlag(unlimitedAmmo);
         addConfigFlag(usePermissions);
-        addConfigFlag(useXPBarTimer);
+        addConfigFlag(timerDisplayType);
         addConfigFlag(spectatorPosition);
         addConfigFlag(displayScoreboard);
         addConfigFlag(allowDragonEggTeleport);
@@ -646,12 +646,12 @@ public class Minigame implements ScriptObject {
         timer.setFlag(time);
     }
 
-    public boolean isUsingXPBarTimer() {
-        return useXPBarTimer.getFlag();
+    public @NotNull MinigameTimer.DisplayType getTimerDisplayType() {
+        return timerDisplayType.getFlag();
     }
 
-    public void setUseXPBarTimer(boolean useXPBarTimer) {
-        this.useXPBarTimer.setFlag(useXPBarTimer);
+    public void setTimerDisplayType(@NotNull MinigameTimer.DisplayType type) {
+        this.timerDisplayType.setFlag(type);
     }
 
     public long getStartWaitTime() {
@@ -1157,7 +1157,7 @@ public class Minigame implements ScriptObject {
 
 
                 }, 0, null));
-        itemsMain.add(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
+        itemsMain.add(timerDisplayType.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
         itemsMain.add(new MenuItemTime("Start Wait Time", List.of("Multiplayer Only"), Material
                 .CLOCK,
                 new Callback<>() {
@@ -1398,6 +1398,11 @@ public class Minigame implements ScriptObject {
                 configFlags.get(configOpt).saveValue(name, cfg);
         }
 
+        //dataFixerUpper
+        if (cfg.contains(name + ".useXPBarTimer")) {
+            cfg.set(name + ".useXPBarTimer", null);
+        }
+
         if (!getRecorderData().getWBBlocks().isEmpty()) {
             List<String> blocklist = new ArrayList<>();
             for (Material mat : getRecorderData().getWBBlocks()) {
@@ -1445,8 +1450,18 @@ public class Minigame implements ScriptObject {
         }
 
         for (String flag : configFlags.keySet()) {
-            if (cfg.contains(name + "." + flag))
+            if (cfg.contains(name + "." + flag)) {
                 configFlags.get(flag).loadValue(name, cfg);
+            }
+        }
+
+        //dataFixerUpper
+        if (cfg.contains(name + ".useXPBarTimer")) {
+            if (cfg.getBoolean(name + ".useXPBarTimer")){
+                timerDisplayType.setFlag(MinigameTimer.DisplayType.XP_BAR);
+            } else {
+                timerDisplayType.setFlag(MinigameTimer.DisplayType.NONE);
+            }
         }
 
         if (minigame.getConfig().contains(name + ".whitelistmode")) {
