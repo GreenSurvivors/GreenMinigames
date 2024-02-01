@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StartCommand implements ICommand {
+public class StartCommand extends ACommand {
 
     @Override
     public @NotNull String getName() {
@@ -43,17 +43,17 @@ public class StartCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender,
+                             @NotNull String @NotNull [] args) {
         if (args != null) {
-            Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
+            Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
             if (mgm != null) {
                 if (!mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL) {
                     MinigamePlayer caller = null;
                     if (sender instanceof Player)
-                        caller = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
-                    plugin.getMinigameManager().startGlobalMinigame(mgm, caller);
+                        caller = PLUGIN.getPlayerManager().getMinigamePlayer((Player) sender);
+                    PLUGIN.getMinigameManager().startGlobalMinigame(mgm, caller);
                 } else if (mgm.getType() != MinigameType.GLOBAL && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()) {
                     if (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0) {
                         if (mgm.getMpTimer() == null) {
@@ -75,9 +75,9 @@ public class StartCommand implements ICommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
-        List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
+        List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }
 

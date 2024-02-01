@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AbstractMinigameEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final Minigame mgm;
+    private final @NotNull Minigame mgm;
     private boolean cancelled = false;
 
     /**
@@ -16,12 +16,12 @@ public class AbstractMinigameEvent extends Event implements Cancellable {
      *
      * @param game the mgm
      */
-    public AbstractMinigameEvent(final Minigame game) {
+    public AbstractMinigameEvent(@NotNull final Minigame game) {
         super();
         this.mgm = game;
     }
 
-    public static HandlerList getHandlerList() {
+    public static @NotNull HandlerList getHandlerList() {
         return HANDLERS;
     }
 
