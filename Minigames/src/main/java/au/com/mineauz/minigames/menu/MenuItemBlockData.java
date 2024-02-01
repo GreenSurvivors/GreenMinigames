@@ -19,18 +19,18 @@ public class MenuItemBlockData extends MenuItem {
     public MenuItemBlockData(String name, Material displayItem) {
         super(name, displayItem);
         dataCallback.setValue(displayItem.createBlockData());
-        setDescription(createDescription(dataCallback.getValue()));
+        setDescriptionStr(createDescription(dataCallback.getValue()));
     }
 
     public MenuItemBlockData(String name, Material displayItem, Callback<BlockData> callback) {
         super(name, displayItem);
         this.dataCallback = callback;
-        setDescription(createDescription(dataCallback.getValue()));
+        setDescriptionStr(createDescription(dataCallback.getValue()));
     }
 
     @Override
     public void update() {
-        setDescription(createDescription(this.dataCallback.getValue()));
+        setDescriptionStr(createDescription(this.dataCallback.getValue()));
     }
 
     /**
@@ -85,7 +85,7 @@ public class MenuItemBlockData extends MenuItem {
             dataCallback.setValue(d);
 
             // update the display item
-            setDescription(createDescription(dataCallback.getValue()));
+            setDescriptionStr(createDescription(dataCallback.getValue()));
             if (d.getMaterial().isItem()) {
                 ItemStack stackUpdate = getDisplayItem();
                 stackUpdate.setType(d.getMaterial());
