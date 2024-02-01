@@ -104,16 +104,25 @@ public class MinigamePlayer implements ScriptObject {
         return ChatColor.stripColor(this.player.getName());
     }
 
+    /**
+     * @deprecated use {@link #displayName()} if possible
+     */
+    @Deprecated
     public String getDisplayName() {
         return this.getDisplayName(true);
     }
 
+    @Deprecated
     public String getDisplayName(final Boolean displayName) {
         if (displayName) {
             return ChatColor.stripColor(this.player.getDisplayName());
         } else {
             return this.getName();
         }
+    }
+
+    public Component displayName() {
+        return this.player.displayName();
     }
 
     public UUID getUUID() {
@@ -203,7 +212,10 @@ public class MinigamePlayer implements ScriptObject {
         this.allowGMChange = allowGMChange;
     }
 
-    public Minigame getMinigame() {
+    /**
+     * Will return null, whenever the player is not currently in a minigame
+     */
+    public @Nullable Minigame getMinigame() {
         return this.minigame;
     }
 

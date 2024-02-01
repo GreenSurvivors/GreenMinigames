@@ -17,10 +17,10 @@ import java.util.List;
 
 public class MinigameTimer {
     private static final Minigames plugin = Minigames.getPlugin();
-    private final int timeLength;
+    private final long timeLength;
     private final Minigame minigame;
     private final List<Integer> timeMsg = new ArrayList<>();
-    private int timeLeft = 0;
+    private long timeLeft = 0;
     private int taskID = -1;
     private boolean broadcastTime = true;
 
@@ -72,7 +72,7 @@ public class MinigameTimer {
         }
         if (timeMsg.contains(timeLeft) && broadcastTime) {
             PlayMGSound.playSound(minigame, MGSounds.TIMER_TICK.getSound());
-            plugin.getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_TIMELEFT,
+            MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_TIMELEFT,
                     Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(timeLeft))));
         }
 
@@ -92,7 +92,7 @@ public class MinigameTimer {
         }
     }
 
-    public int getTimeLeft() {
+    public long getTimeLeft() {
         return timeLeft;
     }
 
