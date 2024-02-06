@@ -11,14 +11,14 @@ public class MenuItemFlag extends MenuItem {
     private final String flag;
     private final List<String> flags;
 
-    public MenuItemFlag(Material displayItem, String flag, List<String> flags) {
-        super(Component.text(flag), displayItem);
+    public MenuItemFlag(Material displayMat, String flag, List<String> flags) {
+        super(Component.text(flag), displayMat);
         this.flag = flag;
         this.flags = flags;
     }
 
-    public MenuItemFlag(List<Component> description, Material displayItem, String flag, List<String> flags) {
-        super(Component.text(flag), description, displayItem);
+    public MenuItemFlag(List<Component> description, Material displayMat, String flag, List<String> flags) {
+        super(Component.text(flag), description, displayMat);
         this.flag = flag;
         this.flags = flags;
     }

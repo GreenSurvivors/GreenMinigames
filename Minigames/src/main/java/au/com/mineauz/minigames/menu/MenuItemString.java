@@ -1,11 +1,14 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +17,20 @@ public class MenuItemString extends MenuItem {
     protected final Callback<String> str;
     private boolean allowNull = false;
 
-    public MenuItemString(Component name, Material displayItem, Callback<String> str) {
-        super(name, displayItem);
+    public MenuItemString(@NotNull LangKey langKey, @Nullable Material displayMat, @NotNull Callback<String> str) {
+        super(langKey, displayMat);
         this.str = str;
         updateDescription();
     }
 
-    public MenuItemString(Component name, List<Component> description, Material displayItem, Callback<String> str) {
-        super(name, description, displayItem);
+    public MenuItemString(@Nullable Component name, @Nullable Material displayMat, @NotNull Callback<String> str) {
+        super(name, displayMat);
+        this.str = str;
+        updateDescription();
+    }
+
+    public MenuItemString(@Nullable Component name, @Nullable List<@NotNull Component> description, @Nullable Material displayMat, @NotNull Callback<String> str) {
+        super(name, description, displayMat);
         this.str = str;
         updateDescription();
     }
@@ -41,7 +50,7 @@ public class MenuItemString extends MenuItem {
 
         if (getDescription() != null) {
             description = getDescription();
-            String desc = getDescription().get(0);
+            Component desc = getDescription().get(0);
 
             if (desc.startsWith(ChatColor.GREEN.toString()))
                 description.set(0, ChatColor.GREEN + setting);
@@ -69,7 +78,6 @@ public class MenuItemString extends MenuItem {
 
         return null;
     }
-
 
     @Override
     public void checkValidEntry(String entry) {

@@ -1,10 +1,13 @@
 package au.com.mineauz.minigames.config;
 
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -30,8 +33,8 @@ public class BooleanFlag extends Flag<Boolean> {
     }
 
     @Override
-    public MenuItemBoolean getMenuItem(Component name, Material displayItem) {
-        return new MenuItemBoolean(name, displayItem, new Callback<>() {
+    public MenuItemBoolean getMenuItem(@NotNull LangKey langKey, @Nullable Material displayMaterial) {
+        return new MenuItemBoolean(langKey, displayMaterial, new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -46,8 +49,14 @@ public class BooleanFlag extends Flag<Boolean> {
     }
 
     @Override
-    public MenuItemBoolean getMenuItem(Component name, Material displayItem, List<Component> description) {
-        return new MenuItemBoolean(name, description, displayItem, new Callback<>() {
+    public MenuItemBoolean getMenuItem(@Nullable Component name, @Nullable Material displayMaterial) {
+        return getMenuItem(name, displayMaterial, null);
+    }
+
+    @Override
+    public MenuItemBoolean getMenuItem(@Nullable Component name, @Nullable Material displayMaterial,
+                                @Nullable List<@NotNull Component> description) {
+        return new MenuItemBoolean(name, description, displayMaterial, new Callback<>() {
 
             @Override
             public Boolean getValue() {

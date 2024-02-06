@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.menu;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.objects.IndexedMap;
 import au.com.mineauz.minigames.objects.StrIntMapPersistentDataType;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,11 +27,15 @@ public class MenuItem {
     private @Nullable Menu container = null;
     private int slot = 0;
 
-    public MenuItem(@NotNull Component name, @Nullable Material displayMat) {
+    public MenuItem(@Nullable Component name, @Nullable Material displayMat) {
         this(name, null, displayMat);
     }
 
-    public MenuItem(@Component String name, @Nullable List<@NotNull Component> description, @Nullable Material displayMat) {
+    public MenuItem(@NotNull LangKey langKey, @Nullable Material displayMat) {
+        this(MinigameMessageManager.getMgMessage(langKey), null, displayMat);
+    }
+
+    public MenuItem(@Nullable Component name, @Nullable List<@NotNull Component> description, @Nullable Material displayMat) {
         if (displayMat == null)
             if (description == null) {
                 displayMat = MenuUtility.getSlotFillerItem();

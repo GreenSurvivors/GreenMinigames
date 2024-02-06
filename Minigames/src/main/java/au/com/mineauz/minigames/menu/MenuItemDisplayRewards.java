@@ -28,5 +28,4 @@ public class MenuItemDisplayRewards extends MenuItem {
         rewardMenu.displayMenu(getContainer().getViewer());
         return null;
     }
-
 }
