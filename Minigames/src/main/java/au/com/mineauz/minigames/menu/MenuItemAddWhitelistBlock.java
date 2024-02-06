@@ -1,17 +1,24 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.Duration;
 import java.util.List;
 
 public class MenuItemAddWhitelistBlock extends MenuItem {
-
     private final List<Material> whitelist;
 
-    public MenuItemAddWhitelistBlock(String name, List<Material> whitelist) {
+    public MenuItemAddWhitelistBlock(Component name, List<Material> whitelist) {
         super(name, MenuUtility.getCreateMaterial());
         setDescription(List.of("Left Click with item to", "add to whitelist/blacklist", "Click without item to", "manually add item."));
         this.whitelist = whitelist;
@@ -23,43 +30,44 @@ public class MenuItemAddWhitelistBlock extends MenuItem {
             whitelist.add(item.getType());
             getContainer().addItem(new MenuItemWhitelistBlock(item.getType(), whitelist));
         } else {
-            getContainer().getViewer().sendMessage("Whitelist/Blacklist already contains this material", MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
         }
         return getItem();
     }
 
     @Override
     public ItemStack onClick() {
-        MinigamePlayer ply = getContainer().getViewer();
-        ply.setNoClose(true);
-        ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter material name into chat to add to the whitelist/blacklist, the menu will automatically reopen in 30s if nothing is entered.", MinigameMessageType.INFO);
-        ply.setManualEntry(this);
+        MinigamePlayer mgPlayer = getContainer().getViewer();
+        mgPlayer.setNoClose(true);
+        mgPlayer.getPlayer().closeInventory();
+        int reopenSeconds = 30;
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_WHITELIST_ENTERCHAT,
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+        mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(30);
+        getContainer().startReopenTimer(reopenSeconds);
         return null;
     }
 
     @Override
     public void checkValidEntry(String entry) {
-        entry = entry.toUpperCase();
-        if (Material.getMaterial(entry) != null) {
-            Material mat = Material.getMaterial(entry);
+        Material mat = Material.matchMaterial(entry);
+        if (mat != null) {
             if (!whitelist.contains(mat)) {
                 whitelist.add(mat);
                 getContainer().addItem(new MenuItemWhitelistBlock(mat, whitelist));
             } else {
-                getContainer().getViewer().sendMessage("Whitelist/Blacklist already contains this material", MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
             }
 
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
-            return;
+        } else {
+            getContainer().cancelReopenTimer();
+            getContainer().displayMenu(getContainer().getViewer());
+
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTMATERIAL,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
         }
-
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
-
-        getContainer().getViewer().sendMessage("No material by the name \"" + entry + "\" was found!", MinigameMessageType.ERROR);
     }
 }

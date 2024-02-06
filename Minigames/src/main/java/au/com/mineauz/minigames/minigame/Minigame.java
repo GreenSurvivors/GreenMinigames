@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.menu.*;
@@ -1309,7 +1310,8 @@ public class Minigame implements ScriptObject {
             itemsFlags.add(new MenuItemFlag(Material.OAK_WALL_SIGN, flag, getFlags()));
         }
         flags.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), playerMenu), flags.getSize() - 9);
-        flags.addItem(new MenuItemAddFlag("Add Flag", MenuUtility.getCreateMaterial(), this), flags.getSize() - 1);
+        flags.addItem(new MenuItemAddFlag(MgMenuLangKey.MENU_FLAGADD_NAME,
+                MenuUtility.getCreateMaterial(), this), flags.getSize() - 1);
         flags.addItems(itemsFlags);
 
         //--------------//
