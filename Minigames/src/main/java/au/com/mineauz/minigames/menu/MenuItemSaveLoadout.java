@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class MenuItemSaveLoadout extends MenuItem {
-    private PlayerLoadout loadout = null;
+    private PlayerLoadout loadout;
     private Menu altMenu = null;
 
     public MenuItemSaveLoadout(Component name, Material displayItem, PlayerLoadout loadout) {

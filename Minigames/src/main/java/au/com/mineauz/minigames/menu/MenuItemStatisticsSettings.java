@@ -6,12 +6,13 @@ import au.com.mineauz.minigames.stats.MinigameStats;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class MenuItemStatisticsSettings extends MenuItem {
     private final Minigame minigame;
 
-    public MenuItemStatisticsSettings(Minigame minigame, Component name, Material displayItem) {
-        super(name, displayItem);
+    public MenuItemStatisticsSettings(@NotNull Minigame minigame, Component name, Material displayMat) {
+        super(name, displayMat);
         this.minigame = minigame;
     }
 

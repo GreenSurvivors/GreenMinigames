@@ -2,28 +2,42 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemList extends MenuItem {
-    private final Callback<String> value;
-    private final List<String> options;
+public class MenuItemList<T> extends MenuItem {
+    private final Callback<T> value;
+    private final List<T> options;
 
-    public MenuItemList(Component name, Material displayItem, Callback<String> value, List<String> options) {
-        super(name, displayItem);
+    public MenuItemList(@NotNull LangKey langKey, @Nullable Material displayMat, @NotNull Callback<@NotNull T> value,
+                        @NotNull List<@NotNull T> options) {
+        super(langKey, displayMat);
         this.value = value;
         this.options = options;
         updateDescription();
     }
 
-    public MenuItemList(Component name, List<Component> description, Material displayItem, Callback<String> value, List<String> options) {
-        super(name, description, displayItem);
+    public MenuItemList(@Nullable Component name, @Nullable Material displayMat, @NotNull Callback<@NotNull T> value,
+                        @NotNull List<@NotNull T> options) {
+        super(name, displayMat);
+        this.value = value;
+        this.options = options;
+        updateDescription();
+    }
+
+    public MenuItemList(@Nullable Component name, @Nullable List<@NotNull Component> description,
+                        @Nullable Material displayMat, @NotNull Callback<@NotNull T> value,
+                        @NotNull List<@NotNull T> options) {
+        super(name, description, displayMat);
         this.value = value;
         this.options = options;
         updateDescription();
