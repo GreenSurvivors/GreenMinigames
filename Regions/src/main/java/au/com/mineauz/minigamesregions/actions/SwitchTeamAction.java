@@ -101,10 +101,10 @@ public class SwitchTeamAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu prev) {
         Menu m = new Menu(3, "Switch Team", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         List<String> teams = new ArrayList<>(TeamColor.colorNames());
         teams.add("All"); //todo ?
-        m.addItem(new MenuItemList("Switch From:", List.of("If 'ALL' will switch on everyone, otherwise specific team."), Material.PAPER, new Callback<>() {
+        m.addItem(new MenuItemList<String>("Switch From:", List.of("If 'ALL' will switch on everyone, otherwise specific team."), Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {
@@ -118,7 +118,7 @@ public class SwitchTeamAction extends AbstractAction {
 
 
         }, teams));
-        m.addItem(new MenuItemList("Switch To:", List.of("If 'None' will set the player to no team, otherwise specific team.  If All - will randomly chose a team"), Material.PAPER, new Callback<>() {
+        m.addItem(new MenuItemList<String>("Switch To:", List.of("If 'None' will set the player to no team, otherwise specific team.  If All - will randomly chose a team"), Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {

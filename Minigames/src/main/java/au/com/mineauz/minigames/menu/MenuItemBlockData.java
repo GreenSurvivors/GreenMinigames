@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
@@ -21,16 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemBlockData extends MenuItem {
-    private Callback<BlockData> data;
+    private final @NotNull Callback<BlockData> data;
 
-    public MenuItemBlockData(Component name, Material displayItem) {
-        super(name, displayItem);
-        data.setValue(displayItem.createBlockData());
-        setDescription(createDescription(data.getValue()));
-    }
-
-    public MenuItemBlockData(Component name, Material displayItem, Callback<BlockData> callback) {
-        super(name, displayItem);
+    public MenuItemBlockData(@NotNull Material displayMat, @Nullable Component name,
+                             @NotNull Callback<BlockData> callback) {
+        super(displayMat, name);
         this.data = callback;
         setDescription(createDescription(data.getValue()));
     }

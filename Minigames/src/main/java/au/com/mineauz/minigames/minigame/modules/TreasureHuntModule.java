@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.LongFlag;
+import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -31,8 +31,8 @@ public class TreasureHuntModule extends MinigameModule {
     private final IntegerFlag maxHeight = new IntegerFlag(20, "maxheight");
     private final IntegerFlag minTreasure = new IntegerFlag(0, "mintreasure");
     private final IntegerFlag maxTreasure = new IntegerFlag(8, "maxtreasure");
-    private final LongFlag treasureWaitTime = new LongFlag(Minigames.getPlugin().getConfig().getLong("treasurehunt.waittime"), "treasurehuntwait");
-    private final LongFlag hintWaitTime = new LongFlag(500L, "hintWaitTime");
+    private final TimeFlag treasureWaitTime = new TimeFlag(Minigames.getPlugin().getConfig().getLong("treasurehunt.waittime"), "treasurehuntwait");
+    private final TimeFlag hintWaitTime = new TimeFlag(500L, "hintWaitTime");
     private final ArrayList<Component> curHints = new ArrayList<>();
     private final Map<UUID, Long> hintUse = new HashMap<>();
     //Unsaved Data
@@ -99,10 +99,10 @@ public class TreasureHuntModule extends MinigameModule {
         maxDes.add("Maximum items to");
         maxDes.add("spawn in chest.");
         itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", Material.STONE, maxDes, 0, 27));
-        itemsTreasureHunt.add(new MenuItemTime("Restart Delay", Material.CLOCK, treasureWaitTime.getCallback(), 0, null));
-        itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.CLOCK, hintWaitTime.getCallback(), 0, null));
+        itemsTreasureHunt.add(treasureWaitTime.getMenuItem("Restart Delay", Material.CLOCK, 0L, null));
+        itemsTreasureHunt.add(hintWaitTime.getMenuItem("Hint Usage Delay", Material.CLOCK, 0L, null));
         treasureHunt.addItems(itemsTreasureHunt);
-        treasureHunt.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), treasureHunt.getSize() - 9);
+        treasureHunt.addItem(new MenuItemBack(previous), treasureHunt.getSize() - 9);
         treasureHunt.displayMenu(treasureHunt.getViewer());
         return true;
     }

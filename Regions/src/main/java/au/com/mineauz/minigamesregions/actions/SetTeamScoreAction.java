@@ -93,11 +93,11 @@ public class SetTeamScoreAction extends ScoreAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Set Team Score", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(score.getMenuItem("Set Score Amount", Material.STONE, null, null));
 
         List<String> teams = new ArrayList<>(TeamColor.colorNames());
-        m.addItem(new MenuItemList("Specific Team", List.of("If 'None', the players", "team will be used"), Material.PAPER, new Callback<>() {
+        m.addItem(new MenuItemList<String>("Specific Team", List.of("If 'None', the players", "team will be used"), Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {

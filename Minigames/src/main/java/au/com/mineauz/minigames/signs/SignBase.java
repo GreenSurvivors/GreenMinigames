@@ -28,7 +28,7 @@ public class SignBase implements Listener {
         registerMinigameSign(new JoinSign());
         registerMinigameSign(new BetSign());
         registerMinigameSign(new CheckpointSign());
-        registerMinigameSign(new FlagSign());
+        registerMinigameSign(new CTFFlagSign());
         registerMinigameSign(new QuitSign());
         registerMinigameSign(new LoadoutSign());
         registerMinigameSign(new TeleportSign());

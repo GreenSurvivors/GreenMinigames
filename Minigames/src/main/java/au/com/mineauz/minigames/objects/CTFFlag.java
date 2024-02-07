@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.signs.CTFFlagSign;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
@@ -18,7 +19,7 @@ import org.bukkit.entity.Player;
 
 /**
  * Flag of Capture the Flag.
- * Technical background for au.com.mineauz.minigames.signs.FlagSign
+ * Technical background for {@link CTFFlagSign}
  */
 public class CTFFlag {
     private Location spawnLocation = null;
@@ -77,7 +78,6 @@ public class CTFFlag {
 
     public Location spawnFlag(Location location) {
         Location blockBelow = location.clone();
-        Location newLocation = location.clone();
         blockBelow.setY(blockBelow.getBlockY() - 1);
 
         if (blockBelow.getBlock().getType() == Material.AIR) {
@@ -108,7 +108,7 @@ public class CTFFlag {
             blockBelow.setY(blockBelow.getY() + 1);
         }
 
-        newLocation = blockBelow.clone();
+        Location newLocation = blockBelow.clone();
         newLocation.setY(newLocation.getY() + 1);
 
         // Converting wall signs to normal signs, if necessary
