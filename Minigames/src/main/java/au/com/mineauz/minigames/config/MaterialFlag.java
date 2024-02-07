@@ -4,8 +4,11 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemMaterial;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -39,18 +42,25 @@ public class MaterialFlag extends Flag<Material> {
         }
     }
 
-    public MenuItem getMenuItem(String name) {
-        return getMenuItem(name, getFlag());
+    public MenuItemMaterial getMenuItem(@Nullable Component name) {
+        return getMenuItem(name, getFlag(), null);
     }
 
-    @Override
-    public MenuItem getMenuItem(String name, Material displayItem) {
-        return getMenuItem(name, displayItem, null);
+    public MenuItemMaterial getMenuItem(@Nullable Component name, @Nullable List<@NotNull Component> description) {
+        return getMenuItem(name, getFlag(), description);
     }
 
+    @Deprecated
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem, List<String> description) {
-        return new MenuItemMaterial(name, description, displayItem, new Callback<>() {
+    public MenuItemMaterial getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
+        return getMenuItem(name, displayMat, null);
+    }
+
+    @Deprecated
+    @Override
+    public MenuItemMaterial getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                @Nullable List<@NotNull Component> description) {
+        return new MenuItemMaterial(displayMat, name, description, new Callback<>() {
             @Override
             public Material getValue() {
                 return getFlag();

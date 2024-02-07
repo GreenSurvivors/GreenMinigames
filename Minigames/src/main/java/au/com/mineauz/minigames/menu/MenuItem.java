@@ -27,15 +27,19 @@ public class MenuItem {
     private @Nullable Menu container = null;
     private int slot = 0;
 
-    public MenuItem(@Nullable Component name, @Nullable Material displayMat) {
-        this(name, null, displayMat);
+    public MenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        this(displayMat, name, null);
     }
 
-    public MenuItem(@NotNull LangKey langKey, @Nullable Material displayMat) {
-        this(MinigameMessageManager.getMgMessage(langKey), null, displayMat);
+    public MenuItem(@Nullable Material displayMat, @NotNull LangKey langKey) {
+        this(displayMat, langKey, null);
     }
 
-    public MenuItem(@Nullable Component name, @Nullable List<@NotNull Component> description, @Nullable Material displayMat) {
+    public MenuItem(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<Component> description) {
+        this(displayMat, MinigameMessageManager.getMgMessage(langKey), description);
+    }
+
+    public MenuItem(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description) {
         if (displayMat == null)
             if (description == null) {
                 displayMat = MenuUtility.getSlotFillerItem();

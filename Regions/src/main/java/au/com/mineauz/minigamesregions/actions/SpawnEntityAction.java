@@ -196,7 +196,7 @@ public class SpawnEntityAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu menu = new Menu(3, "Spawn Entity", mgPlayer);
-        menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), menu.getSize() - 9);
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         List<String> options = new ArrayList<>();
         for (EntityType type : EntityType.values()) {
             if (!NOT_SPAWNABLE.contains(type)) {
@@ -225,7 +225,7 @@ public class SpawnEntityAction extends AbstractAction {
             if (type.getFlag().isAlive()) {
                 entitySettingsMenu.clearMenu();
 
-                final MenuItemPage backButton = new MenuItemPage("Back", MenuUtility.getBackMaterial(), menu);
+                final MenuItemPage backButton =  new MenuItemBack(menu);
                 entitySettingsMenu.addItem(backButton, entitySettingsMenu.getSize() - 1);
                 populateEntitySettings(entitySettingsMenu, mgPlayer);
 
@@ -276,7 +276,7 @@ public class SpawnEntityAction extends AbstractAction {
         }));
 
         Menu velocityMenu = new Menu(3, "Entity velocity", mgPlayer);
-        final MenuItemPage backButton = new MenuItemPage("Back", MenuUtility.getBackMaterial(), entitySettingsMenu);
+        final MenuItemPage backButton =  new MenuItemBack(entitySettingsMenu);
         velocityMenu.addItem(backButton, velocityMenu.getSize() - 1);
 
         velocityMenu.addItem(new MenuItemDecimal("X Velocity", Material.ARROW, new Callback<>() {

@@ -2,8 +2,11 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemString;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -30,24 +33,14 @@ public class StringFlag extends Flag<String> {
     }
 
     @Override
-    public MenuItemString getMenuItem(String name, Material displayItem) {
-        return new MenuItemString(name, displayItem, new Callback<>() {
-
-            @Override
-            public String getValue() {
-                return getFlag();
-            }
-
-            @Override
-            public void setValue(String value) {
-                setFlag(value);
-            }
-        });
+    public MenuItemString getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
+        return getMenuItem(name, displayMat, null);
     }
 
     @Override
-    public MenuItemString getMenuItem(String name, Material displayItem, List<String> description) {
-        return new MenuItemString(name, description, displayItem, new Callback<>() {
+    public MenuItemString getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+                                      @NotNull List<@NotNull Component> description) {
+        return new MenuItemString(displayMat, name, description, new Callback<>() {
 
             @Override
             public String getValue() {

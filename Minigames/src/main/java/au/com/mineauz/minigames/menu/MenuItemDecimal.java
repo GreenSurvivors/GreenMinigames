@@ -32,9 +32,9 @@ public class MenuItemDecimal extends MenuItem {
     private final @Nullable Double max;
     protected DecimalFormat form = new DecimalFormat("#.##");
 
-    public MenuItemDecimal(@NotNull LangKey langKey, @Nullable Material displayMat, @NotNull Callback<Double> value,
+    public MenuItemDecimal(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Double> value,
                            double lowerInc, double upperInc, @Nullable Double min, @Nullable Double max) {
-        super(langKey, displayMat);
+        super(displayMat, langKey);
         this.value = value;
         this.lowerInc = lowerInc;
         this.upperInc = upperInc;
@@ -43,9 +43,9 @@ public class MenuItemDecimal extends MenuItem {
         updateDescription();
     }
 
-    public MenuItemDecimal(@Nullable Component name, @Nullable Material displayMat, @NotNull Callback<Double> value,
+    public MenuItemDecimal(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Double> value,
                            double lowerInc, double upperInc, @Nullable Double min, @Nullable Double max) {
-        super(name, displayMat);
+        super(displayMat, name);
         this.value = value;
         this.lowerInc = lowerInc;
         this.upperInc = upperInc;
@@ -54,10 +54,10 @@ public class MenuItemDecimal extends MenuItem {
         updateDescription();
     }
 
-    public MenuItemDecimal(@Nullable Component name, @Nullable List<@NotNull Component> description,
-                           @Nullable Material displayMat, @NotNull Callback<Double> value, double lowerInc, double upperInc,
-                           @Nullable Double min, @Nullable Double max) {
-        super(name, description, displayMat);
+    public MenuItemDecimal(@Nullable Material displayMat, @Nullable Component name,
+                           @Nullable List<@NotNull Component> description, @NotNull Callback<Double> value,
+                           double lowerInc, double upperInc, @Nullable Double min, @Nullable Double max) {
+        super(displayMat, name, description);
         this.value = value;
         this.lowerInc = lowerInc;
         this.upperInc = upperInc;

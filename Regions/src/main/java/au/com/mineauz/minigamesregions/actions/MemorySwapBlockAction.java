@@ -349,15 +349,15 @@ public class MemorySwapBlockAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Memory Swap Block", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
         //The menu entry for the from-block, aka the block that will be replaced
         m.addItem(matchType.getMenuItem("Match Block"));
 
         //Menu entry for the white/blacklist entry, aka the blocks that will be only accounted for / removed from the block pool
         m.addItem(new MenuItemNewLine());
-        m.addItem(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", List.of("Blocks that can/can't", "used as memory."),
-                Material.BOOK, wbList.getFlag(), new Callback<>() {
+        m.addItem(new MenuItemDisplayWhitelist(Material.BOOK, "Block Whitelist/Blacklist", List.of("Blocks that can/can't", "used as memory."),
+                wbList.getFlag(), new Callback<>() {
 
             @Override
             public Boolean getValue() {
