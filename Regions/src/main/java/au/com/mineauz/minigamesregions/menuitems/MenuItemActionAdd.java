@@ -14,14 +14,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class MenuItemActionAdd extends MenuItem {
+    private final @NotNull BaseExecutor exec;
 
-    private final BaseExecutor exec;
-
-    public MenuItemActionAdd(@Nullable Component name, @Nullable Material displayItem, @NotNull BaseExecutor exec) {
-        super(name, displayItem);
+    public MenuItemActionAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull BaseExecutor exec) {
+        super(displayMat, name);
         this.exec = exec;
     }
-
 
     @Override
     public ItemStack onClick() {
@@ -31,7 +29,7 @@ public class MenuItemActionAdd extends MenuItem {
         List<String> acts = new ArrayList<>(Actions.getAllActionNames());
         Collections.sort(acts);
         for (String act : acts) {
-            if ((Actions.getActionByName(act).useInNodes() && exec != null) || (Actions.getActionByName(act).useInRegions() && exec != null)) {
+            if (Actions.getActionByName(act).useInNodes() || Actions.getActionByName(act).useInRegions()) {
                 String catname = Actions.getActionByName(act).getCategory();
                 if (catname == null) catname = "misc actions";
                 catname = catname.toLowerCase();
@@ -40,22 +38,22 @@ public class MenuItemActionAdd extends MenuItem {
                     cat = new Menu(6, WordUtils.capitalizeFully(catname), getContainer().getViewer());
                     cats.put(catname, cat);
                     m.addItem(new MenuItemPage(WordUtils.capitalizeFully(catname), Material.CHEST, cat));
-                    cat.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), m), cat.getSize() - 9);
+                    cat.addItem(new MenuItemBack(m), cat.getSize() - 9);
                 } else
                     cat = cats.get(catname);
-                MenuItemCustom c = new MenuItemCustom(WordUtils.capitalizeFully(act), Material.PAPER);
+                MenuItemCustom c = new MenuItemCustom(Material.PAPER, WordUtils.capitalizeFully(act));
                 final String fact = act;
                 c.setClick(object -> {
                     ActionInterface action = Actions.getActionByName(fact);
                     exec.addAction(action);
-                    getContainer().addItem(new MenuItemAction(WordUtils.capitalizeFully(fact), Material.PAPER, exec, action));
+                    getContainer().addItem(new MenuItemAction(Material.PAPER, WordUtils.capitalizeFully(fact), exec, action));
                     getContainer().displayMenu(getContainer().getViewer());
                     return null;
                 });
                 cat.addItem(c);
             }
         }
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), getContainer()), m.getSize() - 9);
+        m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
         m.displayMenu(getContainer().getViewer());
         return null;
     }

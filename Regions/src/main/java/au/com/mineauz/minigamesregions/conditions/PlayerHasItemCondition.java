@@ -8,8 +8,14 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import com.google.common.base.Joiner;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -26,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PlayerHasItemCondition extends ConditionInterface { //todo amount
+public class PlayerHasItemCondition extends ACondition { //todo amount
     private final ItemFlag itemToSearchFor = new ItemFlag(new ItemStack(Material.STONE), "item");
     private final IntegerFlag count = new IntegerFlag(1, "amount");
     private final EnumFlag<PositionType> where = new EnumFlag<>(PositionType.ANYWHERE, "where");
@@ -59,9 +65,13 @@ public class PlayerHasItemCondition extends ConditionInterface { //todo amount
         }
     }
 
+    protected PlayerHasItemCondition(@NotNull String name) {
+        super(name);
+    }
+
     @Override
-    public String getName() {
-        return "PLAYER_HAS_ITEM";
+    public @NotNull Component getDisplayName() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_NAME);
     }
 
     @Override
@@ -310,7 +320,7 @@ public class PlayerHasItemCondition extends ConditionInterface { //todo amount
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         final Menu menu = new Menu(3, "Player Has Item", player);
-        menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), menu.getSize() - 9);
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
 
         // we need a reference for two object we will create soon down the line
         final CompletableFuture<MenuItemString> futureNameItem = new CompletableFuture<>();

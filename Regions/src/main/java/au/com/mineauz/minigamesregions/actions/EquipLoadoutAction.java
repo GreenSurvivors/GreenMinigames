@@ -54,7 +54,7 @@ public class EquipLoadoutAction extends AbstractAction {
         if (lmod.hasLoadout(loadout.getFlag())) {
             PlayerLoadout pLoadOut = lmod.getLoadout(loadout.getFlag());
             mgPlayer.setLoadout(pLoadOut);
-            pLoadOut.equiptLoadout(mgPlayer);
+            pLoadOut.equipLoadout(mgPlayer);
         }
     }
 
@@ -66,7 +66,7 @@ public class EquipLoadoutAction extends AbstractAction {
         if (lmod.hasLoadout(loadout.getFlag())) {
             PlayerLoadout pLoadOut = lmod.getLoadout(loadout.getFlag());
             mgPlayer.setLoadout(pLoadOut);
-            pLoadOut.equiptLoadout(mgPlayer);
+            pLoadOut.equipLoadout(mgPlayer);
         }
     }
 
@@ -85,7 +85,7 @@ public class EquipLoadoutAction extends AbstractAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, "Equip Loadout", mgPlayer);
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(new MenuItemString("Loadout Name", Material.DIAMOND_SWORD, new Callback<>() {
 
             @Override
