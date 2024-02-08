@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -14,17 +15,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class FlightAction extends AbstractAction {
+public class FlightAction extends AAction {
     private final BooleanFlag setFly = new BooleanFlag(true, "setFlying");
     private final BooleanFlag startFly = new BooleanFlag(false, "startFly");
 
+    protected FlightAction(@NotNull String name) {
+        super(name);
+    }
+
     @Override
-    public @NotNull String getName() {
+    public @NotNull Component getDisplayName() {
         return "FLIGHT";
     }
 
     @Override
-    public @NotNull String getCategory() {
+    public @NotNull IActionCategory getCategory() {
         return "Player Actions";
     }
 
@@ -79,7 +84,7 @@ public class FlightAction extends AbstractAction {
         Menu m = new Menu(3, "Flight", mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(setFly.getMenuItem("Set Flight Mode", Material.FEATHER));
-        m.addItem(startFly.getMenuItem("Set Flying", Material.FEATHER, List.of("Set Flight Mode must be", "true to use this")));
+        m.addItem(startFly.getMenuItem(Material.FEATHER, "Set Flying", List.of("Set Flight Mode must be", "true to use this")));
         m.displayMenu(mgPlayer);
         return true;
     }

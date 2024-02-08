@@ -75,8 +75,8 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     }
 
     @Override
-    public String getCategory() {
-        return "Player Conditions";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.PLAYER;
     }
 
     @Override
@@ -319,7 +319,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        final Menu menu = new Menu(3, "Player Has Item", player);
+        final Menu menu = new Menu(3, getDisplayName(), player);
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
 
         // we need a reference for two object we will create soon down the line
@@ -398,12 +398,11 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         futureNameItem.complete(nameMenuItem);
         menu.addItem(nameMenuItem);
 
-        menu.addItem(matchLore.getMenuItem("Match Lore", Material.BOOK));
-        final MenuItemString loreMenuItem = new MenuItemString("Lore",
+        menu.addItem(matchLore.getMenuItem(Material.WRITTEN_BOOK, "Match Lore"));
+        final MenuItemString loreMenuItem = new MenuItemString(Material.BOOK, "Lore",
                 List.of("The lore to match. Separate", "with semi-colons", "for new lines.", "Use % to do a wildcard match"),
-                Material.BOOK, new Callback<>() {
+                new Callback<>() {
             private String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
-
             @Override
             public String getValue() {
                 return localCache;
@@ -427,8 +426,8 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         futureLoreItem.complete(loreMenuItem);
         menu.addItem(loreMenuItem);
 
-        menu.addItem(matchEnchantments.getMenuItem("Match enchantments", Material.ENCHANTED_BOOK));
-        menu.addItem(matchExact.getMenuItem("Match exact", Material.BOOKSHELF)); //todo with callback to turn the others on
+        menu.addItem(matchEnchantments.getMenuItem(Material.ENCHANTED_BOOK, "Match enchantments"));
+        menu.addItem(matchExact.getMenuItem(Material.BOOKSHELF, "Match exact")); //todo with callback to turn the others on
 
         addInvertMenuItem(menu);
         menu.displayMenu(player);

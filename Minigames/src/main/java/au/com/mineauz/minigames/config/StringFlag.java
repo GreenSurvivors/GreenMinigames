@@ -33,13 +33,13 @@ public class StringFlag extends Flag<String> {
     }
 
     @Override
-    public MenuItemString getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
-        return getMenuItem(name, displayMat, null);
+    public MenuItemString getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, null);
     }
 
     @Override
-    public MenuItemString getMenuItem(@Nullable Component name, @Nullable Material displayMat,
-                                      @NotNull List<@NotNull Component> description) {
+    public MenuItemString getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                      @Nullable List<@NotNull Component> description) {
         return new MenuItemString(displayMat, name, description, new Callback<>() {
 
             @Override

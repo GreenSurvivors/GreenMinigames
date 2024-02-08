@@ -33,7 +33,7 @@ public class BooleanFlag extends Flag<Boolean> {
     }
 
     @Override
-    public MenuItemBoolean getMenuItem(@NotNull LangKey langKey, @Nullable Material displayMaterial) {
+    public MenuItemBoolean getMenuItem(@Nullable Material displayMaterial, @NotNull LangKey langKey) {
         return new MenuItemBoolean(displayMaterial, langKey, new Callback<>() {
 
             @Override
@@ -49,12 +49,12 @@ public class BooleanFlag extends Flag<Boolean> {
     }
 
     @Override
-    public MenuItemBoolean getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
+    public MenuItemBoolean getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
         return getMenuItem(name, displayMat, null);
     }
 
     @Override
-    public MenuItemBoolean getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItemBoolean getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description) {
         return new MenuItemBoolean(name, description, displayMat, new Callback<>() {
 

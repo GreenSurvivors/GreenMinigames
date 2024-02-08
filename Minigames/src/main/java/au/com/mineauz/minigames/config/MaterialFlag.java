@@ -43,22 +43,22 @@ public class MaterialFlag extends Flag<Material> {
     }
 
     public MenuItemMaterial getMenuItem(@Nullable Component name) {
-        return getMenuItem(name, getFlag(), null);
+        return getMenuItem(getFlag(), name, null);
     }
 
     public MenuItemMaterial getMenuItem(@Nullable Component name, @Nullable List<@NotNull Component> description) {
-        return getMenuItem(name, getFlag(), description);
+        return getMenuItem(getFlag(), name, description);
     }
 
     @Deprecated
     @Override
-    public MenuItemMaterial getMenuItem(@Nullable Component name, @Nullable Material displayMat) {
-        return getMenuItem(name, displayMat, null);
+    public MenuItemMaterial getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, null);
     }
 
     @Deprecated
     @Override
-    public MenuItemMaterial getMenuItem(@Nullable Component name, @Nullable Material displayMat,
+    public MenuItemMaterial getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description) {
         return new MenuItemMaterial(displayMat, name, description, new Callback<>() {
             @Override
