@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -30,14 +31,14 @@ public class MenuItemDisplayWhitelist extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        Menu menu = new Menu(6, "Block Whitelist", getContainer().getViewer());
+        Menu menu = new Menu(6, MgMenuLangKey.MENU_WHITELIST_BLOCK_NAME, getContainer().getViewer());
         List<MenuItem> items = new ArrayList<>();
         for (Material bl : whitelist) {
             items.add(new MenuItemWhitelistBlock(bl, whitelist));
         }
         menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
-        menu.addItem(new MenuItemAddWhitelistBlock("Add Material", whitelist), menu.getSize() - 1);
-        menu.addItem(new MenuItemBoolean(Material.ENDER_PEARL, "Whitelist Mode", modeDescription,
+        menu.addItem(new MenuItemAddWhitelistBlock(MgMenuLangKey.MENU_WHITELIST_ADDMATERIAL_NAME, whitelist), menu.getSize() - 1);
+        menu.addItem(new MenuItemBoolean(Material.ENDER_PEARL, MgMenuLangKey.MENU_WHITELIST_MODE, modeDescription,
                 whitelistMode), menu.getSize() - 2);
         menu.addItems(items);
         menu.displayMenu(getContainer().getViewer());

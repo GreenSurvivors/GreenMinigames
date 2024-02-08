@@ -935,13 +935,14 @@ public class Minigame implements ScriptObject {
         return false;
     }
 
-    public int getRegenDelay() {
+    public long getRegenDelay() {
         return regenDelay.getFlag();
     }
 
-    public void setRegenDelay(int regenDelay) {
-        if (regenDelay < 0)
+    public void setRegenDelay(long regenDelay) {
+        if (regenDelay < 0) {
             regenDelay = 0;
+        }
         this.regenDelay.setFlag(regenDelay);
     }
 
@@ -1082,7 +1083,7 @@ public class Minigame implements ScriptObject {
         final MenuItemCustom mechSettings = new MenuItemCustom(Material.PAPER, "Game Mechanic Settings");
         final Minigame mgm = this;
         final Menu fmain = main;
-        mechSettings.setClick(object -> {
+        mechSettings.setClick(() -> {
             if (getMechanic().displaySettings(mgm) != null &&
                     getMechanic().displaySettings(mgm).displayMechanicSettings(fmain))
                 return null;
@@ -1187,7 +1188,7 @@ public class Minigame implements ScriptObject {
                     material = playerLoadout.getItem((Integer) playerLoadout.getItemSlots().toArray()[0]).getType();
                 }
                 if (playerLoadout.isDeleteable()) {
-                    mi.add(new MenuItemDisplayLoadout(ld, des, material, playerLoadout, this));
+                    mi.add(new MenuItemDisplayLoadout(material, ld, des, playerLoadout, this));
                 } else {
                     mi.add(new MenuItemDisplayLoadout(ld, material, playerLoadout, this));
                 }
