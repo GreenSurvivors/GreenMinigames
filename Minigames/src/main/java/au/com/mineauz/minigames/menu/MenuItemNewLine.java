@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 public class MenuItemNewLine extends MenuItem {
 
     public MenuItemNewLine() {
-        super(Component.text("NL"), (Material) null);
+        super((Material) null, Component.text("NL")); // since it will never be visible anyway we can hardcode the name
     }
 
     @Override

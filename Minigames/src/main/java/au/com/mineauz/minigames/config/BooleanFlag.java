@@ -51,7 +51,7 @@ public class BooleanFlag extends Flag<Boolean> {
 
     @Override
     public MenuItemBoolean getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
-        return getMenuItem(name, displayMat, null);
+        return getMenuItem(displayMat, name, null);
     }
 
     @Override

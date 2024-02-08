@@ -119,8 +119,8 @@ public class MenuItemRewardGroup extends MenuItem {
         des.add("Click without an item");
         des.add("to add a money reward.");
 
-        rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, MenuUtility.getCreateMaterial(), group), 43);
-        rewardMenu.addItem(new MenuItemPage("Save " + getName(), MenuUtility.getSaveMaterial(), rewardMenu.getPreviousPage()), 44);
+        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateMaterial(), "Add Item", des, group), 43);
+        rewardMenu.addItem(new MenuItemPage(MenuUtility.getSaveMaterial(), "Save " + getName(), rewardMenu.getPreviousPage()), 44);
 
         List<MenuItem> mi = new ArrayList<>();
         for (RewardType item : group.getItems()) {

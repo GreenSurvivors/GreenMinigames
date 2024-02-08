@@ -225,7 +225,7 @@ public class LoadoutModule extends MinigameModule {
                             ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItemSlots()).get(0));
                             c.setDisplayItem(item);
                         }
-                        c.setClick(object -> {
+                        c.setClick(() -> {
                             mgPlayer.setLoadout(loadout);
                             mgPlayer.getPlayer().closeInventory();
                             if (!equip) {
