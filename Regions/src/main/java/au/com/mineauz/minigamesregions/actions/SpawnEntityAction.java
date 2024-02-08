@@ -8,6 +8,9 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
@@ -38,7 +41,7 @@ import java.util.*;
  *   setAgeLock
  */
 
-public class SpawnEntityAction extends AbstractAction {
+public class SpawnEntityAction extends AAction {
     /**
      * Contains all entities that are problematic to spawn as is.
      * Some problems may get resolved, if their (default)settings get added in the future;
@@ -64,14 +67,23 @@ public class SpawnEntityAction extends AbstractAction {
     private final EnumFlag<EntityType> type = new EnumFlag<>(EntityType.ZOMBIE, "type");
     private final Map<String, ConfigSerializableBridge<?>> settings = new HashMap<>();
 
+    protected SpawnEntityAction(@NotNull String name) {
+        super(name);
+    }
+
     @Override
     public @NotNull String getName() {
         return "SPAWN_ENTITY";
     }
 
     @Override
-    public @NotNull String getCategory() {
-        return "World Actions";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_NAME);
+    }
+
+    @Override
+    public @NotNull IActionCategory getCategory() {
+        return RegionActionCategories.WORLD;
     }
 
     @Override
@@ -195,7 +207,7 @@ public class SpawnEntityAction extends AbstractAction {
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu menu = new Menu(3, "Spawn Entity", mgPlayer);
+        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         List<String> options = new ArrayList<>();
         for (EntityType type : EntityType.values()) {
@@ -218,7 +230,7 @@ public class SpawnEntityAction extends AbstractAction {
 
         }, options));
 
-        final MenuItemCustom customMenuItem = new MenuItemCustom("Entity Settings", Material.CHEST);
+        final MenuItemCustom customMenuItem = new MenuItemCustom(Material.CHEST, "Entity Settings");
         final Menu entitySettingsMenu = new Menu(6, "Settings", mgPlayer);
         final MinigamePlayer fply = mgPlayer;
         customMenuItem.setClick(object -> {
@@ -241,7 +253,7 @@ public class SpawnEntityAction extends AbstractAction {
     }
 
     private void populateEntitySettings(@NotNull Menu entitySettingsMenu, @NotNull MinigamePlayer mgPlayer) {
-        entitySettingsMenu.addItem(new MenuItemComponent("Display Name", Material.NAME_TAG, new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemComponent(Material.NAME_TAG, "Display Name", new Callback<>() {
             @Override
             public String getValue() {
                 ConfigSerializableBridge<?> value = settings.get("customName");
@@ -258,7 +270,7 @@ public class SpawnEntityAction extends AbstractAction {
             }
         }));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean("Display Name Visible", Material.SPYGLASS, new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.SPYGLASS, "Display Name Visible", new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("customNameVisible");
@@ -279,7 +291,7 @@ public class SpawnEntityAction extends AbstractAction {
         final MenuItemPage backButton =  new MenuItemBack(entitySettingsMenu);
         velocityMenu.addItem(backButton, velocityMenu.getSize() - 1);
 
-        velocityMenu.addItem(new MenuItemDecimal("X Velocity", Material.ARROW, new Callback<>() {
+        velocityMenu.addItem(new MenuItemDecimal(Material.ARROW, "X Velocity", new Callback<>() {
             @Override
             public Double getValue() {
                 ConfigSerializableBridge<?> value = settings.get("velocity");
@@ -308,7 +320,7 @@ public class SpawnEntityAction extends AbstractAction {
 
 
         }, 0.5, 1, null, null));
-        velocityMenu.addItem(new MenuItemDecimal("Y Velocity", Material.ARROW, new Callback<>() {
+        velocityMenu.addItem(new MenuItemDecimal(Material.ARROW, "Y Velocity", new Callback<>() {
             @Override
             public Double getValue() {
                 ConfigSerializableBridge<?> value = settings.get("velocity");
@@ -337,7 +349,7 @@ public class SpawnEntityAction extends AbstractAction {
 
 
         }, 0.5, 1, null, null));
-        velocityMenu.addItem(new MenuItemDecimal("Z Velocity", Material.ARROW, new Callback<>() {
+        velocityMenu.addItem(new MenuItemDecimal(Material.ARROW, "Z Velocity", new Callback<>() {
 
             @Override
             public Double getValue() {
@@ -418,7 +430,7 @@ public class SpawnEntityAction extends AbstractAction {
             }
         }));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean("Invulnerable", Material.SHIELD, new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.SHIELD, "Invulnerable", new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("invulnerable");
@@ -435,7 +447,7 @@ public class SpawnEntityAction extends AbstractAction {
             }
         }));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean("Silent", Material.SCULK_SENSOR, new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.SCULK_SENSOR, "Silent", new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("silent");
@@ -455,7 +467,7 @@ public class SpawnEntityAction extends AbstractAction {
         // don't overflow to next page
         entitySettingsMenu.addItem(new MenuItemNewLine());
 
-        entitySettingsMenu.addItem(new MenuItemBoolean("Has gravity", Material.ELYTRA, new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.ELYTRA, "Has gravity", new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("hasGravity");
@@ -481,7 +493,7 @@ public class SpawnEntityAction extends AbstractAction {
     private void populateLivingEntitySettings(@NotNull Menu entitySettingsMenu, @NotNull MinigamePlayer mgPlayer) {
         entitySettingsMenu.addItem(new MenuItemNewLine());
 
-        entitySettingsMenu.addItem(new MenuItemBoolean("Can pickup items", Material.HOPPER, new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.HOPPER, "Can pickup items", new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("canPickupItems");
@@ -498,7 +510,7 @@ public class SpawnEntityAction extends AbstractAction {
             }
         }));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean("Has AI", Material.LIGHT, new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.LIGHT, "Has AI", new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("hasAI");
@@ -531,7 +543,5 @@ public class SpawnEntityAction extends AbstractAction {
                 settings.put("isCollidable", new ConfigSerializableBridge<>(value));
             }
         }));
-
-
     }
 }
