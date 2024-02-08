@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.Map;
 
 public class MinigameTimerCondition extends ACondition {
@@ -31,13 +32,13 @@ public class MinigameTimerCondition extends ACondition {
     }
 
     @Override
-    public String getCategory() {
-        return "Minigame ConditionRegistry";
+    public @NotNull IConditionCategory getCategory() {
+        return RegionConditionCategories.MINIGAME;
     }
 
     @Override
     public void describe(Map<String, Object> out) {
-        out.put("Time", MinigameUtils.convertTime(minTime.getFlag(), true) + " - " + MinigameUtils.convertTime(maxTime.getFlag(), true));
+        out.put("Time", MinigameUtils.convertTime(Duration.ofSeconds(minTime.getFlag()), true) + " - " + MinigameUtils.convertTime(Duration.ofSeconds(maxTime.getFlag()), true));
     }
 
     @Override
@@ -84,10 +85,10 @@ public class MinigameTimerCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Minigame Timer", player);
+        Menu m = new Menu(3, getDisplayName(), player);
 
-        m.addItem(minTime.getMenuItem("Min Time", Material.CLOCK, 0L, null));
-        m.addItem(maxTime.getMenuItem("Max Time", Material.CLOCK, 0L, null));
+        m.addItem(minTime.getMenuItem(Material.CLOCK, "Min Time", 0L, null));
+        m.addItem(maxTime.getMenuItem(Material.CLOCK, "Max Time", 0L, null));
 
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);
