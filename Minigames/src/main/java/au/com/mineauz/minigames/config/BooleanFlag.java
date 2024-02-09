@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class BooleanFlag extends Flag<Boolean> {
+
     public BooleanFlag(boolean value, String name) {
         setFlag(value);
         setName(name);
@@ -56,7 +57,7 @@ public class BooleanFlag extends Flag<Boolean> {
     @Override
     public MenuItemBoolean getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description) {
-        return new MenuItemBoolean(name, description, displayMat, new Callback<>() {
+        return new MenuItemBoolean(displayMat, name, description, new Callback<>() {
 
             @Override
             public Boolean getValue() {

@@ -255,18 +255,18 @@ public class SpawnEntityAction extends AAction {
     private void populateEntitySettings(@NotNull Menu entitySettingsMenu, @NotNull MinigamePlayer mgPlayer) {
         entitySettingsMenu.addItem(new MenuItemComponent(Material.NAME_TAG, "Display Name", new Callback<>() {
             @Override
-            public String getValue() {
+            public Component getValue() {
                 ConfigSerializableBridge<?> value = settings.get("customName");
                 if (value == null) {
-                    return "";
+                    return Component.empty();
                 } else {
-                    return (String) value.getObject();
+                    return MiniMessage.miniMessage().deserialize((String) value.getObject());
                 }
             }
 
             @Override
-            public void setValue(String value) {
-                settings.put("customName", new ConfigSerializableBridge<>(value));
+            public void setValue(Component value) {
+                settings.put("customName", new ConfigSerializableBridge<>(MiniMessage.miniMessage().serialize(value)));
             }
         }));
 
