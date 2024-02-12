@@ -71,7 +71,7 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
                             mgPlayer.clearSelection();
 
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_CREATE,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                         } else {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOSELECTION);
                         }
@@ -79,7 +79,7 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
                     case "remove" -> {
                         minigame.removeFloorDegen();
                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_CLEAR,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     }
                     case "type" -> {
                         if (args.length >= 2) {
@@ -93,7 +93,7 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
 
                                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_TYPE,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[1]),
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                                 }
                                 default ->
                                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_ERROR_NOTYPE);
@@ -126,7 +126,7 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull @Nullable [] args) {
+                                                         @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("create", "remove", "type", "time"), args[0]);
         } else if (args[0].equalsIgnoreCase("type")) {

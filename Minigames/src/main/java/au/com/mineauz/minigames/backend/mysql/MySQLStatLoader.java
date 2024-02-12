@@ -37,7 +37,7 @@ class MySQLStatLoader {
     }
 
     public List<StoredStat> loadStatValues(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
-        MinigameMessageManager.debugMessage("MySQL beginning stat load for " + minigame.getName(false) + ", " + stat + ", " + field);
+        MinigameMessageManager.debugMessage("MySQL beginning stat load for " + minigame.getName() + ", " + stat + ", " + field);
         ConnectionHandler handler = null;
         try {
             handler = backend.getPool().getConnection();
@@ -51,7 +51,7 @@ class MySQLStatLoader {
             if (handler != null) {
                 handler.release();
             }
-            MinigameMessageManager.debugMessage("MySQL completed stat load for " + minigame.getName(false));
+            MinigameMessageManager.debugMessage("MySQL completed stat load for " + minigame.getName());
         }
     }
 
@@ -72,7 +72,7 @@ class MySQLStatLoader {
                 }
             }
         } catch (SQLException e) {
-            logger.error("Failed to load stat for " + minigame.getName(false) + " " + playerId, e);
+            logger.error("Failed to load stat for " + minigame.getName() + " " + playerId, e);
             return 0;
         } finally {
             if (handler != null) {
