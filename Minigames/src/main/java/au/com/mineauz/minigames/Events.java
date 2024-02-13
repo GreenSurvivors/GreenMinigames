@@ -624,7 +624,7 @@ public class Events implements Listener {
                 if (!mgPlayer.getMenu().getAllowModify() || mgPlayer.getMenu().hasMenuItem(event.getRawSlot()))
                     event.setCancelled(true);
 
-                MenuItem item = mgPlayer.getMenu().getClicked(event.getRawSlot());
+                MenuItem item = mgPlayer.getMenu().getMenuItem(event.getRawSlot());
                 if (item != null) {
                     ItemStack disItem = null;
                     switch (event.getClick()) {
