@@ -375,10 +375,16 @@ public class MinigamePlayer implements ScriptObject {
         this.startTime = ms;
     }
 
+    /**
+     * in milliseconds
+     */
     public long getEndTime() {
         return this.endTime;
     }
 
+    /**
+     * in milliseconds
+     */
     public void setEndTime(final long ms) {
         this.endTime = ms;
     }
@@ -389,10 +395,16 @@ public class MinigamePlayer implements ScriptObject {
         this.storedTime = 0;
     }
 
+    /**
+     * in milliseconds
+     */
     public long getStoredTime() {
         return this.storedTime;
     }
 
+    /**
+     * in milliseconds
+     */
     public void setStoredTime(final long ms) {
         this.storedTime = ms;
     }
