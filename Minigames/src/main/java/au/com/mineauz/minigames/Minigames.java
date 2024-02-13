@@ -36,6 +36,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -381,7 +382,7 @@ public class Minigames extends JavaPlugin {
         return econ != null;
     }
 
-    public Economy getEconomy() {
+    public @Nullable Economy getEconomy() {
         return econ;
     }
 

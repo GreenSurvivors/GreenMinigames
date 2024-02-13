@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.events.TakeFlagEvent;
+import au.com.mineauz.minigames.events.TakeCTFFlagEvent;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
@@ -72,7 +72,7 @@ public class SignBase implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    private void takeFlag(@NotNull TakeFlagEvent event) {
+    private void takeFlag(@NotNull TakeCTFFlagEvent event) {
         if (event.getFlag() != null && event.getFlag().getAttachedToLocation() != null) {
             this.takenFlags.add(event.getFlag());
         }
@@ -157,7 +157,7 @@ public class SignBase implements Listener {
 
             for (CTFFlag ctfFlag : takenFlags) {
                 if (ctfFlag.getAttachedToLocation().equals(blockLocation)) {
-                    MinigameSign mgSign = minigameSigns.get("Flag");
+                    AMinigameSign mgSign = minigameSigns.get("Flag");
 
                     if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
                         event.setCancelled(true);

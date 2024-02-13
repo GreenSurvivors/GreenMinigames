@@ -1193,7 +1193,7 @@ public class Minigame implements ScriptObject {
             mainMenu.addItem(gamLengthMenuItem, 18);
         }
 
-        mainMenu.addItem(timerDisplayType.getMenuItem(Material.ENDER_PEARL, "Use XP bar as Timer"), 19); //todo fixed in later commit
+        mainMenu.addItem(timerDisplayType.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_MINIGAME_TIME_DISPLAYTYPE_NAME), 19);
 
         final MenuItemTime startWaitTimeMenuItem = startWaitTime.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_MINIGAME_TIME_STARTWAIT_NAME, 3L, null);
         typeDependentDisplayData.add(new TypeDependentDisplayData(startWaitTimeMenuItem, List.of(MinigameType.MULTIPLAYER), 19));
