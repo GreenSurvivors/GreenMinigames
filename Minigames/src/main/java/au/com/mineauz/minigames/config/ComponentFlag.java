@@ -25,9 +25,8 @@ public class ComponentFlag extends Flag<Component> {
 
     @Override
     public void loadValue(String path, FileConfiguration config) {
-        final String confStr = config.getString(path + "." + getName());
-        if (confStr != null) {
-            setFlag(MiniMessage.miniMessage().deserialize(confStr));
+        if (config.contains(path + "." + getName())) {
+            setFlag(MiniMessage.miniMessage().deserialize(config.getString(path + "." + getName())));
         } else {
             setFlag(getDefaultFlag());
         }
@@ -35,7 +34,7 @@ public class ComponentFlag extends Flag<Component> {
 
     @Override
     public MenuItemComponent getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                @Nullable List<@NotNull Component> description) {
+                                         @Nullable List<@NotNull Component> description) {
         return new MenuItemComponent(displayMat, name, description, new Callback<>() {
 
             @Override

@@ -18,9 +18,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemComponent extends MenuItem {
-    protected final static String DESCRIPTION_VALUE_TOKEN = "COMPONENT_VALUE_DESCRIPTION";
+    private final static String DESCRIPTION_VALUE_TOKEN = "COMPONENT_VALUE_DESCRIPTION";
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
-    protected final @NotNull Callback<Component> component;
+    private final @NotNull Callback<Component> component;
     private boolean allowNull = false;
 
     public MenuItemComponent(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Component> component) {

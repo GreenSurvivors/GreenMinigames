@@ -6,10 +6,11 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.MinigameStatistics;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -42,15 +43,18 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
     }
 
     /**
-     * in Seconds
+     * in seconds
      */
     @Override
     protected Integer getValue(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
-        return (int) TimeUnit.MILLISECONDS.toSeconds(data.getStat(MinigameStats.CompletionTime));
+        return (int) TimeUnit.MILLISECONDS.toSeconds(data.getStat(MinigameStatistics.CompletionTime));
     }
 
+    /**
+     * in seconds
+     */
     @Override
-    protected String getMenuItemName(Integer value) {
-        return MinigameUtils.convertTime(value, true);
+    protected Component getMenuItemName(@NotNull Integer value) {
+        return MinigameUtils.convertTime(Duration.ofSeconds(value), true);
     }
 }

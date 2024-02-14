@@ -16,13 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MenuItemTeam extends MenuItem {
-    private final static String DESCRIPTION_TOKEN = "TeamDelete_description";
     private final @NotNull Team team;
 
     public MenuItemTeam(@Nullable Component name, @NotNull Team team) {
-        super(Material.LEATHER_CHESTPLATE, name);
+        super(Material.LEATHER_CHESTPLATE, name, MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
 
-        setDescriptionPartAtEnd(DESCRIPTION_TOKEN, List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK)));
         this.team = team;
         setTeamIcon();
     }
