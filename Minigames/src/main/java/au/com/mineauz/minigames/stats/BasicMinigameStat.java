@@ -18,21 +18,26 @@ class BasicMinigameStat extends MinigameStat {
         super(name, displayName, format);
     }
 
+    /**
+     * @param value    The value in milliseconds to display
+     * @param settings The settings of this stat
+     * @return
+     */
     @Override
-    public String displayValue(long value, StatSettings settings) {
+    public Component displayValue(long value, @NotNull StatSettings settings) {
         if (this == MinigameStatistics.CompletionTime) {
-            return (value / 1000) + " seconds";
+            return MinigameUtils.convertTime(Duration.ofMillis(value), false);
         } else {
-            return value + " " + settings.getDisplayName();
+            return Component.text(value).appendSpace().append(settings.getDisplayName());
         }
     }
 
     @Override
-    public Component displayValueSign(long value, StatSettings settings) {
+    public Component displayValueSign(long value, @NotNull StatSettings settings) {
         if (this == MinigameStatistics.CompletionTime) {
-            return MinigameUtils.convertTime(Duration.ofMillis(value));
+            return MinigameUtils.convertTime(Duration.ofMillis(value), true);
         } else {
-            return value + " " + settings.getDisplayName();
+            return Component.text(value).appendSpace().append(settings.getDisplayName());
         }
     }
 }
