@@ -9,6 +9,8 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
@@ -49,7 +51,7 @@ public class TakeItemAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
+    public void describe(@NotNull Map<@NotNull Component, @NotNull Component> out) {
         out.put("Item", itemToSearchFor.getFlag().getType());
         out.put("Count", count);
     }
@@ -76,11 +78,11 @@ public class TakeItemAction extends AAction {
         execute(mgPlayer);
     }
 
-    private void execute(MinigamePlayer player) {
+    private void execute(MinigamePlayer mgPlayer) {
         ItemStack match = itemToSearchFor.getFlag().clone();
         int stillToRemove = count.getFlag();
 
-        @Nullable ItemStack @NotNull [] contents = player.getPlayer().getInventory().getContents();
+        @Nullable ItemStack @NotNull [] contents = mgPlayer.getPlayer().getInventory().getContents();
         ItemLoop:
         for (int i = 0; i < contents.length; i++) {
             ItemStack itemToTest = contents[i];
@@ -146,7 +148,7 @@ public class TakeItemAction extends AAction {
             }
         }
 
-        player.getPlayer().getInventory().setContents(contents);
+        mgPlayer.getPlayer().getInventory().setContents(contents);
     }
 
     @Override
@@ -184,7 +186,8 @@ public class TakeItemAction extends AAction {
         final CompletableFuture<MenuItemString> futureNameItem = new CompletableFuture<>();
         final CompletableFuture<MenuItemString> futureLoreItem = new CompletableFuture<>();
 
-        final MenuItemItemNbt itemMenuItem = new MenuItemItemNbt("Item", itemToSearchFor.getFlagOrDefault(), new Callback<>() {
+        final MenuItemItemNbt itemMenuItem = new MenuItemItemNbt(itemToSearchFor.getFlagOrDefault(),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_ITEM_NAME), new Callback<>() {
             @Override
             public ItemStack getValue() {
                 return itemToSearchFor.getFlagOrDefault();
@@ -210,13 +213,13 @@ public class TakeItemAction extends AAction {
         });
 
         menu.addItem(itemMenuItem);
-        menu.addItem(count.getMenuItem("Amount", Material.STONE_SLAB, 1, 999));
+        menu.addItem(count.getMenuItem(Material.STONE_SLAB, "Amount", 1, 999));
 
         menu.addItem(new MenuItemNewLine());
 
-        menu.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
-        final MenuItemString nameMenuItem = new MenuItemString("Display Name",
-                List.of("The name to match.", "Use % to do a wildcard match"), Material.NAME_TAG, new Callback<>() {
+        menu.addItem(matchName.getMenuItem(Material.NAME_TAG, "Match Display Name"));
+        final MenuItemString nameMenuItem = new MenuItemString(Material.NAME_TAG, "Display Name",
+                List.of("The name to match.", "Use % to do a wildcard match"), new Callback<>() {
             private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();
 
             @Override
@@ -235,7 +238,7 @@ public class TakeItemAction extends AAction {
         futureNameItem.complete(nameMenuItem);
         menu.addItem(nameMenuItem);
 
-        menu.addItem(matchLore.getMenuItem("Match Lore", Material.BOOK));
+        menu.addItem(matchLore.getMenuItem(Material.BOOK, "Match Lore"));
         final MenuItemString loreMenuItem = new MenuItemString("Lore",
                 List.of("The lore to match. Separate", "with semi-colons", "for new lines.", "Use % to do a wildcard match"),
                 Material.BOOK, new Callback<>() {
