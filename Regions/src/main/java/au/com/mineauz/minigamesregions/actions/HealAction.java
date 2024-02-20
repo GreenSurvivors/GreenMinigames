@@ -9,7 +9,10 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,8 +37,8 @@ public class HealAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Health", heal.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_HEAL_AMOUNT_NAME), Component.text(heal.getFlag()));
     }
 
     @Override
@@ -66,31 +69,38 @@ public class HealAction extends AAction {
         if (heal.getFlag() > 0) {
             if (player.getPlayer().getHealth() != 20) {
                 double health = heal.getFlag() + player.getPlayer().getHealth();
-                if (health > 20)
-                    health = 20;
+
+                AttributeInstance healthAttribute = player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                if (healthAttribute != null) {
+                    health = Math.min(health, healthAttribute.getValue());
+                } else {
+                    health = Math.min(health, 20.0f);
+                }
+
                 player.getPlayer().setHealth(health);
             }
-        } else
+        } else {
             player.getPlayer().damage(heal.getFlag() * -1);
+        }
     }
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        heal.saveValue(path, config);
+        heal.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        heal.loadValue(path, config);
+        heal.loadValue(config, path);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(heal.getMenuItem(Material.GOLDEN_APPLE, "Heal Amount", null, null));
+        m.addItem(heal.getMenuItem(Material.GOLDEN_APPLE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_HEAL_AMOUNT_NAME), null, null));
         m.displayMenu(mgPlayer);
         return true;
     }

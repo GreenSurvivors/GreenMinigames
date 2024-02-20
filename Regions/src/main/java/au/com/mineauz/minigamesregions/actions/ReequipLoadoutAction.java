@@ -7,6 +7,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +31,8 @@ public class ReequipLoadoutAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull Component, @NotNull Component> out) {
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of();
     }
 
     @Override
@@ -59,14 +61,12 @@ public class ReequipLoadoutAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         // None
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         // None
     }
 

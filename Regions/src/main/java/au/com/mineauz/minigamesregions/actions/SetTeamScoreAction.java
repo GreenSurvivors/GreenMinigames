@@ -89,15 +89,15 @@ public class SetTeamScoreAction extends ScoreAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        score.saveValue(path, config);
-        team.saveValue(path, config);
+        score.saveValue(config, path);
+        team.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        score.loadValue(path, config);
-        team.loadValue(path, config);
+        score.loadValue(config, path);
+        team.loadValue(config, path);
     }
 
     @Override

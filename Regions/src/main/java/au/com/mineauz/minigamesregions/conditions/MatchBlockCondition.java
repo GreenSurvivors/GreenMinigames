@@ -14,7 +14,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,15 +75,15 @@ public class MatchBlockCondition extends ACondition {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        type.saveValue(path, config);
-        useBlockData.saveValue(path, config);
+        type.saveValue(config, path);
+        useBlockData.saveValue(config, path);
         saveInvert(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        type.loadValue(path, config);
-        useBlockData.loadValue(path, config);
+        type.loadValue(config, path);
+        useBlockData.loadValue(config, path);
         loadInvert(config, path);
     }
 
@@ -96,18 +95,7 @@ public class MatchBlockCondition extends ACondition {
                 List.of("Click here with a", "block you wish to", "match to."));
         m.addItem(autoSetBlockMenuItem, m.getSize() - 1);
 
-        final MenuItemBlockData btype = new MenuItemBlockData(type.getFlag().getMaterial(), "Block Type", new Callback<>() {
-
-            @Override
-            public BlockData getValue() {
-                return type.getFlag();
-            }
-
-            @Override
-            public void setValue(BlockData value) {
-                type.setFlag(value);
-            }
-        });
+        final MenuItemBlockData btype = type.getMenuItem("Block Type");
         m.addItem(btype);
         final MenuItemBoolean menuItemUseData = useBlockData.getMenuItem(Material.ENDER_PEARL, "Use Data Values");
         m.addItem(menuItemUseData);

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -207,7 +206,7 @@ public class TeleportCommand extends ACommand {
             for (Player p : PLUGIN.getServer().getOnlinePlayers()) {
                 pl.add(p.getName());
             }
-            return MinigameUtils.tabCompleteMatch(pl, args[0]);
+            return CommandDispatcher.tabCompleteMatch(pl, args[0]);
         } else if (args.length == 2) {
             List<String> playerNames = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size() + 2);
             for (Player player : PLUGIN.getServer().getOnlinePlayers()) {
@@ -215,7 +214,7 @@ public class TeleportCommand extends ACommand {
             }
             playerNames.add("Start");
             playerNames.add("Checkpoint");
-            return MinigameUtils.tabCompleteMatch(playerNames, args[1]);
+            return CommandDispatcher.tabCompleteMatch(playerNames, args[1]);
         }
         return null;
     }

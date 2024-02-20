@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -27,7 +27,7 @@ public class JuggernautModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getConfigFlags() {
+    public Map<String, AFlag<?>> getConfigFlags() {
         return null;
     }
 

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -69,7 +68,7 @@ public class PartyModeCommand extends ACommand {
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
+            return CommandDispatcher.tabCompleteMatch(List.of("true", "false"), args[0]);
         } else {
             return null;
         }

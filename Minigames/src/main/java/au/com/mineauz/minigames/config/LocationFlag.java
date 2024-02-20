@@ -6,11 +6,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class LocationFlag extends Flag<Location> {
+public class LocationFlag extends AFlag<Location> {
 
     public LocationFlag(Location value, String name) {
         setFlag(value);
@@ -19,7 +20,7 @@ public class LocationFlag extends Flag<Location> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName() + ".x", getFlag().getX());
         config.set(path + "." + getName() + ".y", getFlag().getY());
         config.set(path + "." + getName() + ".z", getFlag().getZ());
@@ -29,7 +30,7 @@ public class LocationFlag extends Flag<Location> {
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         double x = config.getDouble(path + "." + getName() + ".x");
         double y = config.getDouble(path + "." + getName() + ".y");
         double z = config.getDouble(path + "." + getName() + ".z");

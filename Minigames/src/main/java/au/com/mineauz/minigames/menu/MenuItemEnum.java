@@ -53,7 +53,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
         int position = enumList.indexOf(callback.getValue());
         if (position == -1) {
             setDescriptionPart(DESCRIPTION_VALUE_TOKEN, List.of(
-                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ITERABLE_ERROR_UNKNOWN)));
+                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ERROR_UNKNOWN)));
         } else {
             int last = position - 1;
             int next = position + 1;

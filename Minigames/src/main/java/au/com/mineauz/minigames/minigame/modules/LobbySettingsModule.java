@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -30,8 +30,8 @@ public class LobbySettingsModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getConfigFlags() {
-        Map<String, Flag<?>> map = new HashMap<>();
+    public Map<String, AFlag<?>> getConfigFlags() {
+        Map<String, AFlag<?>> map = new HashMap<>();
         addConfigFlag(canInteractPlayerWait, map);
         addConfigFlag(canInteractStartWait, map);
         addConfigFlag(canMovePlayerWait, map);
@@ -42,7 +42,7 @@ public class LobbySettingsModule extends MinigameModule {
         return map;
     }
 
-    private void addConfigFlag(Flag<?> flag, Map<String, Flag<?>> flags) {
+    private void addConfigFlag(AFlag<?> flag, Map<String, AFlag<?>> flags) {
         flags.put(flag.getName(), flag);
     }
 

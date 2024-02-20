@@ -176,7 +176,7 @@ public class SpawnEntityAction extends AAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        type.saveValue(path, config);
+        type.saveValue(config, path);
 
         for (Map.Entry<String, ConfigSerializableBridge<?>> entry : settings.entrySet()) {
             config.set(path + ".settings." + entry.getKey(), entry.getValue().serialize());
@@ -186,7 +186,7 @@ public class SpawnEntityAction extends AAction {
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        type.loadValue(path, config);
+        type.loadValue(config, path);
 
         settings.clear();
         ConfigurationSection section = config.getConfigurationSection(path + ".settings");

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class RegionMapFlag extends Flag<Map<String, MgRegion>> {
+public class RegionMapFlag extends AFlag<Map<String, MgRegion>> {
     private final @Nullable String legacyFistPointLabel, legacySecondPointLabel;
 
     public RegionMapFlag(@NotNull Map<String, MgRegion> value, @NotNull String name, @Nullable String legacyFirstPoint, @Nullable String legacySecondPoint) {
@@ -36,19 +36,19 @@ public class RegionMapFlag extends Flag<Map<String, MgRegion>> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         if (!getFlag().isEmpty()) {
             RegionFlag regionFlag;
 
             for (MgRegion region : getFlag().values()) {
                 regionFlag = new RegionFlag(region, getName() + "." + region.getName());
-                regionFlag.saveValue(path, config);
+                regionFlag.saveValue(config, path);
             }
         }
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         Map<String, MgRegion> regions = new HashMap<>();
         ConfigurationSection section = config.getConfigurationSection(path + "." + getName());
         if (section != null) {
@@ -57,7 +57,7 @@ public class RegionMapFlag extends Flag<Map<String, MgRegion>> {
 
             for (String regionName : regionNames) {
                 regionFlag = new RegionFlag(null, getName() + "." + regionName);
-                regionFlag.loadValue(path, config);
+                regionFlag.loadValue(config, path);
                 regions.put(regionFlag.getFlag().getName(), regionFlag.getFlag());
             }
         }

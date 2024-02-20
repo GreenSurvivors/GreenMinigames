@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -163,9 +162,9 @@ public class ScoreboardCommand extends ACommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         if (args.length == 1) { // Minigame
             List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
-            return MinigameUtils.tabCompleteMatch(mgs, args[0]);
+            return CommandDispatcher.tabCompleteMatch(mgs, args[0]);
         } else if (args.length == 2) { // Stat
-            return MinigameUtils.tabCompleteMatch(new ArrayList<>(MinigameStatistics.getAllStats().keySet()), args[1]);
+            return CommandDispatcher.tabCompleteMatch(new ArrayList<>(MinigameStatistics.getAllStats().keySet()), args[1]);
         } else if (args.length == 3) { // Field
             MinigameStat stat = MinigameStatistics.getStat(args[1]);
             if (stat == null) {
@@ -193,7 +192,7 @@ public class ScoreboardCommand extends ACommand {
         } else if (args.length > 3) {
             if (args.length % 2 == 0) {
                 // Option
-                return MinigameUtils.tabCompleteMatch(Arrays.asList("-o", "-l", "-s"), args[args.length - 1]);
+                return CommandDispatcher.tabCompleteMatch(Arrays.asList("-o", "-l", "-s"), args[args.length - 1]);
             } else {
                 // Option Parameter
                 String previous = args[args.length - 2].toLowerCase();
@@ -201,7 +200,7 @@ public class ScoreboardCommand extends ACommand {
 
                 if (previous.equals("-o")) {
                     // Order
-                    return MinigameUtils.tabCompleteMatch(Arrays.asList("asc", "ascending", "desc", "descending"), toMatch);
+                    return CommandDispatcher.tabCompleteMatch(Arrays.asList("asc", "ascending", "desc", "descending"), toMatch);
                 }
                 // The others cannot be tab completed
             }

@@ -30,11 +30,11 @@ public abstract class ACondition {
     }
 
     protected void saveInvert(@NotNull FileConfiguration config, @NotNull String path) {
-        invert.saveValue(path, config);
+        invert.saveValue(config, path);
     }
 
     protected void loadInvert(@NotNull FileConfiguration config, @NotNull String path) {
-        invert.loadValue(path, config);
+        invert.loadValue(config, path);
     }
 
     public boolean isInverted() {

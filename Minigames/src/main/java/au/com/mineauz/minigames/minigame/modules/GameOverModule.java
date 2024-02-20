@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -46,8 +46,8 @@ public class GameOverModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getConfigFlags() {
-        Map<String, Flag<?>> map = new HashMap<>();
+    public Map<String, AFlag<?>> getConfigFlags() {
+        Map<String, AFlag<?>> map = new HashMap<>();
         map.put(timer.getName(), timer);
         map.put(invincible.getName(), invincible);
         map.put(humiliation.getName(), humiliation);

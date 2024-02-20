@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -217,7 +217,7 @@ public class SetRegenAreaCommand extends ASetCommand {
             tab.add("create");
             tab.add("list");
             tab.add("remove");
-            return MinigameUtils.tabCompleteMatch(tab, args[0]);
+            return CommandDispatcher.tabCompleteMatch(tab, args[0]);
         } else if (args.length == 2) {
             List<String> tab = new ArrayList<>();
             if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("remove")) {
@@ -233,7 +233,7 @@ public class SetRegenAreaCommand extends ASetCommand {
                     tab.add(String.valueOf(page));
                 }
             }
-            return MinigameUtils.tabCompleteMatch(tab, args[1]);
+            return CommandDispatcher.tabCompleteMatch(tab, args[1]);
         }
         return null;
     }

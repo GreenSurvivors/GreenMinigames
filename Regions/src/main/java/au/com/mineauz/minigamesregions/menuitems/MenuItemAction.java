@@ -2,20 +2,23 @@ package au.com.mineauz.minigamesregions.menuitems;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,8 +42,7 @@ public class MenuItemAction extends MenuItem {
     }
 
     private void updateDescription() {
-        Map<Component, Component> out = new HashMap<>();
-        act.describe(out);
+        Map<Component, ComponentLike> out = act.describe();
 
         if (out.isEmpty()) {
             return;
@@ -48,22 +50,17 @@ public class MenuItemAction extends MenuItem {
 
         // Convert the description
         List<Component> description = new ArrayList<>();
-        for (Entry<Component, Component> entry : out.entrySet()) {
-            Component value = entry.getValue();
-            TextComponent.Builder lineBuilder = Component.text();
-            lineBuilder.append(entry.getKey().color(NamedTextColor.GRAY));
-            lineBuilder.append(Component.text(": "));
+        for (Entry<Component, ComponentLike> entry : out.entrySet()) {
+            Component value = entry.getValue() == null ?
+                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).
+                            color(NamedTextColor.YELLOW) :
+                    entry.getValue().asComponent();
 
-            if (value == null) {
-                lineBuilder.append(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).
-                        color(NamedTextColor.YELLOW));
+            Component line = RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_DESCRIPTION,
+                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), entry.getKey()),
+                    Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), value));
 
-                description.add(lineBuilder.build());
-                // no need to trim
-            } else {
-                lineBuilder.append(value);
-                description.add(MinigameUtils.limitIgnoreFormat(lineBuilder.build(), 35));
-            }
+            description.add(MinigameUtils.limitIgnoreFormat(line, 35));
         }
 
         setDescriptionPart(DESCRIPTION_TOKEN, description);

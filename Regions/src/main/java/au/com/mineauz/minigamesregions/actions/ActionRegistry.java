@@ -4,7 +4,9 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemAction;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemActionAdd;
 import org.bukkit.Material;
@@ -48,13 +50,14 @@ public class ActionRegistry {
     }
 
     public static void displayMenu(MinigamePlayer player, BaseExecutor exec, Menu prev) {
-        Menu m = new Menu(3, "Actions", player);
+        Menu m = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), player);
         m.setPreviousPage(prev);
         for (ActionInterface act : exec.getActions()) {
             m.addItem(new MenuItemAction(Material.PAPER, act.getDisplayname(), exec, act));
         }
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(new MenuItemActionAdd(MenuUtility.getCreateMaterial(), "Add Action", exec), m.getSize() - 1);
+        m.addItem(new MenuItemActionAdd(MenuUtility.getCreateMaterial(),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_ADD_NAME), exec), m.getSize() - 1);
         m.displayMenu(player);
     }
 }

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class RewardsFlag extends Flag<Rewards> {
+public class RewardsFlag extends AFlag<Rewards> {
 
     public RewardsFlag(Rewards value, String name) {
         setFlag(value);
@@ -19,14 +19,14 @@ public class RewardsFlag extends Flag<Rewards> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         if (!getFlag().isEmpty()) {
             getFlag().save(config.createSection(path + "." + getName()));
         }
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         getFlag().load(config.getConfigurationSection(path + "." + getName()));
     }
 

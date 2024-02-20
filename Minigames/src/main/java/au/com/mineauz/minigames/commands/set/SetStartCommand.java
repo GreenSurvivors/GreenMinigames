@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -189,12 +189,12 @@ public class SetStartCommand extends ASetCommand {
                     collect(Collectors.toCollection(ArrayList::new));
             if (args.length == 1) {
                 teams.add("Clear");
-                return MinigameUtils.tabCompleteMatch(teams, args[0]);
+                return CommandDispatcher.tabCompleteMatch(teams, args[0]);
             } else if (args.length == 2 && args[0].equalsIgnoreCase("clear")) {
-                return MinigameUtils.tabCompleteMatch(teams, args[1]);
+                return CommandDispatcher.tabCompleteMatch(teams, args[1]);
             }
         } else if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of("clear"), args[0]);
+            return CommandDispatcher.tabCompleteMatch(List.of("clear"), args[0]);
         }
 
         return null;

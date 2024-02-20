@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.minigame.reward.scheme;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -44,7 +44,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, AFlag<?>> getFlags() {
         return Map.of(
                 "comparison", comparisonType,
                 "loss-rewards", enableRewardsOnLoss,

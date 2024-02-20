@@ -105,7 +105,6 @@ public class MenuItemBlockData extends MenuItem {
 
     @Override
     public void checkValidEntry(String entry) {
-        String err;
         try {
             BlockData d = Bukkit.createBlockData(entry);
             dataCallback.setValue(d);

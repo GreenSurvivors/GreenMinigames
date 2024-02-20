@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.ComponentFlag;
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -62,14 +62,14 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
     }
 
     @Override
-    public Map<String, Flag<?>> getConfigFlags() {
-        Map<String, Flag<?>> map = new HashMap<>();
+    public Map<String, AFlag<?>> getConfigFlags() {
+        Map<String, AFlag<?>> map = new HashMap<>();
         addConfigFlag(enabled, map);
         addConfigFlag(resourcePackDisplayName, map);
         return map;
     }
 
-    private void addConfigFlag(Flag<?> flag, Map<String, Flag<?>> flags) {
+    private void addConfigFlag(AFlag<?> flag, Map<String, AFlag<?>> flags) {
         flags.put(flag.getName(), flag);
     }
 

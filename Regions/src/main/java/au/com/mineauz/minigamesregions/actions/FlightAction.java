@@ -1,18 +1,23 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
 
 public class FlightAction extends AAction {
@@ -24,19 +29,24 @@ public class FlightAction extends AAction {
     }
 
     @Override
-    public @NotNull Component getDisplayName() {
-        return "FLIGHT";
+    public @NotNull Component getDisplayname() {
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_FLIGHT_NAME);
     }
 
     @Override
     public @NotNull IActionCategory getCategory() {
-        return "Player Actions";
+        return RegionActionCategories.PLAYER;
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Allow Flight", setFly.getFlag());
-        out.put("Flight On", startFly.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_NAME),
+                MinigameMessageManager.getMgMessage(
+                        setFly.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ENABLE_NAME),
+                MinigameMessageManager.getMgMessage(
+                        startFly.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)
+        );
     }
 
     @Override
@@ -52,7 +62,9 @@ public class FlightAction extends AAction {
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
-        execute(mgPlayer);
+        if (mgPlayer != null) {
+            execute(mgPlayer);
+        }
     }
 
     @Override
@@ -61,32 +73,33 @@ public class FlightAction extends AAction {
         execute(mgPlayer);
     }
 
-    private void execute(MinigamePlayer player) {
+    private void execute(@NotNull MinigamePlayer player) {
         player.setCanFly(setFly.getFlag());
-        if (setFly.getFlag())
+        if (setFly.getFlag()) {
             player.getPlayer().setFlying(startFly.getFlag());
+        }
     }
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        setFly.saveValue(path, config);
-        startFly.saveValue(path, config);
+        setFly.saveValue(config, path);
+        startFly.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        setFly.loadValue(path, config);
-        startFly.loadValue(path, config);
+        setFly.loadValue(config, path);
+        startFly.loadValue(config, path);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Flight", mgPlayer);
+        Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(setFly.getMenuItem("Set Flight Mode", Material.FEATHER));
-        m.addItem(startFly.getMenuItem(Material.FEATHER, "Set Flying", List.of("Set Flight Mode must be", "true to use this")));
+        m.addItem(setFly.getMenuItem(Material.FEATHER, MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_NAME));
+        m.addItem(startFly.getMenuItem(Material.FEATHER, MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ENABLE_NAME,
+                MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ENABLE_DESCRIPTION));
         m.displayMenu(mgPlayer);
         return true;
     }
-
 }

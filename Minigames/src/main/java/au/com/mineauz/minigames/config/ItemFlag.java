@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ItemFlag extends Flag<ItemStack> {
+public class ItemFlag extends AFlag<ItemStack> {
 
     public ItemFlag(@NotNull ItemStack itemStack, @NotNull String name) {
         setFlag(itemStack);
@@ -23,12 +23,12 @@ public class ItemFlag extends Flag<ItemStack> {
     }
 
     @Override
-    public void saveValue(@NotNull String path, @NotNull FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName(), getFlag());
     }
 
     @Override
-    public void loadValue(@NotNull String path, @NotNull FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         if (config.contains(path + "." + getName())) {
             Object object = config.get(path + "." + getName());
 

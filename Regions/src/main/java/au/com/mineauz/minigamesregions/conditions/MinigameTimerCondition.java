@@ -78,15 +78,15 @@ public class MinigameTimerCondition extends ACondition {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        minTime.saveValue(path, config);
-        maxTime.saveValue(path, config);
+        minTime.saveValue(config, path);
+        maxTime.saveValue(config, path);
         saveInvert(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        minTime.loadValue(path, config);
-        maxTime.loadValue(path, config);
+        minTime.loadValue(config, path);
+        maxTime.loadValue(config, path);
         loadInvert(config, path);
     }
 

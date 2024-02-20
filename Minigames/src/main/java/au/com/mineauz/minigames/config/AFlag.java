@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public abstract class Flag<T> {
+public abstract class AFlag<T> {
     private T value;
     private String name;
     private T defaultVal;
@@ -25,11 +25,11 @@ public abstract class Flag<T> {
         this.value = value;
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
-    protected void setName(String name) {
+    protected void setName(@NotNull String name) {
         this.name = name;
     }
 
@@ -64,9 +64,9 @@ public abstract class Flag<T> {
         };
     }
 
-    public abstract void saveValue(String path, FileConfiguration config);
+    public abstract void saveValue(@NotNull FileConfiguration config, @NotNull String path);
 
-    public abstract void loadValue(String path, FileConfiguration config);
+    public abstract void loadValue(@NotNull FileConfiguration config, @NotNull String path);
 
     public MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull LangKey langKey) {
         return getMenuItem(displayMaterial, MinigameMessageManager.getMgMessage(langKey));

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ComponentFlag extends Flag<Component> {
+public class ComponentFlag extends AFlag<Component> {
     public ComponentFlag(Component value, String name) {
         setFlag(value);
         setDefaultFlag(value);
@@ -19,14 +19,15 @@ public class ComponentFlag extends Flag<Component> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName(), MiniMessage.miniMessage().serialize(getFlag()));
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
-        if (config.contains(path + "." + getName())) {
-            setFlag(MiniMessage.miniMessage().deserialize(config.getString(path + "." + getName())));
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
+        final String confStr = config.getString(path + "." + getName());
+        if (confStr != null) {
+            setFlag(MiniMessage.miniMessage().deserialize(confStr));
         } else {
             setFlag(getDefaultFlag());
         }

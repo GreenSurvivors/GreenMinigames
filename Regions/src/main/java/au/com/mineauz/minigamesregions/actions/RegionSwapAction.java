@@ -169,16 +169,16 @@ public class RegionSwapAction extends AAction {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        fromRegion.saveValue(path, config);
-        toRegion.saveValue(path, config);
-        swapRegion.saveValue(path, config);
+        fromRegion.saveValue(config, path);
+        toRegion.saveValue(config, path);
+        swapRegion.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        fromRegion.loadValue(path, config);
-        toRegion.loadValue(path, config);
-        swapRegion.loadValue(path, config);
+        fromRegion.loadValue(config, path);
+        toRegion.loadValue(config, path);
+        swapRegion.loadValue(config, path);
 
     }
 

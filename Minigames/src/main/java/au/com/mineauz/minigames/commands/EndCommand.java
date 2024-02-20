@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
@@ -227,7 +226,7 @@ public class EndCommand extends ACommand {
             // minigames
             result.addAll(PLUGIN.getMinigameManager().getAllMinigames().keySet());
 
-            return MinigameUtils.tabCompleteMatch(result, args[0]);
+            return CommandDispatcher.tabCompleteMatch(result, args[0]);
         } else if (args.length == 2) {
             Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
@@ -236,7 +235,7 @@ public class EndCommand extends ACommand {
                     TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
                     List<String> result = teamsModule.getTeams().stream().map(team -> team.getColor().toString()).toList();
 
-                    return MinigameUtils.tabCompleteMatch(result, args[1]);
+                    return CommandDispatcher.tabCompleteMatch(result, args[1]);
                 }
             }
         }

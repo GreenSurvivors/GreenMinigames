@@ -4,6 +4,8 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -12,6 +14,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -24,10 +27,10 @@ import java.util.List;
 import java.util.Map;
 
 public class PlaySoundAction extends AAction {
-    private final StringFlag sound = new StringFlag("ENTITY_PLAYER_LEVELUP", "sound");
-    private final BooleanFlag priv = new BooleanFlag(true, "private");
-    private final FloatFlag vol = new FloatFlag(1f, "volume");
-    private final FloatFlag pit = new FloatFlag(1f, "pitch");
+    private final StringFlag soundName = new StringFlag(Sound.ENTITY_PLAYER_LEVELUP.name(), "sound");
+    private final BooleanFlag privatePlayBack = new BooleanFlag(true, "private");
+    private final FloatFlag volume = new FloatFlag(1f, "volume");
+    private final FloatFlag pitch = new FloatFlag(1f, "pitch");
 
     protected PlaySoundAction(@NotNull String name) {
         super(name);
@@ -44,11 +47,13 @@ public class PlaySoundAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Sound", sound.getFlag());
-        out.put("Volume", vol.getFlag());
-        out.put("Pitch", pit.getFlag());
-        out.put("Is Private", priv.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME), Component.text(getSound().name()),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME), Component.text(volume.getFlag()),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME), Component.text(pitch.getFlag()),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME),
+                MinigameMessageManager.getMgMessage(privatePlayBack.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -62,49 +67,52 @@ public class PlaySoundAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
-                                    @NotNull Region region) {
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
-        execute(mgPlayer, mgPlayer.getLocation());
+        if (mgPlayer != null) {
+            execute(mgPlayer, mgPlayer.getLocation());
+        }
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
         execute(mgPlayer, node.getLocation());
     }
 
-    private void execute(MinigamePlayer player, Location loc) {
-        if (player == null || !player.isInMinigame()) return;
-        if (priv.getFlag()) {
-            player.getPlayer().playSound(loc,
-                    getSound(sound.getFlag()),
-                    vol.getFlag(),
-                    pit.getFlag());
-        } else
-            player.getPlayer().getWorld().playSound(loc,
-                    getSound(sound.getFlag()),
-                    vol.getFlag(),
-                    pit.getFlag());
+    private void execute(@NotNull MinigamePlayer player, @NotNull Location loc) {
+        if (!player.isInMinigame()) return;
+        if (privatePlayBack.getFlag()) {
+            player.getPlayer().playSound(
+                    loc,
+                    getSound(),
+                    volume.getFlag(),
+                    pitch.getFlag());
+        } else {
+            player.getPlayer().getWorld().playSound(
+                    loc,
+                    getSound(),
+                    volume.getFlag(),
+                    pitch.getFlag());
+        }
     }
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        sound.saveValue(path, config);
-        priv.saveValue(path, config);
-        vol.saveValue(path, config);
-        pit.saveValue(path, config);
+        soundName.saveValue(config, path);
+        privatePlayBack.saveValue(config, path);
+        volume.saveValue(config, path);
+        pitch.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        sound.loadValue(path, config);
-        priv.loadValue(path, config);
-        vol.loadValue(path, config);
-        pit.loadValue(path, config);
+        soundName.loadValue(config, path);
+        privatePlayBack.loadValue(config, path);
+        volume.loadValue(config, path);
+        pitch.loadValue(config, path);
     }
 
     @Override
@@ -117,45 +125,43 @@ public class PlaySoundAction extends AAction {
 
             @Override
             public Sound getValue() {
-                Sound s = getSound(sound.getFlag());              //ENSURE CONFIG doesn't contain old enums replace if they do.
-                if (!s.toString().equals(sound.getFlag())) {
-                    sound.setFlag(s.toString());
+                Sound s = getSound();              //ENSURE CONFIG doesn't contain old enums replace if they do.
+                if (!s.name().equals(soundName.getFlag())) {
+                    soundName.setFlag(s.toString());
                 }
                 return s;
             }
 
             @Override
             public void setValue(Sound value) {
-                sound.setFlag(value.toString().toUpperCase().replace(" ", "_"));
+                soundName.setFlag(value.toString().toUpperCase().replace(" ", "_"));
             }
-
-
         }, sounds));
-        m.addItem(priv.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME));
+
+        m.addItem(privatePlayBack.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME));
         m.addItem(new MenuItemDecimal(Material.JUKEBOX, MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME, new Callback<>() {
 
             @Override
             public Double getValue() {
-                return vol.getFlag().doubleValue();
+                return volume.getFlag().doubleValue();
             }
 
             @Override
             public void setValue(Double value) {
-                vol.setFlag(value.floatValue());
+                volume.setFlag(value.floatValue());
             }
-
-
         }, 0.1, 1d, 0.5, null));
+
         m.addItem(new MenuItemDecimal(Material.ENDER_EYE, MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME, new Callback<>() {
 
             @Override
             public Double getValue() {
-                return pit.getFlag().doubleValue();
+                return pitch.getFlag().doubleValue();
             }
 
             @Override
             public void setValue(Double value) {
-                pit.setFlag(value.floatValue());
+                pitch.setFlag(value.floatValue());
             }
 
 
@@ -164,15 +170,14 @@ public class PlaySoundAction extends AAction {
         return true;
     }
 
-    private Sound getSound(String sound) {
+    private Sound getSound() {
         Sound result;
         try {
-            result = Sound.valueOf(sound);
+            result = Sound.valueOf(soundName.getFlag());
         } catch (IllegalArgumentException e) {
-            Minigames.getPlugin().getComponentLogger().warn("Bad Sound Config in Minigame Config : " + sound);
+            Minigames.getPlugin().getComponentLogger().warn("Bad Sound Config in Minigame Config : " + soundName.getFlag());
             result = Sound.ENTITY_PLAYER_BURP;
         }
         return result;
     }
-
 }

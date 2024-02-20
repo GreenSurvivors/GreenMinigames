@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -42,8 +42,8 @@ public class CTFModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getConfigFlags() {
-        Map<String, Flag<?>> flags = new HashMap<>();
+    public Map<String, AFlag<?>> getConfigFlags() {
+        Map<String, AFlag<?>> flags = new HashMap<>();
         flags.put("useFlagAsCapturePoint", useFlagAsCapturePoint);
         flags.put("bringFlagBackManual", bringFlagBackManual);
         return flags;

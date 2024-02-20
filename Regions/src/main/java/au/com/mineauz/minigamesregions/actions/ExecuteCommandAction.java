@@ -3,7 +3,7 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -18,6 +18,7 @@ import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.util.NullCommandSender;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -47,9 +48,10 @@ public class ExecuteCommandAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Command", comd.getFlag());
-        out.put("Silent", silentExecute.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME), Component.text(comd.getFlag()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME),
+                MinigameMessageManager.getMgMessage(silentExecute.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -62,7 +64,7 @@ public class ExecuteCommandAction extends AAction {
         return true;
     }
 
-    private String replacePlayerTags(MinigamePlayer player, String string) {
+    private String replacePlayerTags(MinigamePlayer player, String string) { //todo dataFixerUpper
         if (player == null) {
             return string;
         }
@@ -175,15 +177,15 @@ public class ExecuteCommandAction extends AAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        comd.saveValue(path, config);
-        silentExecute.saveValue(path, config);
+        comd.saveValue(config, path);
+        silentExecute.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        comd.loadValue(path, config);
-        silentExecute.loadValue(path, config);
+        comd.loadValue(config, path);
+        silentExecute.loadValue(config, path);
     }
 
     @Override
@@ -191,8 +193,8 @@ public class ExecuteCommandAction extends AAction {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
-        m.addItem(new MenuItemString(Material.COMMAND_BLOCK, MgMenuLangKey.MENU_COMMANDACTION_COMMAND_NAME,
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_COMMANDACTION_COMMAND_DESCRIPTION), new Callback<>() {
+        m.addItem(new MenuItemString(Material.COMMAND_BLOCK, RegionLangKey.MENU_COMMANDACTION_COMMAND_NAME,
+                MinigameMessageManager.getMgMessageList(RegionLangKey.MENU_COMMANDACTION_COMMAND_DESCRIPTION), new Callback<>() {
 
             @Override
             public String getValue() {
@@ -208,10 +210,9 @@ public class ExecuteCommandAction extends AAction {
             }
         }));
 
-        m.addItem(silentExecute.getMenuItem(Material.NOTE_BLOCK, MgMenuLangKey.MENU_COMMANDACTION_SILENT_NAME,
-                MgMenuLangKey.MENU_COMMANDACTION_SILENT_DESCRIPTION));
+        m.addItem(silentExecute.getMenuItem(Material.NOTE_BLOCK, RegionLangKey.MENU_COMMANDACTION_SILENT_NAME,
+                RegionLangKey.MENU_COMMANDACTION_SILENT_DESCRIPTION));
         m.displayMenu(mgPlayer);
         return true;
     }
-
 }

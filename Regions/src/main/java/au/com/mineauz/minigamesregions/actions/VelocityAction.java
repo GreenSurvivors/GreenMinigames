@@ -72,16 +72,16 @@ public class VelocityAction extends AAction {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        x.saveValue(path, config);
-        y.saveValue(path, config);
-        z.saveValue(path, config);
+        x.saveValue(config, path);
+        y.saveValue(config, path);
+        z.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        x.loadValue(path, config);
-        y.loadValue(path, config);
-        z.loadValue(path, config);
+        x.loadValue(config, path);
+        y.loadValue(config, path);
+        z.loadValue(config, path);
     }
 
     @Override

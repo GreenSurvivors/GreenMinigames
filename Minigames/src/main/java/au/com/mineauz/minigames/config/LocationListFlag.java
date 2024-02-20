@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class LocationListFlag extends Flag<List<Location>> {
+public class LocationListFlag extends AFlag<List<Location>> {
 
     public LocationListFlag(List<Location> value, String name) {
         setFlag(value);
@@ -21,26 +21,26 @@ public class LocationListFlag extends Flag<List<Location>> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         if (!getFlag().isEmpty()) {
             LocationFlag locf;
             for (int i = 0; i < getFlag().size(); i++) {
                 locf = new LocationFlag(null, getName() + "." + i);
                 locf.setFlag(getFlag().get(i));
-                locf.saveValue(path, config);
+                locf.saveValue(config, path);
             }
         }
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         List<Location> locs = new ArrayList<>();
         Set<String> ids = config.getConfigurationSection(path + "." + getName()).getKeys(false);
         LocationFlag locf;
 
         for (int i = 0; i < ids.size(); i++) {
             locf = new LocationFlag(null, getName() + "." + i);
-            locf.loadValue(path, config);
+            locf.loadValue(config, path);
             locs.add(locf.getFlag());
         }
         setFlag(locs);

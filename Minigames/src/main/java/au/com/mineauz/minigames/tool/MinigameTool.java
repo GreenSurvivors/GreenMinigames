@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.tool;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
@@ -83,6 +84,80 @@ public class MinigameTool {
             meta.lore(lore);
             tool.setItemMeta(meta);
         }
+    }
+
+    /**
+     * Gives the defined player a Minigame tool.
+     *
+     * @param player - The player to give the tool to.
+     * @return The Minigame Tool
+     */
+    public static MinigameTool giveMinigameTool(MinigamePlayer player) {
+        Material toolMat = Material.matchMaterial(Minigames.getPlugin().getConfig().getString("tool", ""));
+        if (toolMat == null) {
+            toolMat = Material.BLAZE_ROD;
+            MinigameMessageManager.sendMgMessage(player, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NODEFAULTTOOL);
+        }
+
+        ItemStack tool = new ItemStack(toolMat);
+        MinigameTool mgTool = new MinigameTool(tool);
+
+        player.getPlayer().getInventory().addItem(mgTool.getTool());
+
+        return mgTool;
+    }
+
+    /**
+     * Checks if a player has a Minigame tool.
+     *
+     * @param player The player to check
+     * @return false if the player doesn't have one.
+     */
+    public static boolean hasMinigameTool(MinigamePlayer player) {
+        for (ItemStack item : player.getPlayer().getInventory().getContents()) {
+            if (isMinigameTool(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a specific item is a Minigame tool
+     *
+     * @param item The item to check
+     * @return false if the item was not a Minigame tool
+     */
+    public static boolean isMinigameTool(@Nullable ItemStack item) {
+        return item != null && item.getItemMeta() != null && item.getItemMeta().displayName() != null &&// todo check something else to be sure
+                MinigameMessageManager.getMgMessage(MinigameLangKey.TOOL_NAME).contains(item.getItemMeta().displayName(), Component.EQUALS);
+    }
+
+    /**
+     * Gets the item, Minigames considers as a Minigame tool, from the players inventory
+     * It will prefer the item in main/offhand
+     *
+     * @param player The player to get the tool from
+     * @return null if no tool was found
+     */
+    public static @Nullable MinigameTool getMinigameTool(@NotNull MinigamePlayer player) {
+        ItemStack inHand = player.getPlayer().getInventory().getItemInMainHand();
+        if (isMinigameTool(inHand)) {
+            return new MinigameTool(inHand);
+        }
+
+        inHand = player.getPlayer().getInventory().getItemInOffHand();
+        if (isMinigameTool(inHand)) {
+            return new MinigameTool(inHand);
+        }
+
+        //was not in hands, search in inventory.
+        for (ItemStack item : player.getPlayer().getInventory().getContents()) {
+            if (isMinigameTool(item)) {
+                return new MinigameTool(item);
+            }
+        }
+        return null;
     }
 
     public @NotNull ItemStack getTool() {

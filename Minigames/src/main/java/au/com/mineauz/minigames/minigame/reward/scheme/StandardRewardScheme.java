@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -40,7 +40,7 @@ public class StandardRewardScheme implements RewardScheme {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, AFlag<?>> getFlags() {
         return Map.of(
                 "reward", primaryRewardFlag,
                 "reward2", secondaryRewardFlag);

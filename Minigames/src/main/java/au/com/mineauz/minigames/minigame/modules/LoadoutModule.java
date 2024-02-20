@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.PlayerLoadout;
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.LoadoutSetFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -78,8 +78,8 @@ public class LoadoutModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getConfigFlags() {
-        Map<String, Flag<?>> flags = new HashMap<>();
+    public Map<String, AFlag<?>> getConfigFlags() {
+        Map<String, AFlag<?>> flags = new HashMap<>();
         flags.put(loadoutsFlag.getName(), loadoutsFlag);
         return flags;
     }

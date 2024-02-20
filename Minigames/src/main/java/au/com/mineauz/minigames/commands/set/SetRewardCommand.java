@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -215,7 +215,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 3 || (args.length == 2 && args[0].startsWith("$"))) {
             List<String> ls = Arrays.stream(RewardRarity.values()).map(RewardRarity::toString).toList();
-            return MinigameUtils.tabCompleteMatch(ls, args[args.length - 1]);
+            return CommandDispatcher.tabCompleteMatch(ls, args[args.length - 1]);
         }
         return null;
     }

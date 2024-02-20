@@ -41,7 +41,7 @@ import java.util.concurrent.CompletableFuture;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Minigame implements ScriptObject {
     private final String name; //todo maybe component
-    private final Map<String, Flag<?>> configFlags = new HashMap<>();
+    private final Map<String, AFlag<?>> configFlags = new HashMap<>();
     private final ComponentFlag displayName = new ComponentFlag(null, "displayName");
     private final ComponentFlag objective = new ComponentFlag(null, "objective");
     private final ComponentFlag gameTypeName = new ComponentFlag(null, "gametypeName");
@@ -230,11 +230,11 @@ public class Minigame implements ScriptObject {
         this.state = state;
     }
 
-    private void addConfigFlag(Flag<?> flag) {
+    private void addConfigFlag(AFlag<?> flag) {
         configFlags.put(flag.getName(), flag);
     }
 
-    public Flag<?> getConfigFlag(String name) {
+    public AFlag<?> getConfigFlag(String name) {
         return configFlags.get(name);
     }
 
@@ -1416,9 +1416,9 @@ public class Minigame implements ScriptObject {
                 module.save(cfg);
 
                 if (module.getConfigFlags() != null) {
-                    for (Flag<?> flag : module.getConfigFlags().values()) {
+                    for (AFlag<?> flag : module.getConfigFlags().values()) {
                         if (flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
-                            flag.saveValue(name, cfg);
+                            flag.saveValue(cfg, name);
                     }
                 }
             } else {
@@ -1428,9 +1428,9 @@ public class Minigame implements ScriptObject {
                 module.save(modsave.getConfig());
 
                 if (module.getConfigFlags() != null) {
-                    for (Flag<?> flag : module.getConfigFlags().values()) {
+                    for (AFlag<?> flag : module.getConfigFlags().values()) {
                         if (flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
-                            flag.saveValue(name, modsave.getConfig());
+                            flag.saveValue(modsave.getConfig(), name);
                     }
                 }
 
@@ -1442,7 +1442,7 @@ public class Minigame implements ScriptObject {
             if (configFlags.get(configOpt).getFlag() != null &&
                     (configFlags.get(configOpt).getDefaultFlag() == null ||
                             !configFlags.get(configOpt).getDefaultFlag().equals(configFlags.get(configOpt).getFlag())))
-                configFlags.get(configOpt).saveValue(name, cfg);
+                configFlags.get(configOpt).saveValue(cfg, name);
         }
 
         //dataFixerUpper
@@ -1479,7 +1479,7 @@ public class Minigame implements ScriptObject {
                 if (module.getConfigFlags() != null) {
                     for (String flag : module.getConfigFlags().keySet()) {
                         if (cfg.contains(name + "." + flag))
-                            module.getConfigFlags().get(flag).loadValue(name, cfg);
+                            module.getConfigFlags().get(flag).loadValue(cfg, name);
                     }
                 }
             } else {
@@ -1489,7 +1489,7 @@ public class Minigame implements ScriptObject {
                 if (module.getConfigFlags() != null) {
                     for (String flag : module.getConfigFlags().keySet()) {
                         if (modsave.getConfig().contains(name + "." + flag)) {
-                            module.getConfigFlags().get(flag).loadValue(name, modsave.getConfig());
+                            module.getConfigFlags().get(flag).loadValue(modsave.getConfig(), name);
                         }
                     }
                 }
@@ -1498,7 +1498,7 @@ public class Minigame implements ScriptObject {
 
         for (String flag : configFlags.keySet()) {
             if (cfg.contains(name + "." + flag)) {
-                configFlags.get(flag).loadValue(name, cfg);
+                configFlags.get(flag).loadValue(cfg, name);
             }
         }
 

@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -70,7 +70,7 @@ public class SetTypeCommand extends ASetCommand {
             for (MinigameType t : MinigameType.values()) {
                 types.add(t.toString());
             }
-            return MinigameUtils.tabCompleteMatch(types, args[0]);
+            return CommandDispatcher.tabCompleteMatch(types, args[0]);
         }
         return null;
     }

@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -44,7 +44,7 @@ public interface RewardScheme {
     /**
      * @return Returns the map of flags used for saving and loading values
      */
-    Map<String, Flag<?>> getFlags();
+    Map<String, AFlag<?>> getFlags();
 
     /**
      * Saves any extra info for this scheme. Flags will be saved elsewhere

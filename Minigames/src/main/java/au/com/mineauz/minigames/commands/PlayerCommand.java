@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -81,23 +82,34 @@ public class PlayerCommand extends ACommand {
                 List<Player> playerMatch = Bukkit.matchPlayer(args[0]);
                 if (!playerMatch.isEmpty()) {
                     MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(playerMatch.get(0));
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_HEADER,
-                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
+
                     if (mgPlayer.isInMinigame()) {
+                        TextComponent.Builder message = Component.text();
+                        message.append(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_HEADER,
+                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName())));
+
                         Duration playTime = Duration.ofMillis(Calendar.getInstance().getTimeInMillis() - mgPlayer.getStartTime() + mgPlayer.getStoredTime());
 
-                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_MINIGAME,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName()));
-                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_SCORE,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())));
-                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_KILLS,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.KILLS.getKey(), String.valueOf(mgPlayer.getKills())));
-                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_DEATHS,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.DEATHS.getKey(), String.valueOf(mgPlayer.getDeaths())));
-                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_REVERTS,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.REVERTS.getKey(), String.valueOf(mgPlayer.getReverts())));
-                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_PLAYTIME,
-                                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(playTime)));
+                        message.appendNewline().append(MinigameMessageManager.getMgMessage(
+                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_MINIGAME,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName())));
+                        message.appendNewline().append(MinigameMessageManager.getMgMessage(
+                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_SCORE,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore()))));
+                        message.appendNewline().append(MinigameMessageManager.getMgMessage(
+                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_KILLS,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.KILLS.getKey(), String.valueOf(mgPlayer.getKills()))));
+                        message.appendNewline().append(MinigameMessageManager.getMgMessage(
+                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_DEATHS,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.DEATHS.getKey(), String.valueOf(mgPlayer.getDeaths()))));
+                        message.appendNewline().append(MinigameMessageManager.getMgMessage(
+                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_REVERTS,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.REVERTS.getKey(), String.valueOf(mgPlayer.getReverts()))));
+                        message.appendNewline().append(MinigameMessageManager.getMgMessage(
+                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_PLAYTIME,
+                                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(playTime))));
+
+                        MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, message.build());
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_PLAYER,
                                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
@@ -120,7 +132,7 @@ public class PlayerCommand extends ACommand {
                     map(MinigamePlayer::getName).collect(Collectors.toCollection(ArrayList::new));
 
             plys.add("list");
-            return MinigameUtils.tabCompleteMatch(plys, args[0]);
+            return CommandDispatcher.tabCompleteMatch(plys, args[0]);
         }
         return null;
     }

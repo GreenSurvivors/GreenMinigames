@@ -1,10 +1,10 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.recorder.RecorderData;
@@ -13,16 +13,16 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /***
  * This action fills a region randomly with a new block. There are two modes. Either "replace all",
@@ -31,7 +31,7 @@ import java.util.Random;
  *
  */
 public class RandomFillingAction extends AAction {
-    private final StringFlag toType = new StringFlag("WOOL", "totype");
+    private final BlockDataFlag toData = new BlockDataFlag(Material.WHITE_WOOL.createBlockData(), "toData");
     private final IntegerFlag percentageChance = new IntegerFlag(50, "percentagechance");
     private final BooleanFlag replaceAll = new BooleanFlag(true, "replaceAll");
 
@@ -50,10 +50,12 @@ public class RandomFillingAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("To", toType.getFlag());
-        out.put("Chance", percentageChance.getFlag());
-        out.put("Replace misses with air", replaceAll.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_TOBLOCK_NAME), Component.text(toData.getFlag().getMaterial().translationKey()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME), Component.text(percentageChance.getFlag()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_MISSES_NAME),
+                MinigameMessageManager.getMgMessage(replaceAll.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -69,8 +71,14 @@ public class RandomFillingAction extends AAction {
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
+        if (mgPlayer == null || mgPlayer.getMinigame() == null) {
+            return;
+        }
+
         Location temp = region.getFirstPoint();
-        Random rndGen = new Random();
+        Random rndGen = ThreadLocalRandom.current();
+        RecorderData data = mgPlayer.getMinigame().getRecorderData();
+
         for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
             temp.setY(y);
             for (int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++) {
@@ -80,11 +88,10 @@ public class RandomFillingAction extends AAction {
                     int randomDraw = rndGen.nextInt(100);  //Generating a number between [0-99]
                     randomDraw++;                //Adding one to handle edge cases (0 %, 100 %) correctly.
 
-                    RecorderData data = mgPlayer.getMinigame().getRecorderData();
                     data.addBlock(temp.getBlock(), null);
 
                     if (randomDraw <= percentageChance.getFlag()) {
-                        temp.getBlock().setType(Material.getMaterial(toType.getFlag()), false);
+                        temp.getBlock().setBlockData(toData.getFlag(), false);
                     } else if (replaceAll.getFlag()) {
                         temp.getBlock().setType(Material.AIR);
                     }
@@ -100,20 +107,27 @@ public class RandomFillingAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        toType.saveValue(path, config);
-        percentageChance.saveValue(path, config);
-        replaceAll.saveValue(path, config);
+    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
+        toData.saveValue(config, path);
+        percentageChance.saveValue(config, path);
+        replaceAll.saveValue(config, path);
 
+        // dataFixerUpper
+        config.set(path + "totype", null);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        toType.loadValue(path, config);
-        percentageChance.loadValue(path, config);
-        replaceAll.loadValue(path, config);
+    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
+        percentageChance.loadValue(config, path);
+        replaceAll.loadValue(config, path);
+
+        //dataFixerUpper
+        Material mat = Material.matchMaterial(config.getString(path + "totype", ""));
+        if (mat != null) {
+            toData.setFlag(mat.createBlockData());
+        } else {
+            toData.loadValue(config, path);
+        }
     }
 
     @Override
@@ -123,37 +137,11 @@ public class RandomFillingAction extends AAction {
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
         //The menu entry for the block that will be placed
-        m.addItem(new MenuItemString(Material.COBBLESTONE,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_RANDOMFILLING_TOBLOCK_NAME), new Callback<>() {
-
-            @Override
-            public String getValue() {
-                return toType.getFlag();
-            }
-
-            @Override
-            public void setValue(@NotNull String value) {
-                if (Material.matchMaterial(value) != null) {
-                    toType.setFlag(value.toUpperCase());
-                } else {
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                            RegionLangKey.ACTION_ERROR_INVALIDMATERIAL);
-                }
-            }
-
-        }) {
-            @Override
-            public @NotNull ItemStack getDisplayItem() {
-                ItemStack stack = super.getDisplayItem();
-                Material m = Material.getMaterial(toType.getFlag());
-                stack.setType(Objects.requireNonNullElse(m, Material.COBBLESTONE));
-                return stack;
-            }
-        });
+        toData.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_TOBLOCK_NAME));
 
         //Percentage of blocks that will get replaced
         m.addItem(new MenuItemNewLine());
-        m.addItem(new MenuItemInteger(Material.BOOK, RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME,
+        m.addItem(new MenuItemInteger(Material.BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME),
                 new Callback<>() {
 
                     @Override
@@ -170,7 +158,7 @@ public class RandomFillingAction extends AAction {
 
         //Replace all or replace selectively
         m.addItem(new MenuItemNewLine());
-        m.addItem(replaceAll.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_RANDOMFILLING_MISSES_NAME)));
+        m.addItem(replaceAll.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_MISSES_NAME)));
 
         m.displayMenu(mgPlayer);
 

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.tool;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.display.IDisplayObject;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
@@ -109,7 +108,7 @@ public class RegenAreaMode implements ToolMode {
     public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
                             @Nullable Team team, @NotNull PlayerInteractEvent event) {
         if (mgPlayer.hasSelection()) {
-            String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting(SETTING_KEY); //todo expose Settings
+            String name = MinigameTool.getMinigameTool(mgPlayer).getSetting(SETTING_KEY); //todo expose Settings
             MgRegion region = minigame.getRegenRegion(name);
 
             RegenRegionChangeResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
@@ -153,7 +152,7 @@ public class RegenAreaMode implements ToolMode {
 
     @Override
     public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
-        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting(SETTING_KEY);
+        String name = MinigameTool.getMinigameTool(mgPlayer).getSetting(SETTING_KEY);
         if (minigame.getRegenRegion(name) != null) {
             displayedRegions.put(mgPlayer.getUUID(),
                     Minigames.getPlugin().display.displayCuboid(mgPlayer.getPlayer(), minigame.getRegenRegion(name)));
@@ -168,7 +167,7 @@ public class RegenAreaMode implements ToolMode {
 
     @Override
     public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
-        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting(SETTING_KEY);
+        String name = MinigameTool.getMinigameTool(mgPlayer).getSetting(SETTING_KEY);
         if (minigame.getRegenRegion(name) != null) {
 
             IDisplayObject displayed = displayedRegions.get(mgPlayer.getUUID());

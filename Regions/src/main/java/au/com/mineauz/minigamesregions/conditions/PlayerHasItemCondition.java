@@ -253,15 +253,15 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        itemToSearchFor.saveValue(path, config);
-        count.saveValue(path, config);
-        where.saveValue(path, config);
-        slot.saveValue(path, config);
+        itemToSearchFor.saveValue(config, path);
+        count.saveValue(config, path);
+        where.saveValue(config, path);
+        slot.saveValue(config, path);
 
-        matchName.saveValue(path, config);
-        matchLore.saveValue(path, config);
-        matchEnchantments.saveValue(path, config);
-        matchExact.saveValue(path, config);
+        matchName.saveValue(config, path);
+        matchLore.saveValue(config, path);
+        matchEnchantments.saveValue(config, path);
+        matchExact.saveValue(config, path);
         saveInvert(config, path);
 
         // remove legacy
@@ -299,21 +299,21 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
                 itemToSearchFor.setFlag(legacyItem);
 
             } else {
-                itemToSearchFor.loadValue(path, config);
+                itemToSearchFor.loadValue(config, path);
             }
         } else { // new data load system
-            itemToSearchFor.loadValue(path, config);
+            itemToSearchFor.loadValue(config, path);
         }
 
-        count.loadValue(path, config);
+        count.loadValue(config, path);
 
-        where.loadValue(path, config);
-        slot.loadValue(path, config);
+        where.loadValue(config, path);
+        slot.loadValue(config, path);
 
-        matchName.loadValue(path, config);
-        matchLore.loadValue(path, config);
-        matchEnchantments.loadValue(path, config);
-        matchExact.loadValue(path, config);
+        matchName.loadValue(config, path);
+        matchLore.loadValue(config, path);
+        matchEnchantments.loadValue(config, path);
+        matchExact.loadValue(config, path);
         loadInvert(config, path);
     }
 

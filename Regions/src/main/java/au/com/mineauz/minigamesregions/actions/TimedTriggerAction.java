@@ -92,16 +92,16 @@ public class TimedTriggerAction extends AAction {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        toTrigger.saveValue(path, config);
-        isRegion.saveValue(path, config);
-        delay.saveValue(path, config);
+        toTrigger.saveValue(config, path);
+        isRegion.saveValue(config, path);
+        delay.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        toTrigger.loadValue(path, config);
-        isRegion.loadValue(path, config);
-        delay.loadValue(path, config);
+        toTrigger.loadValue(config, path);
+        isRegion.loadValue(config, path);
+        delay.loadValue(config, path);
     }
 
     @Override

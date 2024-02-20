@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
@@ -28,8 +27,8 @@ public class MenuItemToolMode extends MenuItem {
 
     public ItemStack onClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
-        if (MinigameUtils.hasMinigameTool(mgPlayer)) {
-            MinigameTool tool = MinigameUtils.getMinigameTool(mgPlayer);
+        if (MinigameTool.hasMinigameTool(mgPlayer)) {
+            MinigameTool tool = MinigameTool.getMinigameTool(mgPlayer);
             if (tool.getMode() != null) {
                 tool.getMode().onUnsetMode(mgPlayer, tool);
             }

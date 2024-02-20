@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -25,8 +24,8 @@ public class MenuItemToolTeam extends MenuItemList<TeamColor> {
     public ItemStack onClick() {
         super.onClick();
         MinigamePlayer mgPlayer = getContainer().getViewer();
-        if (MinigameUtils.hasMinigameTool(mgPlayer)) {
-            MinigameTool tool = MinigameUtils.getMinigameTool(mgPlayer);
+        if (MinigameTool.hasMinigameTool(mgPlayer)) {
+            MinigameTool tool = MinigameTool.getMinigameTool(mgPlayer);
             tool.setTeamColor(value.getValue());
         }
         return getDisplayItem();
@@ -36,8 +35,8 @@ public class MenuItemToolTeam extends MenuItemList<TeamColor> {
     public ItemStack onRightClick() {
         super.onRightClick();
         MinigamePlayer mgPlayer = getContainer().getViewer();
-        if (MinigameUtils.hasMinigameTool(mgPlayer)) {
-            MinigameTool tool = MinigameUtils.getMinigameTool(mgPlayer);
+        if (MinigameTool.hasMinigameTool(mgPlayer)) {
+            MinigameTool tool = MinigameTool.getMinigameTool(mgPlayer);
             tool.setTeamColor(value.getValue());
         }
         return getDisplayItem();

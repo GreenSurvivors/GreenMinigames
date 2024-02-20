@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
@@ -58,7 +58,7 @@ public class RegionModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getConfigFlags() {
+    public Map<String, AFlag<?>> getConfigFlags() {
         return null;
     }
 

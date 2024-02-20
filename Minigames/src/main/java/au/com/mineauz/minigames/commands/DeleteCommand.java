@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -81,7 +80,7 @@ public class DeleteCommand extends ACommand {
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> mgs = new ArrayList<>(Minigames.getPlugin().getMinigameManager().getAllMinigames().keySet());
-            return MinigameUtils.tabCompleteMatch(mgs, args[0]);
+            return CommandDispatcher.tabCompleteMatch(mgs, args[0]);
         }
         return null;
     }

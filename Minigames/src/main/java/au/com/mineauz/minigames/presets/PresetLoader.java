@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.presets;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -27,9 +27,9 @@ public class PresetLoader {
             FileConfiguration config = save.getConfig();
 
             for (String opt : config.getConfigurationSection(preset).getKeys(false)) {
-                Flag<?> flag = minigame.getConfigFlag(opt);
+                AFlag<?> flag = minigame.getConfigFlag(opt);
                 if (flag != null) {
-                    flag.loadValue(preset, config);
+                    flag.loadValue(config, preset);
                 }
             }
 

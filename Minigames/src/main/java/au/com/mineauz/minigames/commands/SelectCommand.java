@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -73,7 +72,7 @@ public class SelectCommand extends ACommand {
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of("1", "2", "clear"), args[0]);
+            return CommandDispatcher.tabCompleteMatch(List.of("1", "2", "clear"), args[0]);
         }
         return null;
     }

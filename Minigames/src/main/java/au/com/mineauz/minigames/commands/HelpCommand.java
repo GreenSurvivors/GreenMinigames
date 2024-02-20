@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.set.ASetCommand;
 import au.com.mineauz.minigames.commands.set.SetCommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
@@ -147,7 +146,7 @@ public class HelpCommand extends ACommand {
                 }
             }), IntStream.range(1, numPages).boxed().map(String::valueOf)).toList();
 
-            return MinigameUtils.tabCompleteMatch(result, args[0]);
+            return CommandDispatcher.tabCompleteMatch(result, args[0]);
         }
 
         return null;

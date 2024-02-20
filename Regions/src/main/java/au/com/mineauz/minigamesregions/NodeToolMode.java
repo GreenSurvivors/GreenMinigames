@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -107,7 +106,7 @@ public class NodeToolMode implements ToolMode {
     public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event) {
         if (event.getClickedBlock() != null) {
             RegionModule mod = RegionModule.getMinigameModule(minigame);
-            String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Node");
+            String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Node");
 
             Location loc = event.getClickedBlock().getLocation().add(0.5, 0.5, 0.5);
             Node node = mod.getNode(name);
@@ -132,7 +131,7 @@ public class NodeToolMode implements ToolMode {
     @Override
     public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event) {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
-        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Node");
+        String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Node");
 
         Node node = mod.getNode(name);
         if (node == null) {
@@ -155,7 +154,7 @@ public class NodeToolMode implements ToolMode {
     @Override
     public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
-        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Node");
+        String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Node");
         if (mod.hasNode(name)) {
             Main.getPlugin().getDisplayManager().show(mod.getNode(name), mgPlayer);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
@@ -171,7 +170,7 @@ public class NodeToolMode implements ToolMode {
     @Override
     public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
-        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Node");
+        String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Node");
         if (mod.hasNode(name)) {
             Main.getPlugin().getDisplayManager().hide(mod.getNode(name), mgPlayer);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),

@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -114,7 +114,7 @@ public class SetSurvivorTeamCommand extends ASetCommand {
                 teams.add(WordUtils.capitalizeFully(infectionModule.getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));
                 teams.add(WordUtils.capitalizeFully(infectionModule.getDefaultSurvivorTeam().toString().toLowerCase().replace("_", " ")));
 
-                return MinigameUtils.tabCompleteMatch(teams, args[0]);
+                return CommandDispatcher.tabCompleteMatch(teams, args[0]);
             }
         }
         return null;

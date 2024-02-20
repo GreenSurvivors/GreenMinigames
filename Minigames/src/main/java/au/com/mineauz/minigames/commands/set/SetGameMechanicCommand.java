@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -73,7 +73,7 @@ public class SetGameMechanicCommand extends ASetCommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(GameMechanics.getGameMechanics().stream().map(GameMechanicBase::getMechanicName).toList(), args[0]);
+            return CommandDispatcher.tabCompleteMatch(GameMechanics.getGameMechanics().stream().map(GameMechanicBase::getMechanicName).toList(), args[0]);
         }
         return null;
     }

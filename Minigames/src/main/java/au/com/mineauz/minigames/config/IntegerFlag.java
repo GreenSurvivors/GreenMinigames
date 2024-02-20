@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class IntegerFlag extends Flag<Integer> {
+public class IntegerFlag extends AFlag<Integer> {
 
     public IntegerFlag(Integer value, String name) {
         setFlag(value);
@@ -21,12 +21,12 @@ public class IntegerFlag extends Flag<Integer> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName(), getFlag());
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         setFlag(config.getInt(path + "." + getName()));
     }
 

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class TimeFlag extends Flag<Long> {
+public class TimeFlag extends AFlag<Long> {
 
     public TimeFlag(Long value, String name) {
         setFlag(value);
@@ -21,12 +21,12 @@ public class TimeFlag extends Flag<Long> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName(), getFlag());
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         setFlag(config.getLong(path + "." + getName()));
     }
 

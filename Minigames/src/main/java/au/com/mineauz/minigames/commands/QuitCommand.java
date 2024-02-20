@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -67,8 +66,7 @@ public class QuitCommand extends ACommand {
                     if (args.length > 1) {
                         Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[1]);
                         if (minigame != null) {
-                            List<MinigamePlayer> pls = new ArrayList<>(minigame.getPlayers());
-                            for (MinigamePlayer pl : pls) {
+                            for (MinigamePlayer pl : minigame.getPlayers()) {
                                 PLUGIN.getPlayerManager().quitMinigame(pl, true);
                             }
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_QUIT_QUITALLMINIGAME,
@@ -124,10 +122,10 @@ public class QuitCommand extends ACommand {
                 playerNames.add(player.getName());
             }
             playerNames.add("ALL");
-            return MinigameUtils.tabCompleteMatch(playerNames, args[0]);
+            return CommandDispatcher.tabCompleteMatch(playerNames, args[0]);
         } else if (args.length == 2) {
             List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
-            return MinigameUtils.tabCompleteMatch(mgs, args[1]);
+            return CommandDispatcher.tabCompleteMatch(mgs, args[1]);
         }
         return null;
     }

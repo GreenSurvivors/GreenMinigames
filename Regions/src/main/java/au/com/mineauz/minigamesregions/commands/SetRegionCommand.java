@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.commands.set.ASetCommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -116,7 +116,7 @@ public class SetRegionCommand extends ASetCommand {
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> tab = List.of("create", "modify", "remove");
-            return MinigameUtils.tabCompleteMatch(tab, args[0]);
+            return CommandDispatcher.tabCompleteMatch(tab, args[0]);
         } else if (args.length == 2) {
             List<String> tab = new ArrayList<>();
             if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("remove")) {
@@ -125,7 +125,7 @@ public class SetRegionCommand extends ASetCommand {
                     tab.add(reg.getName());
                 }
             }
-            return MinigameUtils.tabCompleteMatch(tab, args[1]);
+            return CommandDispatcher.tabCompleteMatch(tab, args[1]);
         }
         return null;
     }
