@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +20,7 @@ public interface ActionInterface {
 
     @NotNull IActionCategory getCategory();
 
-    void describe(@NotNull Map<@NotNull Component, @NotNull Component> out);
+    @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe();
 
     boolean useInRegions();
 

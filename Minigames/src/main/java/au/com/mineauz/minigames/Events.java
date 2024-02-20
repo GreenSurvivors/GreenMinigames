@@ -356,7 +356,7 @@ public class Events implements Listener {
 
         ItemStack item = event.getItem();
         //nullcheck in isMinigameTool()
-        if (MinigameUtils.isMinigameTool(item) && mgPlayer.getPlayer().hasPermission("minigame.tool")) {
+        if (MinigameTool.isMinigameTool(item) && mgPlayer.getPlayer().hasPermission("minigame.tool")) {
             MinigameTool tool = new MinigameTool(item);
             event.setCancelled(true);
 
@@ -500,7 +500,7 @@ public class Events implements Listener {
         if (event.getDamager() instanceof Player player) {
             MinigamePlayer mgPlayer = pdata.getMinigamePlayer(player);
             ItemStack item = player.getEquipment().getItemInMainHand();
-            if (MinigameUtils.isMinigameTool(item) && player.hasPermission("minigame.tool")) {
+            if (MinigameTool.isMinigameTool(item) && player.hasPermission("minigame.tool")) {
                 if (mgPlayer.isInMinigame()) {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_INMINIGAME);
                     return;
@@ -520,7 +520,7 @@ public class Events implements Listener {
         Player player = event.getPlayer();
         MinigamePlayer mgPlayer = pdata.getMinigamePlayer(player);
         ItemStack item = player.getEquipment().getItemInMainHand();
-        if (MinigameUtils.isMinigameTool(item) && player.hasPermission("minigame.tool")) {
+        if (MinigameTool.isMinigameTool(item) && player.hasPermission("minigame.tool")) {
             if (mgPlayer.isInMinigame()) {
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_INMINIGAME);
                 return;
@@ -777,19 +777,20 @@ public class Events implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void potionAffectsPlayer(@NotNull PotionSplashEvent event) {
-        if (!(event.getPotion().getShooter() instanceof Player)) return;
-        MinigamePlayer mgPlayer = pdata.getMinigamePlayer((Player) event.getPotion().getShooter());
-        if (!mgPlayer.isInMinigame()) return;
-        if (mgPlayer.getMinigame().friendlyFireSplashPotions()) return;
-        List<Player> list = event.getAffectedEntities().stream()
-                .filter(p -> p instanceof Player)
-                .filter(p -> pdata.getMinigamePlayer((Player) p).isInMinigame())
-                .filter(p -> pdata.getMinigamePlayer((Player) p).getMinigame() == mgPlayer.getMinigame())
-                .map(p -> (Player) p)
-                .toList();
-        if (list.isEmpty()) return;
-        List<PotionEffectType> effects = event.getPotion().getEffects().stream().map(PotionEffect::getType).toList();
-        list.stream().filter(Predicate.not(p -> isEffectApplicable(effects, mgPlayer, pdata.getMinigamePlayer(p)))).forEach(p -> event.setIntensity(p, 0.0));
+        if (event.getPotion().getShooter() instanceof Player player) {
+            MinigamePlayer mgPlayer = pdata.getMinigamePlayer(player);
+            if (!mgPlayer.isInMinigame()) return;
+            if (mgPlayer.getMinigame().friendlyFireSplashPotions()) return;
+            List<Player> list = event.getAffectedEntities().stream()
+                    .filter(e -> e instanceof Player)
+                    .map(p -> (Player) p)
+                    .filter(p -> pdata.getMinigamePlayer(p).isInMinigame())
+                    .filter(p -> pdata.getMinigamePlayer(p).getMinigame() == mgPlayer.getMinigame())
+                    .toList();
+            if (list.isEmpty()) return;
+            List<PotionEffectType> effects = event.getPotion().getEffects().stream().map(PotionEffect::getType).toList();
+            list.stream().filter(Predicate.not(p -> isEffectApplicable(effects, mgPlayer, pdata.getMinigamePlayer(p)))).forEach(p -> event.setIntensity(p, 0.0));
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -810,16 +811,18 @@ public class Events implements Listener {
         event.getAffectedEntities().removeAll(list.stream().filter(Predicate.not(p -> isEffectApplicable(effects, mgPlayer, pdata.getMinigamePlayer(p)))).toList());
     }
 
-    private boolean isEffectApplicable(@NotNull Collection<@NotNull PotionEffectType> effectTypes, @NotNull MinigamePlayer mgPlayerEffecting, @NotNull MinigamePlayer mgPlayerReceiving) {
-        if (!mgPlayerEffecting.getMinigame().isTeamGame()) {
-            if (mgPlayerEffecting == mgPlayerReceiving) {
-                return !MinigameTag.NEGATIVE_POTION_EFFECT.allTagged(effectTypes);
+    private boolean isEffectApplicable(@NotNull Collection<@NotNull PotionEffectType> effectTypes,
+                                       @NotNull MinigamePlayer mgPlayerEffecting, @NotNull MinigamePlayer mgPlayerReceiving) {
+        if (mgPlayerEffecting.getMinigame().isTeamGame()) {
+            if (mgPlayerEffecting.getTeam() == mgPlayerReceiving.getTeam()) {
+                return effectTypes.stream().noneMatch(s -> s.getEffectCategory() == PotionEffectType.Category.HARMFUL);
+            } else {
+                return effectTypes.stream().anyMatch(s -> s.getEffectCategory() == PotionEffectType.Category.BENEFICIAL);
             }
-            return !MinigameTag.POSITIVE_POTION_EFFECT.allTagged(effectTypes);
+        } else if (mgPlayerEffecting == mgPlayerReceiving) {
+            return effectTypes.stream().noneMatch(s -> s.getEffectCategory() == PotionEffectType.Category.HARMFUL);
+        } else {
+            return effectTypes.stream().noneMatch(s -> s.getEffectCategory() == PotionEffectType.Category.BENEFICIAL);
         }
-        if (mgPlayerEffecting.getTeam() == mgPlayerReceiving.getTeam()) {
-            return !MinigameTag.NEGATIVE_POTION_EFFECT.allTagged(effectTypes);
-        }
-        return !MinigameTag.POSITIVE_POTION_EFFECT.allTagged(effectTypes);
     }
 }

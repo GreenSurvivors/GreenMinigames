@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.commands.set.ASetCommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -112,14 +112,14 @@ public class SetNodeCommand extends ASetCommand {
         if (rmod != null) {
             if (args.length == 1) {
                 List<String> tab = List.of("create", "modify", "remove");
-                return MinigameUtils.tabCompleteMatch(tab, args[0]);
+                return CommandDispatcher.tabCompleteMatch(tab, args[0]);
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("remove")) {
                     List<String> tab = new ArrayList<>();
                     for (Node node : rmod.getNodes()) {
                         tab.add(node.getName());
                     }
-                    return MinigameUtils.tabCompleteMatch(tab, args[1]);
+                    return CommandDispatcher.tabCompleteMatch(tab, args[1]);
                 }
             }
         }

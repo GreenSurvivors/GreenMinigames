@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -194,15 +194,15 @@ public class SetTeamCommand extends ASetCommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of("add", "rename", "remove", "list", "maxplayers"), args[0]);
+            return CommandDispatcher.tabCompleteMatch(List.of("add", "rename", "remove", "list", "maxplayers"), args[0]);
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("add")) {
-                return MinigameUtils.tabCompleteMatch(new ArrayList<>(TeamColor.validColorNames()), args[1]);
+                return CommandDispatcher.tabCompleteMatch(new ArrayList<>(TeamColor.validColorNames()), args[1]);
             } else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("rename")) {
                 TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
 
                 if (teamsModule != null) {
-                    return MinigameUtils.tabCompleteMatch(teamsModule.getTeams().stream().map(t -> t.getColor().toString()).toList(), args[1]);
+                    return CommandDispatcher.tabCompleteMatch(teamsModule.getTeams().stream().map(t -> t.getColor().toString()).toList(), args[1]);
                 }
             } else if (args[0].equalsIgnoreCase("maxplayers")) {
                 TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
@@ -213,7 +213,7 @@ public class SetTeamCommand extends ASetCommand {
                         cols.add(t.getColor().toString());
                     }
 
-                    return MinigameUtils.tabCompleteMatch(cols, args[1]);
+                    return CommandDispatcher.tabCompleteMatch(cols, args[1]);
                 }
             }
         }

@@ -79,13 +79,13 @@ public class TriggerNodeAction extends AAction { // todo merge with TriggerRegio
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        node.saveValue(path, config);
+        node.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        node.loadValue(path, config);
+        node.loadValue(config, path);
     }
 
     @Override

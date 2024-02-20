@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -95,7 +94,7 @@ public class ListPlaceholder extends ACommand {
             final int numPages = (int) Math.ceil((float) placeholders.size() / PLACEHOLDERS_PER_SITE);
 
             // numbers from 0 --> #pages
-            return MinigameUtils.tabCompleteMatch(IntStream.range(1, numPages).boxed().map(String::valueOf).toList(), args[0]);
+            return CommandDispatcher.tabCompleteMatch(IntStream.range(1, numPages).boxed().map(String::valueOf).toList(), args[0]);
         }
 
         return null;

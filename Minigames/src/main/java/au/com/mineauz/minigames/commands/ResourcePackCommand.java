@@ -54,7 +54,7 @@ public class ResourcePackCommand extends ACommand {
     @Override
     public boolean onCommand(final @NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         ResourcePack pack;
-        switch (args[0]) {
+        switch (args[0].toLowerCase()) {
             case "apply" -> {
                 if (args.length < 2) {
                     return false;

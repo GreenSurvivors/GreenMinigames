@@ -79,13 +79,13 @@ public class TriggerRegionAction extends AAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        region.saveValue(path, config);
+        region.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        region.loadValue(path, config);
+        region.loadValue(config, path);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -106,7 +105,7 @@ public class RegionToolMode implements ToolMode {
     public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
                             @Nullable Team team, @NotNull PlayerInteractEvent event) {
         if (mgPlayer.hasSelection()) {
-            String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Region");
+            String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Region");
             RegionModule module = RegionModule.getMinigameModule(minigame);
             Region region = module.getRegion(name);
 
@@ -145,7 +144,7 @@ public class RegionToolMode implements ToolMode {
     @Override
     public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
-        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Region");
+        String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Region");
         if (mod.hasRegion(name)) {
             Main.getPlugin().getDisplayManager().show(mod.getRegion(name), mgPlayer);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
@@ -163,7 +162,7 @@ public class RegionToolMode implements ToolMode {
     @Override
     public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
-        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Region");
+        String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Region");
         if (mod.hasRegion(name)) {
             Main.getPlugin().getDisplayManager().hide(mod.getRegion(name), mgPlayer);
             mgPlayer.clearSelection();

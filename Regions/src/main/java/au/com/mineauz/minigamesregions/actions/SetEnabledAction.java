@@ -63,12 +63,12 @@ public class SetEnabledAction extends AAction {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        state.saveValue(path, config);
+        state.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        state.loadValue(path, config);
+        state.loadValue(config, path);
     }
 
     @Override

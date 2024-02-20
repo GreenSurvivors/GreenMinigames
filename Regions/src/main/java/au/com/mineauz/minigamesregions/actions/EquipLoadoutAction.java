@@ -11,13 +11,12 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class EquipLoadoutAction extends AAction {
@@ -39,8 +38,8 @@ public class EquipLoadoutAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Loadout", loadout.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_NAME), Component.text(loadout.getFlag()));
     }
 
     @Override
@@ -56,12 +55,14 @@ public class EquipLoadoutAction extends AAction {
     @Override
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
-        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        if (!mgPlayer.isInMinigame()) return;
         LoadoutModule lmod = LoadoutModule.getMinigameModule(mgPlayer.getMinigame());
-        if (lmod.hasLoadout(loadout.getFlag())) {
+        if (lmod != null && lmod.hasLoadout(loadout.getFlag())) {
             PlayerLoadout pLoadOut = lmod.getLoadout(loadout.getFlag());
             mgPlayer.setLoadout(pLoadOut);
-            pLoadOut.equipLoadout(mgPlayer);
+            if (equipOnTrigger.getFlag()) {
+                pLoadOut.equipLoadout(mgPlayer);
+            }
         }
     }
 
@@ -70,30 +71,34 @@ public class EquipLoadoutAction extends AAction {
         debug(mgPlayer, region);
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
         LoadoutModule lmod = LoadoutModule.getMinigameModule(mgPlayer.getMinigame());
-        if (lmod.hasLoadout(loadout.getFlag())) {
+        if (lmod != null && lmod.hasLoadout(loadout.getFlag())) {
             PlayerLoadout pLoadOut = lmod.getLoadout(loadout.getFlag());
             mgPlayer.setLoadout(pLoadOut);
-            pLoadOut.equipLoadout(mgPlayer);
+            if (equipOnTrigger.getFlag()) {
+                pLoadOut.equipLoadout(mgPlayer);
+            }
         }
     }
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        loadout.saveValue(path, config);
+        loadout.saveValue(config, path);
+        equipOnTrigger.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        loadout.loadValue(path, config);
+        loadout.loadValue(config, path);
+        equipOnTrigger.loadValue(config, path);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(new MenuItemString(Material.DIAMOND_SWORD, "Loadout Name", new Callback<>() {
+        m.addItem(new MenuItemString(Material.DIAMOND_SWORD, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_NAME), new Callback<>() {
 
             @Override
             public String getValue() {
@@ -104,12 +109,10 @@ public class EquipLoadoutAction extends AAction {
             public void setValue(String value) {
                 loadout.setFlag(value);
             }
-
-
         }));
-        List<String> equipDesc = new ArrayList<>();
-        equipDesc.add("This will force the loadout to equip as soon as the Action is triggered...");
-        m.addItem(new MenuItemBoolean(equipDesc, Material.PAPER, "Equip on Trigger", new Callback<>() {
+
+        m.addItem(new MenuItemBoolean(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_DESCRIPTION), new Callback<>() {
             @Override
             public Boolean getValue() {
                 return equipOnTrigger.getFlag();
@@ -119,8 +122,6 @@ public class EquipLoadoutAction extends AAction {
             public void setValue(Boolean value) {
                 equipOnTrigger.setFlag(value);
             }
-
-
         }));
         m.displayMenu(mgPlayer);
         return true;

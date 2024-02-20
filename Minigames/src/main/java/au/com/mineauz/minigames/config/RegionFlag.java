@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class RegionFlag extends Flag<MgRegion> {
+public class RegionFlag extends AFlag<MgRegion> {
     private final @Nullable String legacyFistPointLabel, legacySecondPointLabel;
 
     public RegionFlag(MgRegion value, String name, @Nullable String legacyFirstPoint, @Nullable String legacySecondPoint) {
@@ -34,7 +34,7 @@ public class RegionFlag extends Flag<MgRegion> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName() + ".name", getFlag().getName());
         config.set(path + "." + getName() + ".world", getFlag().getWorld().getName());
         config.set(path + "." + getName() + ".pos1", getFlag().getPos1().x() + ":" + getFlag().getPos1().y() + ":" + getFlag().getPos1().z());
@@ -42,7 +42,7 @@ public class RegionFlag extends Flag<MgRegion> {
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         String name = config.getString(path + "." + getName() + ".name");
         if (name != null) {
             String world = config.getString(path + "." + getName() + ".world");

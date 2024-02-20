@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -78,7 +77,7 @@ public class JoinCommand extends ACommand {
                             sender.hasPermission("minigame.join." + mgm.getName().toLowerCase()))).
                     map(Minigame::getName).toList();
 
-            return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
+            return CommandDispatcher.tabCompleteMatch(mgs, args[args.length - 1]);
         }
         return null;
     }

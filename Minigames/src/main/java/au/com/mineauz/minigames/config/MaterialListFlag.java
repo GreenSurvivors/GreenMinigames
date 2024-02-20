@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MaterialListFlag extends Flag<List<Material>> {
+public class MaterialListFlag extends AFlag<List<Material>> {
 
     public MaterialListFlag(List<Material> value, String name) {
         setFlag(value);
@@ -21,19 +21,19 @@ public class MaterialListFlag extends Flag<List<Material>> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         if (!getFlag().isEmpty()) {
             MaterialFlag matflag;
             for (int i = 0; i < getFlag().size(); i++) {
                 matflag = new MaterialFlag(null, getName() + "." + i);
                 matflag.setFlag(getFlag().get(i));
-                matflag.saveValue(path, config);
+                matflag.saveValue(config, path);
             }
         }
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         List<Material> materials = new ArrayList<>();
         ConfigurationSection section = config.getConfigurationSection(path + "." + getName());
 
@@ -43,7 +43,7 @@ public class MaterialListFlag extends Flag<List<Material>> {
 
             for (String id : ids) {
                 matFlag = new MaterialFlag(null, getName() + "." + id);
-                matFlag.loadValue(path, config);
+                matFlag.loadValue(config, path);
 
                 materials.add(matFlag.getFlag());
             }

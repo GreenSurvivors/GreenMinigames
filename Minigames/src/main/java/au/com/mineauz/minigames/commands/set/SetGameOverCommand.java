@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -121,12 +122,12 @@ public class SetGameOverCommand extends ASetCommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of("timer", "invincible", "humiliation", "interact"), args[0]);
+            return CommandDispatcher.tabCompleteMatch(List.of("timer", "invincible", "humiliation", "interact"), args[0]);
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("invincible") ||
                     args[0].equalsIgnoreCase("humiliation") ||
                     args[0].equalsIgnoreCase("interact")) {
-                return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[1]);
+                return CommandDispatcher.tabCompleteMatch(List.of("true", "false"), args[1]);
             } else if (args[0].equalsIgnoreCase("timer")) {
                 return List.of("s", "m", "h");
             }

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class EnumFlag<T extends Enum<T>> extends Flag<T> {
+public class EnumFlag<T extends Enum<T>> extends AFlag<T> {
     private final Class<T> enumClass;
 
     @SuppressWarnings("unchecked")
@@ -22,12 +22,12 @@ public class EnumFlag<T extends Enum<T>> extends Flag<T> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName(), getFlag().name());
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         String configStr = config.getString(path + "." + getName());
 
         // case-insensitive loading

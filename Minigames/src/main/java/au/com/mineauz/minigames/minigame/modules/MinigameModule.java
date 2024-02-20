@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.ComparableVersion;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
@@ -54,7 +54,7 @@ public abstract class MinigameModule {
         return mgm;
     }
 
-    public abstract Map<String, Flag<?>> getConfigFlags();
+    public abstract Map<String, AFlag<?>> getConfigFlags();
 
     public abstract boolean useSeparateConfig();
 

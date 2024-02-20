@@ -16,7 +16,7 @@ import java.util.List;
  * Created for use for the Add5tar MC Minecraft server
  * Created by benjamincharlton on 15/11/2018.
  */
-public class MaterialFlag extends Flag<Material> {
+public class MaterialFlag extends AFlag<Material> {
     public MaterialFlag(Material mat, String name) {
         setFlag(mat);
         setDefaultFlag(mat);
@@ -24,12 +24,12 @@ public class MaterialFlag extends Flag<Material> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName(), getFlag().name());
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         if (config.contains(path + "." + getName())) {
             Material flag = Material.matchMaterial(config.getString(path + "." + getName()));
             if (flag == null) {

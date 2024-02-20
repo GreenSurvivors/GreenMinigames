@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BooleanFlag extends Flag<Boolean> {
+public class BooleanFlag extends AFlag<Boolean> {
 
     public BooleanFlag(boolean value, String name) {
         setFlag(value);
@@ -20,12 +20,12 @@ public class BooleanFlag extends Flag<Boolean> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName(), getFlag());
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         if (config.contains(path + "." + getName())) {
             setFlag(config.getBoolean(path + "." + getName()));
         } else {

@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ACommand;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -291,11 +291,11 @@ public class SetCommand extends ACommand {
                     }
                 } else {
                     List<String> ls = new ArrayList<>(parameterList.keySet());
-                    return MinigameUtils.tabCompleteMatch(ls, args[1]);
+                    return CommandDispatcher.tabCompleteMatch(ls, args[1]);
                 }
             } else if (args.length == 1) {
                 List<String> ls = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
-                return MinigameUtils.tabCompleteMatch(ls, args[0]);
+                return CommandDispatcher.tabCompleteMatch(ls, args[0]);
             }
         }
         return null;

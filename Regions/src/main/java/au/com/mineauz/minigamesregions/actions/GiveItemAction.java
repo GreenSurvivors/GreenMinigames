@@ -1,7 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.config.ItemFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Callback;
@@ -14,10 +13,10 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,10 +24,11 @@ import java.util.List;
 import java.util.Map;
 
 public class GiveItemAction extends AAction {
-    private final StringFlag type = new StringFlag("STONE", "type");
+    private final ItemFlag item = new ItemFlag(new ItemStack(Material.STONE), "item");
+    /*private final StringFlag type = new StringFlag("STONE", "type");
     private final IntegerFlag count = new IntegerFlag(1, "count");
     private final StringFlag name = new StringFlag(null, "name");
-    private final StringFlag lore = new StringFlag(null, "lore");
+    private final StringFlag lore = new StringFlag(null, "lore");*/
 
     protected GiveItemAction(@NotNull String name) {
         super(name);
@@ -45,7 +45,7 @@ public class GiveItemAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
         out.put("Item", count.getFlag() + "x " + type.getFlag());
         out.put("Display Name", name.getFlag());
         out.put("Lore", lore.getFlag());
@@ -63,9 +63,10 @@ public class GiveItemAction extends AAction {
 
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
-
         debug(mgPlayer, region);
-        execute(mgPlayer);
+        if (mgPlayer != null) {
+            execute(mgPlayer);
+        }
     }
 
     @Override
@@ -74,19 +75,8 @@ public class GiveItemAction extends AAction {
         execute(mgPlayer);
     }
 
-    private void execute(MinigamePlayer player) {
-        ItemStack item = new ItemStack(Material.matchMaterial(type.getFlag()), count.getFlag());
-        ItemMeta meta = item.getItemMeta();
-        if (name.getFlag() != null) {
-            meta.setDisplayName(name.getFlag());
-        }
-        if (lore.getFlag() != null) {
-            meta.setLore(List.of(lore.getFlag().split(";"))); //as the description states semicolons will be used for new lines
-        }
-        item.setItemMeta(meta);
-
-        Map<Integer, ItemStack> unadded = player.getPlayer().getInventory().addItem(
-                item);
+    private void execute(@NotNull MinigamePlayer player) {
+        Map<Integer, ItemStack> unadded = player.getPlayer().getInventory().addItem(item.getFlag());
 
         if (!unadded.isEmpty()) {
             for (ItemStack i : unadded.values()) {
@@ -97,22 +87,20 @@ public class GiveItemAction extends AAction {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        type.saveValue(path, config);
-        count.saveValue(path, config);
-        if (name.getFlag() != null)
-            name.saveValue(path, config);
-        if (lore.getFlag() != null)
-            lore.saveValue(path, config);
+        item.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        type.loadValue(path, config);
-        count.loadValue(path, config);
+        type.loadValue(config, path);
+        count.loadValue(config, path);
         if (config.contains(path + ".name"))
-            name.loadValue(path, config);
-        if (config.contains(path + ".lore"))
-            lore.loadValue(path, config);
+            name.loadValue(config, path);
+        if (config.contains(path + ".lore")) {
+
+            meta.setLore(List.of(lore.getFlag().split(";"))); //as the description states semicolons will be used for new lines
+            lore.loadValue(config, path);
+        }
     }
 
     @Override
@@ -148,5 +136,4 @@ public class GiveItemAction extends AAction {
         m.displayMenu(mgPlayer);
         return true;
     }
-
 }

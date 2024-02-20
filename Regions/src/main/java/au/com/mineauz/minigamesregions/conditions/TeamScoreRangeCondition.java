@@ -93,17 +93,17 @@ public class TeamScoreRangeCondition extends ACondition {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        min.saveValue(path, config);
-        max.saveValue(path, config);
-        team.saveValue(path, config);
+        min.saveValue(config, path);
+        max.saveValue(config, path);
+        team.saveValue(config, path);
         saveInvert(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        min.loadValue(path, config);
-        max.loadValue(path, config);
-        team.loadValue(path, config);
+        min.loadValue(config, path);
+        max.loadValue(config, path);
+        team.loadValue(config, path);
         loadInvert(config, path);
     }
 

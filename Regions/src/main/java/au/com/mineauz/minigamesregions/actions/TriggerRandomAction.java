@@ -115,14 +115,14 @@ public class TriggerRandomAction extends AAction {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        timesTriggered.saveValue(path, config);
-        randomPerTrigger.saveValue(path, config);
+        timesTriggered.saveValue(config, path);
+        randomPerTrigger.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        timesTriggered.loadValue(path, config);
-        randomPerTrigger.loadValue(path, config);
+        timesTriggered.loadValue(config, path);
+        randomPerTrigger.loadValue(config, path);
     }
 
     @Override

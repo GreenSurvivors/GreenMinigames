@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StrListFlag extends Flag<List<String>> {
+public class StrListFlag extends AFlag<List<String>> {
 
     public StrListFlag(List<String> value, String name) {
         setFlag(value);
@@ -19,12 +19,12 @@ public class StrListFlag extends Flag<List<String>> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName(), getFlag());
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         setFlag(config.getStringList(path + "." + getName()));
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class TeamSetFlag extends Flag<Map<TeamColor, Team>> {
+public class TeamSetFlag extends AFlag<Map<TeamColor, Team>> {
     private final Minigame mgm;
 
     public TeamSetFlag(Map<TeamColor, Team> value, String name, Minigame mgm) {
@@ -26,20 +26,20 @@ public class TeamSetFlag extends Flag<Map<TeamColor, Team>> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         for (Team t : getFlag().values()) {
             TeamFlag tf = new TeamFlag(null, t.getColor().toString(), mgm);
             tf.setFlag(t);
-            tf.saveValue(path + "." + getName(), config);
+            tf.saveValue(config, path + "." + getName());
         }
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         Set<String> teams = config.getConfigurationSection(path + "." + getName()).getKeys(false);
         for (String t : teams) {
             TeamFlag tf = new TeamFlag(null, t, mgm);
-            tf.loadValue(path + "." + getName(), config);
+            tf.loadValue(config, path + "." + getName());
             getFlag().put(tf.getFlag().getColor(), tf.getFlag());
             String sbTeam = tf.getFlag().getColor().toString().toLowerCase();
             mgm.getScoreboardManager().registerNewTeam(sbTeam);

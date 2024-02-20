@@ -1,30 +1,28 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.tool.MinigameTool;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MinigameUtils {
-    private static final @NotNull Pattern PERIOD_PATTERN = Pattern.compile("(\\d+)\\s*((ms)|[tsmhdw])", Pattern.CASE_INSENSITIVE);
+    private static final @NotNull Pattern PERIOD_PATTERN = Pattern.compile("(\\d+)\\s*((?:ms)|[tsmhdw])", Pattern.CASE_INSENSITIVE);
+    private static final @NotNull Pattern LONG_PATTERN = Pattern.compile("-?[0-9]+");
 
     /**
      * Try to get a time period of a string.
@@ -36,6 +34,10 @@ public class MinigameUtils {
     public static @Nullable Long parsePeriod(@NotNull String periodStr) {
         Matcher matcher = PERIOD_PATTERN.matcher(periodStr);
         Long millis = null;
+
+        if (LONG_PATTERN.matcher(periodStr).matches()) {
+            return TimeUnit.SECONDS.toMillis(Long.parseLong(periodStr));
+        }
 
         while (matcher.find()) {
             // we got a match.
@@ -161,95 +163,6 @@ public class MinigameUtils {
      */
     public static String createLocationID(Location location) {
         return location.getBlockX() + ":" + location.getBlockY() + ":" + location.getBlockZ() + ":" + location.getWorld().getName();
-    }
-
-    /**
-     * Gives the defined player a Minigame tool.
-     *
-     * @param player - The player to give the tool to.
-     * @return The Minigame Tool
-     */
-    public static MinigameTool giveMinigameTool(MinigamePlayer player) {
-        Material toolMat = Material.matchMaterial(Minigames.getPlugin().getConfig().getString("tool"));
-        if (toolMat == null) {
-            toolMat = Material.BLAZE_ROD;
-            MinigameMessageManager.sendMgMessage(player, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NODEFAULTTOOL);
-        }
-
-        ItemStack tool = new ItemStack(toolMat);
-        MinigameTool mgTool = new MinigameTool(tool);
-
-        player.getPlayer().getInventory().addItem(mgTool.getTool());
-
-        return mgTool;
-    }
-
-    /**
-     * Checks if a player has a Minigame tool.
-     *
-     * @param player The player to check
-     * @return false if the player doesn't have one.
-     */
-    public static boolean hasMinigameTool(MinigamePlayer player) {
-        for (ItemStack i : player.getPlayer().getInventory().getContents()) {
-            if (i != null && i.getItemMeta() != null &&
-                    i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Checks if a specific item is a Minigame tool
-     *
-     * @param item The item to check
-     * @return false if the item was not a Minigame tool
-     */
-    public static boolean isMinigameTool(@Nullable ItemStack item) {
-        return item != null && item.getItemMeta() != null && item.getItemMeta().displayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool");
-    }
-
-    /**
-     * Gets the item, Minigames considers as a Minigame tool, from the players inventory
-     * It will prefer the item in main/offhand
-     *
-     * @param player The player to get the tool from
-     * @return null if no tool was found
-     */
-    public static @Nullable MinigameTool getMinigameTool(@NotNull MinigamePlayer player) {
-        ItemStack inHand = player.getPlayer().getInventory().getItemInMainHand();
-        if (isMinigameTool(inHand)) {
-            return new MinigameTool(inHand);
-        }
-
-        inHand = player.getPlayer().getInventory().getItemInOffHand();
-        if (isMinigameTool(inHand)) {
-            return new MinigameTool(inHand);
-        }
-
-        //was not in hands, search in inventory.
-        for (ItemStack item : player.getPlayer().getInventory().getContents()) {
-            if (isMinigameTool(item)) {
-                return new MinigameTool(item);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Automatically assembles a tab complete array for the use in commands, matching a given string.
-     *
-     * @param orig  The full list to match the string to
-     * @param match The string used to match
-     * @return A list of possible tab completions
-     */
-    public static List<String> tabCompleteMatch(List<String> orig, String match) {
-        if (match.isEmpty()) {
-            return orig;
-        } else {
-            return orig.stream().filter(m -> m.toLowerCase().startsWith(match.toLowerCase())).toList();
-        }
     }
 
     /**

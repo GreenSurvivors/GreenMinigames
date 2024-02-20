@@ -1,9 +1,11 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
@@ -11,20 +13,22 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.text.WordUtils;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class ApplyEffectAction extends AAction {
-    private final StringFlag type = new StringFlag("SPEED", "type");
+    private final StringFlag typeNameSpacedKey = new StringFlag(PotionEffectType.SPEED.getKey().toString(), "type");
+    private @Nullable PotionEffectType type = null;
     private final TimeFlag dur = new TimeFlag(60L, "duration");
     private final IntegerFlag amp = new IntegerFlag(1, "amplifier");
 
@@ -43,9 +47,21 @@ public class ApplyEffectAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Effect", type.getFlag() + " " + amp.getFlag());
-        out.put("Duration", MinigameUtils.convertTime(amp.getFlag(), true));
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        Component typeComp;
+        if (type == null) {
+            typeComp = MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ERROR_UNKNOWN);
+        } else {
+            typeComp = Component.translatable(type.translationKey());
+        }
+
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_EFFECT_NAME),
+                typeComp.append(Component.text(" " + amp.getFlag())),
+
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_DURATION_NAME),
+                dur.getFlag() == PotionEffect.INFINITE_DURATION ?
+                        MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_NUMBER_INFINITE) :
+                        Component.text(dur.getFlag()));
     }
 
     @Override
@@ -73,51 +89,63 @@ public class ApplyEffectAction extends AAction {
     }
 
     private void execute(MinigamePlayer player) {
-        PotionEffect effect = new PotionEffect(PotionEffectType.getByName(type.getFlag()),
-                dur.getFlag() * 20, amp.getFlag() - 1);
-        player.getPlayer().addPotionEffect(effect);
+        if (type != null) {
+            PotionEffect effect = new PotionEffect(type, dur.getFlag().intValue() * 20, amp.getFlag() - 1);
+            player.getPlayer().addPotionEffect(effect);
+        }
     }
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        type.saveValue(path, config);
-        dur.saveValue(path, config);
-        amp.saveValue(path, config);
+        typeNameSpacedKey.saveValue(config, path);
+        dur.saveValue(config, path);
+        amp.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        type.loadValue(path, config);
-        dur.loadValue(path, config);
-        amp.loadValue(path, config);
+        typeNameSpacedKey.loadValue(config, path);
+        dur.loadValue(config, path);
+        amp.loadValue(config, path);
+
+        NamespacedKey key = NamespacedKey.fromString(typeNameSpacedKey.getFlag().toLowerCase(java.util.Locale.ENGLISH));
+        if (key != null) {
+            type = Registry.EFFECT.get(key);
+
+            if (type == null) {
+                Minigames.getCmpnntLogger().error("Could not find status effect from name spaced key \"" + typeNameSpacedKey.getFlag() + "\". " +
+                        "ApplyEffectAction under \"" + path + "\" will fail.");
+            }
+        } else {
+            Minigames.getCmpnntLogger().error("Could not get name spaced key \"" + typeNameSpacedKey.getFlag() + "\". " +
+                    "ApplyEffectAction under \"" + path + "\" will fail.");
+        }
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        List<String> pots = new ArrayList<>(PotionEffectType.values().length);
-        for (PotionEffectType type : PotionEffectType.values()) {
-            pots.add(WordUtils.capitalizeFully(type.getName().replace("_", " ")));
-        }
-        m.addItem(new MenuItemList<PotionEffectType>(Material.POTION, "Potion Type", new Callback<>() {
 
+
+        List<PotionEffectType> pots = Registry.EFFECT.stream().toList();
+
+        m.addItem(new MenuItemList<>(Material.POTION, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_EFFECT_NAME), new Callback<>() {
             @Override
             public PotionEffectType getValue() {
-                return WordUtils.capitalizeFully(type.getFlag().replace("_", " "));
+                return type;
             }
 
             @Override
             public void setValue(PotionEffectType value) {
-                type.setFlag(value.getName().toUpperCase().replace(" ", "_"));
+                typeNameSpacedKey.setFlag(value.getKey().asString());
+                type = value;
             }
-
-
         }, pots));
-        m.addItem(dur.getMenuItem(Material.CLOCK, "Duration", 0L, 86400));
-        m.addItem(new MenuItemInteger(Material.EXPERIENCE_BOTTLE, "Level", new Callback<>() {
+        m.addItem(dur.getMenuItem(Material.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_DURATION_NAME), 0L, 86400L));
+        m.addItem(new MenuItemInteger(Material.EXPERIENCE_BOTTLE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_LEVEL_NAME), new Callback<>() {
 
             @Override
             public Integer getValue() {

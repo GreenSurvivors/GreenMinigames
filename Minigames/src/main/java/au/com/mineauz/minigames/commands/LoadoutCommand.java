@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -55,7 +54,6 @@ public class LoadoutCommand extends ACommand {
                         if (module.hasLoadout(loadoutName)) {
                             mgPlayer.setLoadout(module.getLoadout(loadoutName));
 
-
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
                         } else {
@@ -86,7 +84,7 @@ public class LoadoutCommand extends ACommand {
             if (mgPlayer.isInMinigame()) {
                 LoadoutModule module = LoadoutModule.getMinigameModule(mgPlayer.getMinigame());
                 if (module != null && args.length == 1) {
-                    return MinigameUtils.tabCompleteMatch(new ArrayList<>(module.getLoadoutMap().keySet()), args[0]);
+                    return CommandDispatcher.tabCompleteMatch(new ArrayList<>(module.getLoadoutMap().keySet()), args[0]);
                 }
             }
         }

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -106,7 +105,7 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
                 if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt"))
                     mgs.add(mg.getName());
             }
-            return MinigameUtils.tabCompleteMatch(mgs, args[0]);
+            return CommandDispatcher.tabCompleteMatch(mgs, args[0]);
         }
         return null;
     }

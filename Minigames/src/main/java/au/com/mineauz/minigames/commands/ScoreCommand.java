@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -279,7 +278,7 @@ public class ScoreCommand extends ACommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of("get", "set", "add"), args[0]);
+            return CommandDispatcher.tabCompleteMatch(List.of("get", "set", "add"), args[0]);
         } else if (args.length == 2) {
 
             List<String> pt = new ArrayList<>(PLUGIN.getServer().getOnlinePlayers().size() + 2);
@@ -288,10 +287,10 @@ public class ScoreCommand extends ACommand {
             }
             pt.addAll(TeamColor.validColorNames());
 
-            return MinigameUtils.tabCompleteMatch(pt, args[1]);
+            return CommandDispatcher.tabCompleteMatch(pt, args[1]);
         }
         List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
-        return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
+        return CommandDispatcher.tabCompleteMatch(mgs, args[args.length - 1]);
     }
 
 }

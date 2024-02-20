@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class FloatFlag extends Flag<Float> {
+public class FloatFlag extends AFlag<Float> {
 
     public FloatFlag(Float value, String name) {
         setFlag(value);
@@ -19,12 +19,12 @@ public class FloatFlag extends Flag<Float> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName(), getFlag().doubleValue());
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         setFlag(((Double) config.getDouble(path + "." + getName())).floatValue());
     }
 

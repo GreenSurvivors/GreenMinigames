@@ -102,15 +102,15 @@ public class SetBlockAction extends AAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        type.saveValue(path, config);
+        type.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        type.loadValue(path, config);
-        useBlockData.loadValue(path, config);
-        dur.loadValue(path, config);
+        type.loadValue(config, path);
+        useBlockData.loadValue(config, path);
+        dur.loadValue(config, path);
     }
 
     @Override

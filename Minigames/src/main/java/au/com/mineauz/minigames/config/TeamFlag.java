@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public class TeamFlag extends Flag<Team> {
+public class TeamFlag extends AFlag<Team> {
     private final Minigame mgm;
 
     public TeamFlag(Team value, String name, Minigame mgm) {
@@ -24,39 +24,39 @@ public class TeamFlag extends Flag<Team> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName() + ".displayName", getFlag().getDisplayName());
         if (!getFlag().getStartLocations().isEmpty()) {
             for (int i = 0; i < getFlag().getStartLocations().size(); i++) {
                 LocationFlag locf = new LocationFlag(null, "startpos." + i);
                 locf.setFlag(getFlag().getStartLocations().get(i));
-                locf.saveValue(path + "." + getName(), config);
+                locf.saveValue(config, path + "." + getName());
             }
         }
 
-        for (Flag<?> flag : getFlag().getFlags()) {
+        for (AFlag<?> flag : getFlag().getFlags()) {
             if (flag.getDefaultFlag() != flag.getFlag()) {
-                flag.saveValue(path + "." + getName(), config);
+                flag.saveValue(config, path + "." + getName());
             }
         }
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         Team t = new Team(TeamColor.valueOf(getName()), mgm);
         t.setDisplayName(config.getString(path + "." + getName() + ".displayName"));
         if (config.contains(path + "." + getName() + ".startpos")) {
             Set<String> locations = config.getConfigurationSection(path + "." + getName() + ".startpos").getKeys(false);
             for (String loc : locations) {
                 LocationFlag locf = new LocationFlag(null, "startpos." + loc);
-                locf.loadValue(path + "." + getName(), config);
+                locf.loadValue(config, path + "." + getName());
                 t.addStartLocation(locf.getFlag());
             }
         }
 
-        for (Flag<?> flag : t.getFlags()) {
+        for (AFlag<?> flag : t.getFlags()) {
             if (config.contains(path + "." + getName() + "." + flag.getName())) {
-                flag.loadValue(path + "." + getName(), config);
+                flag.loadValue(config, path + "." + getName());
             }
         }
 

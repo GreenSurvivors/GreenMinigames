@@ -66,13 +66,13 @@ public class HasFlagCondition extends ACondition {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        flagName.saveValue(path, config);
+        flagName.saveValue(config, path);
         saveInvert(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        flagName.loadValue(path, config);
+        flagName.loadValue(config, path);
         loadInvert(config, path);
     }
 

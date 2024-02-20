@@ -66,13 +66,13 @@ public class RandomChanceCondition extends ACondition {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        chance.saveValue(path, config);
+        chance.saveValue(config, path);
         saveInvert(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        chance.loadValue(path, config);
+        chance.loadValue(config, path);
         loadInvert(config, path);
     }
 

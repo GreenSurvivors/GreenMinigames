@@ -1,9 +1,14 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,5 +38,28 @@ public class MenuItemTime extends MenuItemLong {
     public void updateDescription() {
         Component timeComponent = MinigameUtils.convertTime(Duration.ofMillis(value.getValue()), true).color(NamedTextColor.GREEN);
         setDescriptionPart(DESCRIPTION_TOKEN, List.of(timeComponent));
+    }
+
+    @Override
+    public void checkValidEntry(String entry) {
+        MinigameUtils.parsePeriod(entry);
+
+        if (entry.matches("-?[0-9]+")) {
+            long entryValue = Long.parseLong(entry);
+            if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {
+                value.setValue(entryValue);
+                updateDescription();
+
+                getContainer().cancelReopenTimer();
+                getContainer().displayMenu(getContainer().getViewer());
+            }
+        } else {
+            getContainer().cancelReopenTimer();
+            getContainer().displayMenu(getContainer().getViewer());
+
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+                    MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
+        }
     }
 }

@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.FloorDegenerator;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -132,9 +133,9 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of("create", "remove", "type", "time"), args[0]);
+            return CommandDispatcher.tabCompleteMatch(List.of("create", "remove", "type", "time"), args[0]);
         } else if (args[0].equalsIgnoreCase("type")) {
-            return MinigameUtils.tabCompleteMatch(List.of("random", "inward", "circle"), args[1]);
+            return CommandDispatcher.tabCompleteMatch(List.of("random", "inward", "circle"), args[1]);
         } else if (args[0].equalsIgnoreCase("time")) {
             return List.of("s", "m", "h");
         }

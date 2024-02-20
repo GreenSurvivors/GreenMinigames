@@ -64,7 +64,7 @@ public class MenuItemList<T> extends MenuItem {
 
         if (pos == -1) {
             setDescriptionPart(DESCRIPTION_TOKEN,
-                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_ITERABLE_ERROR_UNKNOWN));
+                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_ERROR_UNKNOWN));
         } else {
             List<Component> description = new ArrayList<>();
 

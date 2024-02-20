@@ -106,17 +106,17 @@ public class SwapBlockAction extends AAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        matchType.saveValue(path, config);
-        toType.saveValue(path, config);
-        keepAttachment.saveValue(path, config);
+        matchType.saveValue(config, path);
+        toType.saveValue(config, path);
+        keepAttachment.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        matchType.loadValue(path, config);
-        toType.loadValue(path, config);
-        keepAttachment.loadValue(path, config);
+        matchType.loadValue(config, path);
+        toType.loadValue(config, path);
+        keepAttachment.loadValue(config, path);
     }
 
     @Override

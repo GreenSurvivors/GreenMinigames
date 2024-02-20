@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SimpleLocationFlag extends Flag<Location> {
+public class SimpleLocationFlag extends AFlag<Location> {
 
     public SimpleLocationFlag(Location value, String name) {
         setFlag(value);
@@ -20,7 +20,7 @@ public class SimpleLocationFlag extends Flag<Location> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         config.set(path + "." + getName() + ".x", getFlag().getX());
         config.set(path + "." + getName() + ".y", getFlag().getY());
         config.set(path + "." + getName() + ".z", getFlag().getZ());
@@ -28,7 +28,7 @@ public class SimpleLocationFlag extends Flag<Location> {
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         double x = config.getDouble(path + "." + getName() + ".x");
         double y = config.getDouble(path + "." + getName() + ".y");
         double z = config.getDouble(path + "." + getName() + ".z");

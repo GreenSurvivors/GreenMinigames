@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -14,6 +16,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,6 +28,7 @@ import java.util.Set;
 
 public class MessageAction extends AAction {
     private final StringFlag msg = new StringFlag("Hello World", "message");
+    private final EnumFlag<MinigameMessageType> messageType = new EnumFlag<>(MinigameMessageType.INFO, "messageType");
 
     protected MessageAction(@NotNull String name) {
         super(name);
@@ -41,8 +45,9 @@ public class MessageAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Message", msg.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME),
+                MinigameUtils.limitIgnoreFormat(MiniMessage.miniMessage().deserialize(msg.getFlag()), 16));
     }
 
     @Override
@@ -58,7 +63,7 @@ public class MessageAction extends AAction {
     @Override
     public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
-        if (mgPlayer == null || !mgPlayer.isInMinigame()) {
+        if (!mgPlayer.isInMinigame()) {
             return;
         }
 
@@ -99,7 +104,7 @@ public class MessageAction extends AAction {
             return;
         }
 
-        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(msg.getFlag()));
+        MinigameMessageManager.sendMessage(mgPlayer, messageType.getFlag(), MiniMessage.miniMessage().deserialize(msg.getFlag()));
 
         ScriptObject base = new ScriptObject() {
             @Override
@@ -140,19 +145,19 @@ public class MessageAction extends AAction {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        msg.saveValue(path, config);
+        msg.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        msg.loadValue(path, config);
+        msg.loadValue(config, path);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.setPreviousPage(previous);
-        m.addItem(msg.getMenuItem("Message", Material.PAPER));
+        m.addItem(msg.getMenuItem(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME)));
         m.addItem(new MenuItemBack(m.getPreviousPage()), m.getSize() - 9);
         m.displayMenu(mgPlayer);
         return true;

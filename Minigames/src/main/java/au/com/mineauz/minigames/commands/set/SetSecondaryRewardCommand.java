@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -59,7 +59,7 @@ public class SetSecondaryRewardCommand extends ASetCommand {
             for (RewardRarity r : RewardRarity.values()) {
                 ls.add(r.toString());
             }
-            return MinigameUtils.tabCompleteMatch(ls, args[args.length - 1]);
+            return CommandDispatcher.tabCompleteMatch(ls, args[args.length - 1]);
         }
         return null;
     }

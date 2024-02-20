@@ -68,14 +68,14 @@ public class HasLoadoutCondition extends ACondition {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        loadOutName.saveValue(path, config);
+        loadOutName.saveValue(config, path);
         saveInvert(config, path);
 
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        loadOutName.loadValue(path, config);
+        loadOutName.loadValue(config, path);
         loadInvert(config, path);
     }
 

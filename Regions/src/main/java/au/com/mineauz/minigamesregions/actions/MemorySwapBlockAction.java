@@ -14,12 +14,14 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -237,7 +239,7 @@ public class MemorySwapBlockAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
         out.put("From: ", matchType.getFlag());
         out.put("Block pool size", blockPool.size());
         out.put("Whitelist mode", whitelistMode.getFlag()); //todo this can be quite long, maybe cut it off
@@ -340,17 +342,17 @@ public class MemorySwapBlockAction extends AAction {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        matchType.saveValue(path, config);
-        wbList.saveValue(path, config);
-        whitelistMode.saveValue(path, config);
+        matchType.saveValue(config, path);
+        wbList.saveValue(config, path);
+        whitelistMode.saveValue(config, path);
 
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        matchType.loadValue(path, config);
-        wbList.loadValue(path, config);
-        whitelistMode.loadValue(path, config);
+        matchType.loadValue(config, path);
+        wbList.loadValue(config, path);
+        whitelistMode.loadValue(config, path);
 
     }
 

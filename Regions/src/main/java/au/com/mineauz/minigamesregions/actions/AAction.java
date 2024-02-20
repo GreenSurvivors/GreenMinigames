@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +26,11 @@ public abstract class AAction implements ActionInterface {
      * @param mgPlayer     the player
      * @param scriptObject a script object
      */
-    public void debug(final @NotNull MinigamePlayer mgPlayer, final @NotNull ScriptObject scriptObject) {
+    public void debug(final @Nullable MinigamePlayer mgPlayer, final @NotNull ScriptObject scriptObject) {
         if (Minigames.getPlugin().isDebugging()) {
             MinigameMessageManager.debugMessage("Debug: Execute on Obj:"
                     + scriptObject.getAsString() + " as Action: " + this + " Player: "
-                    + mgPlayer.getAsString());
+                    + ((mgPlayer == null) ? "no player" : mgPlayer.getAsString()));
         }
     }
 

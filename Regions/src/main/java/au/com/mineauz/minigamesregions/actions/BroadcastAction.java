@@ -1,9 +1,12 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -15,6 +18,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,7 +31,7 @@ import java.util.Set;
 public class BroadcastAction extends AAction {
     private final StringFlag message = new StringFlag("Hello World", "message");
     private final BooleanFlag excludeExecutor = new BooleanFlag(false, "exludeExecutor");
-    private final BooleanFlag redText = new BooleanFlag(false, "redText");
+    private final EnumFlag<MinigameMessageType> messageType = new EnumFlag<>(MinigameMessageType.INFO, "messageType");
 
     protected BroadcastAction(@NotNull String name) {
         super(name);
@@ -44,10 +48,17 @@ public class BroadcastAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Message", message.getFlag());
-        out.put("Is Excluding", excludeExecutor.getFlag());
-        out.put("Red Text", redText.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MESSAGE_NAME),
+                MinigameUtils.limitIgnoreFormat(MiniMessage.miniMessage().deserialize(message.getFlag()), 16),
+
+               RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_EXCLUDING_NAME),
+                    MinigameMessageManager.getMgMessage(
+                            excludeExecutor.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED),
+
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MSGTYPE_NAME),
+                    Component.text(messageType.getFlag().toString()));
     }
 
     @Override
@@ -60,7 +71,7 @@ public class BroadcastAction extends AAction {
         return true;
     }
 
-    @Override
+    @Override //todo datafixerupper
     public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         ScriptObject base = new ScriptObject() {
             @Override
@@ -125,8 +136,6 @@ public class BroadcastAction extends AAction {
     }
 
     private void execute(@Nullable MinigamePlayer mgPlayer, @NotNull ScriptObject base) {
-        MinigameMessageType type = redText.getFlag() ? MinigameMessageType.ERROR : MinigameMessageType.INFO;
-
         MinigamePlayer exclude = null;
         if (excludeExecutor.getFlag()) {
             exclude = mgPlayer;
@@ -140,37 +149,46 @@ public class BroadcastAction extends AAction {
         // New expression system
         message = ExpressionParser.stringResolve(message, base, true, true);
         if (exclude != null) {
-            MinigameMessageManager.sendMinigameMessage(mgPlayer.getMinigame(), MiniMessage.miniMessage().deserialize(message), type, exclude);
+            MinigameMessageManager.sendMinigameMessage(mgPlayer.getMinigame(), MiniMessage.miniMessage().deserialize(message), messageType.getFlag(), exclude);
         } else {
-            MinigameMessageManager.sendMinigameMessage(mgPlayer.getMinigame(), MiniMessage.miniMessage().deserialize(message), type);
+            MinigameMessageManager.sendMinigameMessage(mgPlayer.getMinigame(), MiniMessage.miniMessage().deserialize(message), messageType.getFlag());
         }
 
     }
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        message.saveValue(path, config);
-        excludeExecutor.saveValue(path, config);
-        redText.saveValue(path, config);
+        message.saveValue(config, path);
+        excludeExecutor.saveValue(config, path);
+        messageType.saveValue(config, path);
+
+        // dataFixerUpper
+        config.set(path + ".redText", null);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        message.loadValue(path, config);
-        excludeExecutor.loadValue(path, config);
-        redText.loadValue(path, config);
+        message.loadValue(config, path);
+        excludeExecutor.loadValue(config, path);
+
+        // dataFixerUpper
+        if (config.getBoolean(path + ".redText")) {
+            messageType.setFlag(MinigameMessageType.ERROR);
+        } else {
+            messageType.loadValue(config, path);
+        }
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        m.addItem(message.getMenuItem(Material.NAME_TAG, "Message"));
-        m.addItem(excludeExecutor.getMenuItem(Material.ENDER_PEARL, "Don't Send to Executor"));
-        m.addItem(redText.getMenuItem(Material.ENDER_PEARL, "Red Message"));
+        menu.addItem(message.getMenuItem(Material.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MESSAGE_NAME)));
+        menu.addItem(excludeExecutor.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_EXCLUDING_NAME)));
+        menu.addItem(messageType.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MSGTYPE_NAME)));
 
-        m.displayMenu(mgPlayer);
+        menu.displayMenu(mgPlayer);
         return true;
     }
 

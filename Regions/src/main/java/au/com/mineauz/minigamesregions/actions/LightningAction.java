@@ -9,6 +9,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,8 +37,8 @@ public class LightningAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Effect Only", effect.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LIGHTNING_EFFECT_NAME), Component.text(effect.getFlag()));
     }
 
     @Override
@@ -69,36 +70,38 @@ public class LightningAction extends AAction {
         loc.setY(yrand);
         loc.setZ(zrand);
 
-        if (effect.getFlag())
+        if (effect.getFlag()) {
             loc.getWorld().strikeLightningEffect(loc);
-        else
+        } else {
             loc.getWorld().strikeLightning(loc);
+        }
     }
 
     @Override
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
-        if (effect.getFlag())
+        if (effect.getFlag()) {
             node.getLocation().getWorld().strikeLightningEffect(node.getLocation());
-        else
+        } else {
             node.getLocation().getWorld().strikeLightning(node.getLocation());
+        }
     }
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        effect.saveValue(path, config);
+        effect.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        effect.loadValue(path, config);
+        effect.loadValue(config, path);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(effect.getMenuItem("Effect Only", Material.ENDER_PEARL));
+        m.addItem(effect.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LIGHTNING_EFFECT_NAME)));
         m.displayMenu(mgPlayer);
         return true;
     }

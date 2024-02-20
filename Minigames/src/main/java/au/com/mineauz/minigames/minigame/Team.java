@@ -134,8 +134,8 @@ public class Team implements ScriptObject {
         return Component.text(getDisplayName(), getTextColor());
     }
 
-    public Set<Flag<?>> getFlags() {
-        Set<Flag<?>> flags = new HashSet<>();
+    public Set<AFlag<?>> getFlags() {
+        Set<AFlag<?>> flags = new HashSet<>();
         flags.add(maxPlayers);
         flags.add(playerAssignMsg);
         flags.add(joinAnnounceMsg);

@@ -1,6 +1,8 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -12,6 +14,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -37,8 +40,8 @@ public class AddScoreAction extends ScoreAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Score", amount.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(MinigameMessageManager.getMgMessage(MinigameLangKey.STATISTIC_SCORE_NAME), Component.text(amount.getFlag()));
     }
 
     @Override
@@ -52,45 +55,40 @@ public class AddScoreAction extends ScoreAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node base) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node base) {
         executeAction(mgPlayer, base);
     }
 
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region base) {
         executeAction(mgPlayer, base);
-
-
     }
 
-    private void executeAction(MinigamePlayer player, ScriptObject base) {
-        debug(player, base);
-        debug(player, base);
+    private void executeAction(@Nullable MinigamePlayer player, @NotNull ScriptObject base) {
         if (player == null || !player.isInMinigame()) return;
+        debug(player, base);
         player.addScore(amount.getFlag());
         player.getMinigame().setScore(player, player.getScore());
         checkScore(player);
-
     }
 
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        amount.saveValue(path, config);
+        amount.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        amount.loadValue(path, config);
+        amount.loadValue(config, path);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemInteger(Material.ENDER_PEARL, "Add Score Amount", new Callback<>() {
+        m.addItem(new MenuItemInteger(Material.ENDER_PEARL, MinigameMessageManager.getMgMessage(MinigameLangKey.STATISTIC_SCORE_NAME), new Callback<>() {
 
             @Override
             public Integer getValue() {
@@ -106,5 +104,4 @@ public class AddScoreAction extends ScoreAction {
         m.displayMenu(mgPlayer);
         return true;
     }
-
 }

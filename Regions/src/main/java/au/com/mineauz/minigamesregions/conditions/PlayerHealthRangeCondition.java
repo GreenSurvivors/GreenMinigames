@@ -64,16 +64,16 @@ public class PlayerHealthRangeCondition extends ACondition {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        minHealth.saveValue(path, config);
-        maxHealth.saveValue(path, config);
+        minHealth.saveValue(config, path);
+        maxHealth.saveValue(config, path);
         saveInvert(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        minHealth.loadValue(path, config);
-        maxHealth.loadValue(path, config);
+        minHealth.loadValue(config, path);
+        maxHealth.loadValue(config, path);
         loadInvert(config, path);
     }
 

@@ -97,7 +97,7 @@ public class CreateCommand extends ACommand {
             for (MinigameType type : MinigameType.values()) {
                 types.add(type.toString().toLowerCase());
             }
-            return MinigameUtils.tabCompleteMatch(types, args[1]);
+            return CommandDispatcher.tabCompleteMatch(types, args[1]);
         }
         return null;
     }

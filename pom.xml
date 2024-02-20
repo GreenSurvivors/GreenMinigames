@@ -18,9 +18,9 @@
         <build.number/>
         <plugin.version>${project.version}-${build.number}</plugin.version>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
-        <paper.version>${paper.api.version}<!--.${paper.minor.version}-->-R0.1-SNAPSHOT</paper.version>
+        <paper.version>${paper.api.version}.${paper.minor.version}-R0.1-SNAPSHOT</paper.version>
         <paper.api.version>1.20</paper.api.version>
-        <paper.minor.version>0</paper.minor.version>
+        <paper.minor.version>3</paper.minor.version>
         <codacy.api.token>${env.CODACY_API_TOKEN}</codacy.api.token>
         <!--suppress UnresolvedMavenProperty -->
         <travis.commit>${env.TRAVIS_COMMIT}</travis.commit>

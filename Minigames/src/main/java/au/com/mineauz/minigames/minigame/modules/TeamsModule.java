@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.TeamSetFlag;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
@@ -36,8 +36,8 @@ public class TeamsModule extends MinigameModule {
     }
 
     @Override
-    public @NotNull Map<@NotNull String, @NotNull Flag<?>> getConfigFlags() {
-        Map<String, Flag<?>> flags = new HashMap<>();
+    public @NotNull Map<@NotNull String, @NotNull AFlag<?>> getConfigFlags() {
+        Map<String, AFlag<?>> flags = new HashMap<>();
         flags.put(teamsFlag.getName(), teamsFlag);
         flags.put(defaultWinner.getName(), defaultWinner);
         return flags;

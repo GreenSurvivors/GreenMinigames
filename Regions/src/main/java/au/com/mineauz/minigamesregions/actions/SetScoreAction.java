@@ -69,13 +69,13 @@ public class SetScoreAction extends ScoreAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        amount.saveValue(path, config);
+        amount.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        amount.saveValue(path, config);
+        amount.saveValue(config, path);
     }
 
     @Override

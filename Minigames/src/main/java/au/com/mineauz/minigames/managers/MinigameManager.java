@@ -303,7 +303,7 @@ public class MinigameManager {
         }
         final FileConfiguration cfg = this.rewardSignsSave.getConfig();
         cfg.set(id, null);
-        reward.saveValue("", cfg);
+        reward.saveValue(cfg, "");
         if (save) {
             this.rewardSignsSave.saveConfig();
             this.rewardSignsSave = null;
@@ -322,7 +322,7 @@ public class MinigameManager {
         final Set<String> keys = cfg.getKeys(false);
         for (final String id : keys) {
             final RewardsFlag rew = new RewardsFlag(new Rewards(), id);
-            rew.loadValue("", cfg);
+            rew.loadValue(cfg, "");
 
             this.rewardSigns.put(id, rew);
         }

@@ -75,12 +75,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>io.papermc</groupId>
-            <artifactId>paperlib</artifactId>
-            <version>1.0.7</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.seeseemelk</groupId>
             <artifactId>MockBukkit-v1.20</artifactId>
             <version>3.87.0</version>
@@ -197,7 +191,6 @@
                     <artifactSet>
                         <includes>
                             <include>org.bstats:*</include>
-                            <include>io.papermc:paperlib</include>
                             <include>org.kitteh:paste-gg-api</include>
                         </includes>
                     </artifactSet>
@@ -205,11 +198,6 @@
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <shadedPattern>au.com.mineauz.minigames</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>io.papermc.lib</pattern>
-                            <shadedPattern>au.com.mineauz.minigames.paperlib
-                            </shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>org.kitteh.pastegg</pattern>

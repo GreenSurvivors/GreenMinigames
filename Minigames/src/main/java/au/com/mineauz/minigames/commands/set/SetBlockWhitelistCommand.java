@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -119,13 +119,13 @@ public class SetBlockWhitelistCommand extends ASetCommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1)
-            return MinigameUtils.tabCompleteMatch(List.of("true", "false", "add", "remove", "list", "clear"), args[0]);
+            return CommandDispatcher.tabCompleteMatch(List.of("true", "false", "add", "remove", "list", "clear"), args[0]);
         else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             List<String> ls = new ArrayList<>();
             for (Material m : minigame.getRecorderData().getWBBlocks()) {
                 ls.add(m.toString());
             }
-            return MinigameUtils.tabCompleteMatch(ls, args[1]);
+            return CommandDispatcher.tabCompleteMatch(ls, args[1]);
         }
         return null;
     }

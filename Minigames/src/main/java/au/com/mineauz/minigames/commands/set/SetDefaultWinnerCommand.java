@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -84,7 +84,7 @@ public class SetDefaultWinnerCommand extends ASetCommand {
             TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
 
             if (teamsModule != null) {
-                return MinigameUtils.tabCompleteMatch(teamsModule.getTeams().stream().map(t ->
+                return CommandDispatcher.tabCompleteMatch(teamsModule.getTeams().stream().map(t ->
                         t.getColor().toString().toLowerCase()).toList(), args[0]);
             }
         }

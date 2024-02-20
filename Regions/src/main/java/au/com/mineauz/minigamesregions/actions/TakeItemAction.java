@@ -12,6 +12,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
@@ -51,7 +52,7 @@ public class TakeItemAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull Component, @NotNull Component> out) {
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
         out.put("Item", itemToSearchFor.getFlag().getType());
         out.put("Count", count);
     }
@@ -157,8 +158,8 @@ public class TakeItemAction extends AAction {
         if (config.contains(path + ".type")) {
             config.set(path+".type", null);
         }
-        itemToSearchFor.saveValue(path, config);
-        count.saveValue(path, config);
+        itemToSearchFor.saveValue(config, path);
+        count.saveValue(config, path);
     }
 
     @Override
@@ -169,12 +170,12 @@ public class TakeItemAction extends AAction {
             if (legacy != null) {
                 itemToSearchFor.setFlag(new ItemStack(legacy));
             } else {
-                itemToSearchFor.loadValue(path, config);
+                itemToSearchFor.loadValue(config, path);
             }
         } else {
-            itemToSearchFor.loadValue(path, config);
+            itemToSearchFor.loadValue(config, path);
         }
-        count.loadValue(path, config);
+        count.loadValue(config, path);
     }
 
     @Override

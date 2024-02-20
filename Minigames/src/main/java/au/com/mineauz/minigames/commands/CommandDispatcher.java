@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.set.SetCommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
@@ -89,6 +88,21 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         return comd;
     }
 
+    /**
+     * Automatically assembles a tab complete array for the use in commands, matching a given string.
+     *
+     * @param orig  The full list to match the string to
+     * @param match The string used to match
+     * @return A list of possible tab completions
+     */
+    public static List<String> tabCompleteMatch(List<String> orig, String match) {
+        if (match.isEmpty()) {
+            return orig;
+        } else {
+            return orig.stream().filter(m -> m.toLowerCase().startsWith(match.toLowerCase())).toList();
+        }
+    }
+
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = null;
         if (sender instanceof Player) {
@@ -158,7 +172,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                 return Objects.requireNonNullElseGet(l, () -> List.of(""));
             } else if (args.length == 1) {
                 List<String> ls = new ArrayList<>(commands.keySet());
-                return MinigameUtils.tabCompleteMatch(ls, args[0]);
+                return tabCompleteMatch(ls, args[0]);
             }
         }
         return null;

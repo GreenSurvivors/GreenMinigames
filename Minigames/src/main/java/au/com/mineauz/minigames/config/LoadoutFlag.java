@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class LoadoutFlag extends Flag<PlayerLoadout> {
+public class LoadoutFlag extends AFlag<PlayerLoadout> {
 
     public LoadoutFlag(PlayerLoadout value, String name) {
         setFlag(value);
@@ -19,12 +19,12 @@ public class LoadoutFlag extends Flag<PlayerLoadout> {
     }
 
     @Override
-    public void saveValue(String path, FileConfiguration config) {
+    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
         getFlag().save(config.createSection(path + "." + getName()));
     }
 
     @Override
-    public void loadValue(String path, FileConfiguration config) {
+    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
         getFlag().load(config.getConfigurationSection(path + "." + getName()));
     }
 

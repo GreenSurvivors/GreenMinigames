@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AddTeamScoreAction extends ScoreAction {
+public class AddTeamScoreAction extends ScoreAction { // todo merge with addScoreAction
     private final IntegerFlag score = new IntegerFlag(1, "amount");
     private final StringFlag team = new StringFlag("NONE", "team");
 
@@ -85,15 +85,15 @@ public class AddTeamScoreAction extends ScoreAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        score.saveValue(path, config);
-        team.saveValue(path, config);
+        score.saveValue(config, path);
+        team.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        score.loadValue(path, config);
-        team.loadValue(path, config);
+        score.loadValue(config, path);
+        team.loadValue(config, path);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class AddTeamScoreAction extends ScoreAction {
         }, null, null));
 
         List<String> teams = new ArrayList<>(TeamColor.colorNames());
-        m.addItem(new MenuItemList("Specific Team", List.of("If 'None', the players", "team will be used"), Material.PAPER, new Callback<>() {
+        m.addItem(new MenuItemList("Specific Team", List.of("If 'None'", "the players", "team will be used"), Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {
