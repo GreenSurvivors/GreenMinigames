@@ -16,6 +16,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -47,7 +48,7 @@ public class TestHelper {
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             sign.setLine(e.getKey(), e.getValue());
         }
-        BlockData bData = new BlockData() { //there is probably something in MockBukkit 4 this
+        BlockData bData = new BlockData() { //todo there is probably something in MockBukkit 4 this
             @Override
             public @NotNull Material getMaterial() {
                 return Material.CRIMSON_SIGN;
@@ -125,6 +126,11 @@ public class TestHelper {
             }
 
             @Override
+            public @NotNull VoxelShape getCollisionShape(@NotNull Location location) {
+                return null;
+            }
+
+            @Override
             public @NotNull Material getPlacementMaterial() {
                 return null;
             }
@@ -144,6 +150,16 @@ public class TestHelper {
             }
 
             public float getDestroySpeed(@NotNull ItemStack itemStack, boolean b) {
+                return 0;
+            }
+
+            @Override
+            public @NotNull BlockState createBlockState() {
+                return null;
+            }
+
+            @Override
+            public float getDestroySpeed(@NotNull ItemStack itemStack, boolean considerEnchants) {
                 return 0;
             }
 

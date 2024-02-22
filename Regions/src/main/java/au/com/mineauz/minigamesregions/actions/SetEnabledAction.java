@@ -1,6 +1,9 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -9,6 +12,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -34,8 +38,9 @@ public class SetEnabledAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Enabled", state.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_ENABLED_NAME),
+                MinigameMessageManager.getMgMessage(state.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -75,7 +80,7 @@ public class SetEnabledAction extends AAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(state.getMenuItem("Set Enabled", Material.ENDER_PEARL));
+        m.addItem(state.getMenuItem(Material.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_ENABLED_NAME)));
         m.displayMenu(mgPlayer);
         return true;
     }

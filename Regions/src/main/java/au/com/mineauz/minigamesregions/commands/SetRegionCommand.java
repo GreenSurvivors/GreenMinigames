@@ -17,7 +17,6 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +38,7 @@ public class SetRegionCommand extends ASetCommand {
     }
 
     @Override
-    public @NotNull aaaaaaaa Component getDescription() { // intentional error to check if delete was renamed to remove
+    public @NotNull Component getDescription() {
         return RegionMessageManager.getMessage(RegionLangKey.COMMAND_REGION_DESCIPTION);
     }
 
@@ -63,9 +62,9 @@ public class SetRegionCommand extends ASetCommand {
                 if (rmod != null) {
                     if (args.length == 2) {
                         if (args[0].equalsIgnoreCase("create")) {
-                            if (ply.hasSelection()) {
+                            if (mgPlayer.hasSelection()) {
                                 String name = args[1];
-                                rmod.addRegion(name, new Region(name, minigame,mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
+                                rmod.addRegion(name, new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
                                 mgPlayer.clearSelection();
 
                                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),

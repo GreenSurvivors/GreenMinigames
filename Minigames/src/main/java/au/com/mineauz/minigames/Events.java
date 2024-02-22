@@ -653,7 +653,7 @@ public class Events implements Listener {
             } else if (!mgPlayer.getMenu().getAllowModify()) {
                 Inventory topInv = event.getView().getTopInventory();
                 switch (event.getAction()) {
-                    case NOTHING, DROP_ALL_CURSOR, DROP_ONE_CURSOR, UNKNOWN -> {
+                    case NOTHING, DROP_ALL_CURSOR, DROP_ONE_CURSOR, CLONE_STACK, UNKNOWN -> {
                     } // nothing
                     case PICKUP_ALL, PICKUP_SOME, PICKUP_HALF, PICKUP_ONE, DROP_ALL_SLOT, DROP_ONE_SLOT, HOTBAR_MOVE_AND_READD, // may take
                             PLACE_ALL, PLACE_SOME, PLACE_ONE, /*may place*/

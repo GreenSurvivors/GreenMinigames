@@ -4,6 +4,8 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
@@ -17,6 +19,7 @@ import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -55,11 +58,11 @@ public class RegionSwapAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("From: ", fromRegion.getFlag());
-        out.put("To: ", toRegion.getFlag());
-        out.put("Swap: ", swapRegion.getFlag());
-
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_FROM_NAME), Component.text(fromRegion.getFlag()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_TO_NAME), Component.text(toRegion.getFlag()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_SWAP_NAME),
+                MinigameMessageManager.getMgMessage(swapRegion.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -100,20 +103,26 @@ public class RegionSwapAction extends AAction {
         if (mgm != null) {
             RegionModule rmod = RegionModule.getMinigameModule(mgm);
 
-            if (rmod.hasRegion(fromRegion.getFlag())) {
-                startRegion = rmod.getRegion(fromRegion.getFlag());
-            } else {
-                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                        RegionLangKey.ACTION_ERROR_NOREGION,
-                        Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), fromRegion.getFlag()));
-            }
+            if (rmod != null) {
+                if (rmod.hasRegion(fromRegion.getFlag())) {
+                    startRegion = rmod.getRegion(fromRegion.getFlag());
+                } else {
+                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                            RegionLangKey.ACTION_ERROR_NOREGION,
+                            Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), fromRegion.getFlag()));
+                }
 
-            if (rmod.hasRegion(toRegion.getFlag())) {
-                targetRegion = rmod.getRegion(toRegion.getFlag());
+                if (rmod.hasRegion(toRegion.getFlag())) {
+                    targetRegion = rmod.getRegion(toRegion.getFlag());
+                } else {
+                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                            RegionLangKey.ACTION_ERROR_NOREGION,
+                            Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), toRegion.getFlag()));
+                }
             } else {
-                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                        RegionLangKey.ACTION_ERROR_NOREGION,
-                        Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), toRegion.getFlag()));
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), RegionModule.getFactory().getName()),
+                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()));
             }
         }
 
@@ -186,11 +195,11 @@ public class RegionSwapAction extends AAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(fromRegion.getMenuItem("From Region Name", Material.ENDER_EYE));
-        m.addItem(swapRegion.getMenuItem("Swap Regions?", Material.ENDER_PEARL));
+        m.addItem(fromRegion.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_FROM_NAME)));
+        m.addItem(swapRegion.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_SWAP_NAME)));
 
         m.addItem(new MenuItemNewLine());
-        m.addItem(toRegion.getMenuItem("To Region Name", Material.ENDER_EYE));
+        m.addItem(toRegion.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_TO_NAME)));
 
         m.displayMenu(mgPlayer);
         return true;

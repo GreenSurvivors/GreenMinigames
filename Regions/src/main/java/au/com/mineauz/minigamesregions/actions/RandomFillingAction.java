@@ -52,7 +52,7 @@ public class RandomFillingAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
         return Map.of(
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_TOBLOCK_NAME), Component.text(toData.getFlag().getMaterial().translationKey()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME), Component.text(toData.getFlag().getMaterial().translationKey()),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME), Component.text(percentageChance.getFlag()),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_MISSES_NAME),
                 MinigameMessageManager.getMgMessage(replaceAll.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
@@ -137,7 +137,7 @@ public class RandomFillingAction extends AAction {
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
         //The menu entry for the block that will be placed
-        toData.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_TOBLOCK_NAME));
+        toData.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME));
 
         //Percentage of blocks that will get replaced
         m.addItem(new MenuItemNewLine());

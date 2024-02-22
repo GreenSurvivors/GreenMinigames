@@ -151,7 +151,7 @@ public class ScoreboardCommand extends ACommand {
                 }
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL);
-                Minigames.getCmpnntLogger().error("An internal error occurred while loading statistics.", throwable);
+                Minigames.getCmpnntLogger().error("An internal error occurred while loading the statistics.", throwable);
             }
         });
 

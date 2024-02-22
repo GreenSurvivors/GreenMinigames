@@ -11,8 +11,8 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -87,12 +87,16 @@ public class SpawnEntityAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() { //todo
+        Map<Component, ComponentLike> out = new HashMap<>(2);
+
         out.put("Type", type.getFlag());
 
         if (type.getFlag().isAlive() && settings.containsKey("displayname")) {
             out.put("Display Name", settings.get("displayname").getObject());
         }
+
+        return out;
     }
 
     @Override
@@ -113,7 +117,7 @@ public class SpawnEntityAction extends AAction {
 
     @Override
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
-        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        if (!mgPlayer.isInMinigame()) return;
         debug(mgPlayer, node);
         node.getLocation().getWorld().spawnEntity(node.getLocation(), type.getFlag(), CreatureSpawnEvent.SpawnReason.CUSTOM, entity -> {
 
@@ -209,25 +213,23 @@ public class SpawnEntityAction extends AAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
-        List<String> options = new ArrayList<>();
+        List<EntityType> options = new ArrayList<>();
         for (EntityType type : EntityType.values()) {
             if (!NOT_SPAWNABLE.contains(type)) {
-                options.add(WordUtils.capitalizeFully(type.toString().toLowerCase().replace("_", " ")));
+                options.add(type);
             }
         }
-        menu.addItem(new MenuItemList("Entity Type", Material.SKELETON_SKULL, new Callback<>() { //todo spawn egg?
+        menu.addItem(new MenuItemList<>(Material.SKELETON_SKULL, "Entity Type", new Callback<>() { //todo spawn egg?
 
             @Override
-            public String getValue() {
-                return WordUtils.capitalizeFully(type.getFlag().toString().toLowerCase(Locale.ENGLISH).replace("_", " "));
+            public EntityType getValue() {
+                return type.getFlag();
             }
 
             @Override
-            public void setValue(String value) {
-                type.setFlag(EntityType.valueOf(value.toUpperCase().replace(" ", "_")));
+            public void setValue(EntityType value) {
+                type.setFlag(value);
             }
-
-
         }, options));
 
         final MenuItemCustom customMenuItem = new MenuItemCustom(Material.CHEST, "Entity Settings");
@@ -237,7 +239,7 @@ public class SpawnEntityAction extends AAction {
             if (type.getFlag().isAlive()) {
                 entitySettingsMenu.clearMenu();
 
-                final MenuItemPage backButton =  new MenuItemBack(menu);
+                final MenuItemPage backButton = new MenuItemBack(menu);
                 entitySettingsMenu.addItem(backButton, entitySettingsMenu.getSize() - 1);
                 populateEntitySettings(entitySettingsMenu, mgPlayer);
 
@@ -288,7 +290,7 @@ public class SpawnEntityAction extends AAction {
         }));
 
         Menu velocityMenu = new Menu(3, "Entity velocity", mgPlayer);
-        final MenuItemPage backButton =  new MenuItemBack(entitySettingsMenu);
+        final MenuItemPage backButton = new MenuItemBack(entitySettingsMenu);
         velocityMenu.addItem(backButton, velocityMenu.getSize() - 1);
 
         velocityMenu.addItem(new MenuItemDecimal(Material.ARROW, "X Velocity", new Callback<>() {

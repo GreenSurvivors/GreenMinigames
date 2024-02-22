@@ -33,11 +33,6 @@ public class StringFlag extends AFlag<String> {
     }
 
     @Override
-    public MenuItemString getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
-        return getMenuItem(displayMat, name, null);
-    }
-
-    @Override
     public MenuItemString getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                       @Nullable List<@NotNull Component> description) {
         return new MenuItemString(displayMat, name, description, new Callback<>() {

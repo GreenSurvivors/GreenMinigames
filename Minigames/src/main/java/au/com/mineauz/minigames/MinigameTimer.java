@@ -29,7 +29,7 @@ public class MinigameTimer {
     private boolean broadcastTime = true;
     private BossBar bossBar = null;
 
-    public MinigameTimer(Minigame minigame, int timeLength) {
+    public MinigameTimer(Minigame minigame, long timeLength) {
         this.timeLength = timeLength;
         this.timeLeft = timeLength;
         this.minigame = minigame;
@@ -90,6 +90,8 @@ public class MinigameTimer {
                 for (MinigamePlayer ply : minigame.getPlayers()) {
                     bossBar.addViewer(ply.getPlayer());
                 }
+            }
+            case NONE -> {
             }
         }
 

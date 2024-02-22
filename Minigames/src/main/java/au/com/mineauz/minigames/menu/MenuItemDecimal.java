@@ -83,20 +83,24 @@ public class MenuItemDecimal extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        if (max == null || value.getValue() < max)
+        if (max == null || value.getValue() < max) {
             value.setValue(value.getValue() + lowerInc);
-        if (max != null && value.getValue() > max)
+        }
+        if (max != null && value.getValue() > max) {
             value.setValue(max);
+        }
         updateDescription();
         return getDisplayItem();
     }
 
     @Override
     public ItemStack onRightClick() {
-        if (min == null || value.getValue() > min)
+        if (min == null || value.getValue() > min) {
             value.setValue(value.getValue() - lowerInc);
-        if (min != null && value.getValue() < min)
+        }
+        if (min != null && value.getValue() < min) {
             value.setValue(min);
+        }
         updateDescription();
         return getDisplayItem();
     }

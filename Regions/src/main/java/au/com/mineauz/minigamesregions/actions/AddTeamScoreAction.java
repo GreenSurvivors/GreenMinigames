@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AddTeamScoreAction extends ScoreAction { // todo merge with addScoreAction
+public class AddTeamScoreAction extends AScoreAction { // todo merge with addScoreAction
     private final IntegerFlag score = new IntegerFlag(1, "amount");
     private final StringFlag team = new StringFlag("NONE", "team");
 

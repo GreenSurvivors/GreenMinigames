@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class AddScoreAction extends ScoreAction {
+public class AddScoreAction extends AScoreAction {
     private final IntegerFlag amount = new IntegerFlag(1, "amount");
 
     protected AddScoreAction(@NotNull String name) {

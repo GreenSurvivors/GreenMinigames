@@ -14,7 +14,6 @@ import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +65,7 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
             if (sender instanceof Player player) {
                 MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
 
-                switch (args[0].toLowerCase()){
+                switch (args[0].toLowerCase()) {
                     case "create" -> {
                         if (mgPlayer.hasSelection()) {
                             minigame.setFloorDegen(new MgRegion("degen", mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));

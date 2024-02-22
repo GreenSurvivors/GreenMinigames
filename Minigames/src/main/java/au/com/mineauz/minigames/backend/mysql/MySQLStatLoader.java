@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredStat;
-import com.google.common.collect.Lists;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 

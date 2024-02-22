@@ -242,12 +242,14 @@ public class MultiplayerType extends MinigameTypeBase {
             }
         }
 
-        if (mgm.getMpTimer() == null) return;
+        if (mgm.getMpTimer() == null) {
+            return;
+        }
         mgm.getMpTimer().setStartWaitTime(0);
         mgm.setMpTimer(null);
     }
 
-    public void endMinigameFindWinner(Minigame mgm) {
+    public void endMinigameFindWinner(@NotNull Minigame mgm) {
         if (mgm.isTeamGame()) {
             if (TeamsModule.getMinigameModule(mgm).getDefaultWinner() != null) { //default winner
                 TeamsModule tm = TeamsModule.getMinigameModule(mgm);

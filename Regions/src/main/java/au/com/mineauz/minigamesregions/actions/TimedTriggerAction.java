@@ -12,6 +12,7 @@ import au.com.mineauz.minigamesregions.*;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -46,7 +47,7 @@ public class TimedTriggerAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
+    public void describe(@NotNull Map<@NotNull Component, @Nullable ComponentLike> out) {
         out.put("Object to trigger", toTrigger.getFlag());
         out.put("Otherwise it is a;node", isRegion.getFlag());
         out.put("Delay in ticks", delay.getFlag());

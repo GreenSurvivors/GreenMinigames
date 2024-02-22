@@ -53,7 +53,6 @@ public class DeleteCommand extends ACommand {
 
             if (mgm != null) {
                 File save = new File(PLUGIN.getDataFolder() + "/minigames/" + mgm.getName());
-
                 if (save.exists() && save.isDirectory()) {
                     try {
                         FileUtils.deleteDirectory(save);

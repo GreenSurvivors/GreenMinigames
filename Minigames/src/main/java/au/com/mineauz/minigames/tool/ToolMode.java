@@ -25,7 +25,7 @@ public interface ToolMode {
 
     Material getIcon();
 
-    void onSetMode(MinigamePlayer player, MinigameTool tool);
+    void onSetMode(@NotNull MinigamePlayer player, @NotNull MinigameTool tool);
 
     void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool);
 

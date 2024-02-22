@@ -85,8 +85,6 @@ public class PlayerLoadout {
             public void setValue(Boolean value) {
                 usePermission = value;
             }
-
-
         };
     }
 

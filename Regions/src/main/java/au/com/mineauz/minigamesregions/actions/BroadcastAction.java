@@ -53,12 +53,12 @@ public class BroadcastAction extends AAction {
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MESSAGE_NAME),
                 MinigameUtils.limitIgnoreFormat(MiniMessage.miniMessage().deserialize(message.getFlag()), 16),
 
-               RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_EXCLUDING_NAME),
-                    MinigameMessageManager.getMgMessage(
-                            excludeExecutor.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_EXCLUDING_NAME),
+                MinigameMessageManager.getMgMessage(
+                        excludeExecutor.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED),
 
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MSGTYPE_NAME),
-                    Component.text(messageType.getFlag().toString()));
+                Component.text(messageType.getFlag().toString()));
     }
 
     @Override
@@ -191,5 +191,4 @@ public class BroadcastAction extends AAction {
         menu.displayMenu(mgPlayer);
         return true;
     }
-
 }

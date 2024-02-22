@@ -180,6 +180,7 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     SIGN_ERROR_INVALID("sign.error.invalid"),
     SIGN_ERROR_TEAM_INVALIDFORMAT("sign.error.team.invalidFormat"),
     SIGN_FINISH_REQUIREFLAGS("sign.finish.requireFlags"),
+    SIGN_FLAG_BROKEN_SUPPORT("sign.flag.broken.support"),
     SIGN_JOIN_ERROR_INVALIDMONEY("sign.join.invalidMoney"),
     SIGN_REWARD_ERROR_NONAME("sign.reward.error.noName"),
     SIGN_REWARD_SAVED("sign.reward.saved"),
@@ -260,17 +261,6 @@ public enum MinigameLangKey implements LangKey { //todo this gets rather big. Sl
     TOOL_SET_ENDLOCATION("tool.set.endLocation"),
     TOOL_SET_LOBBYLOCATION("tool.set.lobbyLocation"),
     TOOL_SET_QUITLOCATION("tool.set.quitLocation"),
-    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation"),
-    STATISTIC_WINS_NAME("statistic.wins.name"),
-    STATISTIC_LOSSES_NAME("statistic.losses.name"),
-    STATISTIC_ATTEMPTS_NAME("statistic.attempts.name"),
-    STATISTIC_TIME_NAME("statistic.time.name"),
-    STATISTIC_KILLS_NAME("statistic.kills.name"),
-    STATISTIC_DEATHS_NAME("statistic.deaths.name"),
-    STATISTIC_SCORE_NAME("statistic.score.name"),
-    STATISTIC_REVERTS_NAME("statistic.reverts.name"),
-    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation"),
-    BOOL_TRUE("bool.true"),
     TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation");
 
     private final @NotNull String path;

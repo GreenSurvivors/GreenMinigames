@@ -3,8 +3,6 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.ItemFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
@@ -14,9 +12,6 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import au.com.mineauz.minigamesregions.RegionMessageManager;
-import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -156,7 +151,7 @@ public class TakeItemAction extends AAction {
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         //datafixerupper
         if (config.contains(path + ".type")) {
-            config.set(path+".type", null);
+            config.set(path + ".type", null);
         }
         itemToSearchFor.saveValue(config, path);
         count.saveValue(config, path);
@@ -166,7 +161,7 @@ public class TakeItemAction extends AAction {
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         // datafixerupper
         if (config.contains(path + ".type")) {
-            Material legacy = Material.matchMaterial(config.getString(path + ".type"));
+            Material legacy = Material.matchMaterial(config.getString(path + ".type", ""));
             if (legacy != null) {
                 itemToSearchFor.setFlag(new ItemStack(legacy));
             } else {
@@ -268,8 +263,8 @@ public class TakeItemAction extends AAction {
         futureLoreItem.complete(loreMenuItem);
         menu.addItem(loreMenuItem);
 
-        menu.addItem(matchEnchantments.getMenuItem("Match enchantments", Material.ENCHANTED_BOOK));
-        menu.addItem(matchExact.getMenuItem("Match exact", Material.BOOKSHELF)); //todo with callback to turn the others on
+        menu.addItem(matchEnchantments.getMenuItem(Material.ENCHANTED_BOOK, "Match enchantments"));
+        menu.addItem(matchExact.getMenuItem(Material.BOOKSHELF, "Match exact")); //todo with callback to turn the others on
 
         menu.displayMenu(mgPlayer);
         return true;

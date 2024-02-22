@@ -1,4 +1,4 @@
-package au.com.mineauz.minigamesregions.menuitems;
+package au.com.mineauz.minigamesregions.menu;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;

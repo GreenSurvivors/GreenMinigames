@@ -224,11 +224,6 @@ public class MemorySwapBlockAction extends AAction {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "MEMORY_SWAP_BLOCK";
-    }
-
-    @Override
     public @NotNull Component getDisplayname() {
         return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_NAME);
     }

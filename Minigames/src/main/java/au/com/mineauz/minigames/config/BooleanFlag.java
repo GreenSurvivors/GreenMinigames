@@ -50,11 +50,6 @@ public class BooleanFlag extends AFlag<Boolean> {
     }
 
     @Override
-    public MenuItemBoolean getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
-        return getMenuItem(displayMat, name, null);
-    }
-
-    @Override
     public MenuItemBoolean getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                        @Nullable List<@NotNull Component> description) {
         return new MenuItemBoolean(displayMat, name, description, new Callback<>() {

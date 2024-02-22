@@ -7,8 +7,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.menuitems.MenuItemAction;
-import au.com.mineauz.minigamesregions.menuitems.MenuItemActionAdd;
+import au.com.mineauz.minigamesregions.menu.MenuItemAction;
+import au.com.mineauz.minigamesregions.menu.MenuItemActionAdd;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 

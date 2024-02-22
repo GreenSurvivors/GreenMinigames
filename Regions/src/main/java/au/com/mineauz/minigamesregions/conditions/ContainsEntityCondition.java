@@ -12,7 +12,6 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import com.google.common.base.Strings;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -123,7 +122,7 @@ public class ContainsEntityCondition extends ACondition {
         menu.addItem(new MenuItemNewLine());
 
         menu.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
-        MenuItemString menuItem = customName.getMenuItem(Material.NAME_TAG, "Display Name", List.of("The name to match.", "Use % to do a wildcard match"));
+        MenuItemString menuItem = (MenuItemString) customName.getMenuItem(Material.NAME_TAG, "Display Name", List.of("The name to match.", "Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         menu.addItem(menuItem);
 

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.stats;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +32,10 @@ class BasicMinigameStat extends MinigameStat {
         }
     }
 
+    /**
+     * @param value    The value in milliseconds to display
+     * @param settings The settings of this stat
+     */
     @Override
     public Component displayValueSign(long value, @NotNull StatSettings settings) {
         if (this == MinigameStatistics.CompletionTime) {

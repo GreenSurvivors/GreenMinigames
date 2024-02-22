@@ -20,7 +20,6 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -542,11 +541,11 @@ public class MinigamePlayer implements ScriptObject {
                 if (DependencyManager.getLocation2(player) != null) {
                     DependencyManager.clearSelection(player);
                     DependencyManager.setPos1(player, loc);
-                    this.sendMessage("Selection restarted", MinigameMessageType.INFO);
-                    this.sendMessage("Position 1 set", MinigameMessageType.INFO);
+                    MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_RESTART);
+                    MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS1);
                 } else {
                     DependencyManager.setPos2(player, loc);
-                    this.sendMessage("Position 2 set", MinigameMessageType.INFO);
+                    MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS2);
                 }
             } else {
                 DependencyManager.setPos1(player, loc);
