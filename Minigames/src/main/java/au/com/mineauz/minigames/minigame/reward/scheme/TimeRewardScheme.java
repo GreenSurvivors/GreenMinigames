@@ -36,8 +36,11 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
         return value;
     }
 
+    /**
+     * in seconds
+     */
     @Override
-    protected Component getMenuItemDescName(Integer value) {
+    protected Component getMenuItemDescName(@NotNull Integer value) {
         return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_TIME_DESCRIPTION,
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(value), true)));
     }

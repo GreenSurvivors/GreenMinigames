@@ -1,6 +1,9 @@
-package au.com.mineauz.minigamesregions.menuitems;
+package au.com.mineauz.minigamesregions.menu;
 
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.actions.ActionFactory;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;

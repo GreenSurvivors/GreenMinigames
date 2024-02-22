@@ -35,8 +35,8 @@ public class SetTimerCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() { //todo look up if new display types are in translation
-        return MinigameMessageManager. aaaaaaaaa getMgMessage(MgCommandLangKey.COMMAND_SET_TIMER_USAGE); // intentional error so this todo doesn't get lost
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_TIMER_USAGE);
     }
 
     @Override

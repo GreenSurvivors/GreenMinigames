@@ -19,7 +19,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemList<T> extends MenuItem {
+public class MenuItemList<T> extends MenuItem { //todo add constructor with map T -> Component for display
     private final static String DESCRIPTION_TOKEN = "List_description";
     private final Callback<T> value;
     private final List<T> options;

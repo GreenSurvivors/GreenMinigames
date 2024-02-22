@@ -1,4 +1,4 @@
-package au.com.mineauz.minigamesregions;
+package au.com.mineauz.minigamesregions.tool;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -10,6 +10,10 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
+import au.com.mineauz.minigamesregions.Main;
+import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
@@ -32,12 +36,12 @@ public class RegionToolMode implements ToolMode {
 
     @Override
     public Component getDisplayName() {
-        return "Region Selection";
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_NAME);
     }
 
     @Override
-    public List<Component> getDescription() { //todo translation String
-        return List.of("Selects an area", "for a region.", "Create via left click");
+    public List<Component> getDescription() {
+        return RegionMessageManager.getMessageList(RegionLangKey.MENU_TOOL_REGION_DESCRIPTION);
     }
 
     @Override
@@ -46,14 +50,14 @@ public class RegionToolMode implements ToolMode {
     }
 
     @Override
-    public void onSetMode(final MinigamePlayer player, MinigameTool tool) {
+    public void onSetMode(final @NotNull MinigamePlayer player, @NotNull MinigameTool tool) {
         tool.setSetting("Region", "None");
-        final Menu m = new Menu(2, "Region Selection", player);
+        final Menu m = new Menu(2, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_SELECT_NAME), player);
         if (player.isInMenu()) {
             m.addItem(new MenuItemBack(player.getMenu()), m.getSize() - 9);
         }
         final MinigameTool ftool = tool;
-        m.addItem(new MenuItemString("Region Name", Material.PAPER, new Callback<>() {
+        m.addItem(new MenuItemString(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_NAME_NAME), new Callback<>() {
 
             @Override
             public String getValue() {
@@ -70,11 +74,11 @@ public class RegionToolMode implements ToolMode {
             // Node selection menu
             RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
 
-            Menu regionMenu = new Menu(6, "Regions", player);
+            Menu regionMenu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_LIST_NAME), player);
             List<MenuItem> items = new ArrayList<>();
 
             for (final Region region : module.getRegions()) {
-                MenuItemCustom item = new MenuItemCustom(Material.CHEST, region.getName());
+                MenuItemCustom item = new MenuItemCustom(Material.CHEST, Component.text(region.getName()));
 
                 // Set the node and go back to the main menu
                 item.setClick(() -> {
@@ -91,7 +95,7 @@ public class RegionToolMode implements ToolMode {
             regionMenu.addItems(items);
             regionMenu.addItem(new MenuItemBack(m), regionMenu.getSize() - 9);
 
-            m.addItem(new MenuItemPage(Material.CHEST, "Edit Region", regionMenu));
+            m.addItem(new MenuItemPage(Material.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_EDIT_NAME), regionMenu));
         }
         m.displayMenu(player);
     }
@@ -175,5 +179,4 @@ public class RegionToolMode implements ToolMode {
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         }
     }
-
 }

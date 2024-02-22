@@ -34,7 +34,6 @@ import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -1132,7 +1131,7 @@ public class Minigame implements ScriptObject {
         cmpntItem.setAllowNull(true);
         mainMenu.addItem(cmpntItem, 5);
 
-        cmpntItem = gameTypeName.getMenuItem(Material.WRITTEN_BOOK, MgMenuLangKey.MENU_MINIGAME_TYPEDESCRIPTION_NAME);
+        cmpntItem = (MenuItemComponent) gameTypeName.getMenuItem(Material.WRITTEN_BOOK, MgMenuLangKey.MENU_MINIGAME_TYPEDESCRIPTION_NAME);
         cmpntItem.setAllowNull(true);
         mainMenu.addItem(cmpntItem, 6);
 

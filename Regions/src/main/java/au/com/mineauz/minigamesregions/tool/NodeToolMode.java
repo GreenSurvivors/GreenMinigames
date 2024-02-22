@@ -1,4 +1,4 @@
-package au.com.mineauz.minigamesregions;
+package au.com.mineauz.minigamesregions.tool;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -9,6 +9,10 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
+import au.com.mineauz.minigamesregions.Main;
+import au.com.mineauz.minigamesregions.Node;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
@@ -31,15 +35,12 @@ public class NodeToolMode implements ToolMode {
 
     @Override
     public Component getDisplayName() {
-        return "Node Creation";
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME);
     }
 
     @Override
-    public List<Component> getDescription() { //todo translation String
-        return List.of(
-                "Creates a node where",
-                "you are standing",
-                "on right click");
+    public List<Component> getDescription() {
+        return RegionMessageManager.getMessageList(RegionLangKey.MENU_TOOL_NODE_DESCRIPTION);
     }
 
     @Override
@@ -48,23 +49,22 @@ public class NodeToolMode implements ToolMode {
     }
 
     @Override
-    public void onSetMode(final MinigamePlayer player, MinigameTool tool) {
+    public void onSetMode(final @NotNull MinigamePlayer player, final @NotNull MinigameTool tool) {
         tool.setSetting("Node", "None");
-        final Menu m = new Menu(2, "Node Selection", player);
+        final Menu menu = new Menu(2, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_SELECT_NAME), player);
         if (player.isInMenu()) {
-            m.addItem(new MenuItemBack(player.getMenu()), m.getSize() - 9);
+            menu.addItem(new MenuItemBack(player.getMenu()), menu.getSize() - 9);
         }
-        final MinigameTool ftool = tool;
-        m.addItem(new MenuItemString("Node Name", Material.PAPER, new Callback<String>() {
 
+        menu.addItem(new MenuItemString(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME), new Callback<>() {
             @Override
             public String getValue() {
-                return ftool.getSetting("Node");
+                return tool.getSetting("Node");
             }
 
             @Override
             public void setValue(String value) {
-                ftool.setSetting("Node", value);
+                tool.setSetting("Node", value);
             }
         }));
 
@@ -72,16 +72,16 @@ public class NodeToolMode implements ToolMode {
             // Node selection menu
             RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
 
-            Menu nodeMenu = new Menu(6, "Nodes", player);
+            Menu nodeMenu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_LIST_NAME), player);
             List<MenuItem> items = new ArrayList<>();
 
             for (final Node node : module.getNodes()) {
-                MenuItemCustom item = new MenuItemCustom(Material.STONE_BUTTON, node.getName());
+                MenuItemCustom item = new MenuItemCustom(Material.STONE_BUTTON, Component.text(node.getName()));
 
                 // Set the node and go back to the main menu
                 item.setClick(() -> {
-                    ftool.setSetting("Node", node.getName());
-                    m.displayMenu(player);
+                    tool.setSetting("Node", node.getName());
+                    menu.displayMenu(player);
 
                     return null;
                 });
@@ -90,11 +90,11 @@ public class NodeToolMode implements ToolMode {
             }
 
             nodeMenu.addItems(items);
-            nodeMenu.addItem(new MenuItemBack(m), nodeMenu.getSize() - 9);
+            nodeMenu.addItem(new MenuItemBack(menu), nodeMenu.getSize() - 9);
 
-            m.addItem(new MenuItemPage(Material.STONE_BUTTON, "Edit Node", nodeMenu));
+            menu.addItem(new MenuItemPage(Material.STONE_BUTTON, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_EDIT_NAME), nodeMenu));
         }
-        m.displayMenu(player);
+        menu.displayMenu(player);
     }
 
     @Override
@@ -182,5 +182,4 @@ public class NodeToolMode implements ToolMode {
                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
         }
     }
-
 }

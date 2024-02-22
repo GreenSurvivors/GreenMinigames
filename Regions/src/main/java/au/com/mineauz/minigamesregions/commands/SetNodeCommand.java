@@ -53,7 +53,7 @@ public class SetNodeCommand extends ASetCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame, @NotNull String @Nullable [] args) {
-        if (args != null && args.length >= 1) {
+        if (args != null && args.length > 0) {
             if (sender instanceof Player player) {
                 MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
                 RegionModule rmod = RegionModule.getMinigameModule(minigame);

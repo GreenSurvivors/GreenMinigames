@@ -1,4 +1,4 @@
-package au.com.mineauz.minigamesregions;
+package au.com.mineauz.minigamesregions.tool;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -11,10 +11,11 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
+import au.com.mineauz.minigamesregions.*;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
-import au.com.mineauz.minigamesregions.menuitems.MenuItemNode;
-import au.com.mineauz.minigamesregions.menuitems.MenuItemRegion;
+import au.com.mineauz.minigamesregions.menu.MenuItemNode;
+import au.com.mineauz.minigamesregions.menu.MenuItemRegion;
 import com.google.common.collect.Iterables;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -24,11 +25,8 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class RegionNodeEditToolMode implements ToolMode {
 
@@ -44,10 +42,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 
     @Override
     public List<Component> getDescription() { //todo translation String
-        return List.of(
-                "Allows you to simply",
-                "edit regions and nodes",
-                "with right click");
+        return List.of("Allows you to simply<newline>edit regions and nodes<newline>with right click");
     }
 
     @Override
@@ -56,7 +51,7 @@ public class RegionNodeEditToolMode implements ToolMode {
     }
 
     @Override
-    public void onSetMode(MinigamePlayer player, MinigameTool tool) {
+    public void onSetMode(@NotNull MinigamePlayer player, @NotNull MinigameTool tool) {
         if (tool.getMinigame() != null) {
             Main.getPlugin().getDisplayManager().hideAll(player.getPlayer());
             Main.getPlugin().getDisplayManager().showAll(tool.getMinigame(), player);
@@ -94,7 +89,7 @@ public class RegionNodeEditToolMode implements ToolMode {
             nodeLocs.put(node, node.getLocation().toVector());
         }
 
-        Set<ExecutableScriptObject> hits = Sets.newIdentityHashSet();
+        Set<ExecutableScriptObject> hits = Collections.newSetFromMap(new IdentityHashMap<>());
 
         // Raytrace the view vector
         for (double dist = 0; dist < 10; dist += 0.25) {

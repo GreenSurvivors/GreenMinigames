@@ -48,7 +48,7 @@ public class RegionDisplayManager {
                 ChatColor.WHITE +
                 region.getName() +
                 " Enabled: " + region.getEnabled();
-        stand.setCustomName(info);
+        stand.setCustomName(info); //todo
     }
 
     private void showInfo(Node node, MinigamePlayer player) {

@@ -24,7 +24,7 @@ public class MenuItemAddTeam extends MenuItem {
     private final TeamsModule tm;
 
     public MenuItemAddTeam(Component name, @NotNull TeamsModule tm) {
-        super(name, MenuUtility.getCreateMaterial());
+        super(MenuUtility.getCreateMaterial(), name);
         this.tm = tm;
     }
 

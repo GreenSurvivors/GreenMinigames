@@ -4,9 +4,9 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class ScoreAction extends AAction {
+public abstract class AScoreAction extends AAction {
 
-    protected ScoreAction(@NotNull String name) {
+    protected AScoreAction(@NotNull String name) {
         super(name);
     }
 
@@ -16,5 +16,4 @@ public abstract class ScoreAction extends AAction {
             setWinnersLosers(player);
         }
     }
-
 }

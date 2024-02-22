@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 
 public class MenuItemLong extends MenuItem {
     private final static String DESCRIPTION_TOKEN = "Long_description";
@@ -67,36 +68,60 @@ public class MenuItemLong extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        value.setValue(value.getValue() + 1);
-        if (max != null && value.getValue() > max)
-            value.setValue(max);
+        try {
+            value.setValue(Math.addExact(value.getValue(), 10));
+            if (max != null && value.getValue() < max) {
+                value.setValue(max);
+            }
+        } catch (ArithmeticException ignored) {
+            value.setValue(Objects.requireNonNullElse(max, Long.MAX_VALUE));
+        }
+
         updateDescription();
         return getDisplayItem();
     }
 
     @Override
     public ItemStack onRightClick() {
-        value.setValue(value.getValue() - 1);
-        if (min != null && value.getValue() < min)
-            value.setValue(min);
+        try {
+            value.setValue(Math.subtractExact(value.getValue(), 1));
+            if (min != null && value.getValue() < min) {
+                value.setValue(min);
+            }
+        } catch (ArithmeticException ignored) {
+            value.setValue(Objects.requireNonNullElse(min, Long.MIN_VALUE));
+        }
+
         updateDescription();
         return getDisplayItem();
     }
 
     @Override
     public ItemStack onShiftClick() {
-        value.setValue(value.getValue() + 10);
-        if (max != null && value.getValue() > max)
-            value.setValue(max);
+        try {
+            value.setValue(Math.addExact(value.getValue(), 10L));
+            if (max != null && value.getValue() < max) {
+                value.setValue(max);
+            }
+        } catch (ArithmeticException ignored) {
+            value.setValue(Objects.requireNonNullElse(max, Long.MAX_VALUE));
+        }
+
         updateDescription();
         return getDisplayItem();
     }
 
     @Override
     public ItemStack onShiftRightClick() {
-        value.setValue(value.getValue() - 10);
-        if (min != null && value.getValue() < min)
-            value.setValue(min);
+        try {
+            value.setValue(Math.subtractExact(value.getValue(), 10));
+            if (min != null && value.getValue() < min) {
+                value.setValue(min);
+            }
+        } catch (ArithmeticException ignored) {
+            value.setValue(Objects.requireNonNullElse(min, Long.MIN_VALUE));
+        }
+
         updateDescription();
         return getDisplayItem();
     }

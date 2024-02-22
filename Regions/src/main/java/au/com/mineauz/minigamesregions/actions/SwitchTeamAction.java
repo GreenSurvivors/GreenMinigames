@@ -14,6 +14,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SwitchTeamAction extends AAction {
-    private final StringFlag teamto = new StringFlag("ALL", "To");
-    private final StringFlag teamfrom = new StringFlag("ALL", "From");
+    private final StringFlag teamTo = new StringFlag("ALL", "To");
+    private final StringFlag teamFrom = new StringFlag("ALL", "From");
 
     protected SwitchTeamAction(@NotNull String name) {
         super(name);
@@ -44,9 +45,10 @@ public class SwitchTeamAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Team From", teamfrom.getFlag());
-        out.put("Team To", teamto.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+        return Map.of(
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_NAME), Component.text(teamFrom.getFlag()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_NAME), Component.text(teamTo.getFlag()));
     }
 
     @Override
@@ -69,29 +71,29 @@ public class SwitchTeamAction extends AAction {
         executeAction(mgPlayer);
     }
 
-    private void executeAction(MinigamePlayer player) {
-        if (player == null || !player.isInMinigame()) return;
-        if (teamfrom.getFlag().equals("NONE")) return;
-        if (!teamfrom.getFlag().equals("ALL") || !teamfrom.getFlag().equals(player.getTeam().getColor().toString()))
+    private void executeAction(@Nullable MinigamePlayer mgPlayer) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        if (teamFrom.getFlag().equals("NONE")) return;
+        if (!teamFrom.getFlag().equals("ALL") || !teamFrom.getFlag().equals(mgPlayer.getTeam().getColor().toString()))
             return;
-        if (teamto.getFlag().equals("ALL")) {
-            List<Team> teams = TeamsModule.getMinigameModule(player.getMinigame()).getTeams();
+        if (teamTo.getFlag().equals("ALL")) {
+            List<Team> teams = TeamsModule.getMinigameModule(mgPlayer.getMinigame()).getTeams();
             Collections.shuffle(teams);
             for (Team t : teams) {
-                if (t != player.getTeam()) {
-                    player.setTeam(t);
+                if (t != mgPlayer.getTeam()) {
+                    mgPlayer.setTeam(t);
                     return;
                 }
             }
 
         } else {
-            if (teamto.getFlag().equals("NONE")) {
-                player.setTeam(null);
+            if (teamTo.getFlag().equals("NONE")) {
+                mgPlayer.setTeam(null);
             }
         }
-        for (Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()) {
-            if (t.getColor().toString().equals(teamto.getFlag())) {
-                player.setTeam(t);
+        for (Team t : TeamsModule.getMinigameModule(mgPlayer.getMinigame()).getTeams()) {
+            if (t.getColor().toString().equals(teamTo.getFlag())) {
+                mgPlayer.setTeam(t);
             }
         }
     }
@@ -99,49 +101,47 @@ public class SwitchTeamAction extends AAction {
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu prev) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
+        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
         List<String> teams = new ArrayList<>(TeamColor.colorNames());
         teams.add("All"); //todo ?
-        m.addItem(new MenuItemList<String>("Switch From:", List.of("If 'ALL' will switch on everyone, otherwise specific team."), Material.PAPER, new Callback<>() {
+        menu.addItem(new MenuItemList<>(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_DESCRIPTION), new Callback<>() {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalizeFully(teamfrom.getFlag());
+                return WordUtils.capitalizeFully(teamFrom.getFlag());
             }
 
             @Override
             public void setValue(String value) {
-                teamfrom.setFlag(value.toUpperCase());
+                teamFrom.setFlag(value.toUpperCase());
             }
 
 
         }, teams));
-        m.addItem(new MenuItemList<String>("Switch To:", List.of("If 'None' will set the player to no team, otherwise specific team.  If All - will randomly chose a team"), Material.PAPER, new Callback<>() {
+        menu.addItem(new MenuItemList<>(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_DESCRIPTION), new Callback<>() {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalizeFully(teamto.getFlag());
+                return WordUtils.capitalizeFully(teamTo.getFlag());
             }
 
             @Override
             public void setValue(String value) {
-                teamto.setFlag(value.toUpperCase());
+                teamTo.setFlag(value.toUpperCase());
             }
-
-
         }, teams));
-        m.displayMenu(mgPlayer);
+        menu.displayMenu(mgPlayer);
         return true;
     }
 }

@@ -6,7 +6,6 @@ import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
-import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import net.kyori.adventure.text.Component;
@@ -167,8 +166,8 @@ public class SignBase implements Listener {
                         event.setCancelled(true);
                         return;
                     } else {
-                        MessageManager.sendMessage(Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()),
-                                MinigameMessageType.WARN, null, "sign.flag.broken.support");
+                        MinigameMessageManager.sendMgMessage(Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()),
+                                MinigameMessageType.WARNING, MinigameLangKey.SIGN_FLAG_BROKEN_SUPPORT);
                         takenFlags.remove(ctfFlag);
                     }
 

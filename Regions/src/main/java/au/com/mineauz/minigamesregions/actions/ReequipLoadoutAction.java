@@ -46,8 +46,7 @@ public class ReequipLoadoutAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
         if (!mgPlayer.isInMinigame()) return;
         mgPlayer.getLoadout().equipLoadout(mgPlayer);

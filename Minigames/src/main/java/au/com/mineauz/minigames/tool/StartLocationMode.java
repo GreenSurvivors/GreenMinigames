@@ -159,7 +159,7 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
     }
 
     @Override
-    public void onSetMode(@Nullable MinigamePlayer player, @Nullable MinigameTool tool) {
+    public void onSetMode(@NotNull MinigamePlayer player, @NotNull MinigameTool tool) {
     }
 
     @Override

@@ -294,7 +294,7 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_SET_REGENAREA_DESCRIPTION("command.set.regenArea.description"),
     COMMAND_SET_REGENAREA_ERROR_NOTSELECTED("command.set.regenArea.error.notSelected"),
     COMMAND_SET_REGENAREA_LIST_HEADER("command.set.regenArea.listHeader"),
-    COMMAND_SET_REGENAREA_USAGE("command.set-regenArea.usage"),
+    COMMAND_SET_REGENAREA_USAGE("command.set.regenArea.usage"),
     COMMAND_SET_REGENDELAY_DESCRIPTION("command.set.regenDelay.description"),
     COMMAND_SET_REGENDELAY_SUCCESS("command.set.regenDelay.success"),
     COMMAND_SET_REGENDELAY_USAGE("command.set.regenDelay.usage"),

@@ -1,33 +1,29 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemBlockData;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-//todo
 public class SetBlockAction extends AAction {
-    private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
+    private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");//todo rename flag
     private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur");//todo rename flag
-    private final IntegerFlag dur = new IntegerFlag(0, "dur");
 
     protected SetBlockAction(@NotNull String name) {
         super(name);
@@ -44,11 +40,13 @@ public class SetBlockAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
+    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
         if (useBlockData.getFlag()) {
-            out.put("Block", type.getFlag() + ":" + dur.getFlag());
+            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETBLOCK_BLOCK_NAME),
+                    MinigameUtils.limitIgnoreFormat(Component.text(type.getFlag().getAsString()), 16));
         } else {
-            out.put("Block", type.getFlag());
+            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETBLOCK_BLOCK_NAME),
+                    Component.text(type.getFlag().getMaterial().translationKey()));
         }
     }
 
@@ -63,8 +61,7 @@ public class SetBlockAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
-                                    @NotNull Region region) {
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
         Location temp = region.getFirstPoint();
         for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
@@ -103,6 +100,7 @@ public class SetBlockAction extends AAction {
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
         type.saveValue(config, path);
+        useBlockData.saveValue(config, path);
     }
 
     @Override
@@ -110,26 +108,15 @@ public class SetBlockAction extends AAction {
                               @NotNull String path) {
         type.loadValue(config, path);
         useBlockData.loadValue(config, path);
-        dur.loadValue(config, path);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(new MenuItemBlockData(type.getFlag().getMaterial(), "Type", new Callback<>() {
-            @Override
-            public BlockData getValue() {
-                return type.getFlag();
-            }
-
-            @Override
-            public void setValue(BlockData value) {
-                type.setFlag(value);
-            }
-        }));
-        m.addItem(useBlockData.getMenuItem("Use Specific BlockData", Material.ENDER_PEARL));
-        m.displayMenu(mgPlayer);
+        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.addItem(type.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETBLOCK_BLOCK_NAME)));
+        menu.addItem(useBlockData.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETBLOCK_USEDATA_NAME)));
+        menu.displayMenu(mgPlayer);
         return true;
     }
 }

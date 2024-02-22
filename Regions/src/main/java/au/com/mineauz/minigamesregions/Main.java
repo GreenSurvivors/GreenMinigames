@@ -6,6 +6,9 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.tool.ToolModes;
 import au.com.mineauz.minigamesregions.commands.SetNodeCommand;
 import au.com.mineauz.minigamesregions.commands.SetRegionCommand;
+import au.com.mineauz.minigamesregions.tool.NodeToolMode;
+import au.com.mineauz.minigamesregions.tool.RegionNodeEditToolMode;
+import au.com.mineauz.minigamesregions.tool.RegionToolMode;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 

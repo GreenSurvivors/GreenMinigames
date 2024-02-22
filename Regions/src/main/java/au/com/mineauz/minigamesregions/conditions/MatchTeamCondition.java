@@ -92,8 +92,8 @@ public class MatchTeamCondition extends ACondition {
             }
 
             @Override
-            public void setValue(String value) {
-                team.setFlag(value.toUpperCase().replace(" ", "_"));
+            public void setValue(TeamColor value) {
+                team.setFlag(value.toString());
             }
         }, teams) {
             @Override

@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
@@ -97,6 +98,11 @@ public class MockSign extends BlockStateMock implements Sign {
     }
 
     @Override
+    public @NotNull BlockState copy() {
+        return null;
+    }
+
+    @Override
     public Location getLocation(Location loc) {
         return super.getLocation(loc);
     }
@@ -144,5 +150,10 @@ public class MockSign extends BlockStateMock implements Sign {
     @Override
     public @NotNull SignSide getSide(@NotNull Side side) {
         return null;
+    }
+
+    @Override
+    public @NotNull Side getInteractableSideFor(double x, double z) {
+        return Side.FRONT;
     }
 }

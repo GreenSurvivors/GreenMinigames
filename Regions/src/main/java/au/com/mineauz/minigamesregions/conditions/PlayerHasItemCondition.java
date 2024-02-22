@@ -12,10 +12,6 @@ import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import au.com.mineauz.minigamesregions.RegionMessageManager;
-import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import com.google.common.base.Joiner;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -43,6 +39,10 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     private final BooleanFlag matchEnchantments = new BooleanFlag(false, "matchEnchantments");
     private final BooleanFlag matchExact = new BooleanFlag(false, "matchExact");
 
+    protected PlayerHasItemCondition(@NotNull String name) {
+        super(name);
+    }
+
     static void createPattern(String value, StringBuffer buffer) {
         int start = 0;
         int index;
@@ -63,10 +63,6 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
             // Move to next position
             start = index + 1;
         }
-    }
-
-    protected PlayerHasItemCondition(@NotNull String name) {
-        super(name);
     }
 
     @Override
@@ -387,19 +383,19 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_DESCRIPTION),
                 new Callback<>() {
-            private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();
+                    private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();
 
-            @Override
-            public String getValue() {
-                return localCache;
-            }
+                    @Override
+                    public String getValue() {
+                        return localCache;
+                    }
 
-            @Override
-            public void setValue(String value) {
-                localCache = value;
-                itemMenuItem.processNewName(MiniMessage.miniMessage().deserialize(value));
-            }
-        });
+                    @Override
+                    public void setValue(String value) {
+                        localCache = value;
+                        itemMenuItem.processNewName(MiniMessage.miniMessage().deserialize(value));
+                    }
+                });
 
         nameMenuItem.setAllowNull(true);
         futureNameItem.complete(nameMenuItem);
@@ -411,26 +407,27 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_LORE_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_LORE_DESCRIPTION),
                 new Callback<>() {
-            private String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
-            @Override
-            public String getValue() {
-                return localCache;
-            }
+                    private String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
 
-            @Override
-            public void setValue(String value) {
-                MiniMessage miniMessage = MiniMessage.miniMessage();
+                    @Override
+                    public String getValue() {
+                        return localCache;
+                    }
 
-                String[] loreArray = value.split(";");
-                List<Component> newLore = new ArrayList<>(loreArray.length);
-                for (String line : loreArray) {
-                    newLore.add(miniMessage.deserialize(line));
-                }
-                itemMenuItem.processNewLore(newLore);
+                    @Override
+                    public void setValue(String value) {
+                        MiniMessage miniMessage = MiniMessage.miniMessage();
 
-                localCache = value;
-            }
-        });
+                        String[] loreArray = value.split(";");
+                        List<Component> newLore = new ArrayList<>(loreArray.length);
+                        for (String line : loreArray) {
+                            newLore.add(miniMessage.deserialize(line));
+                        }
+                        itemMenuItem.processNewLore(newLore);
+
+                        localCache = value;
+                    }
+                });
         loreMenuItem.setAllowNull(true);
         futureLoreItem.complete(loreMenuItem);
         menu.addItem(loreMenuItem);

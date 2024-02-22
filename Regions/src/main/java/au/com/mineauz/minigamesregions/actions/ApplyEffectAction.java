@@ -28,9 +28,9 @@ import java.util.Map;
 
 public class ApplyEffectAction extends AAction {
     private final StringFlag typeNameSpacedKey = new StringFlag(PotionEffectType.SPEED.getKey().toString(), "type");
-    private @Nullable PotionEffectType type = null;
     private final TimeFlag dur = new TimeFlag(60L, "duration");
     private final IntegerFlag amp = new IntegerFlag(1, "amplifier");
+    private @Nullable PotionEffectType type = null;
 
     protected ApplyEffectAction(@NotNull String name) {
         super(name);
