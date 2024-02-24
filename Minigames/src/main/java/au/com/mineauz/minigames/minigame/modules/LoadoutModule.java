@@ -181,18 +181,16 @@ public class LoadoutModule extends MinigameModule {
     }
 
     public @Nullable PlayerLoadout getLoadout(@NotNull String name) {
-        PlayerLoadout playerLoadout = null;
         if (extraLoadouts.containsKey(name)) {
-            playerLoadout = extraLoadouts.get(name);
+            return extraLoadouts.get(name);
         } else {
             for (String loadout : extraLoadouts.keySet()) {
                 if (loadout.equalsIgnoreCase(name)) {
-                    playerLoadout = extraLoadouts.get(loadout);
-                    break;
+                    return extraLoadouts.get(loadout);
                 }
             }
         }
-        return playerLoadout;
+        return null;
     }
 
     public boolean hasLoadouts() {
@@ -201,12 +199,13 @@ public class LoadoutModule extends MinigameModule {
 
     public boolean hasLoadout(String name) {
         if (!name.equalsIgnoreCase("default")) {
-            if (extraLoadouts.containsKey(name))
+            if (extraLoadouts.containsKey(name)) {
                 return extraLoadouts.containsKey(name);
-            else {
+            } else {
                 for (String loadout : extraLoadouts.keySet()) {
-                    if (loadout.equalsIgnoreCase(name))
+                    if (loadout.equalsIgnoreCase(name)) {
                         return true;
+                    }
                 }
                 return false;
             }

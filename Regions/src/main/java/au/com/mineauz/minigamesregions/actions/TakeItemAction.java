@@ -10,7 +10,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class TakeItemAction extends AAction {
+public class TakeItemAction extends AAction { // todo make material match optional
     private final ItemFlag itemToSearchFor = new ItemFlag(new ItemStack(Material.STONE), "item");
     private final IntegerFlag count = new IntegerFlag(1, "amount");
 
@@ -47,9 +46,12 @@ public class TakeItemAction extends AAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
-        out.put("Item", itemToSearchFor.getFlag().getType());
-        out.put("Count", count);
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of(
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME),
+                Component.translatable(itemToSearchFor.getFlag().getType().translationKey()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME),
+                Component.text(count.getFlag()));
     }
 
     @Override
@@ -65,7 +67,10 @@ public class TakeItemAction extends AAction {
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
-        execute(mgPlayer);
+
+        if (mgPlayer != null) {
+            execute(mgPlayer);
+        }
     }
 
     @Override
@@ -74,7 +79,7 @@ public class TakeItemAction extends AAction {
         execute(mgPlayer);
     }
 
-    private void execute(MinigamePlayer mgPlayer) {
+    private void execute(@NotNull MinigamePlayer mgPlayer) {
         ItemStack match = itemToSearchFor.getFlag().clone();
         int stillToRemove = count.getFlag();
 
@@ -174,7 +179,7 @@ public class TakeItemAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, Menu previous) { // todo hide turned of matches
         final Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
@@ -197,11 +202,11 @@ public class TakeItemAction extends AAction {
                 // sync with other menu Items
                 try { // try - catch just to shut the IDE / compiler up. Everything gets already checked beforehand.
                     if (futureNameItem.isDone() && !futureNameItem.isCompletedExceptionally() && meta.displayName() != null) {
-                        futureNameItem.get().checkValidEntry(value.getItemMeta().getDisplayName());
+                        futureNameItem.get().checkValidEntry(value.getItemMeta().getDisplayName()); //todo component
                     }
 
                     if (futureLoreItem.isDone() && !futureLoreItem.isCompletedExceptionally() && meta.lore() != null) {
-                        futureLoreItem.get().checkValidEntry(String.join(";", meta.getLore()));
+                        futureLoreItem.get().checkValidEntry(String.join(";", meta.getLore())); // todo component
                     }
                 } catch (Throwable ignored) {
                 }
@@ -209,13 +214,14 @@ public class TakeItemAction extends AAction {
         });
 
         menu.addItem(itemMenuItem);
-        menu.addItem(count.getMenuItem(Material.STONE_SLAB, "Amount", 1, 999));
+        menu.addItem(count.getMenuItem(Material.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 999));
 
         menu.addItem(new MenuItemNewLine());
 
-        menu.addItem(matchName.getMenuItem(Material.NAME_TAG, "Match Display Name"));
-        final MenuItemString nameMenuItem = new MenuItemString(Material.NAME_TAG, "Display Name",
-                List.of("The name to match.", "Use % to do a wildcard match"), new Callback<>() {
+        menu.addItem(matchName.getMenuItem(Material.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_NAME_NAME)));
+        final MenuItemString nameMenuItem = new MenuItemString(Material.NAME_TAG,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TAKEITEM_NAME_DESCRIPTION), new Callback<>() {
             private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();
 
             @Override
@@ -234,10 +240,10 @@ public class TakeItemAction extends AAction {
         futureNameItem.complete(nameMenuItem);
         menu.addItem(nameMenuItem);
 
-        menu.addItem(matchLore.getMenuItem(Material.BOOK, "Match Lore"));
-        final MenuItemString loreMenuItem = new MenuItemString("Lore",
-                List.of("The lore to match. Separate", "with semi-colons", "for new lines.", "Use % to do a wildcard match"),
-                Material.BOOK, new Callback<>() {
+        menu.addItem(matchLore.getMenuItem(Material.BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_LORE_NAME)));
+        final MenuItemString loreMenuItem = new MenuItemString(Material.BOOK,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TAKEITEM_LORE_DESCRIPTION), new Callback<>() {
             private String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
 
             @Override
@@ -263,8 +269,10 @@ public class TakeItemAction extends AAction {
         futureLoreItem.complete(loreMenuItem);
         menu.addItem(loreMenuItem);
 
-        menu.addItem(matchEnchantments.getMenuItem(Material.ENCHANTED_BOOK, "Match enchantments"));
-        menu.addItem(matchExact.getMenuItem(Material.BOOKSHELF, "Match exact")); //todo with callback to turn the others on
+        menu.addItem(matchEnchantments.getMenuItem(Material.ENCHANTED_BOOK,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_ENCHANTMENTS_NAME)));
+        menu.addItem(matchExact.getMenuItem(Material.BOOKSHELF,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_EXACT_NAME))); //todo with callback to turn the others on/off
 
         menu.displayMenu(mgPlayer);
         return true;

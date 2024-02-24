@@ -3,6 +3,7 @@ package au.com.mineauz.minigames;
 import be.seeseemelk.mockbukkit.ServerMock;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.configuration.PluginMeta;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -16,7 +17,17 @@ import java.util.Enumeration;
 
 public class MockBootstrap {
     public static @NotNull Minigames createPluginWithTestContext(ServerMock server) {
-        return new MinigameBootstrap().createPlugin(new BootstrapContext() {
+        return new MinigameBootstrap().createPlugin(new BootstrapContext() { //todo
+            @Override
+            public @NotNull PluginMeta getPluginMeta() {
+                return null;
+            }
+
+            @Override
+            public @NotNull LifecycleEventManager<BootstrapContext> getLifecycleManager() {
+                return null;
+            }
+
             @Override
             public @NotNull PluginMeta getConfiguration() {
                 Enumeration<URL> resources = null;

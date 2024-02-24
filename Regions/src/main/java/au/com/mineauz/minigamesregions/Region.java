@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Region extends MgRegion implements ExecutableScriptObject {
+public class Region extends MgRegion implements BaseExecutorHolder<RegionExecutor> {
     private final List<RegionExecutor> executors = new ArrayList<>();
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final int gameTickDelay = 1;
@@ -86,7 +86,8 @@ public class Region extends MgRegion implements ExecutableScriptObject {
         return players;
     }
 
-    public int addExecutor(Trigger trigger) {
+    @Override
+    public int addExecutor(@NotNull Trigger trigger) {
         executors.add(new RegionExecutor(trigger));
         return executors.size();
     }
@@ -100,13 +101,14 @@ public class Region extends MgRegion implements ExecutableScriptObject {
         return executors;
     }
 
+    @Override
     public void removeExecutor(int id) {
         if (executors.size() <= id) {
             executors.remove(id - 1);
         }
     }
 
-    public void removeExecutor(RegionExecutor executor) {
+    public void removeExecutor(@NotNull RegionExecutor executor) {
         executors.remove(executor);
     }
 
@@ -156,14 +158,17 @@ public class Region extends MgRegion implements ExecutableScriptObject {
         Bukkit.getScheduler().cancelTask(gameTickTaskID);
     }
 
+    @Override
     public boolean getEnabled() {
         return enabled;
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
+    @Override
     public void execute(@NotNull Trigger trigger, @Nullable MinigamePlayer player) {
         if (player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
         List<RegionExecutor> toExecute = new ArrayList<>();
@@ -178,6 +183,7 @@ public class Region extends MgRegion implements ExecutableScriptObject {
         }
     }
 
+    @Override
     public boolean checkConditions(@NotNull RegionExecutor exec, @Nullable MinigamePlayer player) {
         for (ACondition con : exec.getConditions()) {
             boolean c = con.checkRegionCondition(player, this);
@@ -190,19 +196,23 @@ public class Region extends MgRegion implements ExecutableScriptObject {
         return true;
     }
 
-    public void execute(RegionExecutor exec, MinigamePlayer player) {
+    @Override
+    public void execute(@NotNull RegionExecutor exec, @NotNull MinigamePlayer player) {
         for (ActionInterface act : exec.getActions()) {
             if (!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
             act.executeRegionAction(player, this);
-            if (!exec.isTriggerPerPlayer())
+            if (!exec.isTriggerPerPlayer()) {
                 exec.addPublicTrigger();
-            else
+            } else {
                 exec.addPlayerTrigger(player);
+            }
         }
     }
 
     public void executeGameTick() {
-        if (players.isEmpty()) return;
+        if (players.isEmpty()) {
+            return;
+        }
         // There is no condition, which is not player specific, so we can just execute all executors.
         for (RegionExecutor exec : executors) {
             for (ActionInterface act : exec.getActions()) {
@@ -247,7 +257,8 @@ public class Region extends MgRegion implements ExecutableScriptObject {
         return Set.of("name", "players", "min", "max");
     }
 
-    public Minigame getMinigame() {
+    @Override
+    public @NotNull Minigame getMinigame() {
         return minigame;
     }
 }

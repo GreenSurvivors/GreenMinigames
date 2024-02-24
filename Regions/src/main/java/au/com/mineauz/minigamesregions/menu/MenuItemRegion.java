@@ -40,7 +40,7 @@ public class MenuItemRegion extends MenuItem {
         this.rmod = rmod;
     }
 
-    public static Menu createMenu(MinigamePlayer viewer, Menu previousPage, Region region) {
+    public static @NotNull Menu createMenu(@NotNull MinigamePlayer viewer, @Nullable Menu previousPage, @NotNull Region region) {
         Menu m = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_REGION_NAME,
                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), region.getName())), viewer);
         m.setPreviousPage(previousPage);
@@ -51,24 +51,24 @@ public class MenuItemRegion extends MenuItem {
         if (previousPage != null) {
             m.addItem(new MenuItemBack(previousPage), m.getSize() - 9);
         }
-        m.addItem(new MenuItemRegionExecutorAdd(MenuUtility.getCreateMaterial(), RegionLangKey.MENU_EXECUTOR_ADD_NAME, region), m.getSize() - 1);
+        m.addItem(new MenuItemRegionExecutorAdd(MenuUtility.getCreateMaterial(),
+                RegionLangKey.MENU_EXECUTOR_ADD_NAME, region), m.getSize() - 1);
         m.addItems(items);
 
         return m;
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         Menu m = createMenu(getContainer().getViewer(), getContainer(), region);
         m.displayMenu(getContainer().getViewer());
         return null;
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @Nullable ItemStack onRightClick() {
         rmod.removeRegion(region.getName());
         getContainer().removeItem(getSlot());
         return null;
     }
-
 }

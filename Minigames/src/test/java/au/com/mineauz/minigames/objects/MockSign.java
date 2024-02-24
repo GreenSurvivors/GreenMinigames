@@ -11,6 +11,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
@@ -149,6 +150,16 @@ public class MockSign extends BlockStateMock implements Sign {
 
     @Override
     public @NotNull SignSide getSide(@NotNull Side side) {
+        return null;
+    }
+
+    @Override
+    public @NotNull SignSide getTargetSide(@NotNull Player player) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Player getAllowedEditor() {
         return null;
     }
 

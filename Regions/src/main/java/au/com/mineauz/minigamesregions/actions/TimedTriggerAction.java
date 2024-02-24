@@ -1,8 +1,11 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.config.TimeFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -12,13 +15,13 @@ import au.com.mineauz.minigamesregions.*;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.Map;
 
 /**
@@ -30,7 +33,7 @@ import java.util.Map;
 public class TimedTriggerAction extends AAction {
     private final StringFlag toTrigger = new StringFlag("None", "toTrigger");
     private final BooleanFlag isRegion = new BooleanFlag(false, "isRegion");
-    private final IntegerFlag delay = new IntegerFlag(20, "delay");
+    private final TimeFlag delay = new TimeFlag(20L, "delay");
 
     protected TimedTriggerAction(@NotNull String name) {
         super(name);
@@ -47,10 +50,14 @@ public class TimedTriggerAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull Component, @Nullable ComponentLike> out) {
-        out.put("Object to trigger", toTrigger.getFlag());
-        out.put("Otherwise it is a;node", isRegion.getFlag());
-        out.put("Delay in ticks", delay.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of(
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME),
+                Component.text(toTrigger.getFlag()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME),
+                MinigameMessageManager.getMgMessage(isRegion.getFlag() ? MinigameLangKey.BOOL_TRUE : MinigameLangKey.BOOL_FALSE),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME),
+                MinigameUtils.convertTime(Duration.ofSeconds(delay.getFlag() / 20)));
     }
 
     @Override
@@ -109,9 +116,9 @@ public class TimedTriggerAction extends AAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(toTrigger.getMenuItem("Object Name", Material.ENDER_EYE));
-        m.addItem(isRegion.getMenuItem("Is Region?", Material.ENDER_PEARL));
-        m.addItem(delay.getMenuItem("Delay in ticks", Material.ENDER_PEARL));
+        m.addItem(toTrigger.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME)));
+        m.addItem(isRegion.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME)));
+        m.addItem(delay.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME), 0L, null));
         m.displayMenu(mgPlayer);
         return true;
     }

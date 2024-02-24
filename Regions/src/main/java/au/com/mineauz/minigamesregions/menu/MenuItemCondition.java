@@ -1,42 +1,35 @@
 package au.com.mineauz.minigamesregions.menu;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class MenuItemCondition extends MenuItem {
     private final @NotNull ACondition con;
-    private final @Nullable RegionExecutor rexec;
-    private final @Nullable NodeExecutor nexec;
+    private final @NotNull BaseExecutor executor;
 
     public MenuItemCondition(@Nullable Material displayMat, @Nullable Component name,
-                             @NotNull RegionExecutor exec, @NotNull ACondition con) {
+                             @NotNull BaseExecutor exec, @NotNull ACondition con) {
         super(displayMat, name);
-        this.rexec = exec;
-        this.nexec = null;
-        this.con = con;
-
-        updateDescription();
-    }
-
-    public MenuItemCondition(@Nullable Material displayMat, @Nullable Component name,
-                             @NotNull NodeExecutor exec, @NotNull ACondition con) {
-        super(displayMat, name);
-        this.rexec = null;
-        this.nexec = exec;
+        this.executor = exec;
         this.con = con;
 
         updateDescription();
@@ -48,67 +41,41 @@ public class MenuItemCondition extends MenuItem {
     }
 
     private void updateDescription() {
-        Map<String, Object> out = new HashMap<>();
-        con.describe(out);
+        @NotNull Map<@NotNull Component, @Nullable Component> out = con.describe();
 
         if (out.isEmpty()) {
             return;
         }
 
-        int lineLimit = 35;
-
         // Convert the description
         List<Component> description = new ArrayList<>();
-        for (Entry<String, Object> entry : out.entrySet()) {
-            Object value = entry.getValue();
-            String line = ChatColor.GRAY + entry.getKey() + ": ";
+        for (Entry<Component, Component> entry : out.entrySet()) {
+            Component value = entry.getValue() == null ?
+                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).
+                            color(NamedTextColor.YELLOW) :
+                    entry.getValue();
 
-            // Translate the value
-            if (value instanceof Boolean) {
-                if (((Boolean) value)) {
-                    value = ChatColor.GREEN + "True";
-                } else {
-                    value = ChatColor.RED + "False";
-                }
-            } else if (value == null) {
-                value = ChatColor.YELLOW.toString() + ChatColor.ITALIC + "Not Set";
-            } else {
-                value = ChatColor.GREEN + String.valueOf(value);
-            }
+            Component line = RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_DESCRIPTION,
+                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), entry.getKey()),
+                    Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), value));
 
-            line += value;
-
-            // Trim
-            String lastColor = "";
-            while (line.length() > lineLimit) {
-                String part = lastColor + line.substring(0, lineLimit + 1);
-                line = line.substring(lineLimit + 1);
-                description.add(part);
-                lastColor = ChatColor.getLastColors(part);
-            }
-
-            if (!line.isEmpty()) {
-                description.add(lastColor + line);
-            }
+            description.add(MinigameUtils.limitIgnoreFormat(line, 35));
         }
 
-        setDescription(description);
+        setBaseDescriptionPart(description);
     }
 
     @Override
     public ItemStack onClick() {
-        if (con.displayMenu(getContainer().getViewer(), getContainer()))
+        if (con.displayMenu(getContainer().getViewer(), getContainer())) {
             return null;
+        }
         return getDisplayItem();
     }
 
     @Override
     public ItemStack onRightClick() {
-        if (rexec != null) {
-            rexec.removeCondition(con);
-        } else {
-            nexec.removeCondition(con);
-        }
+        executor.removeCondition(con);
         getContainer().removeItem(getSlot());
         return null;
     }

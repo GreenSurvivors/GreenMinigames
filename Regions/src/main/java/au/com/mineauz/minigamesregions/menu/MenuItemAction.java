@@ -10,7 +10,6 @@ import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
@@ -42,7 +41,7 @@ public class MenuItemAction extends MenuItem {
     }
 
     private void updateDescription() {
-        Map<Component, ComponentLike> out = act.describe();
+        Map<Component, Component> out = act.describe();
 
         if (out.isEmpty()) {
             return;
@@ -50,11 +49,11 @@ public class MenuItemAction extends MenuItem {
 
         // Convert the description
         List<Component> description = new ArrayList<>();
-        for (Entry<Component, ComponentLike> entry : out.entrySet()) {
+        for (Entry<Component, Component> entry : out.entrySet()) {
             Component value = entry.getValue() == null ?
                     MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).
                             color(NamedTextColor.YELLOW) :
-                    entry.getValue().asComponent();
+                    entry.getValue();
 
             Component line = RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_DESCRIPTION,
                     Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), entry.getKey()),

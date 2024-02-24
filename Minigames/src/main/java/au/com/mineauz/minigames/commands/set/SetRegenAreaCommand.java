@@ -86,12 +86,12 @@ public class SetRegenAreaCommand extends ASetCommand {
 
             listBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.REGION_DESCRIBE,
                     Placeholder.component(MinigamePlaceHolderKey.POSITION_1.getKey(),
-                            MinigameMessageManager.getMgMessage(MinigameLangKey.REGION_POSITION,
+                            MinigameMessageManager.getMgMessage(MinigameLangKey.POSITION,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMinX())),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMinY())),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMinZ())))),
                     Placeholder.component(MinigamePlaceHolderKey.POSITION_2.getKey(),
-                            MinigameMessageManager.getMgMessage(MinigameLangKey.REGION_POSITION,
+                            MinigameMessageManager.getMgMessage(MinigameLangKey.POSITION,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMaxX())),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMaxY())),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMaxZ()))))));

@@ -219,7 +219,7 @@ public enum MgMenuLangKey implements LangKey {
     MENU_TEAM_GAMEAUTOBALANCEMSG_DESCRIPTION("menu.team.gameAutobalanceMsg.description"),
     MENU_TEAM_GAMEAUTOBALANCEMSG_NAME("menu.team.gameAutobalanceMsg.name"),
     MENU_TEAM_MAXPLAYERS("menu.team.maxPlayers"),
-    MENU_TEAM_NAME("menu.team.name"),
+    MENU_TEAM_NAME("menu.teams.name"),
     MENU_TEAM_NAMEVISIBILITY_ALWAYSVISIBLE("menu.team.nameVisibility.alwaysVisible"),
     MENU_TEAM_NAMEVISIBILITY_HIDEOTHERTEAM("menu.team.nameVisibility.hideOtherTeam"),
     MENU_TEAM_NAMEVISIBILITY_HIDEOWNTEAM("menu.team.nameVisibility.hideOwnTeam"),

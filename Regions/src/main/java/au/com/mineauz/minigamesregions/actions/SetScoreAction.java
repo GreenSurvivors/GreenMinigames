@@ -11,7 +11,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +36,7 @@ public class SetScoreAction extends AScoreAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(MinigameMessageManager.getMgMessage(MinigameLangKey.STATISTIC_SCORE_NAME), Component.text(amount.getFlag()));
     }
 
@@ -83,7 +82,8 @@ public class SetScoreAction extends AScoreAction {
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
-        menu.addItem(amount.getMenuItem(Material.ENDER_PEARL, MinigameMessageManager.getMgMessage(MinigameLangKey.STATISTIC_SCORE_NAME), null, null));
+        menu.addItem(amount.getMenuItem(Material.ENDER_PEARL,
+                MinigameMessageManager.getMgMessage(MinigameLangKey.STATISTIC_SCORE_NAME), null, null));
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.displayMenu(mgPlayer);
         return true;

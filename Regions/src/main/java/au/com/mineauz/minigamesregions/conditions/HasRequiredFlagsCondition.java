@@ -11,6 +11,7 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -31,7 +32,8 @@ public class HasRequiredFlagsCondition extends ACondition {
     }
 
     @Override
-    public void describe(@NotNull Map<String, Object> out) {
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of();
     }
 
     @Override
@@ -76,7 +78,7 @@ public class HasRequiredFlagsCondition extends ACondition {
     }
 
     @Override
-    public boolean PlayerNeeded() {
+    public boolean playerNeeded() {
         return true;
     }
 }

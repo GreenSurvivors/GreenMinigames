@@ -2,6 +2,8 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -25,7 +27,7 @@ import java.util.Map;
 
 public class TriggerRandomAction extends AAction {
     private final IntegerFlag timesTriggered = new IntegerFlag(1, "timesTriggered");
-    private final BooleanFlag randomPerTrigger = new BooleanFlag(false, "randomPerTrigger");
+    private final BooleanFlag allowSameTrigger = new BooleanFlag(false, "randomPerTrigger"); // todo datafixerupper rename
 
     protected TriggerRandomAction(@NotNull String name) {
         super(name);
@@ -42,9 +44,11 @@ public class TriggerRandomAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Trigger Count", timesTriggered.getFlag());
-        out.put("Allow same", randomPerTrigger.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of(
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_TIMES_NAME), Component.text(timesTriggered.getFlag()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_NAME),
+                MinigameMessageManager.getMgMessage(allowSameTrigger.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -72,14 +76,18 @@ public class TriggerRandomAction extends AAction {
                 region.execute(exs.get(0), mgPlayer);
         } else {
             for (int i = 0; i < timesTriggered.getFlag(); i++) {
-                if (!randomPerTrigger.getFlag()) {
-                    if (i == timesTriggered.getFlag()) break;
-                    if (region.checkConditions(exs.get(i), mgPlayer) && exs.get(i).canBeTriggered(mgPlayer))
-                        region.execute(exs.get(i), mgPlayer);
-                } else {
-                    if (region.checkConditions(exs.get(0), mgPlayer) && exs.get(0).canBeTriggered(mgPlayer))
+                if (allowSameTrigger.getFlag()) {
+                    if (region.checkConditions(exs.get(0), mgPlayer) && exs.get(0).canBeTriggered(mgPlayer)) {
                         region.execute(exs.get(0), mgPlayer);
+                    }
                     Collections.shuffle(exs);
+                } else {
+                    if (i == timesTriggered.getFlag()) {
+                        break;
+                    }
+                    if (region.checkConditions(exs.get(i), mgPlayer) && exs.get(i).canBeTriggered(mgPlayer)) {
+                        region.execute(exs.get(i), mgPlayer);
+                    }
                 }
             }
         }
@@ -100,14 +108,18 @@ public class TriggerRandomAction extends AAction {
                 node.execute(exs.get(0), mgPlayer);
         } else {
             for (int i = 0; i < timesTriggered.getFlag(); i++) {
-                if (!randomPerTrigger.getFlag()) {
-                    if (i == timesTriggered.getFlag()) break;
-                    if (node.checkConditions(exs.get(i), mgPlayer) && exs.get(i).canBeTriggered(mgPlayer))
-                        node.execute(exs.get(i), mgPlayer);
-                } else {
-                    if (node.checkConditions(exs.get(0), mgPlayer) && exs.get(0).canBeTriggered(mgPlayer))
+                if (allowSameTrigger.getFlag()) {
+                    if (node.checkConditions(exs.get(0), mgPlayer) && exs.get(0).canBeTriggered(mgPlayer)) {
                         node.execute(exs.get(0), mgPlayer);
+                    }
                     Collections.shuffle(exs);
+                } else {
+                    if (i == timesTriggered.getFlag()) {
+                        break;
+                    }
+                    if (node.checkConditions(exs.get(i), mgPlayer) && exs.get(i).canBeTriggered(mgPlayer)) {
+                        node.execute(exs.get(i), mgPlayer);
+                    }
                 }
             }
         }
@@ -116,22 +128,22 @@ public class TriggerRandomAction extends AAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         timesTriggered.saveValue(config, path);
-        randomPerTrigger.saveValue(config, path);
+        allowSameTrigger.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         timesTriggered.loadValue(config, path);
-        randomPerTrigger.loadValue(config, path);
+        allowSameTrigger.loadValue(config, path);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(timesTriggered.getMenuItem(Material.COMMAND_BLOCK, "Times to Trigger Random", 1, null));
-        m.addItem(randomPerTrigger.getMenuItem(Material.ENDER_PEARL, "Allow Same Executor",
-                List.of("Should there be a chance", "that the same executor", "can be triggered more?")));
+        m.addItem(timesTriggered.getMenuItem(Material.COMMAND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_TIMES_NAME), 1, null));
+        m.addItem(allowSameTrigger.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_DESCRIPTION)));
         m.displayMenu(mgPlayer);
         return true;
     }

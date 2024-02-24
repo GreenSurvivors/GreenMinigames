@@ -11,7 +11,7 @@ public class GameMechanics {
 
     static {
         addGameMechanic(new CustomMechanic());
-        Arrays.stream(MG_MECHANICS.values()).forEach(s -> addGameMechanic(s.getMechanic()));
+        Arrays.stream(MgMechanics.values()).forEach(s -> addGameMechanic(s.getMechanic()));
     }
 
     /**
@@ -69,7 +69,7 @@ public class GameMechanics {
         return null;
     }
 
-    public enum MG_MECHANICS {
+    public enum MgMechanics {
         KILLS(new PlayerKillsMechanic()),
         CTF(new CTFMechanic()),
         INFECTION(new InfectionMechanic()),
@@ -79,7 +79,7 @@ public class GameMechanics {
 
         private final GameMechanicBase mechanic;
 
-        MG_MECHANICS(GameMechanicBase name) {
+        MgMechanics(GameMechanicBase name) {
             this.mechanic = name;
         }
 

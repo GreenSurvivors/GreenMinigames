@@ -72,8 +72,6 @@ public class BaseExecutor {
             public void setValue(Integer value) {
                 setTriggerCount(value);
             }
-
-
         };
     }
 
@@ -97,8 +95,6 @@ public class BaseExecutor {
             public void setValue(Boolean value) {
                 setTriggerPerPlayer(value);
             }
-
-
         };
     }
 

@@ -37,8 +37,8 @@ public class TriggerNodeAction extends AAction { // todo merge with TriggerRegio
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Node", node.getName());
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME), Component.text(node.getName()));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class TriggerNodeAction extends AAction { // todo merge with TriggerRegio
     @Override
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
-        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        if (!mgPlayer.isInMinigame()) return;
         Minigame mg = mgPlayer.getMinigame();
         if (mg != null) {
             RegionModule rmod = RegionModule.getMinigameModule(mg);
@@ -92,7 +92,7 @@ public class TriggerNodeAction extends AAction { // todo merge with TriggerRegio
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(node.getMenuItem(Material.NAME_TAG, "Node Name"));
+        m.addItem(node.getMenuItem(Material.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME)));
         m.displayMenu(mgPlayer);
         return true;
     }

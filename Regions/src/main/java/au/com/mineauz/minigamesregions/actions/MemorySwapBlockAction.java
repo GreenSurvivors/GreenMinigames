@@ -6,6 +6,8 @@ import au.com.mineauz.minigames.config.MaterialListFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.recorder.RecorderData;
@@ -14,7 +16,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -23,7 +24,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -90,7 +94,7 @@ public class MemorySwapBlockAction extends AAction {
         //Wool blocks
         blockPool.addAll(Tag.WOOL.getValues());
 
-        //Logs
+        //Logs - we explicitly don't use Tag.LOGS since the "xxx_wood" (all side bark) look a lot like "xxx_log" (annual rings on top/bottom)
         blockPool.add(Material.OAK_LOG);
         blockPool.add(Material.STRIPPED_OAK_LOG);
         blockPool.add(Material.SPRUCE_LOG);
@@ -234,11 +238,14 @@ public class MemorySwapBlockAction extends AAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
-        out.put("From: ", matchType.getFlag());
-        out.put("Block pool size", blockPool.size());
-        out.put("Whitelist mode", whitelistMode.getFlag()); //todo this can be quite long, maybe cut it off
-        out.put("White/Blacklist", wbList.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of(
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), Component.translatable(matchType.getFlag().translationKey()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_POOLSIZE), Component.text(blockPool.size()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_MODE_NAME),
+                MinigameMessageManager.getMgMessage(whitelistMode.getFlag() ? MinigameLangKey.BOOL_TRUE : MinigameLangKey.BOOL_FALSE),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_SIZE), Component.text(wbList.getFlag().size())
+        );
     }
 
     @Override
@@ -298,7 +305,6 @@ public class MemorySwapBlockAction extends AAction {
             }
         }
 
-
         // make a random collection of used materials
         if ((2 * localMatPool.size()) > blocksToSwap.size())
             Collections.shuffle(localMatPool);
@@ -357,11 +363,12 @@ public class MemorySwapBlockAction extends AAction {
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
         //The menu entry for the from-block, aka the block that will be replaced
-        m.addItem(matchType.getMenuItem("Match Block"));
+        m.addItem(matchType.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MATCHBLOCK_NAME)));
 
         //Menu entry for the white/blacklist entry, aka the blocks that will be only accounted for / removed from the block pool
         m.addItem(new MenuItemNewLine());
-        m.addItem(new MenuItemDisplayWhitelist(Material.BOOK, "Block Whitelist/Blacklist", List.of("Blocks that can/can't", "used as memory."),
+        m.addItem(new MenuItemDisplayWhitelist(Material.BOOK, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_DESCRIPTION),
                 wbList.getFlag(), new Callback<>() {
 
             @Override
@@ -373,7 +380,7 @@ public class MemorySwapBlockAction extends AAction {
             public void setValue(Boolean value) {
                 whitelistMode.setFlag(value);
             }
-        }, List.of("If whitelist mode only", "added items can get", "used as memory.")));
+        }, RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_MODE_DESCRIPTION)));
 
         m.displayMenu(mgPlayer);
 

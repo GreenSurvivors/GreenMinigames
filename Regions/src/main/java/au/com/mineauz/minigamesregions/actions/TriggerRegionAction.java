@@ -37,8 +37,8 @@ public class TriggerRegionAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Region", region.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERREGION_REGION_NAME), Component.text(region.getFlag()));
     }
 
     @Override
@@ -71,8 +71,9 @@ public class TriggerRegionAction extends AAction {
         Minigame mg = mgPlayer.getMinigame();
         if (mg != null) {
             RegionModule rmod = RegionModule.getMinigameModule(mg);
-            if (rmod.hasRegion(region.getFlag()))
+            if (rmod.hasRegion(region.getFlag())) {
                 rmod.getRegion(region.getFlag()).execute(MgRegTrigger.REMOTE, mgPlayer);
+            }
         }
     }
 
@@ -92,7 +93,7 @@ public class TriggerRegionAction extends AAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(region.getMenuItem("Region Name", Material.ENDER_EYE));
+        m.addItem(region.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERREGION_REGION_NAME)));
         m.displayMenu(mgPlayer);
         return true;
     }

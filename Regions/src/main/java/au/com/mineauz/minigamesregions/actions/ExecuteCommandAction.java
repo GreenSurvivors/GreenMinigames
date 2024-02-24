@@ -18,7 +18,6 @@ import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.util.NullCommandSender;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -48,7 +47,7 @@ public class ExecuteCommandAction extends AAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME), Component.text(comd.getFlag()),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME),
                 MinigameMessageManager.getMgMessage(silentExecute.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));

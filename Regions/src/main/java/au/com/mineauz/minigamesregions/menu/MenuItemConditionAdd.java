@@ -1,13 +1,11 @@
 package au.com.mineauz.minigamesregions.menu;
 
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
 import au.com.mineauz.minigamesregions.conditions.IConditionCategory;
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
@@ -17,22 +15,17 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MenuItemConditionAdd extends MenuItem {
-    private final @Nullable RegionExecutor rexec;
-    private final @Nullable NodeExecutor nexec;
+    private final @NotNull BaseExecutor exec;
 
-    public MenuItemConditionAdd(@Nullable Material displayMat, @NotNull Component name, @NotNull RegionExecutor exec) {
+    public MenuItemConditionAdd(@Nullable Material displayMat, @NotNull Component name, @NotNull BaseExecutor exec) {
         super(displayMat, name);
-        this.rexec = exec;
-        this.nexec = null;
-    }
-
-    public MenuItemConditionAdd(@Nullable Material displayMat, @NotNull Component name, @NotNull NodeExecutor exec) {
-        super(displayMat, name);
-        this.rexec = null;
-        this.nexec = exec;
+        this.exec = exec;
     }
 
     @Override
@@ -42,9 +35,9 @@ public class MenuItemConditionAdd extends MenuItem {
         Map<IConditionCategory, Menu> cats = new HashMap<>();
         List<ACondition> cons = new ArrayList<>(ConditionRegistry.getAllConditions());
         for (ACondition condition : cons) {
-            if ((condition.useInNodes() && nexec != null) || (condition.useInRegions() && rexec != null)) {
-                if (!Objects.requireNonNullElse(rexec, nexec).getTrigger().triggerOnPlayerAvailable()) {
-                    if (condition.PlayerNeeded()) {
+            if ((condition.useInNodes() && exec instanceof NodeExecutor) || (condition.useInRegions() && exec instanceof RegionExecutor)) {
+                if (!exec.getTrigger().triggerOnPlayerAvailable()) {
+                    if (condition.playerNeeded()) {
                         continue;
                     }
                 }
@@ -56,18 +49,14 @@ public class MenuItemConditionAdd extends MenuItem {
                     cats.put(category, catMenu);
                     menu.addItem(new MenuItemPage(Material.CHEST, category.getDisplayName(), catMenu));
                     catMenu.addItem(new MenuItemBack(menu), catMenu.getSize() - 9);
-                } else
+                } else {
                     catMenu = cats.get(category);
+                }
                 MenuItemCustom menuItemCustom = new MenuItemCustom(Material.PAPER, condition.getDisplayName());
 
                 menuItemCustom.setClick(() -> {
-                    if (rexec != null) {
-                        rexec.addCondition(condition);
-                        getContainer().addItem(new MenuItemCondition(Material.PAPER, condition.getDisplayName(), rexec, condition));
-                    } else {
-                        nexec.addCondition(condition);
-                        getContainer().addItem(new MenuItemCondition(Material.PAPER, condition.getDisplayName(), nexec, condition));
-                    }
+                    exec.addCondition(condition);
+                    getContainer().addItem(new MenuItemCondition(Material.PAPER, condition.getDisplayName(), exec, condition));
                     getContainer().displayMenu(getContainer().getViewer());
                     return null;
                 });

@@ -1,7 +1,9 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -11,19 +13,17 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class AddTeamScoreAction extends AScoreAction { // todo merge with addScoreAction
     private final IntegerFlag score = new IntegerFlag(1, "amount");
-    private final StringFlag team = new StringFlag("NONE", "team");
+    private final EnumFlag<TeamColor> team = new EnumFlag<>(TeamColor.NONE, "team");
 
     protected AddTeamScoreAction(@NotNull String name) {
         super(name);
@@ -31,7 +31,7 @@ public class AddTeamScoreAction extends AScoreAction { // todo merge with addSco
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TEAMADD_NAME);
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SCORE_TEAMADD_NAME);
     }
 
     @Override
@@ -40,9 +40,9 @@ public class AddTeamScoreAction extends AScoreAction { // todo merge with addSco
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Score", score.getFlag());
-        out.put("Team", team.getFlag());
+    public @NotNull Map<@NotNull Component, @NotNull Component> describe() {
+        return Map.of(MinigameMessageManager.getMgMessage(MinigameLangKey.STATISTIC_SCORE_NAME), Component.text(score.getFlag()),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), team.getFlag().getCompName());
     }
 
     @Override
@@ -70,16 +70,20 @@ public class AddTeamScoreAction extends AScoreAction { // todo merge with addSco
     }
 
     private void executeAction(MinigamePlayer player) {
-        if (player == null || !player.isInMinigame()) return;
-        if (player.getTeam() != null && team.getFlag().equals("NONE")) {
-            player.getTeam().addScore(score.getFlag());
-        } else if (!team.getFlag().equals("NONE")) {
-            TeamsModule tm = TeamsModule.getMinigameModule(player.getMinigame());
-            if (tm.hasTeam(TeamColor.valueOf(team.getFlag()))) {
-                tm.getTeam(TeamColor.valueOf(team.getFlag())).addScore(score.getFlag());
+        if (player != null && player.isInMinigame()) {
+            if (team.getFlag() == TeamColor.NONE) {
+                if (player.getTeam() != null) {
+                    player.getTeam().addScore(score.getFlag());
+                }
+            } else {
+                TeamsModule tm = TeamsModule.getMinigameModule(player.getMinigame());
+                if (tm != null && tm.hasTeam(team.getFlag())) {
+                    tm.getTeam(team.getFlag()).addScore(score.getFlag());
+                }
             }
+
+            checkScore(player);
         }
-        checkScore(player);
     }
 
     @Override
@@ -98,9 +102,10 @@ public class AddTeamScoreAction extends AScoreAction { // todo merge with addSco
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, "Add Team Score", mgPlayer);
+        Menu m = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SCORE_TEAMADD_NAME), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(new MenuItemInteger("Add Score Amount", Material.STONE, new Callback<>() {
+        m.addItem(new MenuItemInteger(Material.STONE,
+                MinigameMessageManager.getMgMessage(MinigameLangKey.STATISTIC_SCORE_NAME), new Callback<>() {
 
             @Override
             public Integer getValue() {
@@ -115,20 +120,19 @@ public class AddTeamScoreAction extends AScoreAction { // todo merge with addSco
 
         }, null, null));
 
-        List<String> teams = new ArrayList<>(TeamColor.colorNames());
-        m.addItem(new MenuItemList("Specific Team", List.of("If 'None'", "the players", "team will be used"), Material.PAPER, new Callback<>() {
+        List<TeamColor> teams = List.of(TeamColor.values());
+        m.addItem(new MenuItemList<>(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_TEAM_DESCRIPTION), new Callback<>() {
 
             @Override
-            public String getValue() {
-                return WordUtils.capitalizeFully(team.getFlag());
+            public TeamColor getValue() {
+                return team.getFlag();
             }
 
             @Override
-            public void setValue(String value) {
-                team.setFlag(value.toUpperCase());
+            public void setValue(TeamColor value) {
+                team.setFlag(value);
             }
-
-
         }, teams));
         m.displayMenu(mgPlayer);
         return true;

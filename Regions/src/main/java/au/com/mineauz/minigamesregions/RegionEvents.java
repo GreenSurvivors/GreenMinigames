@@ -178,11 +178,13 @@ public class RegionEvents implements Listener {
         for (Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()) {
             node.execute(MgRegTrigger.PLAYER_GAME_QUIT, event.getMinigamePlayer());
             if (event.getMinigame().getPlayers().size() > 1) {
-                for (NodeExecutor exec : node.getExecutors())
+                for (NodeExecutor exec : node.getExecutors()) {
                     exec.removeTrigger(event.getMinigamePlayer());
+                }
             } else {
-                for (NodeExecutor exec : node.getExecutors())
+                for (NodeExecutor exec : node.getExecutors()) {
                     exec.clearTriggers();
+                }
                 node.setEnabled(true);
             }
         }

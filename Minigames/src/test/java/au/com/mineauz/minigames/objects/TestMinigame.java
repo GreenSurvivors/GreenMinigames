@@ -17,7 +17,7 @@ public class TestMinigame extends Minigame {
     public TestMinigame(String name, MinigameType type, Location start, World world, MinigameManager manager, Location quit, Location end, Location lobby) {
         super(name, type, start);
         setType(MinigameType.MULTIPLAYER);
-        setMechanic(GameMechanics.MG_MECHANICS.CTF.getMechanic());
+        setMechanic(GameMechanics.MgMechanics.CTF.getMechanic());
         setDeathDrops(true);
         setQuitLocation(quit);
         setLobbyLocation(lobby);

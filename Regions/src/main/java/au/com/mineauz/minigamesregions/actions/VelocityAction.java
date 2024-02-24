@@ -1,6 +1,9 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.FloatFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -10,6 +13,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -39,8 +43,13 @@ public class VelocityAction extends AAction {
     }
 
     @Override
-    public void describe(@NotNull Map<@NotNull String, @NotNull Object> out) {
-        out.put("Velocity", x.getFlag() + "," + y.getFlag() + "," + z.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of(
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_NAME),
+                MinigameMessageManager.getMgMessage(MinigameLangKey.POSITION,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(x.getFlag())),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(y.getFlag())),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(z.getFlag()))));
     }
 
     @Override
@@ -88,9 +97,9 @@ public class VelocityAction extends AAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(x.getMenuItem(Material.STONE, "X Velocity", 0.5d, 1d, null, null));
-        m.addItem(y.getMenuItem(Material.STONE, "Y Velocity", 0.5d, 1d, null, null));
-        m.addItem(z.getMenuItem(Material.STONE, "Z Velocity", 0.5d, 1d, null, null));
+        m.addItem(x.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_X_NAME), 0.5d, 1d, null, null));
+        m.addItem(y.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Y_NAME), 0.5d, 1d, null, null));
+        m.addItem(z.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Z_NAME), 0.5d, 1d, null, null));
         m.displayMenu(mgPlayer);
         return true;
     }

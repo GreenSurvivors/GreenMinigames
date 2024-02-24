@@ -37,7 +37,7 @@ import java.util.*;
 
 public class MinigamePlayer implements ScriptObject {
     private final Player player;
-    private final List<String> flags = new ArrayList<>();
+    private final List<@NotNull String> singlePlayerFlags = new ArrayList<>();
     private final List<String> tempClaimedRewards = new ArrayList<>();
     private final List<ItemStack> tempRewardItems = new ArrayList<>();
     private final List<ItemStack> rewardItems = new ArrayList<>();
@@ -274,28 +274,28 @@ public class MinigamePlayer implements ScriptObject {
         return false;
     }
 
-    public List<String> getFlags() {
-        return this.flags;
+    public List<String> getSinglePlayerFlags() {
+        return this.singlePlayerFlags;
     }
 
-    public void setFlags(final List<String> flags) {
-        this.flags.addAll(flags);
+    public void setSinglePlayerFlags(final List<String> singlePlayerFlags) {
+        this.singlePlayerFlags.addAll(singlePlayerFlags);
     }
 
     public boolean addFlag(final String flag) {
-        if (!this.flags.contains(flag)) {
-            this.flags.add(flag);
+        if (!this.singlePlayerFlags.contains(flag)) {
+            this.singlePlayerFlags.add(flag);
             return true;
         }
         return false;
     }
 
     public boolean hasFlag(final String flagName) {
-        return this.flags.contains(flagName);
+        return this.singlePlayerFlags.contains(flagName);
     }
 
     public void clearFlags() {
-        this.flags.clear();
+        this.singlePlayerFlags.clear();
     }
 
     public Location getCheckpoint() {
