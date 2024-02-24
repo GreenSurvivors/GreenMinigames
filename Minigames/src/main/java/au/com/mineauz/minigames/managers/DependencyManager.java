@@ -17,7 +17,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.sk89q.worldedit.extension.platform.permission.ActorSelectorLimits.forActor;
 
 public class DependencyManager {
     private static Plugin worldEditPlugin = null; // cached for test if still enabled
@@ -112,7 +111,7 @@ public class DependencyManager {
         CuboidRegionSelector cuboidRegionSelector = new CuboidRegionSelector(oldRegionSelector);
         WorldEdit.getInstance().getSessionManager().get(actor).setRegionSelector(world, cuboidRegionSelector);
 
-        cuboidRegionSelector.selectSecondary(BlockVector3.at(location2.x(), location2.y(), location2.z()), forActor(actor));
+        cuboidRegionSelector.selectSecondary(BlockVector3.at(location2.x(), location2.y(), location2.z()), ActorSelectorLimits.forActor(actor));
         cuboidRegionSelector.learnChanges();
         cuboidRegionSelector.explainRegionAdjust(actor, session);
     }

@@ -1,13 +1,12 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
@@ -17,13 +16,14 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class MatchTeamCondition extends ACondition {
-    private final StringFlag team = new StringFlag(TeamColor.RED.toString(), "team");
+    private final EnumFlag<TeamColor> teamColor = new EnumFlag<>(TeamColor.RED, "team");
 
     protected MatchTeamCondition(@NotNull String name) {
         super(name);
@@ -40,8 +40,8 @@ public class MatchTeamCondition extends ACondition {
     }
 
     @Override
-    public void describe(@NotNull Map<String, Object> out) {
-        out.put("Team", team.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), teamColor.getFlag().getCompName());
     }
 
     @Override
@@ -56,25 +56,25 @@ public class MatchTeamCondition extends ACondition {
 
     @Override
     public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
-        return player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag());
+        return player.getTeam() != null && player.getTeam().getColor() == teamColor.getFlag();
     }
 
     @Override
     public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
         if (player == null || !player.isInMinigame()) return false;
-        return player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag());
+        return player.getTeam() != null && player.getTeam().getColor() == teamColor.getFlag();
     }
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        team.saveValue(config, path);
+        teamColor.saveValue(config, path);
         saveInvert(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        team.loadValue(config, path);
+        teamColor.loadValue(config, path);
         loadInvert(config, path);
     }
 
@@ -85,15 +85,15 @@ public class MatchTeamCondition extends ACondition {
 
         List<TeamColor> teams = new ArrayList<>(TeamColor.validColors());
 
-        m.addItem(new MenuItemList<>(getTeamMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<>() {
+        m.addItem(new MenuItemList<>(getTeamMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<TeamColor>() { // don't know why but for some reason the compiler doesn't like when I remove the redundant Teamcolor from the callback. Please let it in there for now!
             @Override
             public TeamColor getValue() {
-                return TeamColor.matchColor(team.getFlag());
+                return teamColor.getFlag();
             }
 
             @Override
             public void setValue(TeamColor value) {
-                team.setFlag(value.toString());
+                teamColor.setFlag(value);
             }
         }, teams) {
             @Override
@@ -110,18 +110,11 @@ public class MatchTeamCondition extends ACondition {
     }
 
     private Material getTeamMaterial() {
-        TeamColor teamColor = TeamColor.matchColor(team.getFlag());
-
-        if (teamColor != null) {
-            return teamColor.getDisplaMaterial();
-        } else {
-            Main.getPlugin().getComponentLogger().warn("Couldn't get TeamColor for " + team);
-            return Material.BARRIER;
-        }
+        return teamColor.getFlagOrDefault().getDisplaMaterial();
     }
 
     @Override
-    public boolean PlayerNeeded() {
+    public boolean playerNeeded() {
         return true;
     }
 }

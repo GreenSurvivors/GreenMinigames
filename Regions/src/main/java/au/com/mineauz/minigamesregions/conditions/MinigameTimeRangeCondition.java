@@ -3,6 +3,7 @@ package au.com.mineauz.minigamesregions.conditions;
 import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.TimeFlag;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -12,24 +13,26 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.Map;
 
-public class MinigameTimerCondition extends ACondition {
+public class MinigameTimeRangeCondition extends ACondition {
     private final TimeFlag minTime = new TimeFlag(5L, "minTime");
     private final TimeFlag maxTime = new TimeFlag(10L, "maxTime");
 
-    protected MinigameTimerCondition(@NotNull String name) {
+    protected MinigameTimeRangeCondition(@NotNull String name) {
         super(name);
     }
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MINIGAMETIMER_NAME);
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MINIGAMETIMERANGE_NAME);
     }
 
     @Override
@@ -38,8 +41,11 @@ public class MinigameTimerCondition extends ACondition {
     }
 
     @Override
-    public void describe(@NotNull Map<String, Object> out) {
-        out.put("Time", MinigameUtils.convertTime(Duration.ofSeconds(minTime.getFlag()), true) + " - " + MinigameUtils.convertTime(Duration.ofSeconds(maxTime.getFlag()), true));
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MINIGAMETIMERANGE_NAME),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_FORMAT,
+                        Placeholder.component(MinigamePlaceHolderKey.MIN.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(minTime.getFlag()), true)),
+                        Placeholder.component(MinigamePlaceHolderKey.MAX.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(maxTime.getFlag()), true))));
     }
 
     @Override
@@ -94,8 +100,8 @@ public class MinigameTimerCondition extends ACondition {
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
 
-        m.addItem(minTime.getMenuItem(Material.CLOCK, "Min Time", 0L, null));
-        m.addItem(maxTime.getMenuItem(Material.CLOCK, "Max Time", 0L, null));
+        m.addItem(minTime.getMenuItem(Material.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0L, null));
+        m.addItem(maxTime.getMenuItem(Material.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 0L, null));
 
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);
@@ -104,7 +110,7 @@ public class MinigameTimerCondition extends ACondition {
     }
 
     @Override
-    public boolean PlayerNeeded() {
+    public boolean playerNeeded() {
         return false;
     }
 }

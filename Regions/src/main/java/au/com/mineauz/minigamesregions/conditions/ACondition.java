@@ -14,12 +14,13 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 public abstract class ACondition {
     private final BooleanFlag invert = new BooleanFlag(false, "invert");
-    protected @NotNull String name;
+    protected final @NotNull String name;
 
     protected ACondition(@NotNull String name) {
         this.name = name;
@@ -66,9 +67,9 @@ public abstract class ACondition {
     /**
      * Returns if the condition needs a player who caused the check to happen.
      */
-    public abstract boolean PlayerNeeded();
+    public abstract boolean playerNeeded();
 
-    public abstract void describe(@NotNull Map<@NotNull String, @NotNull Object> out);
+    public abstract @NotNull Map<@NotNull Component, @Nullable Component> describe();
 
     public void debug(@NotNull Minigame mg) {
         if (Minigames.getPlugin().isDebugging()) {

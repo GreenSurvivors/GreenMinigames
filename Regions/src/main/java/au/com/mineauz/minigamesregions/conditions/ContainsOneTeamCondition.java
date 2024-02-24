@@ -11,6 +11,7 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -31,7 +32,8 @@ public class ContainsOneTeamCondition extends ACondition {
     }
 
     @Override
-    public void describe(@NotNull Map<String, Object> out) {
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of();
     }
 
     @Override
@@ -75,15 +77,15 @@ public class ContainsOneTeamCondition extends ACondition {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Contains One Team", player);
-        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        addInvertMenuItem(m);
-        m.displayMenu(player);
+        Menu menu = new Menu(3, getDisplayName(), player);
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        addInvertMenuItem(menu);
+        menu.displayMenu(player);
         return true;
     }
 
     @Override
-    public boolean PlayerNeeded() {
+    public boolean playerNeeded() {
         return false;
     }
 }

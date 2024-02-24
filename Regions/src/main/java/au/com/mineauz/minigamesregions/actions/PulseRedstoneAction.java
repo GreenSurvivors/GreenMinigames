@@ -14,7 +14,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -46,7 +45,7 @@ public class PulseRedstoneAction extends AAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TIME_NAME),
                 MinigameUtils.convertTime(Duration.ofSeconds(time.getFlag()), true),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TORCH_NAME),

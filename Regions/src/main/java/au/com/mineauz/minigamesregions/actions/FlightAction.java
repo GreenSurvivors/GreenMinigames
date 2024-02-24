@@ -12,7 +12,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +38,7 @@ public class FlightAction extends AAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_NAME),
                 MinigameMessageManager.getMgMessage(
                         setFly.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED),

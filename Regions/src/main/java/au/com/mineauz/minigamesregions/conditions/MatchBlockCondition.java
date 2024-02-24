@@ -1,10 +1,11 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageType;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
@@ -16,13 +17,13 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
 
 public class MatchBlockCondition extends ACondition {
-    private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
-    private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur"); //todo rename the name
+    private final BlockDataFlag blockData = new BlockDataFlag(Material.STONE.createBlockData(), "type");
+    private final BooleanFlag useFullBlockData = new BooleanFlag(false, "usedur"); //todo rename the name
 
     protected MatchBlockCondition(@NotNull String name) {
         super(name);
@@ -39,11 +40,13 @@ public class MatchBlockCondition extends ACondition {
     }
 
     @Override
-    public void describe(@NotNull Map<String, Object> out) {
-        if (useBlockData.getFlag()) {
-            out.put("Type", type.getFlag().getMaterial() + " with full data)");
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        if (useFullBlockData.getFlag()) {
+            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
+                    MinigameUtils.limitIgnoreFormat(Component.text(blockData.getFlag().getAsString()), 16));
         } else {
-            out.put("Type", type.getFlag());
+            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
+                    Component.text(blockData.getFlag().getMaterial().translationKey()));
         }
     }
 
@@ -69,56 +72,41 @@ public class MatchBlockCondition extends ACondition {
 
     private boolean check(Location location) {
         Block block = location.getBlock();
-        return block.getType() == type.getFlag().getMaterial() &&
-                (!useBlockData.getFlag() || block.getBlockData().matches(type.getFlag()));
+        return block.getType() == blockData.getFlag().getMaterial() &&
+                (!useFullBlockData.getFlag() || block.getBlockData().matches(blockData.getFlag()));
     }
 
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        type.saveValue(config, path);
-        useBlockData.saveValue(config, path);
+        blockData.saveValue(config, path);
+        useFullBlockData.saveValue(config, path);
         saveInvert(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        type.loadValue(config, path);
-        useBlockData.loadValue(config, path);
+        blockData.loadValue(config, path);
+        useFullBlockData.loadValue(config, path);
         loadInvert(config, path);
     }
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, getDisplayName(), player);
-        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        final MenuItemCustom autoSetBlockMenuItem = new MenuItemCustom(Material.ITEM_FRAME, "Auto Set Block",
-                List.of("Click here with a", "block you wish to", "match to."));
-        m.addItem(autoSetBlockMenuItem, m.getSize() - 1);
+        Menu menu = new Menu(3, getDisplayName(), player);
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
 
-        final MenuItemBlockData btype = type.getMenuItem("Block Type");
-        m.addItem(btype);
-        final MenuItemBoolean menuItemUseData = useBlockData.getMenuItem(Material.ENDER_PEARL, "Use Data Values");
-        m.addItem(menuItemUseData);
-        autoSetBlockMenuItem.setClickItem(itemStack -> {
-            if (itemStack.getType().isBlock()) {
-                type.setFlag(itemStack.getType().createBlockData());
-                useBlockData.setFlag(true);
-            } else {
-                MinigameMessageManager.sendMessage(autoSetBlockMenuItem.getContainer().getViewer(), MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                        RegionLangKey.ITEM_ERROR_NOTBLOCK);
-            }
-            useBlockData.setFlag(true);
-            menuItemUseData.updateDescription();
-            btype.update();
-            return autoSetBlockMenuItem.getDisplayItem();
-        });
-        addInvertMenuItem(m);
-        m.displayMenu(player);
+        final MenuItem menuItemBData = blockData.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME));
+        menu.addItem(menuItemBData);
+        final MenuItem menuItemUseData = useFullBlockData.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME));
+        menu.addItem(menuItemUseData);
+
+        addInvertMenuItem(menu);
+        menu.displayMenu(player);
         return true;
     }
 
     @Override
-    public boolean PlayerNeeded() {
+    public boolean playerNeeded() {
         return false;
     }
 }

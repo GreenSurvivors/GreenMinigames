@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
@@ -10,7 +11,9 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import au.com.mineauz.minigamesregions.util.RegionUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,11 +22,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,28 +44,6 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         super(name);
     }
 
-    static void createPattern(String value, StringBuffer buffer) {
-        int start = 0;
-        int index;
-        while (true) {
-            index = value.indexOf('%', start);
-            // End of input, append the rest
-            if (index == -1) {
-                buffer.append(Pattern.quote(value.substring(start)));
-                break;
-            }
-
-            // Append the start
-            buffer.append(Pattern.quote(value.substring(start, index)));
-
-            // Append the wildcard code
-            buffer.append(".*?");
-
-            // Move to next position
-            start = index + 1;
-        }
-    }
-
     @Override
     public @NotNull Component getDisplayName() {
         return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_NAME);
@@ -76,19 +55,29 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     }
 
     @Override
-    public void describe(@NotNull Map<String, Object> out) {
-        out.put("Item", itemToSearchFor.getFlag().getType());
-        out.put("Amount", count.getFlag());
-        out.put("Where", where.getFlag());
-        out.put("Slot", slot.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        HashMap<Component, Component> out = new HashMap<>();
+
+        out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME),
+                Component.translatable(itemToSearchFor.getFlag().translationKey()));
+        out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), Component.text(count.getFlag()));
+        out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_WHERE_NAME), where.getFlag().getTranslation());
+        if (where.getFlag() == PositionType.SLOT) {
+            out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_SLOT_NAME), Component.text(slot.getFlag()));
+        }
 
         if (matchName.getFlag()) {
-            out.put("Name", itemToSearchFor.getFlag().getItemMeta().getDisplayName());
+            out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
+                    itemToSearchFor.getFlag().getItemMeta().displayName());
         }
 
-        if (matchLore.getFlag()) {
-            out.put("Lore", itemToSearchFor.getFlag().getItemMeta().getLore());
+        if (matchLore.getFlag() && itemToSearchFor.getFlag().getItemMeta().lore() != null) {
+            out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
+                    MinigameUtils.limitIgnoreFormat(Component.join(JoinConfiguration.commas(true),
+                            itemToSearchFor.getFlag().getItemMeta().lore()), 16));
         }
+
+        return out;
     }
 
     @Override
@@ -226,7 +215,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         if (meta.hasDisplayName()) {
             StringBuffer buffer = new StringBuffer();
 
-            createPattern(meta.getDisplayName(), buffer);
+            RegionUtils.createWildcardPattern(meta.getDisplayName(), buffer);
 
             return Pattern.compile(buffer.toString());
         } else {
@@ -242,7 +231,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
             return Pattern.compile(".*");
         } else {
             StringBuffer buffer = new StringBuffer();
-            createPattern(String.join("\n", loreList), buffer);
+            RegionUtils.createWildcardPattern(String.join("\n", loreList), buffer);
             return Pattern.compile(buffer.toString());
         }
     }
@@ -323,7 +312,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         final CompletableFuture<MenuItemString> futureLoreItem = new CompletableFuture<>();
 
         final MenuItemItemNbt itemMenuItem = new MenuItemItemNbt(itemToSearchFor.getFlagOrDefault(),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_ITEM_NAME), new Callback<>() {
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME), new Callback<>() {
             @Override
             public ItemStack getValue() {
                 return itemToSearchFor.getFlagOrDefault();
@@ -350,7 +339,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
         menu.addItem(itemMenuItem);
         menu.addItem(count.getMenuItem(Material.STONE_SLAB,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_AMOUNT_NAME), 1, 999));
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 999));
 
         final MenuItemInteger slotMenuItem = slot.getMenuItem(Material.DIAMOND,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_SLOT_NAME), null, 0, 40);
@@ -380,7 +369,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         menu.addItem(matchName.getMenuItem(Material.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_DISPLAYNAME_NAME)));
         final MenuItemString nameMenuItem = new MenuItemString(Material.NAME_TAG,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_NAME),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_DESCRIPTION),
                 new Callback<>() {
                     private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();
@@ -404,7 +393,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         menu.addItem(matchLore.getMenuItem(Material.WRITTEN_BOOK,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_LORE_NAME)));
         final MenuItemString loreMenuItem = new MenuItemString(Material.BOOK,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_LORE_NAME),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_LORE_DESCRIPTION),
                 new Callback<>() {
                     private String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
@@ -443,15 +432,25 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     }
 
     @Override
-    public boolean PlayerNeeded() {
+    public boolean playerNeeded() {
         return true;
     }
 
     private enum PositionType {
-        ANYWHERE,
-        HOTBAR,
-        MAIN,
-        ARMOR,
-        SLOT
+        ANYWHERE(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_POSITION_ANYWHERE),
+        HOTBAR(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_POSITION_HOTBAR),
+        MAIN(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_POSITION_MAIN),
+        ARMOR(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_POSITION_ARMOR),
+        SLOT(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_POSITION_SLOT);
+
+        private final @NotNull RegionLangKey langKey;
+
+        PositionType(@NotNull RegionLangKey langKey) {
+            this.langKey = langKey;
+        }
+
+        public Component getTranslation() {
+            return RegionMessageManager.getMessage(langKey);
+        }
     }
 }

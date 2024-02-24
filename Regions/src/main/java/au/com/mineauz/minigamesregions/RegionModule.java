@@ -2,6 +2,9 @@ package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.AFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
@@ -14,11 +17,14 @@ import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.menu.MenuItemNode;
 import au.com.mineauz.minigamesregions.menu.MenuItemRegenRegion;
 import au.com.mineauz.minigamesregions.menu.MenuItemRegion;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.TriggerRegistry;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -265,7 +271,7 @@ public class RegionModule extends MinigameModule {
         }
     }
 
-    public boolean hasRegion(String name) {
+    public boolean hasRegion(@NotNull String name) {
         if (!regions.containsKey(name)) {
             for (String n : regions.keySet()) {
                 if (n.equalsIgnoreCase(name))
@@ -358,26 +364,34 @@ public class RegionModule extends MinigameModule {
     }
 
     public void displayMenu(MinigamePlayer viewer, Menu previous) {
-        Menu rm = new Menu(6, "Regions and Nodes", viewer);
+        Menu rm = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME), viewer);
         List<MenuItem> items = new ArrayList<>(regions.size());
-        for (String name : regions.keySet()) {
-            MenuItemRegion mir = new MenuItemRegion(Material.ENDER_CHEST, name, regions.get(name), this);
+        for (Region region : regions.values()) {
+            MenuItemRegion mir = new MenuItemRegion(Material.ENDER_CHEST, Component.text(region.getName()), region, this);
             items.add(mir);
         }
         items.add(new MenuItemNewLine());
-        for (String name : nodes.keySet()) {
-            MenuItemNode min = new MenuItemNode(Material.CHEST, name, nodes.get(name), this);
+        for (Node node : nodes.values()) {
+            MenuItemNode min = new MenuItemNode(Material.CHEST, Component.text(node.getName()), node, this);
             items.add(min);
         }
 
         //display for regen regions
         items.add(new MenuItemNewLine());
         for (MgRegion region : getMinigame().getRegenRegions()) {
-            MenuItem min = new MenuItemRegenRegion(Material.CHEST_MINECART, region.getName(), List.of(
-                    region.getName(),
-                    "from " + region.getMinX() + ", " + region.getMinY() + ", " + region.getMinZ(),
-                    "to " + region.getMaxX() + ", " + region.getMaxY() + ", " + region.getMaxZ(),
-                    "(" + region.getVolume() + ")"),
+            MenuItem min = new MenuItemRegenRegion(Material.CHEST_MINECART, Component.text(region.getName()), List.of(
+                    Component.text(region.getName()),
+                    MinigameMessageManager.getMgMessage(MinigameLangKey.REGION_DESCRIBE,
+                            Placeholder.component(MinigamePlaceHolderKey.POSITION_1.getKey(),
+                                    MinigameMessageManager.getMgMessage(MinigameLangKey.POSITION,
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMinX())),
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMinY())),
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMinZ())))),
+                            Placeholder.component(MinigamePlaceHolderKey.POSITION_2.getKey(),
+                                    MinigameMessageManager.getMgMessage(MinigameLangKey.POSITION,
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMaxX())),
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMaxY())),
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMaxZ())))))),
                     region, this);
             items.add(min);
         }
@@ -391,13 +405,13 @@ public class RegionModule extends MinigameModule {
 
     @Override
     public void addEditMenuOptions(Menu menu) {
-        final MenuItemCustom c = new MenuItemCustom(Material.DIAMOND_BLOCK, "Regions and Nodes");
+        final MenuItemCustom menuItemCustom = new MenuItemCustom(Material.DIAMOND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME));
         final Menu fmenu = menu;
-        c.setClick(() -> {
-            displayMenu(c.getContainer().getViewer(), fmenu);
+        menuItemCustom.setClick(() -> {
+            displayMenu(menuItemCustom.getContainer().getViewer(), fmenu);
             return null;
         });
-        menu.addItem(c);
+        menu.addItem(menuItemCustom);
     }
 
     @Override

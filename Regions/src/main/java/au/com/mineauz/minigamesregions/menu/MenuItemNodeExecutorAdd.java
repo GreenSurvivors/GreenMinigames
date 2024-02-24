@@ -37,15 +37,14 @@ public class MenuItemNodeExecutorAdd extends MenuItem {
 
     @Override
     public ItemStack onClick() {
-        Menu m = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_ADD_NAME), getContainer().getViewer());
+        Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_ADD_NAME), getContainer().getViewer());
 
         for (Trigger trig : TriggerRegistry.getAllNodeTriggers()) {
-            m.addItem(new MenuItemTrigger(trig, node, getContainer()));
+            menu.addItem(new MenuItemTrigger(trig, node, getContainer()));
         }
 
-        m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
-
-        m.displayMenu(getContainer().getViewer());
+        menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
+        menu.displayMenu(getContainer().getViewer());
 
         return null;
     }

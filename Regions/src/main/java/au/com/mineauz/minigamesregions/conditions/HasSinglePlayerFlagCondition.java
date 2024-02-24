@@ -12,19 +12,20 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class HasFlagCondition extends ACondition {
+public class HasSinglePlayerFlagCondition extends ACondition {
     private final StringFlag flagName = new StringFlag("flag", "flag");
 
-    protected HasFlagCondition(@NotNull String name) {
+    protected HasSinglePlayerFlagCondition(@NotNull String name) {
         super(name);
     }
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASFLAG_NAME);
+        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_NAME);
     }
 
     @Override
@@ -33,8 +34,8 @@ public class HasFlagCondition extends ACondition {
     }
 
     @Override
-    public void describe(@NotNull Map<String, Object> out) {
-        out.put("Flag", flagName.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME), Component.text(flagName.getFlag()));
     }
 
     @Override
@@ -80,14 +81,14 @@ public class HasFlagCondition extends ACondition {
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(flagName.getMenuItem(Material.NAME_TAG, "Flag Name"));
+        m.addItem(flagName.getMenuItem(Material.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME)));
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;
     }
 
     @Override
-    public boolean PlayerNeeded() {
+    public boolean playerNeeded() {
         return true;
     }
 }

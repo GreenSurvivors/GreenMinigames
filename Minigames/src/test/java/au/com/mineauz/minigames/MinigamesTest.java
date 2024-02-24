@@ -49,7 +49,7 @@ public class MinigamesTest {
         plugin.toggleDebug();
         world = (WorldMock) MockBukkit.getMock().getWorld("GAMES");
         spawn = world.getSpawnLocation();
-        TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MG_MECHANICS.CTF.getMechanic());
+        TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MgMechanics.CTF.getMechanic());
         player = new TestPlayer(MockBukkit.getMock(), "TestPlayer", UUID.randomUUID());
         player.setLocation(spawn);
         MockBukkit.getMock().addPlayer(player);

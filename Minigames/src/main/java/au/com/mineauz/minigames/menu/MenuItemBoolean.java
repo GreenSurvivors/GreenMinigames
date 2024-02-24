@@ -19,31 +19,32 @@ public class MenuItemBoolean extends MenuItem {
                            @NotNull Callback<@NotNull Boolean> toggle) {
         super(displayMat, langKey);
         this.toggle = toggle;
-        updateDescription();
+        update();
     }
 
     public MenuItemBoolean(@Nullable Material displayMat, @Nullable Component name,
                            @NotNull Callback<@NotNull Boolean> toggle) {
         super(displayMat, name);
         this.toggle = toggle;
-        updateDescription();
+        update();
     }
 
     public MenuItemBoolean(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<@NotNull Component> description,
                            @NotNull Callback<@NotNull Boolean> toggle) {
         super(displayMat, langKey, description);
         this.toggle = toggle;
-        updateDescription();
+        update();
     }
 
     public MenuItemBoolean(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description,
                            @NotNull Callback<@NotNull Boolean> toggle) {
         super(displayMat, name, description);
         this.toggle = toggle;
-        updateDescription();
+        update();
     }
 
-    public void updateDescription() {
+    @Override
+    public void update() {
         LangKey boolKey = toggle.getValue() ? MinigameLangKey.BOOL_TRUE : MinigameLangKey.BOOL_FALSE;
         setDescriptionPart(DESCRIPTION_TOKEN, MinigameMessageManager.getMgMessageList(boolKey));
     }
@@ -56,7 +57,7 @@ public class MenuItemBoolean extends MenuItem {
             toggle.setValue(true);
         }
 
-        updateDescription();
+        update();
         return getDisplayItem();
     }
 }

@@ -1,27 +1,19 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.ConfigSerializableBridge;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,7 +57,7 @@ public class SpawnEntityAction extends AAction {
     );
 
     private final EnumFlag<EntityType> type = new EnumFlag<>(EntityType.ZOMBIE, "type");
-    private final Map<String, ConfigSerializableBridge<?>> settings = new HashMap<>();
+    //private final Map<String, ConfigSerializableBridge<?>> settings = new HashMap<>(); // todo once Paper stops relocation use ((CraftEntity)entity).getHandle().saveWithoutId(nbt); instead of an own bad implementation
 
     protected SpawnEntityAction(@NotNull String name) {
         super(name);
@@ -87,14 +79,16 @@ public class SpawnEntityAction extends AAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() { //todo
-        Map<Component, ComponentLike> out = new HashMap<>(2);
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() { //todo
+        Map<Component, Component> out = new HashMap<>(2);
 
-        out.put("Type", type.getFlag());
+        out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME), Component.text(type.getFlag().translationKey()));
 
-        if (type.getFlag().isAlive() && settings.containsKey("displayname")) {
-            out.put("Display Name", settings.get("displayname").getObject());
-        }
+        /*
+        if (type.getFlag().isAlive() && settings.containsKey("customName")) {
+            out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_NAME_NAME),
+                    MiniMessage.miniMessage().deserialize((String) settings.get("customName").getObject()));
+        }*/
 
         return out;
     }
@@ -117,10 +111,12 @@ public class SpawnEntityAction extends AAction {
 
     @Override
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
-        if (!mgPlayer.isInMinigame()) return;
+        if (!mgPlayer.isInMinigame()) {
+            return;
+        }
         debug(mgPlayer, node);
         node.getLocation().getWorld().spawnEntity(node.getLocation(), type.getFlag(), CreatureSpawnEvent.SpawnReason.CUSTOM, entity -> {
-
+            /*
             if (settings.containsKey("velocity")) {
                 final Vector velocity = (Vector) settings.get("velocity").getObject();
                 Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> entity.setVelocity(velocity));
@@ -170,7 +166,7 @@ public class SpawnEntityAction extends AAction {
                 if (settings.containsKey("isCollidable")) {
                     livingEntity.setCollidable((Boolean) settings.get("isCollidable").getObject());
                 }
-            }
+            }*/
 
             entity.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.getPlugin(), true)); //todo use in recorder to despawn + add parameter for specific Minigame
             mgPlayer.getMinigame().getRecorderData().addEntity(entity, mgPlayer, true);
@@ -182,16 +178,17 @@ public class SpawnEntityAction extends AAction {
                               @NotNull String path) {
         type.saveValue(config, path);
 
+        /* // temp
         for (Map.Entry<String, ConfigSerializableBridge<?>> entry : settings.entrySet()) {
             config.set(path + ".settings." + entry.getKey(), entry.getValue().serialize());
-        }
+        }*/
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
         type.loadValue(config, path);
-
+        /*
         settings.clear();
         ConfigurationSection section = config.getConfigurationSection(path + ".settings");
         if (section != null) { // may was empty
@@ -206,7 +203,7 @@ public class SpawnEntityAction extends AAction {
                     Minigames.getCmpnntLogger().warn("Key \"" + key + "\" of ConfigSerializableBridge in SpawnEntityAction of path \"" + path + ".settings." + key + "\" failed to load!");
                 }
             }
-        }
+        }*/
     }
 
     @Override
@@ -219,7 +216,7 @@ public class SpawnEntityAction extends AAction {
                 options.add(type);
             }
         }
-        menu.addItem(new MenuItemList<>(Material.SKELETON_SKULL, "Entity Type", new Callback<>() { //todo spawn egg?
+        menu.addItem(new MenuItemList<>(Material.SKELETON_SKULL, RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME), new Callback<>() { //todo spawn egg?
 
             @Override
             public EntityType getValue() {
@@ -232,14 +229,14 @@ public class SpawnEntityAction extends AAction {
             }
         }, options));
 
-        final MenuItemCustom customMenuItem = new MenuItemCustom(Material.CHEST, "Entity Settings");
-        final Menu entitySettingsMenu = new Menu(6, "Settings", mgPlayer);
+        final MenuItemCustom customMenuItem = new MenuItemCustom(Material.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_SETTINGS_NAME));
+        final Menu entitySettingsMenu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_SETTINGS_NAME), mgPlayer);
         final MinigamePlayer fply = mgPlayer;
-        customMenuItem.setClick(object -> {
+        customMenuItem.setClick(() -> {
             if (type.getFlag().isAlive()) {
                 entitySettingsMenu.clearMenu();
 
-                final MenuItemPage backButton = new MenuItemBack(menu);
+                final MenuItemBack backButton = new MenuItemBack(menu);
                 entitySettingsMenu.addItem(backButton, entitySettingsMenu.getSize() - 1);
                 populateEntitySettings(entitySettingsMenu, mgPlayer);
 
@@ -255,7 +252,9 @@ public class SpawnEntityAction extends AAction {
     }
 
     private void populateEntitySettings(@NotNull Menu entitySettingsMenu, @NotNull MinigamePlayer mgPlayer) {
-        entitySettingsMenu.addItem(new MenuItemComponent(Material.NAME_TAG, "Display Name", new Callback<>() {
+        /*
+        entitySettingsMenu.addItem(new MenuItemComponent(Material.NAME_TAG,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_NAME_NAME), new Callback<>() {
             @Override
             public Component getValue() {
                 ConfigSerializableBridge<?> value = settings.get("customName");
@@ -272,7 +271,8 @@ public class SpawnEntityAction extends AAction {
             }
         }));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean(Material.SPYGLASS, "Display Name Visible", new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.SPYGLASS,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_NAMEVISIBLE_NAME), new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("customNameVisible");
@@ -289,11 +289,12 @@ public class SpawnEntityAction extends AAction {
             }
         }));
 
-        Menu velocityMenu = new Menu(3, "Entity velocity", mgPlayer);
-        final MenuItemPage backButton = new MenuItemBack(entitySettingsMenu);
+        Menu velocityMenu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_VELOCITY_NAME), mgPlayer);
+        final MenuItemBack backButton = new MenuItemBack(entitySettingsMenu);
         velocityMenu.addItem(backButton, velocityMenu.getSize() - 1);
 
-        velocityMenu.addItem(new MenuItemDecimal(Material.ARROW, "X Velocity", new Callback<>() {
+        velocityMenu.addItem(new MenuItemDecimal(Material.ARROW,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_VELOCITY_X_NAME), new Callback<>() {
             @Override
             public Double getValue() {
                 ConfigSerializableBridge<?> value = settings.get("velocity");
@@ -322,7 +323,8 @@ public class SpawnEntityAction extends AAction {
 
 
         }, 0.5, 1, null, null));
-        velocityMenu.addItem(new MenuItemDecimal(Material.ARROW, "Y Velocity", new Callback<>() {
+        velocityMenu.addItem(new MenuItemDecimal(Material.ARROW,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_VELOCITY_Y_NAME), new Callback<>() {
             @Override
             public Double getValue() {
                 ConfigSerializableBridge<?> value = settings.get("velocity");
@@ -351,7 +353,8 @@ public class SpawnEntityAction extends AAction {
 
 
         }, 0.5, 1, null, null));
-        velocityMenu.addItem(new MenuItemDecimal(Material.ARROW, "Z Velocity", new Callback<>() {
+        velocityMenu.addItem(new MenuItemDecimal(Material.ARROW,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_VELOCITY_Z_NAME), new Callback<>() {
 
             @Override
             public Double getValue() {
@@ -379,9 +382,11 @@ public class SpawnEntityAction extends AAction {
                 settings.put("velocity", new ConfigSerializableBridge<>(vector));
             }
         }, 0.5, 1, null, null));
-        entitySettingsMenu.addItem(new MenuItemPage("Velocity", Material.FIREWORK_ROCKET, velocityMenu));
+        entitySettingsMenu.addItem(new MenuItemPage(Material.FIREWORK_ROCKET,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_VELOCITY_NAME), velocityMenu));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean("Visual fire", Material.CAMPFIRE, new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.CAMPFIRE,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_VISUALFIRE_NAME), new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("visualFire");
@@ -398,7 +403,8 @@ public class SpawnEntityAction extends AAction {
             }
         }));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean("Persistent", Material.SLIME_BALL, new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.SLIME_BALL,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_PERSISTENT_NAME), new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("persistent");
@@ -415,7 +421,8 @@ public class SpawnEntityAction extends AAction {
             }
         }));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean("Glowing", Material.GLOWSTONE_DUST, new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.GLOWSTONE_DUST,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_GLOWING_NAME), new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("glowing");
@@ -432,7 +439,8 @@ public class SpawnEntityAction extends AAction {
             }
         }));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean(Material.SHIELD, "Invulnerable", new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.SHIELD,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_INVULNERABLE_NAME), new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("invulnerable");
@@ -449,7 +457,8 @@ public class SpawnEntityAction extends AAction {
             }
         }));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean(Material.SCULK_SENSOR, "Silent", new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.SCULK_SENSOR,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_SILENT_NAME), new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("silent");
@@ -469,7 +478,8 @@ public class SpawnEntityAction extends AAction {
         // don't overflow to next page
         entitySettingsMenu.addItem(new MenuItemNewLine());
 
-        entitySettingsMenu.addItem(new MenuItemBoolean(Material.ELYTRA, "Has gravity", new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.ELYTRA,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_GRAVITY_NAME), new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("hasGravity");
@@ -489,13 +499,15 @@ public class SpawnEntityAction extends AAction {
         if (type.getFlag().isAlive()) {
             entitySettingsMenu.addItem(new MenuItemNewLine());
             populateLivingEntitySettings(entitySettingsMenu, mgPlayer);
-        }
+        }*/
     }
 
     private void populateLivingEntitySettings(@NotNull Menu entitySettingsMenu, @NotNull MinigamePlayer mgPlayer) {
+        /*
         entitySettingsMenu.addItem(new MenuItemNewLine());
 
-        entitySettingsMenu.addItem(new MenuItemBoolean(Material.HOPPER, "Can pickup items", new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.HOPPER,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_PICKUPITEMS_NAME), new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("canPickupItems");
@@ -512,7 +524,8 @@ public class SpawnEntityAction extends AAction {
             }
         }));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean(Material.LIGHT, "Has AI", new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.LIGHT,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_AI_NAME), new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("hasAI");
@@ -529,7 +542,8 @@ public class SpawnEntityAction extends AAction {
             }
         }));
 
-        entitySettingsMenu.addItem(new MenuItemBoolean("Is collidable", Material.GLASS, new Callback<>() {
+        entitySettingsMenu.addItem(new MenuItemBoolean(Material.GLASS,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_COLLIDABLE_NAME), new Callback<>() {
             @Override
             public Boolean getValue() {
                 ConfigSerializableBridge<?> value = settings.get("isCollidable");
@@ -544,6 +558,6 @@ public class SpawnEntityAction extends AAction {
             public void setValue(Boolean value) {
                 settings.put("isCollidable", new ConfigSerializableBridge<>(value));
             }
-        }));
+        }));*/
     }
 }

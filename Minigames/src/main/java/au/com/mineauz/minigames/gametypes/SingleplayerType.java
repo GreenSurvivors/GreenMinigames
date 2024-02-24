@@ -75,7 +75,7 @@ public class SingleplayerType extends MinigameTypeBase {
             mgPlayer.setCheckpoint(mgPlayer.getStoredPlayerCheckpoints().getCheckpoint(mgm.getName()));
             StoredPlayerCheckpoints spc = mgPlayer.getStoredPlayerCheckpoints();
             if (spc.hasFlags(mgm.getName())) {
-                mgPlayer.setFlags(spc.getFlags(mgm.getName()));
+                mgPlayer.setSinglePlayerFlags(spc.getFlags(mgm.getName()));
             }
             if (spc.hasTime(mgm.getName())) {
                 mgPlayer.setStoredTime(spc.getTime(mgm.getName()));
@@ -122,8 +122,8 @@ public class SingleplayerType extends MinigameTypeBase {
         if (mgm.canSaveCheckpoint()) {
             StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();
             spc.addCheckpoint(mgm.getName(), player.getCheckpoint());
-            if (!player.getFlags().isEmpty()) {
-                spc.addFlags(mgm.getName(), player.getFlags());
+            if (!player.getSinglePlayerFlags().isEmpty()) {
+                spc.addFlags(mgm.getName(), player.getSinglePlayerFlags());
             }
             spc.addDeaths(mgm.getName(), player.getDeaths());
             spc.addReverts(mgm.getName(), player.getReverts());

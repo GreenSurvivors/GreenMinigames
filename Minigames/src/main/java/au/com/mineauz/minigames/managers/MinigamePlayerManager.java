@@ -1037,7 +1037,7 @@ public class MinigamePlayerManager {
 
     public List<String> checkRequiredFlags(MinigamePlayer player, String minigame) {
         List<String> checkpoints = new ArrayList<>(mgManager.getMinigame(minigame).getFlags());
-        List<String> pchecks = player.getFlags();
+        List<String> pchecks = player.getSinglePlayerFlags();
 
         if (!pchecks.isEmpty()) {
             checkpoints.removeAll(pchecks);

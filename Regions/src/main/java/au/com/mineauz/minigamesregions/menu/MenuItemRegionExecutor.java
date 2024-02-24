@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class MenuItemRegionExecutor extends MenuItem {
+public class MenuItemRegionExecutor extends MenuItem { // todo merge with MenuItemNodeExecutor
     private final static String DESCRIPTION_TOKEN = "Executor_description";
     private final @NotNull Region region;
     private final @NotNull RegionExecutor ex;
@@ -65,8 +65,7 @@ public class MenuItemRegionExecutor extends MenuItem {
                     RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_NAME),
                     RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_DESCRIPTION),
                     ex.getTriggerCountCallback(), 0, null));
-        }
-        if (ex.getTrigger().triggerOnPlayerAvailable()) {
+
             menu.addItem(new MenuItemBoolean(Material.PLAYER_HEAD,
                     RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_PERPLAYER_NAME),
                     RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_PERPLAYER_DESCRIPTION),

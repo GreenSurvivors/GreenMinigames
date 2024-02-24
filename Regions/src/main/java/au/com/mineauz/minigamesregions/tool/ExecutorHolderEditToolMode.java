@@ -3,6 +3,7 @@ package au.com.mineauz.minigamesregions.tool;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
 import au.com.mineauz.minigames.menu.MenuUtility;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class RegionNodeEditToolMode implements ToolMode {
+public class ExecutorHolderEditToolMode implements ToolMode {
 
     @Override
     public String getName() {
@@ -37,12 +38,12 @@ public class RegionNodeEditToolMode implements ToolMode {
 
     @Override
     public Component getDisplayName() {
-        return "Region and Node editor";
+        return RegionMessageManager.getMessage(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_NAME);
     }
 
     @Override
     public List<Component> getDescription() { //todo translation String
-        return List.of("Allows you to simply<newline>edit regions and nodes<newline>with right click");
+        return RegionMessageManager.getMessageList(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_DESCRIPTION);
     }
 
     @Override
@@ -130,13 +131,15 @@ public class RegionNodeEditToolMode implements ToolMode {
             menu = MenuItemNode.createMenu(mgPlayer, null, node);
         }
 
-        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(), "Save", minigame), menu.getSize() - 9);
+        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
+                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName())), minigame), menu.getSize() - 9);
 
         menu.displayMenu(mgPlayer);
     }
 
     private void openChooseMenu(@NotNull MinigamePlayer mgPlayer, @NotNull RegionModule module, @NotNull Set<@NotNull ExecutableScriptObject> objects) {
-        Menu menu = new Menu(3, "Choose Region or Node", mgPlayer);
+        Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_CHOOSE_NAME), mgPlayer);
 
         StringBuilder options = new StringBuilder();
         for (ExecutableScriptObject object : objects) {
@@ -144,18 +147,21 @@ public class RegionNodeEditToolMode implements ToolMode {
                 options.append(", ");
             }
 
-            if (object instanceof Region) {
-                options.append(((Region) object).getName());
-                MenuItemRegion item = new MenuItemRegion(Material.CHEST, ((Region) object).getName(), (Region) object, module);
+            if (object instanceof Region region) {
+                options.append(region.getName());
+                MenuItemRegion item = new MenuItemRegion(Material.CHEST, Component.text(region.getName()), (Region) object, module);
                 menu.addItem(item);
-            } else if (object instanceof Node) {
-                options.append(((Node) object).getName());
-                MenuItemNode item = new MenuItemNode(Material.STONE_BUTTON, ((Node) object).getName(), (Node) object, module);
+            } else if (object instanceof Node node) {
+                options.append(node.getName());
+                MenuItemNode item = new MenuItemNode(Material.STONE_BUTTON, Component.text(node.getName()), (Node) object, module);
                 menu.addItem(item);
             }
         }
 
-        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(), "Save", module.getMinigame()), menu.getSize() - 9);
+        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
+                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), module.getMinigame().getDisplayName())),
+                module.getMinigame()), menu.getSize() - 9);
 
         menu.displayMenu(mgPlayer);
 

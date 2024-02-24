@@ -11,7 +11,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class SetBlockAction extends AAction {
-    private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");//todo rename flag
+    private final BlockDataFlag blockDataFlag = new BlockDataFlag(Material.STONE.createBlockData(), "type");//todo rename flag
     private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur");//todo rename flag
 
     protected SetBlockAction(@NotNull String name) {
@@ -40,13 +39,13 @@ public class SetBlockAction extends AAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         if (useBlockData.getFlag()) {
-            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETBLOCK_BLOCK_NAME),
-                    MinigameUtils.limitIgnoreFormat(Component.text(type.getFlag().getAsString()), 16));
+            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
+                    MinigameUtils.limitIgnoreFormat(Component.text(blockDataFlag.getFlag().getAsString()), 16));
         } else {
-            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETBLOCK_BLOCK_NAME),
-                    Component.text(type.getFlag().getMaterial().translationKey()));
+            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
+                    Component.text(blockDataFlag.getFlag().getMaterial().translationKey()));
         }
     }
 
@@ -73,9 +72,9 @@ public class SetBlockAction extends AAction {
 
                     BlockState bs = temp.getBlock().getState();
                     if (useBlockData.getFlag()) {
-                        bs.setBlockData(type.getFlag());
+                        bs.setBlockData(blockDataFlag.getFlag());
                     } else {
-                        bs.setBlockData(type.getFlag().getMaterial().createBlockData());
+                        bs.setBlockData(blockDataFlag.getFlag().getMaterial().createBlockData());
                     }
                     bs.update(true);
                 }
@@ -89,9 +88,9 @@ public class SetBlockAction extends AAction {
         debug(mgPlayer, node);
         BlockState bs = node.getLocation().getBlock().getState();
         if (useBlockData.getFlag()) {
-            bs.setBlockData(type.getFlag());
+            bs.setBlockData(blockDataFlag.getFlag());
         } else {
-            bs.setBlockData(type.getFlag().getMaterial().createBlockData());
+            bs.setBlockData(blockDataFlag.getFlag().getMaterial().createBlockData());
         }
         bs.update(true);
     }
@@ -99,14 +98,14 @@ public class SetBlockAction extends AAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        type.saveValue(config, path);
+        blockDataFlag.saveValue(config, path);
         useBlockData.saveValue(config, path);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        type.loadValue(config, path);
+        blockDataFlag.loadValue(config, path);
         useBlockData.loadValue(config, path);
     }
 
@@ -114,8 +113,8 @@ public class SetBlockAction extends AAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(type.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETBLOCK_BLOCK_NAME)));
-        menu.addItem(useBlockData.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETBLOCK_USEDATA_NAME)));
+        menu.addItem(blockDataFlag.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME)));
+        menu.addItem(useBlockData.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME)));
         menu.displayMenu(mgPlayer);
         return true;
     }

@@ -21,11 +21,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemNode extends MenuItem {
+public class MenuItemNode extends MenuItem { // todo merge with MenuItemRegion
     private final @NotNull Node node;
     private final @NotNull RegionModule rmod;
 
-    public MenuItemNode(@Nullable Material displayMat, @Nullable Component name, @NotNull Node node, @NotNull RegionModule rmod) {
+    public MenuItemNode(@Nullable Material displayMat, @Nullable Component name, @NotNull Node node,
+                        @NotNull RegionModule rmod) {
         super(displayMat, name);
         this.node = node;
         this.rmod = rmod;
@@ -64,7 +65,7 @@ public class MenuItemNode extends MenuItem {
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @Nullable ItemStack onRightClick() {
         rmod.removeNode(node.getName());
         getContainer().removeItem(getSlot());
         return null;

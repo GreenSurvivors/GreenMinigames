@@ -19,7 +19,6 @@ import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -58,7 +57,7 @@ public class RegionSwapAction extends AAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_FROM_NAME), Component.text(fromRegion.getFlag()),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_TO_NAME), Component.text(toRegion.getFlag()),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_SWAP_NAME),

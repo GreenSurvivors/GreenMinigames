@@ -14,6 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -38,8 +39,8 @@ public class BlockOnAndHeldCondition extends ACondition {
     }
 
     @Override
-    public void describe(@NotNull Map<String, Object> out) {
-
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of();
     }
 
     @Override
@@ -71,7 +72,7 @@ public class BlockOnAndHeldCondition extends ACondition {
 
         Location plyLoc = player.getPlayer().getLocation();
         int plyY = plyLoc.getBlockY();
-        //In case that the player is in the air, this searches for the first solid block and checks if it equal
+        //In case that the player is in the air, this searches for the first solid block and checks if it is equal
         while (plyY >= 0) {
             plyY -= 1;
             Block tempBlock = player.getPlayer().getWorld().getBlockAt(plyLoc.getBlockX(), plyY, plyLoc.getBlockZ());
@@ -104,7 +105,7 @@ public class BlockOnAndHeldCondition extends ACondition {
     }
 
     @Override
-    public boolean PlayerNeeded() {
+    public boolean playerNeeded() {
         return true;
     }
 }

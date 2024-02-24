@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -9,9 +10,11 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Random;
@@ -34,8 +37,10 @@ public class RandomChanceCondition extends ACondition {
     }
 
     @Override
-    public void describe(@NotNull Map<String, Object> out) {
-        out.put("Chance", chance.getFlag() + "%");
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_RANCOMCHANCE_NAME),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_PERCENT_FORMAT,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(chance.getFlag()))));
     }
 
     @Override
@@ -87,7 +92,7 @@ public class RandomChanceCondition extends ACondition {
     }
 
     @Override
-    public boolean PlayerNeeded() {
+    public boolean playerNeeded() {
         return false;
     }
 }

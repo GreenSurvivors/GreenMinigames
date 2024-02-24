@@ -12,20 +12,23 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import au.com.mineauz.minigamesregions.util.RegionUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ContainsEntityCondition extends ACondition {
+public class ContainsEntityCondition extends ACondition { // todo same entity settings as SpawnEntity Action also amount and make entityType also optional
     private final EnumFlag<EntityType> entityType = new EnumFlag<>(EntityType.PLAYER, "entity");
 
     private final BooleanFlag matchName = new BooleanFlag(false, "matchName");
@@ -67,8 +70,8 @@ public class ContainsEntityCondition extends ACondition {
         for (Entity entity : entities) {
             if (entity.getType() == entityType.getFlag()) {
                 if (matchName.getFlag()) {
-                    Matcher m = namePattern.matcher((entity.getCustomName() == null) ? "" : entity.getCustomName());
-                    if (!m.matches()) {
+                    Matcher matcher = namePattern.matcher((entity.getCustomName() == null) ? "" : entity.getCustomName());
+                    if (!matcher.matches()) {
                         continue;
                     }
                 }
@@ -88,7 +91,7 @@ public class ContainsEntityCondition extends ACondition {
 
         StringBuffer buffer = new StringBuffer();
 
-        PlayerHasItemCondition.createPattern(name, buffer); // todo don't do that. PlayerHasItem should provide this methode here!
+        RegionUtils.createWildcardPattern(name, buffer);
 
         return Pattern.compile(buffer.toString());
     }
@@ -118,11 +121,15 @@ public class ContainsEntityCondition extends ACondition {
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu menu = new Menu(3, getDisplayName(), player);
 
-        menu.addItem(entityType.getMenuItem("Entity Type", Material.CHICKEN_SPAWN_EGG));
+        menu.addItem(entityType.getMenuItem(Material.CHICKEN_SPAWN_EGG,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME)));
         menu.addItem(new MenuItemNewLine());
 
-        menu.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
-        MenuItemString menuItem = (MenuItemString) customName.getMenuItem(Material.NAME_TAG, "Display Name", List.of("The name to match.", "Use % to do a wildcard match"));
+        menu.addItem(matchName.getMenuItem(Material.NAME_TAG,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_MATCH_CUSTOMNAME_NAME)));
+        MenuItemString menuItem = customName.getMenuItem(Material.NAME_TAG,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_CUSTOMNAME_DESCRIPTION));
         menuItem.setAllowNull(true);
         menu.addItem(menuItem);
 
@@ -133,15 +140,21 @@ public class ContainsEntityCondition extends ACondition {
     }
 
     @Override
-    public void describe(@NotNull Map<String, Object> out) {
-        out.put("Type", entityType.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        HashMap<Component, Component> out = new HashMap<>();
+
+        out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME),
+                Component.translatable(entityType.getFlag().translationKey()));
         if (matchName.getFlag()) {
-            out.put("Match Name", customName.getFlag());
+            out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
+                    MiniMessage.miniMessage().deserialize(customName.getFlag()));
         }
+
+        return out;
     }
 
     @Override
-    public boolean PlayerNeeded() {
+    public boolean playerNeeded() {
         return false;
     }
 }

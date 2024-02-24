@@ -41,37 +41,38 @@ public class MenuItemNodeExecutor extends MenuItem {
     @Override
     public ItemStack onClick() {
         final MinigamePlayer fviewer = getContainer().getViewer();
-        Menu m = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_NAME), fviewer);
-        final Menu ffm = m;
+        final Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_NAME), fviewer);
 
-        MenuItemCustom ca = new MenuItemCustom(Material.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME));
+        MenuItemCustom ca = new MenuItemCustom(Material.CHEST,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME));
         ca.setClick(() -> {
-            ActionRegistry.displayMenu(fviewer, ex, ffm);
+            ActionRegistry.displayMenu(fviewer, ex, menu);
             return null;
         });
-        m.addItem(ca);
+        menu.addItem(ca);
 
-        MenuItemCustom c2 = new MenuItemCustom(Material.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME));
+        MenuItemCustom c2 = new MenuItemCustom(Material.CHEST,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME));
         c2.setClick(() -> {
-            ConditionRegistry.displayMenu(fviewer, ex, ffm);
+            ConditionRegistry.displayMenu(fviewer, ex, menu);
             return null;
         });
-        m.addItem(c2);
+        menu.addItem(c2);
 
-        m.addItem(new MenuItemNewLine());
+        menu.addItem(new MenuItemNewLine());
 
-        m.addItem(new MenuItemInteger(Material.STONE,
+        menu.addItem(new MenuItemInteger(Material.STONE,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_DESCRIPTION),
                 ex.getTriggerCountCallback(), 0, null));
 
-        m.addItem(new MenuItemBoolean(
-                Material.ENDER_PEARL,
+        menu.addItem(new MenuItemBoolean(
+                Material.PLAYER_HEAD,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_PERPLAYER_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_PERPLAYER_DESCRIPTION),
                 ex.getIsTriggerPerPlayerCallback()));
-        m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
-        m.displayMenu(fviewer);
+        menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
+        menu.displayMenu(fviewer);
         return null;
     }
 

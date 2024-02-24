@@ -13,7 +13,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -47,7 +46,7 @@ public class ApplyEffectAction extends AAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         Component typeComp;
         if (type == null) {
             typeComp = MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ERROR_UNKNOWN);

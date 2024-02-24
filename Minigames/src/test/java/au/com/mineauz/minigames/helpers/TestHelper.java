@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.objects.MockSign;
 import au.com.mineauz.minigames.objects.SignBlockMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.block.BlockMock;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SoundGroup;
@@ -131,6 +132,11 @@ public class TestHelper {
             }
 
             @Override
+            public @NotNull Color getMapColor() {
+                return null;
+            }
+
+            @Override
             public @NotNull Material getPlacementMaterial() {
                 return null;
             }
@@ -142,6 +148,11 @@ public class TestHelper {
 
             @Override
             public void mirror(@NotNull Mirror mirror) {
+
+            }
+
+            @Override
+            public void copyTo(@NotNull BlockData blockData) {
 
             }
 

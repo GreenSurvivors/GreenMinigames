@@ -1,34 +1,38 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.ItemFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.menu.MenuItemComponent;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class GiveItemAction extends AAction {
     private final ItemFlag item = new ItemFlag(new ItemStack(Material.STONE), "item");
-    /*private final StringFlag type = new StringFlag("STONE", "type");
     private final IntegerFlag count = new IntegerFlag(1, "count");
-    private final StringFlag name = new StringFlag(null, "name");
-    private final StringFlag lore = new StringFlag(null, "lore");*/
 
     protected GiveItemAction(@NotNull String name) {
         super(name);
@@ -45,10 +49,23 @@ public class GiveItemAction extends AAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
-        out.put("Item", count.getFlag() + "x " + type.getFlag());
-        out.put("Display Name", name.getFlag());
-        out.put("Lore", lore.getFlag());
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
+        Map<Component, Component> out = new HashMap<>();
+        ItemMeta meta = item.getFlag().getItemMeta();
+
+        out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_GIVEITEM_ITEM,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(count.getFlag())),
+                        Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(item.getFlag().translationKey()))));
+        if (meta.displayName() != null) {
+            out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME), meta.displayName());
+        }
+        if (meta.lore() != null) {
+            out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
+                    Component.join(JoinConfiguration.separator(Component.text(";")), meta.lore()));
+        }
+
+        return out;
     }
 
     @Override
@@ -88,52 +105,99 @@ public class GiveItemAction extends AAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         item.saveValue(config, path);
+        count.saveValue(config, path);
+
+        //dataFixerUpper
+        config.set(path + ".type", null);
+        config.set(path + ".name", null);
+        config.set(path + ".lore", null);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        type.loadValue(config, path);
+        item.loadValue(config, path);
         count.loadValue(config, path);
-        if (config.contains(path + ".name"))
-            name.loadValue(config, path);
-        if (config.contains(path + ".lore")) {
 
-            meta.setLore(List.of(lore.getFlag().split(";"))); //as the description states semicolons will be used for new lines
-            lore.loadValue(config, path);
+        ItemStack tempItem = item.getFlag();
+        tempItem.setAmount(count.getFlag());
+
+        //dataFixerUpper
+        if (config.contains(path + ".type")) {
+            Material mat = Material.matchMaterial(config.getString(path + ".type", ""));
+
+            if (mat != null) {
+                tempItem.setType(mat);
+            }
         }
+        ItemMeta meta = tempItem.getItemMeta();
+        if (config.contains(path + ".name")) {
+            Material mat = Material.matchMaterial(config.getString(path + ".type", ""));
+
+            if (mat != null) {
+                tempItem.setType(mat);
+            }
+        }
+
+        if (config.contains(path + ".name")) {
+            meta.displayName(MiniMessage.miniMessage().deserialize(config.getString(path + ".name", "")));
+        }
+        if (config.contains(path + ".lore")) {
+            List<Component> newLore = Arrays.stream(config.getString(path + ".lore", "").split(";")).
+                    map(MiniMessage.miniMessage()::deserialize).toList(); //as the description states semicolons will be used for new lines
+            meta.lore(newLore);
+        }
+        tempItem.setItemMeta(meta);
+
+        item.setFlag(tempItem);
     }
 
     @Override
     public boolean displayMenu(@NotNull final MinigamePlayer mgPlayer, Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
+        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
 
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.addItem(item.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME)));
 
-        MenuItemString n = (MenuItemString) name.getMenuItem(Material.NAME_TAG, "Name");
-        n.setAllowNull(true);
-        m.addItem(n);
-        MenuItemString l = lore.getMenuItem(Material.PAPER, "Lore",
-                List.of("Separate with semicolons", "for new lines"));
-        l.setAllowNull(true);
-        m.addItem(l);
+        menu.addItem(count.getMenuItem(Material.STONE_SLAB,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 64));
 
-        m.addItem(new MenuItemString(Material.STONE, "Type", new Callback<>() {
+        MenuItemComponent menuItemLore = new MenuItemComponent(Material.WRITTEN_BOOK,
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_GIVEITEM_LORE_DESCRIPTION), new Callback<>() {
             @Override
-            public String getValue() {
-                return type.getFlag();
-            }
+            public Component getValue() {
+                ItemMeta meta = item.getFlag().getItemMeta();
 
-            @Override
-            public void setValue(String value) {
-                if (Material.getMaterial(value.toUpperCase()) != null) {
-                    type.setFlag(value.toUpperCase());
+                if (meta.hasLore()) {
+                    return Component.join(JoinConfiguration.separator(Component.text(";")), meta.lore());
                 } else {
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(), RegionLangKey.ERROR_INVALID_ITEMTYPE);
+                    return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET);
                 }
             }
-        }));
-        m.addItem(count.getMenuItem(Material.STONE_SLAB, "Count", 1, 64));
-        m.displayMenu(mgPlayer);
+
+            @Override
+            public void setValue(@Nullable Component value) {
+                ItemStack itemStack = item.getFlag();
+                ItemMeta meta = itemStack.getItemMeta();
+
+                if (value == null) {
+                    meta.lore(null);
+                } else {
+                    MiniMessage miniMessage = MiniMessage.miniMessage();
+
+                    String valueStr = miniMessage.serialize(value);
+                    List<Component> newLore = Arrays.stream(valueStr.split(";")).map(miniMessage::deserialize).toList();
+
+                    meta.lore(newLore);
+                }
+
+                itemStack.setItemMeta(meta);
+                item.setFlag(itemStack);
+            }
+        });
+        menuItemLore.setAllowNull(true);
+        menu.addItem(menuItemLore);
+        menu.displayMenu(mgPlayer);
         return true;
     }
 }

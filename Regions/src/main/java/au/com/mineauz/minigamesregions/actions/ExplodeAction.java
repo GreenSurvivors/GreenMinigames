@@ -12,7 +12,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -41,7 +40,7 @@ public class ExplodeAction extends AAction {
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable ComponentLike> describe() {
+    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_POWER_NAME), Component.text(power.getFlag()),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_FIRE_NAME), MinigameMessageManager.getMgMessage(
