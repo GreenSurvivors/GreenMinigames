@@ -90,6 +90,7 @@ public enum MgMenuLangKey implements LangKey {
     MENU_MINIGAME_MECHANIC_SETTINGS_NAME("menu.minigame.mechanic.settings.name"),
     MENU_MINIGAME_MULTIPLAYERONLY_DESCRIPTION("menu.minigame.multiplayerOnly.description"),
     MENU_MINIGAME_OBJECTIVEDESCRIPTION_NAME("menu.minigame.objectiveDescription.name"),
+    MENU_MINIGAME_PLAYERRECORDER_NAME("menu.minigame.playerRecorder.name"),
     MENU_MINIGAME_PLAYERS_MAX_NAME("menu.minigame.players.max.name"),
     MENU_MINIGAME_PLAYERS_MIN_NAME("menu.minigame.players.min.name"),
     MENU_MINIGAME_PLAYERS_SINGLEPLAYER_CAPPED_NAME("menu.minigame.players.singleplayer.capped.name"),
