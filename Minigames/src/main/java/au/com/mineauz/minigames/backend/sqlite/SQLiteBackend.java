@@ -53,7 +53,6 @@ public class SQLiteBackend extends Backend {
 
     @Override
     public boolean initialize(ConfigurationSection config) {
-
         try {
             Class.forName("org.sqlite.JDBC");
 
@@ -115,7 +114,6 @@ public class SQLiteBackend extends Backend {
             logger.error("Exception looking for SQLite column " + columnName + " on table " + "PlayerStats", e);
             return false;
         }
-
     }
 
     private void ensureTables(ConnectionHandler connection) throws SQLException {

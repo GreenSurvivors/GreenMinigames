@@ -23,7 +23,7 @@ public class MinigameTimer {
     private static final Minigames plugin = Minigames.getPlugin();
     private final long timeLength;
     private final Minigame minigame;
-    private final List<Long> timeMsg = new ArrayList<>();
+    private final List<Long> msgTimes = new ArrayList<>();
     private long timeLeft = 0;
     private int taskID = -1;
     private boolean broadcastTime = true;
@@ -33,7 +33,7 @@ public class MinigameTimer {
         this.timeLength = timeLength;
         this.timeLeft = timeLength;
         this.minigame = minigame;
-        timeMsg.addAll(plugin.getConfig().getLongList("multiplayer.timerMessageInterval"));
+        msgTimes.addAll(plugin.getConfig().getLongList("multiplayer.timerMessageInterval"));
         startTimer();
     }
 
@@ -95,7 +95,7 @@ public class MinigameTimer {
             }
         }
 
-        if (timeMsg.contains(timeLeft) && broadcastTime) {
+        if (msgTimes.contains(timeLeft) && broadcastTime) {
             PlayMGSound.playSound(minigame, MGSounds.TIMER_TICK.getSound());
             MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_TIMELEFT,
                     Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(timeLeft)))));

@@ -1,9 +1,9 @@
-package au.com.mineauz.minigamesregions;
+package au.com.mineauz.minigamesregions.language;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
-import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import au.com.mineauz.minigamesregions.Main;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
@@ -48,7 +48,7 @@ public class RegionMessageManager {
             }
         } else {
             try {
-                langBundleMinigameRegions = ResourceBundle.getBundle(BUNDLE_KEY, locale, Minigames.getPlugin().getClass().getClassLoader(), new UTF8ResourceBundleControl());
+                langBundleMinigameRegions = ResourceBundle.getBundle(BUNDLE_KEY, locale, Main.getPlugin().getClass().getClassLoader(), new UTF8ResourceBundleControl());
             } catch (MissingResourceException e) {
                 Minigames.getCmpnntLogger().warn("couldn't get Ressource bundle for lang " + locale.toLanguageTag(), e);
             }

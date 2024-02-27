@@ -77,5 +77,4 @@ public class DisableAllCommand extends ACommand {
         List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
         return CommandDispatcher.tabCompleteMatch(mgs, args[args.length - 1]);
     }
-
 }

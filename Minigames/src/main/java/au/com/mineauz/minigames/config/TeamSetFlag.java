@@ -62,5 +62,4 @@ public class TeamSetFlag extends AFlag<Map<TeamColor, Team>> {
                                           @Nullable List<@NotNull Component> description) {
         return null;
     }
-
 }

@@ -55,5 +55,4 @@ public class RollbackScheduler implements Runnable {
 
         task.cancel();
     }
-
 }

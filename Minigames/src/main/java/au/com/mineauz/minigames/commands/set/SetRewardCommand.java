@@ -101,35 +101,33 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                             }
-                        } else if (args[0].equals("SLOT")) {
-                            if (sender instanceof Player player) {
-                                ItemStack item = player.getInventory().getItemInMainHand();
-
-                                RewardRarity rarity;
-                                if (args.length == 2) {
-                                    rarity = RewardRarity.matchRarity(args[1]);
-
-                                    if (rarity == null) {
-                                        return false;
-                                    }
-                                } else {
-                                    rarity = RewardRarity.NORMAL;
-                                }
-
-                                setItemReward(minigame, rewards, sender, item, rarity, isPrimary);
-                                return true;
-
-                            } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
-                            }
                         } else {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.REWARD_ERROR_NOVAULT,
                                     Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(),
                                             Component.text("spigot.net", Style.style(TextDecoration.UNDERLINED)).
                                                     clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/vault.34315/"))));
                         }
+                    } else if (args[0].equals("SLOT")) {
+                        if (sender instanceof Player player) {
+                            ItemStack item = player.getInventory().getItemInMainHand();
 
-                        return true;
+                            RewardRarity rarity;
+                            if (args.length == 2) {
+                                rarity = RewardRarity.matchRarity(args[1]);
+
+                                if (rarity == null) {
+                                    return false;
+                                }
+                            } else {
+                                rarity = RewardRarity.NORMAL;
+                            }
+
+                            setItemReward(minigame, rewards, sender, item, rarity, isPrimary);
+                            return true;
+
+                        } else {
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+                        }
                     } else {
                         Material mat = Material.matchMaterial(args[0]);
 
@@ -169,6 +167,8 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                         }
                     }
+
+                    return true;
                 }
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ERROR_SCHEME);

@@ -134,7 +134,6 @@ public class TeamSign extends AMinigameSign {
 
     @Override
     public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
-
     }
 
     private Team matchTeam(Minigame mgm, String text) {
@@ -143,5 +142,4 @@ public class TeamSign extends AMinigameSign {
             return TeamsModule.getMinigameModule(mgm).getTeam(col);
         return null;
     }
-
 }

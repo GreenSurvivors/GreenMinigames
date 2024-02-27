@@ -96,5 +96,4 @@ public class LivesMechanic extends GameMechanicBase {
             mgPlayer.getMinigame().setScore(mgPlayer, mgPlayer.getScore());
         }
     }
-
 }

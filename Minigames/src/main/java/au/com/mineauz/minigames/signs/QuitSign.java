@@ -49,7 +49,5 @@ public class QuitSign extends AMinigameSign {
 
     @Override
     public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
-
     }
-
 }

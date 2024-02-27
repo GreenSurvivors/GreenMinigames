@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ACommand;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
@@ -11,45 +10,20 @@ import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 public class SetCommand extends ACommand {
     private static final @NotNull Map<@NotNull String, @NotNull ASetCommand> parameterList = new TreeMap<>(); // sort by name for display in help
-    private static BufferedWriter cmdFile;
 
     static {
-        if (PLUGIN.getConfig().getBoolean("outputCMDToFile")) {
-            try {
-                cmdFile = new BufferedWriter(new FileWriter(PLUGIN.getDataFolder() + File.pathSeparator + "setcmds.txt"));
-                cmdFile.write("{| class=\"wikitable\"");
-                cmdFile.newLine();
-                cmdFile.write("! Command");
-                cmdFile.newLine();
-                cmdFile.write("! Syntax");
-                cmdFile.newLine();
-                cmdFile.write("! Description");
-                cmdFile.newLine();
-                cmdFile.write("! Permission");
-                cmdFile.newLine();
-                cmdFile.write("! Alias");
-                cmdFile.newLine();
-            } catch (IOException e) {
-                Minigames.getCmpnntLogger().warn("couldn't write cmd file", e);
-            }
-        }
         registerSetCommand(new SetStartCommand());
-        registerSetCommand(new SetEndCommand());
-        registerSetCommand(new SetQuitCommand());
+        registerSetCommand(new SetEndLocationCommand());
+        registerSetCommand(new SetQuitLocationCommand());
         registerSetCommand(new SetLobbyCommand());
         registerSetCommand(new SetRewardCommand());
         registerSetCommand(new SetSecondaryRewardCommand());
@@ -63,7 +37,7 @@ public class SetCommand extends ACommand {
         registerSetCommand(new SetMinTreasureCommand());
         registerSetCommand(new SetMaxTreasureCommand());
         registerSetCommand(new SetFlagCommand());
-        registerSetCommand(new SetLocationCommand());
+        registerSetCommand(new SetLocationHintCommand());
         registerSetCommand(new SetUsePermissionsCommand());
         registerSetCommand(new SetMinScoreCommand());
         registerSetCommand(new SetMaxScoreCommand());
@@ -99,69 +73,16 @@ public class SetCommand extends ACommand {
         registerSetCommand(new SetFlightCommand());
         registerSetCommand(new SetHintDelayCommand());
         registerSetCommand(new SetRestartDelayCommand());
-        registerSetCommand(new SetSpectatorSpawnCommand());
+        registerSetCommand(new SetSpectatorSpawnLocationCommand());
         registerSetCommand(new SetInfectedPercentCommand());
         registerSetCommand(new SetGameOverCommand());
         registerSetCommand(new SetDisplayScoreboardCommand());
         registerSetCommand(new SetInfectedTeamCommand());
         registerSetCommand(new SetSurvivorTeamCommand());
-
-        if (PLUGIN.getConfig().getBoolean("outputCMDToFile")) {
-            try {
-                cmdFile.write("|}");
-                cmdFile.close();
-            } catch (IOException e) {
-                Minigames.getCmpnntLogger().warn("couldn't write cmd file", e);
-            }
-        }
     }
 
     public static void registerSetCommand(ASetCommand command) {
         parameterList.put(command.getName(), command);
-
-        if (PLUGIN.getConfig().getBoolean("outputCMDToFile")) {
-            PlainTextComponentSerializer plainCmpntSerial = PlainTextComponentSerializer.plainText();
-
-            try {
-                cmdFile.write("|-");
-                cmdFile.newLine();
-                cmdFile.write("| '''" + command.getName() + "'''");
-                cmdFile.newLine();
-                if (command.getUsage() != null) {
-                    cmdFile.write("| ");
-                    cmdFile.write(plainCmpntSerial.serialize(command.getUsage()));
-                } else {
-                    cmdFile.write("| N/A");
-                }
-                cmdFile.newLine();
-                command.getDescription();
-                cmdFile.write("| " + command.getDescription());
-                cmdFile.newLine();
-                if (command.getPermission() != null) {
-                    cmdFile.write("| " + command.getPermission());
-                } else {
-                    cmdFile.write("| N/A");
-                }
-                cmdFile.newLine();
-                if (command.getAliases() != null) {
-                    int count = 0;
-                    cmdFile.write("| ");
-                    for (String alias : command.getAliases()) {
-                        cmdFile.write(alias);
-                        count++;
-                        if (count != command.getAliases().length) {
-                            cmdFile.write("\n\n");
-                        }
-                    }
-                } else {
-                    cmdFile.write("| N/A");
-                }
-                cmdFile.newLine();
-
-            } catch (IOException e) {
-                Minigames.getCmpnntLogger().warn("couldn't write cmd file", e);
-            }
-        }
     }
 
     public static @NotNull Collection<@NotNull ASetCommand> getSetCommands() {

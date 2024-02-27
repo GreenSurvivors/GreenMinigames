@@ -51,5 +51,4 @@ public class TakeCTFFlagEvent extends AbstractCancellableMinigameEvent {
     public MinigamePlayer getPlayer() {
         return player;
     }
-
 }

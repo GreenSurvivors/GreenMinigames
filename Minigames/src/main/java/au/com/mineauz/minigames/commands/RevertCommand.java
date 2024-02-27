@@ -65,5 +65,4 @@ public class RevertCommand extends ACommand {
                                                          @NotNull String @NotNull [] args) {
         return null;
     }
-
 }

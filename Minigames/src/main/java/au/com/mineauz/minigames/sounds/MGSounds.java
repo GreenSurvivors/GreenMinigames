@@ -18,5 +18,4 @@ public enum MGSounds { //todo undo making this a plain enum and allow registerat
     public @NotNull MGSound getSound() {
         return sound;
     }
-
 }

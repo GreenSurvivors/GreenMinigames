@@ -29,5 +29,4 @@ public class MinigameTimerTickEvent extends AbstractCancellableMinigameEvent {
     public void setCancelled(boolean b) {
         throw new UnsupportedOperationException("Cannot cancel a  Minigames tick Event");
     }
-
 }

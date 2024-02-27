@@ -58,7 +58,5 @@ tool: "BLAZE_ROD"
 
 warnings: true
 
-outputCMDToFile: false
-
 minigames:
   {}

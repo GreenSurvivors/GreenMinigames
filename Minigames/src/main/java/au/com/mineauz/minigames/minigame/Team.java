@@ -390,8 +390,6 @@ public class Team implements ScriptObject {
             public void setValue(Boolean value) {
                 setAutoBalance(value);
             }
-
-
         };
     }
 
@@ -433,7 +431,7 @@ public class Team implements ScriptObject {
     }
 
     /**
-     * I have no Idea, why whoever
+     * I have no Idea, why whoever fucked the naming in Bukkit up, but it is pretty bad
      */
     public enum VisibilityMapper {
         /**

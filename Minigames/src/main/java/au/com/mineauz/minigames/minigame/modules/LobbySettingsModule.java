@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.AFlag;
+import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -78,7 +78,6 @@ public class LobbySettingsModule extends MinigameModule {
             public void setValue(Boolean value) {
                 canMovePlayerWait.setFlag(value);
             }
-
         };
     }
 
@@ -101,7 +100,6 @@ public class LobbySettingsModule extends MinigameModule {
             public void setValue(Boolean value) {
                 canMoveStartWait.setFlag(value);
             }
-
         };
     }
 
@@ -124,7 +122,6 @@ public class LobbySettingsModule extends MinigameModule {
             public void setValue(Boolean value) {
                 canInteractPlayerWait.setFlag(value);
             }
-
         };
     }
 
@@ -147,7 +144,6 @@ public class LobbySettingsModule extends MinigameModule {
             public void setValue(Boolean value) {
                 canInteractStartWait.setFlag(value);
             }
-
         };
     }
 
@@ -170,7 +166,6 @@ public class LobbySettingsModule extends MinigameModule {
             public void setValue(Boolean value) {
                 teleportOnStart.setFlag(value);
             }
-
         };
     }
 
@@ -228,5 +223,4 @@ public class LobbySettingsModule extends MinigameModule {
     public boolean displayMechanicSettings(Menu previous) {
         return false;
     }
-
 }
