@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.managers;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.MultiplayerBets;
 import au.com.mineauz.minigames.commands.QuitCommand;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.*;
 
 /**
@@ -164,7 +166,8 @@ public class MinigamePlayerManager {
         }
         if (minigame.getState() == MinigameState.STARTING && minigame.canLateJoin()) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_LATEJOINWAIT,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minigame.getMpTimer().getStartWaitTimeLeft())));
+                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(),
+                            MinigameUtils.convertTime(Duration.ofSeconds(minigame.getMpTimer().getStartWaitTimeLeft()))));
         }
     }
 
@@ -229,7 +232,7 @@ public class MinigamePlayerManager {
                     }
                     return false;
                 }
-            } else { //todo figure out why
+            } else { //todo figure out why one is only allowed to bet once
                 //already bet once.
                 //todo feedback
                 return false;
@@ -808,7 +811,8 @@ public class MinigamePlayerManager {
 
                 if (minigame.getShowCompletionTime()) {
                     MinigameMessageManager.sendMgMessage(mgWinner, MinigameMessageType.INFO, MinigameLangKey.PLAYER_COMPLETIONTIME,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf((double) (winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime()) / 1000)));
+                            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(),
+                                    MinigameUtils.convertTime(Duration.ofMillis(((winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime()))))));
                 }
 
                 for (DynamicMinigameStat stat : MinigameStatistics.getDynamicStats()) {

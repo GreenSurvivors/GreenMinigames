@@ -43,7 +43,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
     }
 
     @Override
-    public List<Component> getDescription() { //todo translation String
+    public List<Component> getDescription() {
         return RegionMessageManager.getMessageList(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_DESCRIPTION);
     }
 

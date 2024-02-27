@@ -647,10 +647,16 @@ public class Minigame implements ScriptObject {
         this.timerDisplayType.setFlag(type);
     }
 
+    /**
+     * in seconds
+     */
     public long getStartWaitTime() {
         return startWaitTime.getFlag();
     }
 
+    /**
+     * in seconds
+     */
     public void setStartWaitTime(long startWaitTime) {
         this.startWaitTime.setFlag(startWaitTime);
     }

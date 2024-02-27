@@ -1,8 +1,9 @@
 package au.com.mineauz.minigames.minigame.modules;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.AFlag;
+import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -22,13 +23,14 @@ import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class GameOverModule extends MinigameModule {
-    private final TimeFlag timer = new TimeFlag(0L, "gameOver.timer");
+    private final TimeFlag timer = new TimeFlag(0L, "gameOver.timer"); // in seconds
     private final BooleanFlag invincible = new BooleanFlag(false, "gameOver.invincible");
     private final BooleanFlag humiliation = new BooleanFlag(false, "gameOver.humiliation");
     private final BooleanFlag interact = new BooleanFlag(false, "gameOver.interact");
@@ -89,7 +91,7 @@ public class GameOverModule extends MinigameModule {
 
     public void startEndGameTimer() {
         MinigameMessageManager.sendMinigameMessage(getMinigame(), MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_GAMEOVERQUIT,
-                Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(timer.getFlag()))));
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(timer.getFlag())))));
         getMinigame().setState(MinigameState.ENDED);
 
         List<MinigamePlayer> allPlys = new ArrayList<>(winners.size() + losers.size());

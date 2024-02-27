@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.gametypes;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.MultiplayerTimer;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
@@ -27,6 +28,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +36,7 @@ import java.util.List;
 public class MultiplayerType extends MinigameTypeBase {
     private static final Minigames plugin = Minigames.getPlugin();
     private final MinigamePlayerManager pdata = plugin.getPlayerManager();
+    private static final int secondsUntilLateJoin = 5; // todo configurable
 
     public MultiplayerType() {
         setType(MinigameType.MULTIPLAYER);
@@ -103,7 +106,7 @@ public class MultiplayerType extends MinigameTypeBase {
         } else if (mgm.hasStarted()) {
             mgPlayer.setLatejoining(true);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_LATEJOIN,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(5)))); //TODO: Late join delay variable
+                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(secondsUntilLateJoin)))));
             final MinigamePlayer fply = mgPlayer;
             final Minigame fmgm = mgm;
             if (mgm.isTeamGame()) {
@@ -135,7 +138,7 @@ public class MultiplayerType extends MinigameTypeBase {
                         fply.setCanInteract(true);
                         fply.setLateJoinTimer(-1);
                     }
-                }, 5 * 20)); //TODO: Latejoin variable
+                }, secondsUntilLateJoin * 20));
             } else {
                 mgPlayer.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                     if (fply.isInMinigame()) {
@@ -148,7 +151,7 @@ public class MultiplayerType extends MinigameTypeBase {
                         fply.setCanInteract(true);
                         fply.setLateJoinTimer(-1);
                     }
-                }, 5 * 20)); //TODO: Latejoin variable
+                }, secondsUntilLateJoin * 20));
             }
             mgPlayer.getPlayer().setScoreboard(mgm.getScoreboardManager());
             mgm.setScore(mgPlayer, 1);
