@@ -75,7 +75,5 @@ public class SpectateSign extends AMinigameSign {
 
     @Override
     public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
-
     }
-
 }

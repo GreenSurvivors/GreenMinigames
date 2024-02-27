@@ -134,11 +134,12 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
         if (args.length == 1) {
             return CommandDispatcher.tabCompleteMatch(List.of("create", "remove", "type", "time"), args[0]);
         } else if (args[0].equalsIgnoreCase("type")) {
-            return CommandDispatcher.tabCompleteMatch(List.of("random", "inward", "circle"), args[1]);
+            return CommandDispatcher.tabCompleteMatch(
+                    Arrays.stream(FloorDegenerator.DegeneratorType.values()).map(s -> s.toString().toLowerCase()).toList(),
+                    args[1]);
         } else if (args[0].equalsIgnoreCase("time")) {
             return List.of("s", "m", "h");
         }
         return null;
     }
-
 }

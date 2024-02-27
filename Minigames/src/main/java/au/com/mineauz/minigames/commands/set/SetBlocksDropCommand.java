@@ -71,5 +71,4 @@ public class SetBlocksDropCommand extends ASetCommand {
             return CommandDispatcher.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;
     }
-
 }

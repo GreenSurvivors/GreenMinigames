@@ -218,5 +218,4 @@ public class TeleportCommand extends ACommand {
         }
         return null;
     }
-
 }

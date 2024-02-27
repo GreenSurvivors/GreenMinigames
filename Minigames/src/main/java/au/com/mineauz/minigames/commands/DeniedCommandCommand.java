@@ -78,5 +78,4 @@ public class DeniedCommandCommand extends ACommand {
         }
         return null;
     }
-
 }

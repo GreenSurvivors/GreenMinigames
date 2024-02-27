@@ -107,5 +107,4 @@ public class LoadoutSign extends AMinigameSign {
     public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
 
     }
-
 }

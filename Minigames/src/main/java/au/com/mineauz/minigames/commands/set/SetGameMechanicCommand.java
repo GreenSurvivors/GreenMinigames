@@ -77,5 +77,4 @@ public class SetGameMechanicCommand extends ASetCommand {
         }
         return null;
     }
-
 }

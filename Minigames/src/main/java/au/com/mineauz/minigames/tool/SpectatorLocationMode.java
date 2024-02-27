@@ -40,7 +40,6 @@ public class SpectatorLocationMode implements ToolMode { //todo waring if other 
     @Override
     public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
                             @Nullable Team team, @NotNull PlayerInteractEvent event) {
-
     }
 
     @Override
@@ -78,5 +77,4 @@ public class SpectatorLocationMode implements ToolMode { //todo waring if other 
     @Override
     public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
     }
-
 }

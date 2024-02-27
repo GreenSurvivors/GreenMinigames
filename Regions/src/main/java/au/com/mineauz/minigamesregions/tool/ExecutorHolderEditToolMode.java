@@ -14,6 +14,7 @@ import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
 import au.com.mineauz.minigamesregions.*;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import au.com.mineauz.minigamesregions.menu.MenuItemNode;
 import au.com.mineauz.minigamesregions.menu.MenuItemRegion;

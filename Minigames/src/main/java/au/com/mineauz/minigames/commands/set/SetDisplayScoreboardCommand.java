@@ -87,5 +87,4 @@ public class SetDisplayScoreboardCommand extends ASetCommand { //todo allow side
         }
         return null;
     }
-
 }

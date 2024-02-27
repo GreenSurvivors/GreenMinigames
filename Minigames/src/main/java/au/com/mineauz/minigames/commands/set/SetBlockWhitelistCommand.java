@@ -129,5 +129,4 @@ public class SetBlockWhitelistCommand extends ASetCommand {
         }
         return null;
     }
-
 }

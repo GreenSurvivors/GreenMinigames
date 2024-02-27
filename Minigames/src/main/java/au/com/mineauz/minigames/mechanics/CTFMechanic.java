@@ -315,7 +315,7 @@ public class CTFMechanic extends GameMechanicBase {
         MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity());
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getType() == MinigameType.MULTIPLAYER && mgPlayer.getMinigame().isTeamGame()) {
             Minigame mgm = mgPlayer.getMinigame();
-            if (mgm.getMechanicName().equals("ctf")) { // todo mechanic manager
+            if (mgm.getMechanicName().equalsIgnoreCase(MgModules.CAPTURE_THE_FLAG.getName())) {
                 autoBalanceOnDeath(mgPlayer, mgm);
             }
         }

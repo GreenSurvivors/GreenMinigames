@@ -53,10 +53,10 @@ public class EditCommand extends ACommand {
                 if (sender instanceof Player player) {
                     MinigamePlayer mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
                     mgm.displayMenu(mgPlayer);
-                    return true;
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
                 }
+                return true;
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
@@ -74,5 +74,4 @@ public class EditCommand extends ACommand {
         }
         return null;
     }
-
 }

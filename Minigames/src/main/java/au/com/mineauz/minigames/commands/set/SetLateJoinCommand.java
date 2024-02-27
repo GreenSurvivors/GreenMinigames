@@ -72,5 +72,4 @@ public class SetLateJoinCommand extends ASetCommand {
         }
         return null;
     }
-
 }

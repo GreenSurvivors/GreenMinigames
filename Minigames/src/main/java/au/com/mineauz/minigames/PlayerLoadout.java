@@ -52,8 +52,6 @@ public class PlayerLoadout {
             public void setValue(Component value) {
                 displayname = value;
             }
-
-
         };
     }
 
@@ -208,8 +206,6 @@ public class PlayerLoadout {
             public void setValue(Boolean value) {
                 fallDamage = value;
             }
-
-
         };
     }
 
@@ -233,8 +229,6 @@ public class PlayerLoadout {
             public void setValue(Boolean value) {
                 hunger = value;
             }
-
-
         };
     }
 
@@ -259,8 +253,6 @@ public class PlayerLoadout {
                 if (level >= -1)
                     level = value;
             }
-
-
         };
     }
 
@@ -292,8 +284,6 @@ public class PlayerLoadout {
             public void setValue(Boolean value) {
                 setInventoryLocked(value);
             }
-
-
         };
     }
 
@@ -317,8 +307,6 @@ public class PlayerLoadout {
             public void setValue(Boolean value) {
                 setArmourLocked(value);
             }
-
-
         };
     }
 
@@ -337,8 +325,6 @@ public class PlayerLoadout {
             public void setValue(Boolean value) {
                 allowOffHand = value;
             }
-
-
         };
     }
 
@@ -388,8 +374,6 @@ public class PlayerLoadout {
             public void setValue(Boolean value) {
                 setDisplayInMenu(value);
             }
-
-
         };
     }
 

@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.tool.ToolModes;
 import au.com.mineauz.minigamesregions.commands.SetNodeCommand;
 import au.com.mineauz.minigamesregions.commands.SetRegionCommand;
+import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.tool.ExecutorHolderEditToolMode;
 import au.com.mineauz.minigamesregions.tool.NodeToolMode;
 import au.com.mineauz.minigamesregions.tool.RegionToolMode;

@@ -78,5 +78,4 @@ public class QuitLocationMode implements ToolMode {
     @Override
     public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
     }
-
 }

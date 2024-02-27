@@ -15,16 +15,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SetLocationCommand extends ASetCommand { //todo i feel like this should be better identifiable not only does his not set a location but a hint, it isn't intuitive, that this belongs to treasure hunt
+public class SetLocationHintCommand extends ASetCommand { //todo i feel like this should be better identifiable:it isn't intuitive, that this belongs to treasure hunt
 
     @Override
     public @NotNull String getName() {
-        return "location";
+        return "locationHint";
     }
 
     @Override
     public boolean canBeConsole() {
         return true;
+    }
+
+    @Override
+    public String[] getAliases() {
+        return new String[]{"lh", "locHint"};
     }
 
     @Override
