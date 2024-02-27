@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -22,20 +23,20 @@ public class PlayerLoadout {
     private final Map<Integer, ItemStack> itemSlot = new HashMap<>();
     private final List<PotionEffect> potions = new ArrayList<>();
     private final Map<Class<? extends LoadoutAddon>, Object> addonValues = new HashMap<>();
-    private String loadoutName;
+    private final @NotNull String loadoutName;
     private boolean usePermission = false;
     private boolean fallDamage = true;
     private boolean hunger = false;
     private int level = -1;
     private boolean deleteable = true;
-    private Component displayname = null;
+    private @Nullable Component displayname = null;
     private boolean lockInventory = false;
     private boolean lockArmour = false;
     private boolean allowOffHand = true;
-    private TeamColor team = null;
+    private @Nullable TeamColor team;
     private boolean displayInMenu = true;
 
-    public PlayerLoadout(String name) {
+    public PlayerLoadout(@NotNull String name) {
         loadoutName = name;
         team = TeamColor.matchColor(name);
     }
@@ -59,7 +60,7 @@ public class PlayerLoadout {
         return Objects.requireNonNullElseGet(displayname, () -> Component.text(loadoutName));
     }
 
-    public void setDisplayName(Component name) {
+    public void setDisplayName(@NotNull Component name) {
         displayname = name;
     }
 

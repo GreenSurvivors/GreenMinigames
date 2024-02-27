@@ -1,7 +1,10 @@
 package au.com.mineauz.minigames.minigame;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.*;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.EnumFlag;
+import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -17,6 +20,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team.Option;
@@ -24,7 +28,6 @@ import org.bukkit.scoreboard.Team.OptionStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +36,7 @@ public class Team implements ScriptObject {
     private final List<Location> startLocations = new ArrayList<>();
     private final StringFlag playerAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
     private final StringFlag joinAnnounceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE), "gameAssignMsg");
-    private final StringFlag autobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG), "autobalanceMsg");
+    private final StringFlag playerAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG), "autobalanceMsg");
     private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG), "gameAutobalanceMsg");
     private final EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
     private final BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
@@ -132,19 +135,6 @@ public class Team implements ScriptObject {
      */
     public Component getColoredDisplayName() {
         return Component.text(getDisplayName(), getTextColor());
-    }
-
-    public Set<AFlag<?>> getFlags() {
-        Set<AFlag<?>> flags = new HashSet<>();
-        flags.add(maxPlayers);
-        flags.add(playerAssignMsg);
-        flags.add(joinAnnounceMsg);
-        flags.add(gameAutobalanceMsg);
-        flags.add(autobalanceMsg);
-        flags.add(nametagVisibility);
-        flags.add(autoBalance);
-
-        return flags;
     }
 
     public int getMaxPlayers() {
@@ -327,11 +317,11 @@ public class Team implements ScriptObject {
     }
 
     public String getAutobalanceMessage() {
-        return autobalanceMsg.getFlag();
+        return playerAutobalanceMsg.getFlag();
     }
 
     public void setAutobalanceMessage(String msg) {
-        autobalanceMsg.setFlag(msg);
+        playerAutobalanceMsg.setFlag(msg);
     }
 
     public String getGameAutobalanceMessage() {
@@ -343,7 +333,7 @@ public class Team implements ScriptObject {
     }
 
     public StringFlag getAutoBalanceMsgFlag() {
-        return autobalanceMsg;
+        return playerAutobalanceMsg;
     }
 
     public StringFlag getGameAutoBalanceMsgFlag() {
@@ -428,6 +418,32 @@ public class Team implements ScriptObject {
     @Override
     public String getAsString() {
         return getColor().name();
+    }
+
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        maxPlayers.loadValue(config, path);
+        playerAssignMsg.loadValue(config, path);
+        joinAnnounceMsg.loadValue(config, path);
+        gameAutobalanceMsg.loadValue(config, path);
+        playerAutobalanceMsg.loadValue(config, path);
+        nametagVisibility.loadValue(config, path);
+        autoBalance.loadValue(config, path);
+
+        //dataFixerUpper
+        playerAssignMsg.setFlag(playerAssignMsg.getFlag().replaceFirst("%s", "<team>"));
+        joinAnnounceMsg.setFlag(joinAnnounceMsg.getFlag().replaceFirst("%s", "<player>").replaceFirst("%s", "<team>"));
+        playerAutobalanceMsg.setFlag(playerAutobalanceMsg.getFlag().replaceFirst("%s", "<team>"));
+        gameAutobalanceMsg.setFlag(gameAutobalanceMsg.getFlag().replaceFirst("%s", "<player>").replaceFirst("%s", "<team>"));
+    }
+
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        maxPlayers.saveValue(config, path);
+        playerAssignMsg.saveValue(config, path);
+        joinAnnounceMsg.saveValue(config, path);
+        gameAutobalanceMsg.saveValue(config, path);
+        playerAutobalanceMsg.saveValue(config, path);
+        nametagVisibility.saveValue(config, path);
+        autoBalance.saveValue(config, path);
     }
 
     /**

@@ -127,7 +127,9 @@ public class EndCommand extends ACommand {
             }
             return true;
         } else if (sender instanceof Player player) { // does not have permission to end minigame for others, quit self if possible
-            if (sender.hasPermission("minigame.quit")) {
+            String permission = new QuitCommand().getPermission(); // I hate to create a new Instance just to get a quasi static value
+
+            if (permission == null || sender.hasPermission(permission)) {
                 MinigamePlayer mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
 
                 if (mgPlayer.isInMinigame()) {
@@ -148,7 +150,7 @@ public class EndCommand extends ACommand {
         return true;
     }
 
-    private void forceEndForPlayer(Player player, @NotNull CommandSender sender, @NotNull Component notInGameMessage) {
+    private void forceEndForPlayer(@NotNull Player player, @NotNull CommandSender sender, @NotNull Component notInGameMessage) {
         MinigamePlayer mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
         Minigame minigame = mgPlayer.getMinigame();
 

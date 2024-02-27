@@ -84,6 +84,7 @@ public enum MgCommandLangKey implements LangKey {
     COMMAND_INFO_OUTPUT_PLAYERHEADER("command.info.output.playerHeader"),
     COMMAND_INFO_OUTPUT_TEAMDATA("command.info.output.teamData"),
     COMMAND_INFO_OUTPUT_TIMER("command.info.output.timer"),
+    COMMAND_INFO_USAGE("command.info.usage"),
     COMMAND_JOIN_DESCRIPTION("command.join.description"),
     COMMAND_JOIN_USAGE("command.join.usage"),
     COMMAND_LISTPLACEHOLDERS_DESCRIPTION("command.listPlaceholders.description"),
