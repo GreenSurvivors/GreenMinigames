@@ -34,33 +34,24 @@ public class TeamFlag extends AFlag<Team> {
             }
         }
 
-        for (AFlag<?> flag : getFlag().getFlags()) {
-            if (flag.getDefaultFlag() != flag.getFlag()) {
-                flag.saveValue(config, path + "." + getName());
-            }
-        }
+        getFlag().save(config, path + "." + getName());
     }
 
     @Override
     public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        Team t = new Team(TeamColor.valueOf(getName()), mgm);
-        t.setDisplayName(config.getString(path + "." + getName() + ".displayName"));
+        Team team = new Team(TeamColor.valueOf(getName()), mgm);
+        team.setDisplayName(config.getString(path + "." + getName() + ".displayName"));
         if (config.contains(path + "." + getName() + ".startpos")) {
             Set<String> locations = config.getConfigurationSection(path + "." + getName() + ".startpos").getKeys(false);
             for (String loc : locations) {
                 LocationFlag locf = new LocationFlag(null, "startpos." + loc);
                 locf.loadValue(config, path + "." + getName());
-                t.addStartLocation(locf.getFlag());
+                team.addStartLocation(locf.getFlag());
             }
         }
 
-        for (AFlag<?> flag : t.getFlags()) {
-            if (config.contains(path + "." + getName() + "." + flag.getName())) {
-                flag.loadValue(config, path + "." + getName());
-            }
-        }
-
-        setFlag(t);
+        team.load(config, path + "." + getName());
+        setFlag(team);
     }
 
     @Deprecated

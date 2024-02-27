@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -55,7 +56,7 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
             Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
             if (mgm != null && mgm.getMinigameTimer() != null && mgm.getType() == MinigameType.GLOBAL &&
-                    mgm.getMechanicName().equals("treasure_hunt")) {
+                    mgm.getMechanicName().equals(GameMechanics.MgMechanics.TREASUREHUNT.getMechanic().getMechanicName())) {
                 TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
                 if (thm != null && thm.hasTreasureLocation() && !thm.isTreasureFound()) {
                     thm.getHints(player);
@@ -70,7 +71,7 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
         } else {
             List<Minigame> mgs = new ArrayList<>();
             for (Minigame mg : PLUGIN.getMinigameManager().getAllMinigames().values()) {
-                if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt")) {
+                if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals(GameMechanics.MgMechanics.TREASUREHUNT.getMechanic().getMechanicName())) {
                     mgs.add(mg);
                 }
             }
@@ -102,12 +103,11 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
         if (args.length == 1) {
             List<String> mgs = new ArrayList<>();
             for (Minigame mg : PLUGIN.getMinigameManager().getAllMinigames().values()) {
-                if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt"))
+                if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals(GameMechanics.MgMechanics.TREASUREHUNT.getMechanic().getMechanicName()))
                     mgs.add(mg.getName());
             }
             return CommandDispatcher.tabCompleteMatch(mgs, args[0]);
         }
         return null;
     }
-
 }

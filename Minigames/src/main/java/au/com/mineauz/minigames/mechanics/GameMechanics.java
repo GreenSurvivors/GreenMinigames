@@ -79,8 +79,8 @@ public class GameMechanics {
 
         private final GameMechanicBase mechanic;
 
-        MgMechanics(GameMechanicBase name) {
-            this.mechanic = name;
+        MgMechanics(GameMechanicBase mechanic) {
+            this.mechanic = mechanic;
         }
 
         public GameMechanicBase getMechanic() {
