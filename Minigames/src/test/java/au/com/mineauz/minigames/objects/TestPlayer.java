@@ -23,7 +23,6 @@ import java.util.UUID;
  * Created by benjamincharlton on 23/12/2018.
  */
 public class TestPlayer extends PlayerMock {
-
     private final List<PotionEffect> effects = new ArrayList<>();
     private Long playerTime;
     private Long playerTimeoffset;
@@ -48,8 +47,9 @@ public class TestPlayer extends PlayerMock {
     public void setPlayerTime(long time, boolean relative) {
         if (relative) {
             playerTimeoffset = time - this.getWorld().getTime();
-        } else playerTime = time;
-
+        } else {
+            playerTime = time;
+        }
     }
 
     @Override
