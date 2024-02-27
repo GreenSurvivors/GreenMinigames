@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -23,11 +23,11 @@ public class MenuItemCustom extends MenuItem {
         super(displayMat, name);
     }
 
-    public MenuItemCustom(@Nullable Material displayMat, @NotNull LangKey langKey) {
+    public MenuItemCustom(@Nullable Material displayMat, @NotNull MinigameLangKey langKey) {
         super(displayMat, langKey);
     }
 
-    public MenuItemCustom(@Nullable Material displayMat, @NotNull LangKey langKey,
+    public MenuItemCustom(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
                           @Nullable List<@NotNull Component> description) {
         super(displayMat, langKey, description);
     }

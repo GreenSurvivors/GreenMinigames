@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,7 +26,7 @@ public class MenuItemInteger extends MenuItem {
     private final Integer min; // inclusive
     private final Integer max; // inclusive
 
-    public MenuItemInteger(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Integer> value,
+    public MenuItemInteger(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<Integer> value,
                            @Nullable Integer min, @Nullable Integer max) {
         super(displayMat, langKey);
         this.value = value;
@@ -44,7 +44,7 @@ public class MenuItemInteger extends MenuItem {
         updateDescription();
     }
 
-    public MenuItemInteger(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<Component> description,
+    public MenuItemInteger(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @Nullable List<Component> description,
                            @NotNull Callback<Integer> value, @Nullable Integer min, @Nullable Integer max) {
         super(displayMat, langKey, description);
         this.value = value;

@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.managers.language.langkeys;
 
 import org.jetbrains.annotations.NotNull;
 
-public enum MgCommandLangKey implements LangKey {
+public enum MgCommandLangKey implements MinigameLangKey {
     COMMAD_ERROR_NOTPLAYER("command.error.notPlayer"),
     COMMAND_BACKEND_DESCRIPTION("command.backend.description"),
     COMMAND_BACKEND_EXPORT_START("command.backend.export.start"),

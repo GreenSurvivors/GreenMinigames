@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.managers.language.langkeys;
 
 import org.jetbrains.annotations.NotNull;
 
-public enum MgMenuLangKey implements LangKey {
+public enum MgMenuLangKey implements MinigameLangKey {
     MENUREWARD_SCHEME_HIERARCHY_LOSS_AWARD_DESCRIPTION("menu.reward.scheme.hierarchy.loss.award.description"),
     MENUREWARD_SCHEME_HIERARCHY_LOSS_SECONDARY_DESCRIPTION("menu.reward.scheme.hierarchy.loss.secondary.description"),
     MENU_BLOCKDATA_CLICKBLOCK("menu.blockData.clickBlock"),

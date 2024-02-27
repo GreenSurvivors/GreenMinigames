@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.minigame;
 import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
@@ -1366,8 +1366,8 @@ public class Minigame implements ScriptObject {
             itemsFlags.add(new MenuItemFlag(Material.OAK_SIGN, flag, getSinglePlayerFlags()));
         }
         flags.addItem(new MenuItemBack(playerMenu), flags.getSize() - 9);
-        flags.addItem(new MenuItemAddFlag(MgMenuLangKey.MENU_FLAGADD_NAME,
-                MenuUtility.getCreateMaterial(), this), flags.getSize() - 1);
+        flags.addItem(new MenuItemAddFlag(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_FLAGADD_NAME,
+                this), flags.getSize() - 1);
         flags.addItems(itemsFlags);
 
         //--------------//

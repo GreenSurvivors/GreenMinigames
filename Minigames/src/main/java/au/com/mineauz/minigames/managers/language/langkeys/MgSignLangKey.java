@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.managers.language.langkeys;
 
 import org.jetbrains.annotations.NotNull;
 
-public enum MgSignLangKey implements LangKey {
+public enum MgSignLangKey implements MinigameLangKey {
     MINIGAME("sign.minigame"),
     TYPE_BET("sign.type.bet"),
     TYPE_CHECKPOINT("sign.type.checkpoint"),

@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -126,9 +126,9 @@ public class InfoCommand extends ACommand {
                 }
             } else {
                 if (minigame.isEnabled()) {
-                    outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_ERROR_NOTSTARTED));
+                    outputBuilder.append(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED));
                 } else {
-                    outputBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_ERROR_NOTENABLED));
+                    outputBuilder.append(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_ERROR_NOTENABLED));
                 }
             }
 

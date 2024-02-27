@@ -3,7 +3,7 @@ package au.com.mineauz.minigamesregions.commands;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.commands.set.ASetCommand;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;

@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
@@ -21,12 +21,12 @@ import java.util.List;
 public class MenuItemAddFlag extends MenuItem {
     private final Minigame mgm;
 
-    public MenuItemAddFlag(@NotNull LangKey langKey, @Nullable Material displayMat, @NotNull Minigame mgm) {
+    public MenuItemAddFlag(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Minigame mgm) {
         super(displayMat, langKey);
         this.mgm = mgm;
     }
 
-    public MenuItemAddFlag(@NotNull Component name, @Nullable Material displayMat, @NotNull Minigame mgm) {
+    public MenuItemAddFlag(@Nullable Material displayMat, @NotNull Component name, @NotNull Minigame mgm) {
         super(displayMat, name);
         this.mgm = mgm;
     }

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import net.kyori.adventure.text.Component;
@@ -68,7 +68,7 @@ public abstract class AFlag<T> {
 
     public abstract void loadValue(@NotNull FileConfiguration config, @NotNull String path);
 
-    public MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull LangKey langKey) {
+    public MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
         return getMenuItem(displayMaterial, MinigameMessageManager.getMgMessage(langKey));
     }
 
@@ -76,8 +76,8 @@ public abstract class AFlag<T> {
         return getMenuItem(displayMaterial, name, null);
     }
 
-    public MenuItem getMenuItem(@Nullable Material displayMat, @NotNull LangKey nameLangKey,
-                                @NotNull LangKey descriptionLangKey) {
+    public MenuItem getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey nameLangKey,
+                                @NotNull MinigameLangKey descriptionLangKey) {
         return getMenuItem(displayMat, MinigameMessageManager.getMgMessage(nameLangKey),
                 MinigameMessageManager.getMgMessageList(descriptionLangKey));
     }

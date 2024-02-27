@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.*;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
@@ -102,7 +102,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                             }
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.REWARD_ERROR_NOVAULT,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.REWARD_ERROR_NOVAULT,
                                     Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(),
                                             Component.text("spigot.net", Style.style(TextDecoration.UNDERLINED)).
                                                     clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/vault.34315/"))));

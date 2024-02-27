@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.language;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigamesregions.Main;
 import net.kyori.adventure.text.Component;

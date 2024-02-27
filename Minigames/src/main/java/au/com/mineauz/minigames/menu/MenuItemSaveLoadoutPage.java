@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.PlayerLoadout;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
@@ -18,7 +18,7 @@ import java.util.List;
 public class MenuItemSaveLoadoutPage extends MenuItemPage {
     private final PlayerLoadout loadout;
 
-    public MenuItemSaveLoadoutPage(@Nullable Material displayMat, @NotNull LangKey langKey,
+    public MenuItemSaveLoadoutPage(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
                                    @NotNull PlayerLoadout loadout, @NotNull Menu menu) {
         super(displayMat, langKey, menu);
         this.loadout = loadout;

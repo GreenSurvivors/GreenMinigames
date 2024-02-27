@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.stats;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 
@@ -10,15 +10,15 @@ import net.kyori.adventure.text.Component;
  * fields are available
  */
 public enum StatisticValueField {
-    Last("", MinigameLangKey.STATISTIC_TITLE_LAST),
-    Min("_min", MinigameLangKey.STATISTIC_TITLE_MIN),
-    Max("_max", MinigameLangKey.STATISTIC_TITLE_MAX),
-    Total("_total", MinigameLangKey.STATISTIC_TITLE_TOTAL);
+    Last("", MgMiscLangKey.STATISTIC_TITLE_LAST),
+    Min("_min", MgMiscLangKey.STATISTIC_TITLE_MIN),
+    Max("_max", MgMiscLangKey.STATISTIC_TITLE_MAX),
+    Total("_total", MgMiscLangKey.STATISTIC_TITLE_TOTAL);
 
-    private final LangKey titleLangKey;
+    private final MinigameLangKey titleLangKey;
     private final String suffix;
 
-    StatisticValueField(String suffix, LangKey titleLangKey) {
+    StatisticValueField(String suffix, MinigameLangKey titleLangKey) {
         this.suffix = suffix;
         this.titleLangKey = titleLangKey;
     }

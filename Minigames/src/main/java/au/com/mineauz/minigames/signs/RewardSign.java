@@ -3,12 +3,12 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameManager;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
@@ -51,7 +51,7 @@ public class RewardSign extends AMinigameSign {
             event.line(1, getName());
             return true;
         }
-        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_REWARD_ERROR_NONAME);
+        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_REWARD_ERROR_NONAME);
         return false;
     }
 
@@ -99,7 +99,7 @@ public class RewardSign extends AMinigameSign {
             final Location floc = loc;
             mic.setClick(() -> {
                 mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
-                MinigameMessageManager.sendMgMessage(mic.getContainer().getViewer(), MinigameMessageType.INFO, MinigameLangKey.SIGN_REWARD_SAVED);
+                MinigameMessageManager.sendMgMessage(mic.getContainer().getViewer(), MinigameMessageType.INFO, MgMiscLangKey.SIGN_REWARD_SAVED);
                 mic.getContainer().getViewer().getPlayer().closeInventory();
                 return null;
             });

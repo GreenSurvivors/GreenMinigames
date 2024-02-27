@@ -2,11 +2,11 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -84,14 +84,14 @@ public class SetRegenAreaCommand extends ASetCommand {
             MgRegion region = regions.get(id);
             listBuilder.appendNewline();
 
-            listBuilder.append(MinigameMessageManager.getMgMessage(MinigameLangKey.REGION_DESCRIBE,
+            listBuilder.append(MinigameMessageManager.getMgMessage(MgMiscLangKey.REGION_DESCRIBE,
                     Placeholder.component(MinigamePlaceHolderKey.POSITION_1.getKey(),
-                            MinigameMessageManager.getMgMessage(MinigameLangKey.POSITION,
+                            MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMinX())),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMinY())),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMinZ())))),
                     Placeholder.component(MinigamePlaceHolderKey.POSITION_2.getKey(),
-                            MinigameMessageManager.getMgMessage(MinigameLangKey.POSITION,
+                            MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMaxX())),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMaxY())),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMaxZ()))))));
@@ -146,13 +146,13 @@ public class SetRegenAreaCommand extends ASetCommand {
 
                                 if (result.success()) {
                                     if (region == null) {
-                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.SUCCESS, MinigameLangKey.REGION_REGENREGION_CREATED,
+                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.SUCCESS, MgMiscLangKey.REGION_REGENREGION_CREATED,
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                                     } else {
-                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_REGENREGION_UPDATED,
+                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.REGION_REGENREGION_UPDATED,
                                                 Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
@@ -161,7 +161,7 @@ public class SetRegenAreaCommand extends ASetCommand {
 
                                     mgPlayer.clearSelection();
                                 } else {
-                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_REGENREGION_ERROR_LIMIT,
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_REGENREGION_ERROR_LIMIT,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                                             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                                 }
@@ -185,13 +185,13 @@ public class SetRegenAreaCommand extends ASetCommand {
                             RegenRegionChangeResult result = minigame.removeRegenRegion(args[1]);
 
                             if (result.success()) {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WARNING, MinigameLangKey.REGION_REGENREGION_REMOVED,
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WARNING, MgMiscLangKey.REGION_REGENREGION_REMOVED,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), args[1]),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                             } else {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOREGENREION,
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_ERROR_NOREGENREION,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), args[1]));
                             }
                             return true;

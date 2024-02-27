@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -24,7 +24,7 @@ public class MenuItemTime extends MenuItemLong {
         super(displayMat, name, value, min, max);
     }
 
-    public MenuItemTime(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<@NotNull Component> description,
+    public MenuItemTime(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @Nullable List<@NotNull Component> description,
                         @NotNull Callback<Long> value, @Nullable Long min, @Nullable Long max) {
         super(displayMat, langKey, description, value, min, max);
     }

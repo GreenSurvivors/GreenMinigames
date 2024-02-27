@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -17,12 +17,12 @@ public class MenuItemPage extends MenuItem {
         this.menu = menu;
     }
 
-    public MenuItemPage(@Nullable Material displayMat, @NotNull LangKey name, @NotNull Menu menu) {
+    public MenuItemPage(@Nullable Material displayMat, @NotNull MinigameLangKey name, @NotNull Menu menu) {
         super(displayMat, name);
         this.menu = menu;
     }
 
-    public MenuItemPage(@Nullable Material displayMat, @Nullable LangKey langKey,
+    public MenuItemPage(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
                         @Nullable List<@NotNull Component> description, @NotNull Menu menu) {
         super(displayMat, langKey, description);
         this.menu = menu;

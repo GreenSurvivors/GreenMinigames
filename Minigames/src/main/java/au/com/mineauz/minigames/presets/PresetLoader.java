@@ -3,10 +3,10 @@ package au.com.mineauz.minigames.presets;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -34,12 +34,12 @@ public class PresetLoader {
             }
 
             MinigameMessageManager.sendMessage(audience, MinigameMessageType.SUCCESS,
-                    MinigameMessageManager.getMgMessage(MinigameLangKey.PRESET_LOAD_SUCCESS,
+                    MinigameMessageManager.getMgMessage(MgMiscLangKey.PRESET_LOAD_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.PRESET.getKey(), WordUtils.capitalizeFully(preset)),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName())));
         } else {
             MinigameMessageManager.sendMessage(audience, MinigameMessageType.ERROR,
-                    MinigameMessageManager.getMgMessage(MinigameLangKey.PRESET_LOAD_ERROR_NOTFOUND,
+                    MinigameMessageManager.getMgMessage(MgMiscLangKey.PRESET_LOAD_ERROR_NOTFOUND,
                             Placeholder.unparsed(MinigamePlaceHolderKey.PRESET.getKey(), WordUtils.capitalize(preset))));
         }
     }
@@ -57,11 +57,11 @@ public class PresetLoader {
                         MiniMessage.miniMessage().deserialize(info));
             } else {
                 MinigameMessageManager.sendMgMessage(audience, MinigameMessageType.WARNING,
-                        MinigameLangKey.PRESET_INFO_NOINFO);
+                        MgMiscLangKey.PRESET_INFO_NOINFO);
             }
         }
         MinigameMessageManager.sendMessage(audience, MinigameMessageType.ERROR,
-                MinigameMessageManager.getMgMessage(MinigameLangKey.PRESET_LOAD_ERROR_NOTFOUND,
+                MinigameMessageManager.getMgMessage(MgMiscLangKey.PRESET_LOAD_ERROR_NOTFOUND,
                         Placeholder.unparsed(MinigamePlaceHolderKey.PRESET.getKey(), WordUtils.capitalize(preset))));
     }
 }

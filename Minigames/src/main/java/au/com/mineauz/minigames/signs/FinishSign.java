@@ -2,11 +2,11 @@ package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
@@ -53,7 +53,7 @@ public class FinishSign extends AMinigameSign {
                 event.line(2, minigame.getDisplayName());
                 setPersistentMinigame(sign, minigame);
             } else {
-                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), line2));
                 return false;
             }
@@ -99,7 +99,7 @@ public class FinishSign extends AMinigameSign {
                     }
                 } else {
                     String requiredFlags = String.join(", ", plugin.getPlayerManager().checkRequiredFlags(mgPlayer, minigame));
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.SIGN_FINISH_REQUIREFLAGS,
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.SIGN_FINISH_REQUIREFLAGS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), requiredFlags));
                 }
             } else {
@@ -126,7 +126,7 @@ public class FinishSign extends AMinigameSign {
             }
             return true;
         } else if (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_EMPTYHAND);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
         }
         return false;
     }

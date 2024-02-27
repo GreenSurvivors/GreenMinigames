@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Deprecated(forRemoval = true)
 public class ConfigSerializableBridge<T> {
     private final @NotNull T object;
 

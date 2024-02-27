@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardTypes;
@@ -20,7 +20,7 @@ public class MenuItemRewardAdd extends MenuItem {
     private Rewards rewards = null;
     private RewardGroup group = null;
 
-    public MenuItemRewardAdd(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Rewards rewards) {
+    public MenuItemRewardAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Rewards rewards) {
         super(displayMat, langKey);
         this.rewards = rewards;
     }
@@ -41,7 +41,7 @@ public class MenuItemRewardAdd extends MenuItem {
         this.group = group;
     }
 
-    public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable LangKey langKey,
+    public MenuItemRewardAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
                              @Nullable List<@NotNull Component> description, @NotNull RewardGroup group) {
         super(displayMat, langKey, description);
         this.group = group;

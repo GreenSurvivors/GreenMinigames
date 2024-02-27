@@ -2,10 +2,10 @@ package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.TakeCTFFlagEvent;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import net.kyori.adventure.text.Component;
@@ -93,22 +93,22 @@ public class SignBase implements Listener {
                     if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
                         event.setCancelled(true);
                         event.getBlock().breakNaturally();
-                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
+                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
                         return;
                     }
 
                     if (!mgSign.signCreate(event)) {
                         event.setCancelled(true);
                         event.getBlock().breakNaturally();
-                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_INVALID);
+                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_INVALID);
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_INVALID);
+                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_INVALID);
                     event.setCancelled(true);
                     event.getBlock().breakNaturally();
                 }
             } else { //just gives an error but doesn't break the sign in case the front was important
-                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_BACKSIDE);
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_BACKSIDE);
                 event.setCancelled(true);
             }
         }
@@ -125,7 +125,7 @@ public class SignBase implements Listener {
 
                     if (mgSign.getUsePermission() != null && !event.getPlayer().hasPermission(mgSign.getUsePermission())) {
                         event.setCancelled(true);
-                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
+                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
                         return;
                     }
 
@@ -167,7 +167,7 @@ public class SignBase implements Listener {
                         return;
                     } else {
                         MinigameMessageManager.sendMgMessage(Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()),
-                                MinigameMessageType.WARNING, MinigameLangKey.SIGN_FLAG_BROKEN_SUPPORT);
+                                MinigameMessageType.WARNING, MgMiscLangKey.SIGN_FLAG_BROKEN_SUPPORT);
                         takenFlags.remove(ctfFlag);
                     }
 
