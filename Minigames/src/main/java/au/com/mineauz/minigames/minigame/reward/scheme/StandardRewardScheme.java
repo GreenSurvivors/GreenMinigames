@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.minigame.reward.scheme;
 
 import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.RewardsFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;

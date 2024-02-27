@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -192,8 +192,8 @@ public class ExecuteCommandAction extends AAction {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
-        m.addItem(new MenuItemString(Material.COMMAND_BLOCK, RegionLangKey.MENU_COMMANDACTION_COMMAND_NAME,
-                MinigameMessageManager.getMgMessageList(RegionLangKey.MENU_COMMANDACTION_COMMAND_DESCRIPTION), new Callback<>() {
+        m.addItem(new MenuItemString(Material.COMMAND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_COMMAND_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_COMMANDACTION_COMMAND_DESCRIPTION), new Callback<>() {
 
             @Override
             public String getValue() {
@@ -209,8 +209,8 @@ public class ExecuteCommandAction extends AAction {
             }
         }));
 
-        m.addItem(silentExecute.getMenuItem(Material.NOTE_BLOCK, RegionLangKey.MENU_COMMANDACTION_SILENT_NAME,
-                RegionLangKey.MENU_COMMANDACTION_SILENT_DESCRIPTION));
+        m.addItem(silentExecute.getMenuItem(Material.NOTE_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME),
+                RegionMessageManager.getMessageList(RegionLangKey.MENU_COMMANDACTION_SILENT_DESCRIPTION)));
         m.displayMenu(mgPlayer);
         return true;
     }

@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.ComponentFlag;
-import au.com.mineauz.minigames.config.AFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.ResourcePack;
@@ -116,7 +116,7 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
                     getContainer().cancelReopenTimer();
                     getContainer().displayMenu(getContainer().getViewer());
                     MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
-                            MinigameLangKey.MINIGAME_RESSOURCEPACK_NORESSOURCEPACK,
+                            MgMiscLangKey.MINIGAME_RESSOURCEPACK_NORESSOURCEPACK,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
                 } else {
                     super.checkValidEntry(entry);

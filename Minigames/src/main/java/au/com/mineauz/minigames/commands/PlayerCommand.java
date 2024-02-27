@@ -2,11 +2,11 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -76,7 +76,7 @@ public class PlayerCommand extends ACommand {
                                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.QUANTIFIER_NONE);
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgMiscLangKey.QUANTIFIER_NONE);
                 }
             } else {
                 List<Player> playerMatch = Bukkit.matchPlayer(args[0]);

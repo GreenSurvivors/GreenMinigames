@@ -2,8 +2,8 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -45,7 +45,7 @@ public class SetTeamScoreAction extends AScoreAction { // todo merge with setSco
 
     @Override
     public @NotNull Map<@NotNull Component, @NotNull Component> describe() {
-        return Map.of(MinigameMessageManager.getMgMessage(MinigameLangKey.STATISTIC_SCORE_NAME), Component.text(score.getFlag()),
+        return Map.of(MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), Component.text(score.getFlag()),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), team.getFlag().getCompName());
     }
 
@@ -109,7 +109,7 @@ public class SetTeamScoreAction extends AScoreAction { // todo merge with setSco
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(score.getMenuItem(Material.STONE, MinigameMessageManager.getMgMessage(MinigameLangKey.STATISTIC_SCORE_NAME),
+        m.addItem(score.getMenuItem(Material.STONE, MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME),
                 null, null));
 
         List<TeamColor> teams = new ArrayList<>(TeamColor.validColors());

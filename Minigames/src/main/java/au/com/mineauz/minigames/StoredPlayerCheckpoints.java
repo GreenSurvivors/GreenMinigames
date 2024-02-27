@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 

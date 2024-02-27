@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStatistics;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 public class MenuItemStatisticsSettings extends MenuItem {
     private final @NotNull Minigame minigame;
 
-    public MenuItemStatisticsSettings(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Minigame minigame) {
+    public MenuItemStatisticsSettings(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Minigame minigame) {
         super(displayMat, langKey);
         this.minigame = minigame;
     }

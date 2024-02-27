@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBlockData;
@@ -44,15 +44,15 @@ public class BlockDataFlag extends AFlag<BlockData> {
 
     /**
      *
-     * @deprecated use {@link #getMenuItem(LangKey)}
+     * @deprecated use {@link #getMenuItem(MinigameLangKey)}
      */
     @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull LangKey langKey) {
+    public MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
         return getMenuItem(MinigameMessageManager.getMgMessage(langKey));
     }
 
-    public MenuItem getMenuItem(@NotNull LangKey langKey) {
+    public MenuItem getMenuItem(@NotNull MinigameLangKey langKey) {
         return getMenuItem(MinigameMessageManager.getMgMessage(langKey));
     }
 
@@ -75,12 +75,12 @@ public class BlockDataFlag extends AFlag<BlockData> {
     }
 
     /**
-     * @deprecated use {@link #getMenuItem(LangKey)}
+     * @deprecated use {@link #getMenuItem(MinigameLangKey)}
      */
     @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMat, @NotNull LangKey nameLangKey,
-                                @NotNull LangKey descriptionLangKey) {
+    public MenuItem getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey nameLangKey,
+                                @NotNull MinigameLangKey descriptionLangKey) {
         return getMenuItem(MinigameMessageManager.getMgMessage(nameLangKey));
     }
 

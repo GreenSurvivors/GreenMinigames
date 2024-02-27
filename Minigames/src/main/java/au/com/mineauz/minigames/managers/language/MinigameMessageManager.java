@@ -1,8 +1,7 @@
-package au.com.mineauz.minigames.managers;
+package au.com.mineauz.minigames.managers.language;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
-import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -247,7 +246,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         return Component.text(location.blockX() + ", " + location.blockY() + " ," + location.blockZ());
     }
 
-    public static Component getMgMessage(@NotNull LangKey key, TagResolver... resolvers) {
+    public static Component getMgMessage(@NotNull MinigameLangKey key, TagResolver... resolvers) {
         return getMessage(null, key, resolvers);
     }
 
@@ -265,23 +264,33 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         return MiniMessage.miniMessage().deserialize(unformatted, resolvers);
     }
 
-    public static String getStrippedMgMessage(@NotNull LangKey key, TagResolver... resolvers) {
+    public static String getStrippedMgMessage(@NotNull MinigameLangKey key, TagResolver... resolvers) {
         return getStrippedMessage(null, key, resolvers);
     }
 
+    /**
+     * If the identifier is null this uses the core language file
+     *
+     * @param identifier Unique identifier of the bundle to search
+     * @param key        key
+     * @param resolvers  resolver of placeholders
+     * @return String stripped of format.
+     */
     public static String getStrippedMessage(@Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
         return PlainTextComponentSerializer.plainText().serialize(MiniMessage.miniMessage().deserialize(getUnformattedMessage(identifier, key), resolvers));
     }
 
-    public static String getUnformattedMgMessage(@NotNull LangKey key) throws MissingResourceException {
+    public static String getUnformattedMgMessage(@NotNull MinigameLangKey key) throws MissingResourceException {
         return getUnformattedMessage(null, key);
     }
 
-    public static @NotNull List<Component> getMgMessageList(@NotNull LangKey key, TagResolver... resolvers) {
+    public static @NotNull List<Component> getMgMessageList(@NotNull MinigameLangKey key, TagResolver... resolvers) {
         return getMessageList(null, key, resolvers);
     }
 
     /**
+     * If the identifier is null this uses the core language file
+     *
      * Reads a String from the ressource bundle, splits it at "{@code <newline>}" and then deserializes it via MiniMessage.
      * This was first and formost written for Lore of ItemStacks, where newlines don't exist in the common way,
      * but every line is an element of a list.
@@ -299,7 +308,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
     /**
      * @param identifier Unique identifier of the bundle to search
      * @param key        key
-     * @return Unformatted String.
+     * @return Unformatted (raw) String.
      * @throws MissingResourceException If bundle not found.
      */
     public static String getUnformattedMessage(@Nullable String identifier, @NotNull LangKey key) throws MissingResourceException { //todo don't crash if bundle is missing or can't get string. simply return key
@@ -474,17 +483,17 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         audience.sendMessage(getPluginPrefix(messageType).append(message));
     }
 
-    public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull LangKey key) {
+    public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull MinigameLangKey key) {
         sendMessage(audience, messageType, null, key);
     }
 
     public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType,
-                                     @NotNull LangKey key, @NotNull TagResolver... resolvers) {
+                                     @NotNull MinigameLangKey key, @NotNull TagResolver... resolvers) {
         sendMessage(audience, messageType, null, key, resolvers);
     }
 
     public static void sendMgMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType messageType,
-                                     @NotNull LangKey key, @NotNull TagResolver... resolvers) {
+                                     @NotNull MinigameLangKey key, @NotNull TagResolver... resolvers) {
         sendMessage(mgPlayer.getPlayer(), messageType, null, key, resolvers);
     }
 

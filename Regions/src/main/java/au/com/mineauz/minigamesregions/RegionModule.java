@@ -2,9 +2,9 @@ package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.AFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
@@ -382,14 +382,14 @@ public class RegionModule extends MinigameModule {
         for (MgRegion region : getMinigame().getRegenRegions()) {
             MenuItem min = new MenuItemRegenRegion(Material.CHEST_MINECART, Component.text(region.getName()), List.of(
                     Component.text(region.getName()),
-                    MinigameMessageManager.getMgMessage(MinigameLangKey.REGION_DESCRIBE,
+                    MinigameMessageManager.getMgMessage(MgMiscLangKey.REGION_DESCRIBE,
                             Placeholder.component(MinigamePlaceHolderKey.POSITION_1.getKey(),
-                                    MinigameMessageManager.getMgMessage(MinigameLangKey.POSITION,
+                                    MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMinX())),
                                             Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMinY())),
                                             Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMinZ())))),
                             Placeholder.component(MinigamePlaceHolderKey.POSITION_2.getKey(),
-                                    MinigameMessageManager.getMgMessage(MinigameLangKey.POSITION,
+                                    MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMaxX())),
                                             Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMaxY())),
                                             Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMaxZ())))))),

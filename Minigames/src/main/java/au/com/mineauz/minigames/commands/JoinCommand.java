@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -50,16 +50,16 @@ public class JoinCommand extends ACommand {
             if (mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
                 if (!PLUGIN.getPlayerManager().getMinigamePlayer(player).isInMinigame()) {
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MinigameLangKey.PLAYER_JOIN_JOINING,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JOIN_JOINING,
                             Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()));
                     PLUGIN.getPlayerManager().joinMinigame(PLUGIN.getPlayerManager().getMinigamePlayer(player), mgm, false, 0.0);
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_JOIN_ERROR_ALREADYPLAYING);
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_JOIN_ERROR_ALREADYPLAYING);
                 }
             } else if (mgm != null && mgm.getUsePermissions()) {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
             return true;

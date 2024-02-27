@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.AFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -300,13 +300,13 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             try {
                 T value = loadValue(entry);
                 if (map.containsKey(value)) {
-                    MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MinigameLangKey.REWARDSCHEME_ERROR_DUPLICATE);
+                    MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_DUPLICATE);
                 } else {
                     updateValue(value);
                     updateDescription();
                 }
             } catch (IllegalArgumentException e) {
-                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MinigameLangKey.REWARDSCHEME_ERROR_INVALID);
+                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_INVALID);
             }
 
             getContainer().cancelReopenTimer();
@@ -335,7 +335,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     private class MenuItemAddReward extends MenuItem {
         private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
 
-        public MenuItemAddReward(@Nullable Material displayMat, @NotNull LangKey langKey,
+        public MenuItemAddReward(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
                                  @NotNull TreeMap<@NotNull T, @NotNull Rewards> map) {
             super(displayMat, langKey);
 
@@ -373,14 +373,14 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
                 Rewards reward = new Rewards();
 
                 if (map.containsKey(value)) {
-                    MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MinigameLangKey.REWARDSCHEME_ERROR_DUPLICATE);
+                    MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_DUPLICATE);
                 } else {
                     map.put(value, reward);
                     showRewardsMenu(map, getContainer().getViewer(), getContainer().getPreviousPage());
                     show = false;
                 }
             } catch (IllegalArgumentException e) {
-                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MinigameLangKey.REWARDSCHEME_ERROR_INVALID);
+                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_INVALID);
             }
 
             getContainer().cancelReopenTimer();

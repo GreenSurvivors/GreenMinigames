@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
@@ -51,10 +51,10 @@ public class MoneyReward extends RewardType {
 
         if (economy != null) {
             economy.depositPlayer(mgPlayer.getPlayer().getPlayer(), money);
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WIN, MinigameLangKey.REWARD_MONEY,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WIN, MgMiscLangKey.REWARD_MONEY,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), economy.format(money)));
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_WARNING_NOVAULT);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_WARNING_NOVAULT);
         }
     }
 

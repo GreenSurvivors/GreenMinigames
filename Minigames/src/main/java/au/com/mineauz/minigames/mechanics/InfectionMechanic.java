@@ -3,10 +3,10 @@ package au.com.mineauz.minigames.mechanics;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
@@ -48,7 +48,7 @@ public class InfectionMechanic extends GameMechanicBase {
                 !teamsModule.hasTeam(infectionModule.getInfectedTeam()) ||
                 !teamsModule.hasTeam(infectionModule.getSurvivorTeam())) {
             if (caller != null) {
-                MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOINFECTION);
+                MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOINFECTION);
             } else {
                 Minigames.getCmpnntLogger().warn("The Infection Minigame \"" + minigame.getName() + "\"is not properly configured! Visit the wiki for help configuring an Infection Minigame.");
             }
@@ -99,7 +99,7 @@ public class InfectionMechanic extends GameMechanicBase {
                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(survivorTeam.getDisplayName(), survivorTeam.getTextColor()))),
                             MinigameMessageType.INFO, mgPlayer);
                 } else {
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_FULL);
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_FULL);
                     pdata.quitMinigame(mgPlayer, false);
                 }
             }

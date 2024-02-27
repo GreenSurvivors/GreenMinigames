@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.gametypes;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.Listener;
@@ -49,7 +49,7 @@ public abstract class MinigameTypeBase implements Listener {
         if (!player.getPlayer().isDead()) {
             if (player.getPlayer().getWorld() != minigame.getQuitLocation().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") &&
                     plugin.getConfig().getBoolean("warnings")) {
-                MinigameMessageManager.sendMgMessage(player, MinigameMessageType.WARNING, MinigameLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
+                MinigameMessageManager.sendMgMessage(player, MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
             }
             player.teleport(minigame.getQuitLocation());
         } else {

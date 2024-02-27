@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -56,13 +56,13 @@ public class ScoreboardSign extends AMinigameSign {
                     width = Integer.parseInt(parts[0]);
                     height = Integer.parseInt(parts[1]);
                 } else {
-                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_SCOREBOARD_ERROR_SIZE);
+                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_SCOREBOARD_ERROR_SIZE);
                     return false;
                 }
 
                 // So we don't have to deal with even size scoreboards
                 if (width % 2 == 0) {
-                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_SCOREBOARD_ERROR_UNEVENLENGTH);
+                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_SCOREBOARD_ERROR_UNEVENLENGTH);
                     return false;
                 }
 
@@ -83,11 +83,11 @@ public class ScoreboardSign extends AMinigameSign {
                 event.getBlock().setMetadata("Minigame", new FixedMetadataValue(plugin, minigame));
                 return true;
             } else {
-                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_SCOREBOARD_ERROR_WALL);
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_SCOREBOARD_ERROR_WALL);
                 return false;
             }
         } else {
-            MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+            MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                     Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
             return false;
         }

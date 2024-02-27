@@ -5,9 +5,9 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -34,10 +34,10 @@ import java.util.Set;
 public class Team implements ScriptObject {
     private final IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
     private final List<Location> startLocations = new ArrayList<>();
-    private final StringFlag playerAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
-    private final StringFlag joinAnnounceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE), "gameAssignMsg");
-    private final StringFlag playerAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG), "autobalanceMsg");
-    private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG), "gameAutobalanceMsg");
+    private final StringFlag playerAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
+    private final StringFlag joinAnnounceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE), "gameAssignMsg");
+    private final StringFlag playerAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG), "autobalanceMsg");
+    private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG), "gameAutobalanceMsg");
     private final EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
     private final BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
     private final List<MinigamePlayer> players = new ArrayList<>();
@@ -470,7 +470,7 @@ public class Team implements ScriptObject {
         private final @NotNull OptionStatus status;
         private final @NotNull String name;
 
-        VisibilityMapper(@NotNull OptionStatus status, @NotNull LangKey langKey) {
+        VisibilityMapper(@NotNull OptionStatus status, @NotNull MinigameLangKey langKey) {
             this.status = status;
             this.name = MinigameMessageManager.getUnformattedMgMessage(langKey);
         }

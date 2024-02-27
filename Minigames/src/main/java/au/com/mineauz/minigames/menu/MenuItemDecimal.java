@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -32,7 +32,7 @@ public class MenuItemDecimal extends MenuItem {
     private final @Nullable Double max;
     private @NotNull DecimalFormat form = new DecimalFormat("#.##");
 
-    public MenuItemDecimal(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Double> value,
+    public MenuItemDecimal(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<Double> value,
                            double lowerInc, double upperInc, @Nullable Double min, @Nullable Double max) {
         super(displayMat, langKey);
         this.value = value;

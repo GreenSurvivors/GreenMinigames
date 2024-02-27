@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
@@ -81,7 +81,7 @@ public class ScoreCommand extends ACommand {
                         if (PLUGIN.getMinigameManager().hasMinigame(args[2])) {
                             mg = PLUGIN.getMinigameManager().getMinigame(args[2]);
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[2]));
                             return true;
                         }
@@ -96,12 +96,12 @@ public class ScoreCommand extends ACommand {
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mg.getName()),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())));
                             } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTEAM,
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTEAM,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mg.getName()),
                                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), color.getCompName()));
                             }
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTTEAMGAME,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTTEAMGAME,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mg.getName()));
                             return true;
                         }
@@ -143,7 +143,7 @@ public class ScoreCommand extends ACommand {
                         if (PLUGIN.getMinigameManager().hasMinigame(args[3])) {
                             mg = PLUGIN.getMinigameManager().getMinigame(args[3]);
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[2]));
                             return true;
                         }
@@ -160,7 +160,7 @@ public class ScoreCommand extends ACommand {
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mg.getName()),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(score)));
                             } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTEAM,
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTEAM,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mg.getName()),
                                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), color.getCompName()));
                                 return true;
@@ -177,10 +177,10 @@ public class ScoreCommand extends ACommand {
                                 PLUGIN.getPlayerManager().endMinigame(mg, w, l);
                             }
                         } else if (!mg.hasPlayers()) {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_ISEMPTY,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_ISEMPTY,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mg.getName()));
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTTEAMGAME,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTTEAMGAME,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mg.getName()));
                         }
                     } else {
@@ -227,7 +227,7 @@ public class ScoreCommand extends ACommand {
                     if (PLUGIN.getMinigameManager().hasMinigame(mgName)) {
                         mg = PLUGIN.getMinigameManager().getMinigame(mgName);
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgName));
                         return true;
                     }
@@ -244,7 +244,7 @@ public class ScoreCommand extends ACommand {
                                     Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(score)),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(team.getScore())));
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTEAM,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTEAM,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mg.getName()),
                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), color.getCompName()));
                             return true;
@@ -261,10 +261,10 @@ public class ScoreCommand extends ACommand {
                             PLUGIN.getPlayerManager().endMinigame(mg, w, l);
                         }
                     } else if (!mg.hasPlayers()) {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_ISEMPTY,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_ISEMPTY,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mg.getName()));
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTTEAMGAME,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTTEAMGAME,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mg.getName()));
                     }
                 }

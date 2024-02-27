@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.stats;
 
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -17,16 +17,16 @@ import java.util.stream.Collectors;
  * This class allows you to register stats that are usable in scoreboards
  */
 public final class MinigameStatistics {
-    public static final MinigameStat Wins = new BasicMinigameStat("wins", MinigameLangKey.STATISTIC_WINS_NAME, StatFormat.Total);
-    public static final MinigameStat Losses = new BasicMinigameStat("losses", MinigameLangKey.STATISTIC_LOSSES_NAME, StatFormat.Total); // Fake stat
-    public static final MinigameStat Attempts = new BasicMinigameStat("attempts", MinigameLangKey.STATISTIC_ATTEMPTS_NAME, StatFormat.Total);
+    public static final MinigameStat Wins = new BasicMinigameStat("wins", MgMiscLangKey.STATISTIC_WINS_NAME, StatFormat.Total);
+    public static final MinigameStat Losses = new BasicMinigameStat("losses", MgMiscLangKey.STATISTIC_LOSSES_NAME, StatFormat.Total); // Fake stat
+    public static final MinigameStat Attempts = new BasicMinigameStat("attempts", MgMiscLangKey.STATISTIC_ATTEMPTS_NAME, StatFormat.Total);
     // in milliseconds
-    public static final MinigameStat CompletionTime = new BasicMinigameStat("time", MinigameLangKey.STATISTIC_TIME_NAME, StatFormat.MinMaxAndTotal);
+    public static final MinigameStat CompletionTime = new BasicMinigameStat("time", MgMiscLangKey.STATISTIC_TIME_NAME, StatFormat.MinMaxAndTotal);
 
-    public static final MinigameStat Kills = new BasicMinigameStat("kills", MinigameLangKey.STATISTIC_KILLS_NAME, StatFormat.MaxAndTotal);
-    public static final MinigameStat Deaths = new BasicMinigameStat("deaths", MinigameLangKey.STATISTIC_DEATHS_NAME, StatFormat.MinAndTotal);
-    public static final MinigameStat Score = new BasicMinigameStat("score", MinigameLangKey.STATISTIC_SCORE_NAME, StatFormat.MaxAndTotal);
-    public static final MinigameStat Reverts = new BasicMinigameStat("reverts", MinigameLangKey.STATISTIC_REVERTS_NAME, StatFormat.MinAndTotal);
+    public static final MinigameStat Kills = new BasicMinigameStat("kills", MgMiscLangKey.STATISTIC_KILLS_NAME, StatFormat.MaxAndTotal);
+    public static final MinigameStat Deaths = new BasicMinigameStat("deaths", MgMiscLangKey.STATISTIC_DEATHS_NAME, StatFormat.MinAndTotal);
+    public static final MinigameStat Score = new BasicMinigameStat("score", MgMiscLangKey.STATISTIC_SCORE_NAME, StatFormat.MaxAndTotal);
+    public static final MinigameStat Reverts = new BasicMinigameStat("reverts", MgMiscLangKey.STATISTIC_REVERTS_NAME, StatFormat.MinAndTotal);
 
     private static final Map<String, MinigameStat> stats = new HashMap<>();
 

@@ -4,8 +4,8 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -56,7 +56,7 @@ public class TimedTriggerAction extends AAction {
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME),
                 Component.text(toTrigger.getFlag()),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME),
-                MinigameMessageManager.getMgMessage(isRegion.getFlag() ? MinigameLangKey.BOOL_TRUE : MinigameLangKey.BOOL_FALSE),
+                MinigameMessageManager.getMgMessage(isRegion.getFlag() ? MgMiscLangKey.BOOL_TRUE : MgMiscLangKey.BOOL_FALSE),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME),
                 MinigameUtils.convertTime(Duration.ofSeconds(delay.getFlag() / 20)));
     }

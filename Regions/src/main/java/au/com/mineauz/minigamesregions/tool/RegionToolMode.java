@@ -1,9 +1,9 @@
 package au.com.mineauz.minigamesregions.tool;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -130,7 +130,7 @@ public class RegionToolMode implements ToolMode {
             }
         } else {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                    MinigameLangKey.TOOL_ERROR_NOREGIONSELECTED);
+                    MgMiscLangKey.TOOL_ERROR_NOREGIONSELECTED);
         }
     }
 
@@ -140,7 +140,7 @@ public class RegionToolMode implements ToolMode {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             mgPlayer.addSelectionPoint(event.getClickedBlock().getLocation());
             if (mgPlayer.hasSelection()) {
-                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_REGION);
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_REGION);
             }
         }
     }

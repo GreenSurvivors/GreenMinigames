@@ -3,11 +3,11 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.MaterialFlag;
 import au.com.mineauz.minigames.config.MaterialListFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.recorder.RecorderData;
@@ -243,7 +243,7 @@ public class MemorySwapBlockAction extends AAction {
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), Component.translatable(matchType.getFlag().translationKey()),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_POOLSIZE), Component.text(blockPool.size()),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_MODE_NAME),
-                MinigameMessageManager.getMgMessage(whitelistMode.getFlag() ? MinigameLangKey.BOOL_TRUE : MinigameLangKey.BOOL_FALSE),
+                MinigameMessageManager.getMgMessage(whitelistMode.getFlag() ? MgMiscLangKey.BOOL_TRUE : MgMiscLangKey.BOOL_FALSE),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_SIZE), Component.text(wbList.getFlag().size())
         );
     }

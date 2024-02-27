@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.stats;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 
 class BasicMinigameStat extends MinigameStat {
-    BasicMinigameStat(@NotNull String name, @NotNull LangKey displayName, @NotNull StatFormat format) {
+    BasicMinigameStat(@NotNull String name, @NotNull MinigameLangKey displayName, @NotNull StatFormat format) {
         super(name, MinigameMessageManager.getMgMessage(displayName), format);
     }
 

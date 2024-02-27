@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,7 +23,7 @@ public class MenuItemString extends MenuItem {
     private final Callback<String> stringCallback;
     private boolean allowNull = false;
 
-    public MenuItemString(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<String> stringCallback) {
+    public MenuItemString(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<String> stringCallback) {
         super(displayMat, langKey);
         this.stringCallback = stringCallback;
         updateDescription();
@@ -35,7 +35,7 @@ public class MenuItemString extends MenuItem {
         updateDescription();
     }
 
-    public MenuItemString(@Nullable Material displayMat, @NotNull LangKey langKey,
+    public MenuItemString(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
                           @Nullable List<@NotNull Component> description, @NotNull Callback<String> str) {
         super(displayMat, langKey, description);
         this.stringCallback = str;

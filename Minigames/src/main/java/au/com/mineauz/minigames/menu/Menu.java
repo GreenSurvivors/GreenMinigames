@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -29,7 +29,7 @@ public class Menu {
     private int reopenTimerID = -1;
     private Inventory inv = null;
 
-    public Menu(int rows, @NotNull LangKey langKey, @NotNull MinigamePlayer viewer) {
+    public Menu(int rows, @NotNull MinigameLangKey langKey, @NotNull MinigamePlayer viewer) {
         if (rows > 6)
             rows = 6;
         else if (rows < 2)

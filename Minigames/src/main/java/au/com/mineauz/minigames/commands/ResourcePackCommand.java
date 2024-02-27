@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import net.kyori.adventure.text.Component;
@@ -81,7 +81,7 @@ public class ResourcePackCommand extends ACommand {
                     }
 
                     mgPlayer.applyResourcePack(pack);
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_RESSOURCEPACK_APPLY);
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_RESSOURCEPACK_APPLY);
                 }
                 return true;
             }
@@ -90,7 +90,7 @@ public class ResourcePackCommand extends ACommand {
                     pack = PLUGIN.getResourceManager().getResourcePack(args[1]);
                     PLUGIN.getResourceManager().removeResourcePack(pack);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_RESSOURCEPACK_REMOVE);
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_RESSOURCEPACK_REMOVE);
                     sendList(sender);
                     return true;
                 } else {

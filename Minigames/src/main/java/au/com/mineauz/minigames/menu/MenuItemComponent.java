@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -24,7 +24,7 @@ public class MenuItemComponent extends MenuItem {
     private final @NotNull Callback<Component> component;
     private boolean allowNull = false;
 
-    public MenuItemComponent(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<Component> component) {
+    public MenuItemComponent(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<Component> component) {
         super(displayMat, langKey);
         this.component = component;
         updateDescription();

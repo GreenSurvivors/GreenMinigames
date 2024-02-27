@@ -1,9 +1,9 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.FloatFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -46,7 +46,7 @@ public class VelocityAction extends AAction {
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_NAME),
-                MinigameMessageManager.getMgMessage(MinigameLangKey.POSITION,
+                MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
                         Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(x.getFlag())),
                         Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(y.getFlag())),
                         Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(z.getFlag()))));

@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.config.AFlag;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -69,8 +69,8 @@ public class JuggernautModule extends MinigameModule {
             Team team = player.getMinigame().getScoreboardManager().getTeam("juggernaut");
             team.addEntry(team.getColor() + player.getPlayer().getDisplayName());
 
-            MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.SUCCESS, MinigameLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
-            MinigameMessageManager.sendMinigameMessage(getMinigame(), MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
+            MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
+            MinigameMessageManager.sendMinigameMessage(getMinigame(), MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
                     Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.getDisplayName(getMinigame().usePlayerDisplayNames()))
             ), MinigameMessageType.INFO, juggernaut);
 

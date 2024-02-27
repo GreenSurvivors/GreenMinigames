@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
@@ -9,16 +9,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum RewardRarity {
-    VERY_COMMON(0.5, MinigameLangKey.REWARDRARITY_VERYCOMMON),
-    COMMON(0.25, MinigameLangKey.REWARDRARITY_COMMON),
-    NORMAL(0.1, MinigameLangKey.REWARDRARITY_NORMAL),
-    RARE(0.02, MinigameLangKey.REWARDRARITY_RARE),
-    VERY_RARE(0, MinigameLangKey.REWARDRARITY_VERYRARE);
+    VERY_COMMON(0.5, MgMiscLangKey.REWARDRARITY_VERYCOMMON),
+    COMMON(0.25, MgMiscLangKey.REWARDRARITY_COMMON),
+    NORMAL(0.1, MgMiscLangKey.REWARDRARITY_NORMAL),
+    RARE(0.02, MgMiscLangKey.REWARDRARITY_RARE),
+    VERY_RARE(0, MgMiscLangKey.REWARDRARITY_VERYRARE);
 
     private final double rarity;
     private final Component displayName;
 
-    RewardRarity(double r, LangKey langKey) {
+    RewardRarity(double r, MinigameLangKey langKey) {
         rarity = r;
         displayName = MinigameMessageManager.getMgMessage(langKey);
     }

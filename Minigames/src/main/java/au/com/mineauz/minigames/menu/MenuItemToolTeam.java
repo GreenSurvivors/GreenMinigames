@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
@@ -14,7 +14,7 @@ import java.util.List;
 public class MenuItemToolTeam extends MenuItemList<TeamColor> {
     private final Callback<TeamColor> value;
 
-    public MenuItemToolTeam(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Callback<TeamColor> value,
+    public MenuItemToolTeam(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<TeamColor> value,
                             @NotNull List<@NotNull TeamColor> options) {
         super(displayMat, langKey, value, options);
         this.value = value;

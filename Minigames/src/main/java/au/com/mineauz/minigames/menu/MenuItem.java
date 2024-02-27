@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -24,11 +24,11 @@ public class MenuItem {
         this(displayMat, name, null);
     }
 
-    public MenuItem(@Nullable Material displayMat, @NotNull LangKey langKey) {
+    public MenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey langKey) {
         this(displayMat, MinigameMessageManager.getMgMessage(langKey), null);
     }
 
-    public MenuItem(@Nullable Material displayMat, @NotNull LangKey langKey, @Nullable List<Component> description) {
+    public MenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @Nullable List<Component> description) {
         this(displayMat, MinigameMessageManager.getMgMessage(langKey), description);
     }
 

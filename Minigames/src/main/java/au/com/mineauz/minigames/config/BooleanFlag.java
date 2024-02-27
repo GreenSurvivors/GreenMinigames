@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import net.kyori.adventure.text.Component;
@@ -34,7 +34,7 @@ public class BooleanFlag extends AFlag<Boolean> {
     }
 
     @Override
-    public MenuItemBoolean getMenuItem(@Nullable Material displayMaterial, @NotNull LangKey langKey) {
+    public MenuItemBoolean getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
         return new MenuItemBoolean(displayMaterial, langKey, new Callback<>() {
 
             @Override

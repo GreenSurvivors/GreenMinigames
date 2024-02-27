@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -54,10 +54,10 @@ public class LoadoutCommand extends ACommand {
                         if (module.hasLoadout(loadoutName)) {
                             mgPlayer.setLoadout(module.getLoadout(loadoutName));
 
-                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
                         } else {
-                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_LOADOUT_ERROR_NOLOADOUT,
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_ERROR_NOLOADOUT,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
                         }
                     } else {

@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.tool;
 
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -71,10 +71,10 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
                 if (delLoc != null) {
                     team.getStartLocations().remove(delLoc);
 
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_REMOVE_STARTLOCTION,
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_REMOVE_STARTLOCTION,
                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName() + " ", team.getTextColor())));
                 } else {
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOSTARTLOCATION,
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOSTARTLOCATION,
                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName() + " ", team.getTextColor())));
                 }
             } else {
@@ -90,10 +90,10 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
                     }
                 }
                 if (delLoc != null) {
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_REMOVE_STARTLOCTION,
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_REMOVE_STARTLOCTION,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), ""));
                 } else {
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOSTARTLOCATION,
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOSTARTLOCATION,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), ""));
                 }
             }
@@ -105,13 +105,13 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
         if (team == null) {
             minigame.addStartLocation(mgPlayer.getLocation());
 
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_ADDED_STARTLOCATION,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_ADDED_STARTLOCATION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), ""),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
             team.addStartLocation(mgPlayer.getLocation());
 
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_ADDED_STARTLOCATION,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_ADDED_STARTLOCATION,
                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName() + " ", team.getTextColor())),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         }
@@ -124,14 +124,14 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
                 mgPlayer.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL.createBlockData());
             }
 
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_STARTLOCATION,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_STARTLOCATION,
                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName() + " ", team.getTextColor())),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
             for (Location loc : minigame.getStartLocations()) {
                 mgPlayer.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL.createBlockData());
             }
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_STARTLOCATION,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_STARTLOCATION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), ""),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         }
@@ -144,7 +144,7 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
                 mgPlayer.getPlayer().sendBlockChange(loc, loc.getBlock().getBlockData());
             }
 
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_DESELECTED_STARTLOCATION,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_STARTLOCATION,
                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName() + " ", team.getTextColor())),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
@@ -152,7 +152,7 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
                 mgPlayer.getPlayer().sendBlockChange(loc, loc.getBlock().getBlockData());
             }
 
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_DESELECTED_STARTLOCATION,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_STARTLOCATION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), ""),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         }

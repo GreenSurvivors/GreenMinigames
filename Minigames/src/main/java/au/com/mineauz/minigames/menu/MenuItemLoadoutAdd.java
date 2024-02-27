@@ -2,11 +2,11 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
@@ -24,7 +24,7 @@ public class MenuItemLoadoutAdd extends MenuItem {
     private final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts;
     private @Nullable Minigame minigame = null;
 
-    public MenuItemLoadoutAdd(@Nullable Material displayMat, @NotNull LangKey langKey, @NotNull Map<@NotNull String,
+    public MenuItemLoadoutAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Map<@NotNull String,
             @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
         super(displayMat, langKey);
         this.loadouts = loadouts;
