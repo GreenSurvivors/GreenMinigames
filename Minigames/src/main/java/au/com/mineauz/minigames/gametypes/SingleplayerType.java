@@ -74,8 +74,8 @@ public class SingleplayerType extends MinigameTypeBase {
         if (mgPlayer.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName())) {
             mgPlayer.setCheckpoint(mgPlayer.getStoredPlayerCheckpoints().getCheckpoint(mgm.getName()));
             StoredPlayerCheckpoints spc = mgPlayer.getStoredPlayerCheckpoints();
-            if (spc.hasFlags(mgm.getName())) {
-                mgPlayer.setSinglePlayerFlags(spc.getFlags(mgm.getName()));
+            if (spc.hasSinglePlayerFlags(mgm.getName())) {
+                mgPlayer.setSinglePlayerFlags(spc.getSinglePlayerFlags(mgm.getName()));
             }
             if (spc.hasTime(mgm.getName())) {
                 mgPlayer.setStoredTime(spc.getTime(mgm.getName()));
@@ -87,7 +87,7 @@ public class SingleplayerType extends MinigameTypeBase {
                 mgPlayer.setReverts(spc.getReverts(mgm.getName()));
             }
             spc.removeCheckpoint(mgm.getName());
-            spc.removeFlags(mgm.getName());
+            spc.removeSinglePlayerFlags(mgm.getName());
             spc.removeDeaths(mgm.getName());
             spc.removeTime(mgm.getName());
             spc.removeReverts(mgm.getName());
@@ -109,7 +109,7 @@ public class SingleplayerType extends MinigameTypeBase {
             if (player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName())) {
                 player.getStoredPlayerCheckpoints().removeCheckpoint(mgm.getName());
                 player.getStoredPlayerCheckpoints().removeDeaths(mgm.getName());
-                player.getStoredPlayerCheckpoints().removeFlags(mgm.getName());
+                player.getStoredPlayerCheckpoints().removeSinglePlayerFlags(mgm.getName());
                 player.getStoredPlayerCheckpoints().removeReverts(mgm.getName());
                 player.getStoredPlayerCheckpoints().removeTime(mgm.getName());
                 player.getStoredPlayerCheckpoints().saveCheckpoints();
@@ -123,7 +123,7 @@ public class SingleplayerType extends MinigameTypeBase {
             StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();
             spc.addCheckpoint(mgm.getName(), player.getCheckpoint());
             if (!player.getSinglePlayerFlags().isEmpty()) {
-                spc.addFlags(mgm.getName(), player.getSinglePlayerFlags());
+                spc.addSinglePlayerFlags(mgm.getName(), player.getSinglePlayerFlags());
             }
             spc.addDeaths(mgm.getName(), player.getDeaths());
             spc.addReverts(mgm.getName(), player.getReverts());

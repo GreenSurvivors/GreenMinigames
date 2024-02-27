@@ -53,7 +53,7 @@ public class SetMaxHeightCommand extends ASetCommand { //todo it isn't intuitive
                     int num = Integer.parseInt(args[0]);
                     thm.setMaxHeight(num);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_MAXHEIGHT_SUCCESS,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_MAXHEIGHT_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(num)));
                     return true;

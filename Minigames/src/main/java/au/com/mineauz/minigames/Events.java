@@ -281,7 +281,7 @@ public class Events implements Listener {
 
                         if (mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
                             if (!mgm.isEnabled()) {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_ERROR_NOTENABLED);
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTENABLED);
                             } else {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.MINIGAME_INFO_HEADER);
 
@@ -372,14 +372,20 @@ public class Events implements Listener {
                     event.setCancelled(true);
                 }
             } else {
-                checkTool(tool, mgPlayer);
-                if (tool.getMode() != null && tool.getMinigame() != null) {
-                    Minigame mg = tool.getMinigame();
-                    if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                        tool.getMode().onRightClick(mgPlayer, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeamColor()), event);
-                    } else if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-                        tool.getMode().onLeftClick(mgPlayer, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeamColor()), event);
+                if (tool.getMinigame() != null) {
+                    if (tool.getMode() != null) {
+                        Minigame mg = tool.getMinigame();
+
+                        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                            tool.getMode().onRightClick(mgPlayer, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeamColor()), event);
+                        } else if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                            tool.getMode().onLeftClick(mgPlayer, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeamColor()), event);
+                        }
+                    } else {
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOMODE);
                     }
+                } else {
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOMINIGAME);
                 }
             }
         }
@@ -529,15 +535,6 @@ public class Events implements Listener {
                 tool.openMenu(mgPlayer);
                 event.setCancelled(true);
             }
-        }
-    }
-
-    private void checkTool(@NotNull MinigameTool tool, @NotNull MinigamePlayer mgPlayer) {
-        if (tool.getMinigame() == null) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_ERROR_NOMINIGAME);
-        }
-        if (tool.getMode() == null) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_ERROR_NOMODE);
         }
     }
 

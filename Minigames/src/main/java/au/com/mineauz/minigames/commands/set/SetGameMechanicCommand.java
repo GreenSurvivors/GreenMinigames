@@ -56,7 +56,7 @@ public class SetGameMechanicCommand extends ASetCommand {
 
             if (gameMechanicBase != null) {
                 minigame.setMechanic(gameMechanicBase);
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_GAMEMECHANIC_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEMECHANIC_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[0]));
                 return true;

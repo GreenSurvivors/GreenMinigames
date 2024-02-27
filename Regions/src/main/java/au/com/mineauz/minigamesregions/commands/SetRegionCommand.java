@@ -67,7 +67,7 @@ public class SetRegionCommand extends ASetCommand {
                                 rmod.addRegion(name, new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
                                 mgPlayer.clearSelection();
 
-                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.SUCCESS, RegionMessageManager.getBundleKey(),
                                         RegionLangKey.REGION_CREATED,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                         Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name));

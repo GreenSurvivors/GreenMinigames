@@ -49,7 +49,7 @@ public class Minigame implements ScriptObject {
     private final IntegerFlag minPlayers = new IntegerFlag(2, "minplayers");
     private final IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
     private final BooleanFlag spMaxPlayers = new BooleanFlag(false, "spMaxPlayers");
-    private final StrListFlag flags = new StrListFlag(null, "flags");
+    private final StrListFlag SinglePlayerFlags = new StrListFlag(null, "flags");
     private final EnumFlag<FloorDegenerator.DegeneratorType> degenType = new EnumFlag<>(FloorDegenerator.DegeneratorType.INWARD, "degentype");
     private final IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
     private final RegionFlag floorDegen = new RegionFlag(null, "sfloor", "sfloorpos.1", "sfloorpos.2");
@@ -157,7 +157,7 @@ public class Minigame implements ScriptObject {
             addModule(factory);
         }
 
-        flags.setFlag(new ArrayList<>());
+        SinglePlayerFlags.setFlag(new ArrayList<>());
 
         addConfigFlag(activatePlayerRecorder);
         addConfigFlag(allowEnderPearls);
@@ -175,7 +175,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(enableFlight);
         addConfigFlag(enabled);
         addConfigFlag(endLocation);
-        addConfigFlag(flags);
+        addConfigFlag(SinglePlayerFlags);
         addConfigFlag(floorDegen);
         addConfigFlag(floorDegenTime);
         addConfigFlag(gameTypeName);
@@ -270,25 +270,25 @@ public class Minigame implements ScriptObject {
         return getType() == MinigameType.MULTIPLAYER && teamsModule != null && !teamsModule.getTeams().isEmpty();
     }
 
-    public boolean hasFlags() {
-        return !flags.getFlag().isEmpty();
+    public boolean hasSinglePlayerFlags() {
+        return !SinglePlayerFlags.getFlag().isEmpty();
     }
 
-    public void addFlag(String flag) {
-        flags.getFlag().add(flag);
+    public void addSinglePlayerFlag(String flag) {
+        SinglePlayerFlags.getFlag().add(flag);
     }
 
-    public List<String> getFlags() {
-        return flags.getFlag();
+    public List<String> getSinglePlayerFlags() {
+        return SinglePlayerFlags.getFlag();
     }
 
-    public void setFlags(List<String> flags) {
-        this.flags.setFlag(flags);
+    public void setSinglePlayerFlags(List<String> singlePlayerFlags) {
+        this.SinglePlayerFlags.setFlag(singlePlayerFlags);
     }
 
-    public boolean removeFlag(String flag) {
-        if (flags.getFlag().contains(flag)) {
-            flags.getFlag().remove(flag);
+    public boolean removeSinglePlayerFlag(String flag) {
+        if (SinglePlayerFlags.getFlag().contains(flag)) {
+            SinglePlayerFlags.getFlag().remove(flag);
             return true;
         }
         return false;
@@ -1355,9 +1355,9 @@ public class Minigame implements ScriptObject {
         //--------------//
         //Minigame Flags//
         //--------------//
-        List<MenuItem> itemsFlags = new ArrayList<>(getFlags().size());
-        for (String flag : getFlags()) {
-            itemsFlags.add(new MenuItemFlag(Material.OAK_SIGN, flag, getFlags()));
+        List<MenuItem> itemsFlags = new ArrayList<>(getSinglePlayerFlags().size());
+        for (String flag : getSinglePlayerFlags()) {
+            itemsFlags.add(new MenuItemFlag(Material.OAK_SIGN, flag, getSinglePlayerFlags()));
         }
         flags.addItem(new MenuItemBack(playerMenu), flags.getSize() - 9);
         flags.addItem(new MenuItemAddFlag(MgMenuLangKey.MENU_FLAGADD_NAME,

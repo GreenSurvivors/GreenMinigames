@@ -72,7 +72,7 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
 
                             mgPlayer.clearSelection();
 
-                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_CREATE,
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_CREATE,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                         } else {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOSELECTION);
@@ -94,7 +94,7 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
                                     minigame.setDegenRandomChance(Integer.parseInt(args[2]));
                                 }
 
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_TYPE,
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_TYPE,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[1]),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                             } else {
@@ -110,7 +110,7 @@ public class SetFloorDegeneratorCommand extends ASetCommand {
 
                             if (millis != null) {
                                 minigame.setFloorDegenTime(TimeUnit.MILLISECONDS.toSeconds(millis));
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_TIME,
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_FLOORDEGEN_TIME,
                                         Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                             } else {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,

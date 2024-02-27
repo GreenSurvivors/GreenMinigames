@@ -146,7 +146,7 @@ public class SetRegenAreaCommand extends ASetCommand {
 
                                 if (result.success()) {
                                     if (region == null) {
-                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_REGENREGION_CREATED,
+                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.SUCCESS, MinigameLangKey.REGION_REGENREGION_CREATED,
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),

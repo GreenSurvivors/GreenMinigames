@@ -52,7 +52,7 @@ public class SetMaxTreasureCommand extends ASetCommand {
                     int amount = Integer.parseInt(args[0]);
                     thm.setMaxTreasure(amount);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_MAXTREASURE_SUCCESS,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_MAXTREASURE_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(amount)));
                     return true;

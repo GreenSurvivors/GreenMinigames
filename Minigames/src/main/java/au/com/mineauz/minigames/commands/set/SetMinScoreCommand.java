@@ -48,7 +48,7 @@ public class SetMinScoreCommand extends ASetCommand {
                 int minscore = Integer.parseInt(args[0]);
                 minigame.setMinScore(minscore);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_MINSCORE_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_MINSCORE_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(minscore)));
                 return true;

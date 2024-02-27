@@ -65,7 +65,7 @@ public class EnableAllCommand extends ACommand {
         for (Minigame mg : minigames) {
             mg.setEnabled(true);
         }
-        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_ENABLEALL_SUCCESS,
+        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_ENABLEALL_SUCCESS,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(minigames.size())));
         return true;
     }

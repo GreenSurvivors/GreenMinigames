@@ -60,7 +60,7 @@ public class SetDefaultWinnerCommand extends ASetCommand {
 
                 if (teamColor != null) {
                     teamsModule.setDefaultWinner(teamColor);
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_DEFAULTWINNER_SUCCESS,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_DEFAULTWINNER_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                 } else {

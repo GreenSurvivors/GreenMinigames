@@ -67,7 +67,7 @@ public class SetStartCommand extends ASetCommand {
                         if (team != null) {
                             team.getStartLocations().clear();
 
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_START_CLEAR_TEAM,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_START_CLEAR_TEAM,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                         } else {
@@ -147,7 +147,7 @@ public class SetStartCommand extends ASetCommand {
                 if (teamColor == null) {
                     minigame.addStartLocation(startLocation, number);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_START_ADD_SINGLE,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_START_ADD_SINGLE,
                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(number)));
                 } else {
                     Team team = teamsModule.getTeam(teamColor);
@@ -155,7 +155,7 @@ public class SetStartCommand extends ASetCommand {
                     if (team != null) {
                         team.addStartLocation(startLocation, number);
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_START_ADD_TEAM,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_START_ADD_TEAM,
                                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(number)));
                     } else {

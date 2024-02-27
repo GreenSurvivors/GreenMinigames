@@ -10,7 +10,7 @@ import java.util.*;
 public class StoredPlayerCheckpoints {
     private final String uuid;
     private final Map<String, Location> checkpoints;
-    private final Map<String, List<String>> flags;
+    private final Map<String, List<String>> singlePlayerFlags;
     private final Map<String, Long> storedTime;
     private final Map<String, Integer> storedDeaths;
     private final Map<String, Integer> storedReverts;
@@ -19,7 +19,7 @@ public class StoredPlayerCheckpoints {
     public StoredPlayerCheckpoints(String uuid) {
         this.uuid = uuid;
         checkpoints = new HashMap<>();
-        flags = new HashMap<>();
+        singlePlayerFlags = new HashMap<>();
         storedTime = new HashMap<>();
         storedDeaths = new HashMap<>();
         storedReverts = new HashMap<>();
@@ -57,20 +57,20 @@ public class StoredPlayerCheckpoints {
         return checkpoints.isEmpty();
     }
 
-    public boolean hasFlags(String minigame) {
-        return flags.containsKey(minigame);
+    public boolean hasSinglePlayerFlags(String minigame) {
+        return singlePlayerFlags.containsKey(minigame);
     }
 
-    public void addFlags(String minigame, List<String> flagList) {
-        flags.put(minigame, new ArrayList<>(flagList));
+    public void addSinglePlayerFlags(String minigame, List<String> flagList) {
+        singlePlayerFlags.put(minigame, new ArrayList<>(flagList));
     }
 
-    public List<String> getFlags(String minigame) {
-        return flags.get(minigame);
+    public List<String> getSinglePlayerFlags(String minigame) {
+        return singlePlayerFlags.get(minigame);
     }
 
-    public void removeFlags(String minigame) {
-        flags.remove(minigame);
+    public void removeSinglePlayerFlags(String minigame) {
+        singlePlayerFlags.remove(minigame);
     }
 
     public void addTime(String minigame, long time) {
@@ -138,8 +138,8 @@ public class StoredPlayerCheckpoints {
                 save.getConfig().set(mgm + ".pitch", checkpoints.get(mgm).getPitch());
                 save.getConfig().set(mgm + ".world", checkpoints.get(mgm).getWorld().getName());
 
-                if (flags.containsKey(mgm))
-                    save.getConfig().set(mgm + ".flags", getFlags(mgm));
+                if (singlePlayerFlags.containsKey(mgm))
+                    save.getConfig().set(mgm + ".flags", getSinglePlayerFlags(mgm));
 
                 if (storedTime.containsKey(mgm))
                     save.getConfig().set(mgm + ".time", getTime(mgm));
@@ -157,7 +157,7 @@ public class StoredPlayerCheckpoints {
                 // Remove the checkpoint from memory, so it doesn't cause an error again
                 save.getConfig().set(mgm, null);
                 checkpoints.remove(mgm);
-                flags.remove(mgm);
+                singlePlayerFlags.remove(mgm);
                 storedTime.remove(mgm);
                 storedDeaths.remove(mgm);
                 storedReverts.remove(mgm);
@@ -209,7 +209,7 @@ public class StoredPlayerCheckpoints {
                     Minigames.getCmpnntLogger().error("", e);
                 }
                 if (save.getConfig().contains(mgm + ".flags")) {
-                    flags.put(mgm, save.getConfig().getStringList(mgm + ".flags"));
+                    singlePlayerFlags.put(mgm, save.getConfig().getStringList(mgm + ".flags"));
                 }
 
                 if (save.getConfig().contains(mgm + ".time")) {

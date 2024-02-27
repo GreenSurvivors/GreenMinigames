@@ -54,7 +54,7 @@ public class SetStartTimeCommand extends ASetCommand {
                 if (millis > 0) {
                     minigame.setStartWaitTime(TimeUnit.MILLISECONDS.toSeconds(millis));
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_STARTTIME_SUCCESS,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_STARTTIME_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                 } else {

@@ -47,34 +47,34 @@ public class SetFlagCommand extends ASetCommand {
                              @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].equalsIgnoreCase("add") && args.length >= 2) {
-                minigame.addFlag(args[1]);
+                minigame.addSinglePlayerFlag(args[1]);
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLAG_ADD,
                         Placeholder.parsed(MinigamePlaceHolderKey.FLAG.getKey(), args[1]),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 return true;
             } else if (args[0].equalsIgnoreCase("remove") && args.length >= 2) {
-                if (minigame.removeFlag(args[1])) {
+                if (minigame.removeSinglePlayerFlag(args[1])) {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLAG_REMOVE,
                             Placeholder.parsed(MinigamePlaceHolderKey.FLAG.getKey(), args[1]));
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLAG_ERROR_NOFLAG,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_FLAG_ERROR_NOFLAG,
                             Placeholder.parsed(MinigamePlaceHolderKey.FLAG.getKey(), args[1]));
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("list")) {
-                if (minigame.hasFlags()) {
+                if (minigame.hasSinglePlayerFlags()) {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_FLAG_LIST_HEADER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
-                            MiniMessage.miniMessage().deserialize(String.join("<gray>, </gray>", minigame.getFlags())));
+                            MiniMessage.miniMessage().deserialize(String.join("<gray>, </gray>", minigame.getSinglePlayerFlags())));
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_FLAG_NOFLAGS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("clear")) {
-                if (minigame.hasFlags()) {
-                    minigame.getFlags().clear();
+                if (minigame.hasSinglePlayerFlags()) {
+                    minigame.getSinglePlayerFlags().clear();
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_FLAG_CLEAR,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 } else {

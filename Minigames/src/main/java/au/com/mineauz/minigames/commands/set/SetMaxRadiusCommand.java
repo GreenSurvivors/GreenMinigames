@@ -53,7 +53,7 @@ public class SetMaxRadiusCommand extends ASetCommand { //todo it isn't intuitive
                     int max = Integer.parseInt(args[0]);
                     thm.setMaxRadius(max);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_MAXRADIUS_SUCCESS,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_MAXRADIUS_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(max)));
                     return true;

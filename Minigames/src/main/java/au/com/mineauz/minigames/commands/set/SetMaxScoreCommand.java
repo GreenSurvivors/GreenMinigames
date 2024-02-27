@@ -48,7 +48,7 @@ public class SetMaxScoreCommand extends ASetCommand {
                 int maxscore = Integer.parseInt(args[0]);
                 minigame.setMaxScore(maxscore);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_MAXSCORE_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_MAXSCORE_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(maxscore)));
                 return true;

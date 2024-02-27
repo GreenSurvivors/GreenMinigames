@@ -55,8 +55,8 @@ public class MenuItemAddFlag extends MenuItem {
 
     @Override
     public void checkValidEntry(String entry) {
-        mgm.addFlag(entry);
-        getContainer().addItem(new MenuItemFlag(Material.OAK_SIGN, entry, mgm.getFlags()));
+        mgm.addSinglePlayerFlag(entry);
+        getContainer().addItem(new MenuItemFlag(Material.OAK_SIGN, entry, mgm.getSinglePlayerFlags()));
 
         getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());

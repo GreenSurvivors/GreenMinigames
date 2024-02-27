@@ -102,7 +102,7 @@ public class MultiplayerTimer {
         } else if (currentLobbyWaitTime == 0 && startWaitTime == 0) {
             //game should start...
             MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_STARTUP_GO),
-                    MinigameMessageType.INFO);
+                    MinigameMessageType.SUCCESS);
             reclearInventories(minigame);
             if (!LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()) {
                 playerManager.balanceGame(minigame);
@@ -198,7 +198,8 @@ public class MultiplayerTimer {
 
     public void resumeTimer() {
         paused = false;
-        MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_STARTUP_RESUMED), MinigameMessageType.INFO);
+        MinigameMessageManager.sendMinigameMessage(minigame,
+                MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_STARTUP_RESUMED), MinigameMessageType.INFO);
     }
 
     public boolean isPaused() {

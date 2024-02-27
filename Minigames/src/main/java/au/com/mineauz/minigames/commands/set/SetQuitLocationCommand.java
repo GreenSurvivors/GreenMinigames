@@ -46,7 +46,7 @@ public class SetQuitLocationCommand extends ASetCommand {
                              @NotNull String @Nullable [] args) {
         if (sender instanceof Entity entity) {
             minigame.setQuitLocation(entity.getLocation());
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_QUIT_SUCCESS,
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_QUIT_SUCCESS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);

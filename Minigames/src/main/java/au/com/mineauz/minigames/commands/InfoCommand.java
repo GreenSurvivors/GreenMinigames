@@ -132,7 +132,7 @@ public class InfoCommand extends ACommand {
                 }
             }
 
-            MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, outputBuilder.build());
+            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, outputBuilder.build());
             return true;
         } else {
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_INFO_OUTPUT_NOMINIGAME);

@@ -49,7 +49,7 @@ public class SetRegenDelayCommand extends ASetCommand {
             Long millis = MinigameUtils.parsePeriod(args[0]);
             if (millis != null) {
                 minigame.setRegenDelay(TimeUnit.MILLISECONDS.toSeconds(millis));
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_REGENDELAY_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_REGENDELAY_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(TimeUnit.MILLISECONDS.toSeconds(millis))));
                 return true;

@@ -73,7 +73,7 @@ public class SetGamemodeCommand extends ASetCommand {
             if (gameMode != null) {
                 minigame.setDefaultGamemode(gameMode);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_GAMEMODE_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEMODE_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(gameMode.translationKey())));
             }

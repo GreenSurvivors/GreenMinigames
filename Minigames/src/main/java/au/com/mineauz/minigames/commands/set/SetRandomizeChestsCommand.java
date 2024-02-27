@@ -56,7 +56,7 @@ public class SetRandomizeChestsCommand extends ASetCommand {
                         int max = Integer.parseInt(args[1]);
 
                         if (minigame.setChestRandoms(min, max)) {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_RNGCHEST_ENABLED,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_RNGCHEST_ENABLED,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(min)),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(max)));

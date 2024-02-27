@@ -70,7 +70,7 @@ public class SetTeamCommand extends ASetCommand {
                                 }
 
                                 Team team = tmod.addTeam(teamColor, name.toString());
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TEAM_ADD,
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TEAM_ADD,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), team.getColor().getCompName()),
                                         Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), team.getColoredDisplayName()));
@@ -131,7 +131,7 @@ public class SetTeamCommand extends ASetCommand {
 
                                 if (team != null) {
                                     team.setDisplayName(name.toString());
-                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TEAM_RENAME,
+                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TEAM_RENAME,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()),
                                             Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), team.getColoredDisplayName()));
@@ -159,7 +159,7 @@ public class SetTeamCommand extends ASetCommand {
                                         int val = Integer.parseInt(args[2]);
                                         team.setMaxPlayers(val);
 
-                                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TEAM_MAXPLAYERS,
+                                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TEAM_MAXPLAYERS,
                                                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), team.getColoredDisplayName()),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(val)));
                                     } else {

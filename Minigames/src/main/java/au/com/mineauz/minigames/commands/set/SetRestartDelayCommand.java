@@ -56,7 +56,7 @@ public class SetRestartDelayCommand extends ASetCommand {
 
                     thm.setTreasureWaitTime(TimeUnit.MILLISECONDS.toSeconds(millis));
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_RESTARTDELAY_SUCCESS,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_RESTARTDELAY_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                     return true;
