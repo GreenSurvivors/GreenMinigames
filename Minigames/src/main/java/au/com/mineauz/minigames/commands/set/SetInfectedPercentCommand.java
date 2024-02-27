@@ -58,11 +58,11 @@ public class SetInfectedPercentCommand extends ASetCommand {
                     int val = Integer.parseInt(args[0]);
                     if (val > 0 && val < 100) {
                         infectionModule.setInfectedPercent(val);
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_INFECTEDPERCENT_SUCCESS,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_INFECTEDPERCENT_SUCCESS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(val)));
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), "1"),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), "99"));
                     }

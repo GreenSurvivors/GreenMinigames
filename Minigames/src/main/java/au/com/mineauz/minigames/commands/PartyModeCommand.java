@@ -53,7 +53,7 @@ public class PartyModeCommand extends ACommand {
             if (bool != null) {
                 PLUGIN.getPlayerManager().setPartyMode(bool);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_PARTYMODE_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_PARTYMODE_SUCCESS,
                         Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
                                 bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                 return true;

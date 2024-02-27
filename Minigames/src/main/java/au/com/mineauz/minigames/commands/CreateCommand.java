@@ -67,7 +67,7 @@ public class CreateCommand extends ACommand {
                     type = MinigameType.SINGLEPLAYER;
                 }
                 Minigame mgm = new Minigame(mgmName, type, player.getLocation());
-                MinigameMessageManager.sendMgMessage(player, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_CREATE_SUCCESS,
+                MinigameMessageManager.sendMgMessage(player, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_CREATE_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
                 List<String> mgs;
                 if (PLUGIN.getConfig().contains("minigames")) {

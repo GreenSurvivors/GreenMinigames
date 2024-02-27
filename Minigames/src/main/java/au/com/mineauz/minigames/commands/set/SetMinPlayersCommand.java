@@ -48,7 +48,7 @@ public class SetMinPlayersCommand extends ASetCommand {
                 int min = Integer.parseInt(args[0]);
                 minigame.setMinPlayers(min);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_MINPLAYERS_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_MINPLAYERS_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(min)));
                 return true;

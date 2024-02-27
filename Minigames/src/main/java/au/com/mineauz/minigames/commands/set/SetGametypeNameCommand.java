@@ -53,7 +53,7 @@ public class SetGametypeNameCommand extends ASetCommand {
                 Component gameTypeName = MiniMessage.miniMessage().deserialize(String.join(" ", args));
 
                 minigame.setGameTypeName(gameTypeName);
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_GAMETYPENAME_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMETYPENAME_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), gameTypeName));
             }

@@ -51,7 +51,7 @@ public class SetSpectatorSpawnLocationCommand extends ASetCommand {
                              @NotNull String @Nullable [] args) {
         if (sender instanceof Player player) {
             minigame.setSpectatorLocation(player.getLocation());
-            MinigameMessageManager.sendMgMessage(player, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_SPECTATORSPAWN_SUCCESS,
+            MinigameMessageManager.sendMgMessage(player, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_SPECTATORSPAWN_SUCCESS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);

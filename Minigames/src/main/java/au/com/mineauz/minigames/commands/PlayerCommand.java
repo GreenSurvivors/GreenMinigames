@@ -109,7 +109,7 @@ public class PlayerCommand extends ACommand {
                                 MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_PLAYTIME,
                                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(playTime))));
 
-                        MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, message.build());
+                        MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, message.build());
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_PLAYER,
                                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));

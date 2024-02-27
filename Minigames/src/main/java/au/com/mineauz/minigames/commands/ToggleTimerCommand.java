@@ -52,14 +52,14 @@ public class ToggleTimerCommand extends ACommand {
                     if (minigame.getMpTimer().isPaused()) {
                         minigame.getMpTimer().resumeTimer();
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_TOGGLETIMER_RESUME_SUCCESS,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TOGGLETIMER_RESUME_SUCCESS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     } else {
                         // message to players of Minigame
                         minigame.getMpTimer().pauseTimer(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_TOGGLETIMER_PAUSE_MSG,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), sender.getName())));
                         // message to sender
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_TOGGLETIMER_PAUSE_SUCCESS,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TOGGLETIMER_PAUSE_SUCCESS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minigame.getMpTimer().getPlayerWaitTimeLeft())));
                     }

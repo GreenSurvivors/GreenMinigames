@@ -57,7 +57,7 @@ public class SetLocationHintCommand extends ASetCommand { //todo i feel like thi
                 String location = String.join(" ", args);
                 thm.setLocation(location);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOCATION_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_LOCATION_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.LOCATION.getKey(), location));
             } else {

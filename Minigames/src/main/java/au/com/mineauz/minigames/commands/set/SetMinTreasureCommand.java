@@ -52,7 +52,7 @@ public class SetMinTreasureCommand extends ASetCommand {
                     int amount = Integer.parseInt(args[0]);
                     thm.setMinTreasure(amount);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_MINTREASURE_SUCCESS,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_MINTREASURE_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(amount)));
                     return true;

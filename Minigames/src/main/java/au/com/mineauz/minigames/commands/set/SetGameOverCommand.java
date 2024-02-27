@@ -58,7 +58,7 @@ public class SetGameOverCommand extends ASetCommand {
                     Long millis = MinigameUtils.parsePeriod(args[1]);
                     if (millis != null) {
                         gameOverModule.setTimer(TimeUnit.MICROSECONDS.toSeconds(millis));
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_GAMEOVER_TIME,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_TIME,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                     } else {
@@ -71,7 +71,7 @@ public class SetGameOverCommand extends ASetCommand {
                     if (bool != null) {
                         gameOverModule.setInvincible(bool);
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_GAMEOVER_INVINCIBLE,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_INVINCIBLE,
                                 Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(),
                                         MinigameMessageManager.getMgMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
@@ -85,7 +85,7 @@ public class SetGameOverCommand extends ASetCommand {
                     if (bool != null) {
                         gameOverModule.setHumiliationMode(bool);
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_GAMEOVER_HUMILIATION,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_HUMILIATION,
                                 Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(),
                                         MinigameMessageManager.getMgMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
@@ -99,7 +99,7 @@ public class SetGameOverCommand extends ASetCommand {
                     if (bool != null) {
                         gameOverModule.setInteractAllowed(bool);
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_GAMEOVER_INTERACTION,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_INTERACTION,
                                 Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(),
                                         MinigameMessageManager.getMgMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));

@@ -43,7 +43,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
         ir.setRarity(rarity);
         rewards.addReward(ir);
 
-        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
+        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS,
                 isPrimary ? MgCommandLangKey.COMMAND_SET_REWARD_ITEM_SUCCESS : MgCommandLangKey.COMMAND_SET_REWARD2_ITEM_SUCCESS,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(item.getAmount())),
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item.displayName()),
@@ -92,7 +92,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                 moneyReward.setRarity(rarity);
                                 rewards.addReward(moneyReward);
 
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS,
                                         isPrimary ? MgCommandLangKey.COMMAND_SET_REWARD_MONEY_SUCCESS : MgCommandLangKey.COMMAND_SET_REWARD2_MONEY_SUCCESS,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), economy.format(money)),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),

@@ -9,7 +9,6 @@ import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 
 public class SignBlockMock extends BlockMock {
-
     private final BlockData data;
     private BlockStateMock state;
 

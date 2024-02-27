@@ -65,7 +65,7 @@ public class SetPaintballCommand extends ASetCommand {
                 if (args[0].equalsIgnoreCase("damage") && args[1].matches("[0-9]+")) {
                     minigame.setPaintBallDamage(Integer.parseInt(args[1]));
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_PAINTBALL_DAMAGE,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_PAINTBALL_DAMAGE,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), args[1]));
                     return true;

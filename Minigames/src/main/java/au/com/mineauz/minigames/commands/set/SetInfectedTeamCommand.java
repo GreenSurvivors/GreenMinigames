@@ -70,7 +70,7 @@ public class SetInfectedTeamCommand extends ASetCommand {
                                 teamsModule.hasTeam(teamColor) ||
                                 teamColor == TeamColor.NONE) {
                             infectionModule.setInfectedTeam(teamColor);
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_INFECTEDTEAM_SUCCESS,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_INFECTEDTEAM_SUCCESS,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                         } else {
@@ -82,7 +82,7 @@ public class SetInfectedTeamCommand extends ASetCommand {
                             teamColor = infectionModule.getDefaultInfectedTeam();
                             infectionModule.setInfectedTeam(teamColor);
 
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_INFECTEDTEAM_SUCCESS,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_INFECTEDTEAM_SUCCESS,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                         } else {

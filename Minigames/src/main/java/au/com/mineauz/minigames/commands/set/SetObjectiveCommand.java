@@ -56,7 +56,7 @@ public class SetObjectiveCommand extends ASetCommand {
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else {
                 minigame.setObjective(MiniMessage.miniMessage().deserialize(String.join(" ", args)));
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_OBJECTIVE_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_OBJECTIVE_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             }
 

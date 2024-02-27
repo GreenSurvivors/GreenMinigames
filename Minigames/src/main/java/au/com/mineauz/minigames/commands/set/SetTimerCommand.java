@@ -53,7 +53,7 @@ public class SetTimerCommand extends ASetCommand {
             if (millis != null) {
                 minigame.setTimer(TimeUnit.MILLISECONDS.toSeconds(millis));
                 if (millis <= 0) {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TIMER_SUCCESS,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                 } else {

@@ -53,7 +53,7 @@ public class SetLobbyCommand extends ASetCommand {
         if (args == null) {
             if (sender instanceof Entity entity) {
                 minigame.setLobbyLocation(entity.getLocation());
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_LOCATION,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_LOBBY_LOCATION,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else { // not a player
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
@@ -154,7 +154,7 @@ public class SetLobbyCommand extends ASetCommand {
                         lobby.setPlayerWaitTime(TimeUnit.MILLISECONDS.toSeconds(millis));
 
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_PLAYERWAIT_SUCCESS,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_LOBBY_PLAYERWAIT_SUCCESS,
                                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(lobby.getPlayerWaitTime()))));
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,

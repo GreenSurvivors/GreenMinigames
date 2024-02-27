@@ -8,17 +8,10 @@ import au.com.mineauz.minigames.objects.MockSign;
 import au.com.mineauz.minigames.objects.SignBlockMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.block.BlockMock;
-import org.bukkit.Color;
+import be.seeseemelk.mockbukkit.block.data.BlockDataMock;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.SoundGroup;
-import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.structure.Mirror;
-import org.bukkit.block.structure.StructureRotation;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -49,128 +42,8 @@ public class TestHelper {
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             sign.setLine(e.getKey(), e.getValue());
         }
-        BlockData bData = new BlockData() { //todo there is probably something in MockBukkit 4 this
-            @Override
-            public @NotNull Material getMaterial() {
-                return Material.CRIMSON_SIGN;
-            }
 
-            @Override
-            public @NotNull String getAsString() {
-                return "TestGame";
-            }
-
-            @Override
-            public @NotNull String getAsString(boolean b) {
-                return "SIGN";
-            }
-
-            @Override
-            public @NotNull BlockData merge(BlockData blockData) {
-                return this;
-            }
-
-            @Override
-            public boolean matches(BlockData blockData) {
-                return true;
-            }
-
-            @Override
-            public @NotNull BlockData clone() {
-                return this;
-            }
-
-            @Override
-            public @NotNull SoundGroup getSoundGroup() {
-                return null;
-            }
-
-            @Override
-            public int getLightEmission() {
-                return 0;
-            }
-
-            @Override
-            public boolean isOccluding() {
-                return false;
-            }
-
-            @Override
-            public boolean requiresCorrectToolForDrops() {
-                return false;
-            }
-
-
-            @Override
-            public boolean isPreferredTool(@NotNull ItemStack tool) {
-                return false;
-            }
-
-            @Override
-            public @NotNull PistonMoveReaction getPistonMoveReaction() {
-                return PistonMoveReaction.BREAK;
-            }
-
-            @Override
-            public boolean isSupported(@NotNull Block block) {
-                return false;
-            }
-
-            @Override
-            public boolean isSupported(@NotNull Location location) {
-                return false;
-            }
-
-            @Override
-            public boolean isFaceSturdy(@NotNull BlockFace blockFace, @NotNull BlockSupport blockSupport) {
-                return false;
-            }
-
-            @Override
-            public @NotNull VoxelShape getCollisionShape(@NotNull Location location) {
-                return null;
-            }
-
-            @Override
-            public @NotNull Color getMapColor() {
-                return null;
-            }
-
-            @Override
-            public @NotNull Material getPlacementMaterial() {
-                return null;
-            }
-
-            @Override
-            public void rotate(@NotNull StructureRotation structureRotation) {
-
-            }
-
-            @Override
-            public void mirror(@NotNull Mirror mirror) {
-
-            }
-
-            @Override
-            public void copyTo(@NotNull BlockData blockData) {
-
-            }
-
-            @Override
-            public @NotNull BlockState createBlockState() {
-                return null;
-            }
-
-            @Override
-            public float getDestroySpeed(@NotNull ItemStack itemStack, boolean considerEnchants) {
-                return 0;
-            }
-
-            @Override
-            public boolean isRandomlyTicked() {
-                return false;
-            }
-        };
+        BlockData bData = new BlockDataMock(Material.CRIMSON_SIGN);
         return new SignBlockMock(Material.CRIMSON_SIGN, new Location(world, 10, 40, 10), sign, bData);
     }
 }

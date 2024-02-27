@@ -62,7 +62,7 @@ public class SetNodeCommand extends ASetCommand {
                     if (args[0].equalsIgnoreCase("create") && args.length >= 2) {
                         if (!rmod.hasNode(args[1])) {
                             rmod.addNode(args[1], new Node(args[1], minigame, mgPlayer.getLocation()));
-                            MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                            MinigameMessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, RegionMessageManager.getBundleKey(),
                                     RegionLangKey.NODE_ADDED,
                                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), args[1]),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));

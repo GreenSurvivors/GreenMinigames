@@ -105,16 +105,16 @@ public class ResourcePackCommand extends ACommand {
                         PLUGIN.getServer().getScheduler().runTaskLaterAsynchronously(PLUGIN, () -> {
                             if (newPack.isValid()) {
                                 PLUGIN.getResourceManager().addResourcePack(newPack);
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_SUCCESS);
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_SUCCESS);
                                 sendList(sender);
                             } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_ERROR_INVALID);
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_ERROR_INVALID);
                             }
                         }, 100);
                         return true;
 
                     } catch (MalformedURLException e) {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_ERROR_BADURL);
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_ERROR_BADURL);
                         return false;
                     }
                 } else {

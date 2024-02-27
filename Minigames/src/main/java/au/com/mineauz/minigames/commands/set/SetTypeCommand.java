@@ -51,7 +51,7 @@ public class SetTypeCommand extends ASetCommand {
                 MinigameType type = MinigameType.valueOf(args[0].toUpperCase());
 
                 minigame.setType(type);
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TYPE_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TYPE_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), type.getName()));
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_TYPE_ERROR_NOTTYPE,

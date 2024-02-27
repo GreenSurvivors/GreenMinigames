@@ -58,7 +58,7 @@ public class SetDisplayNameCommand extends ASetCommand {
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()));
             } else {
                 minigame.setDisplayName(MiniMessage.miniMessage().deserialize(name));
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_DISPLAYNAME_SUCCESS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_DISPLAYNAME_SUCCESS,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), name));
             }

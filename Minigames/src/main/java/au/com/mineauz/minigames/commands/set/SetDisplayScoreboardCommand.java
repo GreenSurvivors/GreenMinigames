@@ -62,7 +62,7 @@ public class SetDisplayScoreboardCommand extends ASetCommand { //todo allow side
                 minigame.setDisplayScoreboard(bool);
 
                 if (bool) {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS,
                             MgCommandLangKey.COMMAND_SET_DISPLAYSCOREBOARD_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 } else {

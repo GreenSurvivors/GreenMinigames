@@ -72,7 +72,7 @@ public class SetSurvivorTeamCommand extends ASetCommand {
                             teamColor == infectionModule.getDefaultSurvivorTeam() ||
                             (teamsModule != null && teamsModule.hasTeam(teamColor))) {
                         infectionModule.setSurvivorTeam(teamColor);
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_SUCCESS,
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_SUCCESS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                     } else {
