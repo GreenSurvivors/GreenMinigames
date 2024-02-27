@@ -191,10 +191,16 @@ public class LobbySettingsModule extends MinigameModule {
         };
     }
 
+    /**
+     * in seconds
+     */
     public long getPlayerWaitTime() {
         return playerWaitTime.getFlag();
     }
 
+    /**
+     * in seconds
+     */
     public void setPlayerWaitTime(long time) {
         playerWaitTime.setFlag(time);
     }

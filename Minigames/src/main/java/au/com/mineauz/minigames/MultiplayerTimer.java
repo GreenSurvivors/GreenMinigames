@@ -22,13 +22,13 @@ import java.util.List;
 
 public class MultiplayerTimer {
     private static final Minigames plugin = Minigames.getPlugin();
-    private final long oLobbyWaitTime;
-    private final long oStartWaitTime;
+    private final long oLobbyWaitTime; // in seconds
+    private final long oStartWaitTime; // in seconds
     private final Minigame minigame;
     private final MinigamePlayerManager playerManager = plugin.getPlayerManager();
-    private final List<Long> timeMsg = new ArrayList<>();
+    private final List<Long> timeMsg = new ArrayList<>(); // in seconds
     private long currentLobbyWaitTime;
-    private long startWaitTime;
+    private long startWaitTime; // in seconds
     private boolean paused = false;
     private int taskID = -1;
 
@@ -39,15 +39,17 @@ public class MultiplayerTimer {
 
         if (currentLobbyWaitTime == 0) {
             currentLobbyWaitTime = plugin.getConfig().getInt("multiplayer.waitforplayers");
-            if (currentLobbyWaitTime <= 0)
+            if (currentLobbyWaitTime <= 0) {
                 currentLobbyWaitTime = 10;
+            }
         }
         oLobbyWaitTime = currentLobbyWaitTime;
         startWaitTime = minigame.getStartWaitTime();  //minigames setting should be priority over general plugin config.
         if (startWaitTime == 0) {
             startWaitTime = plugin.getConfig().getInt("multiplayer.startcountdown");
-            if (startWaitTime <= 0)
+            if (startWaitTime <= 0) {
                 startWaitTime = 5;
+            }
         }
         oStartWaitTime = startWaitTime;
         timeMsg.addAll(plugin.getConfig().getLongList("multiplayer.timerMessageInterval"));
@@ -168,14 +170,23 @@ public class MultiplayerTimer {
         return currentLobbyWaitTime;
     }
 
+    /**
+     * in seconds
+     */
     public long getStartWaitTimeLeft() {
         return startWaitTime;
     }
 
+    /**
+     * in seconds
+     */
     public void setCurrentLobbyWaitTime(int time) {
         currentLobbyWaitTime = time;
     }
 
+    /**
+     * in seconds
+     */
     public void setStartWaitTime(int time) {
         startWaitTime = time;
     }

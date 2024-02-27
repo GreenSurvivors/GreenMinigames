@@ -61,7 +61,7 @@ public class SetTimerCommand extends ASetCommand {
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 }
                 return true;
-            } else if (args[0].equalsIgnoreCase("display") && args.length >= 2){ //todo
+            } else if (args[0].equalsIgnoreCase("display") && args.length >= 2) {
                 if (args[1].equalsIgnoreCase("xpBar")) {
                     minigame.setTimerDisplayType(MinigameTimer.DisplayType.XP_BAR);
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_XPBAR,

@@ -21,7 +21,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemBlockData extends MenuItem { //todo needs further testing. this menu items before the changes was faulty.
+public class MenuItemBlockData extends MenuItem {
     private static final @NotNull String DESCRIPTION_TOKEN = "BlockData_description";
     private final @NotNull Callback<BlockData> dataCallback;
 
