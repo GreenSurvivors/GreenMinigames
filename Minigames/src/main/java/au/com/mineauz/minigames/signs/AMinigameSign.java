@@ -18,10 +18,14 @@ public abstract class AMinigameSign {
 
     public abstract @NotNull Component getName();
 
-    public boolean isType(@NotNull Component signLine) {
+    public boolean isType(@NotNull Component signLine) { // this would be the correct way for a single sign
         PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
 
         return plainSerializer.serialize(getName()).equalsIgnoreCase(plainSerializer.serialize(signLine));
+    }
+
+    public boolean isType(@NotNull String signLine) { // but this is the best way for multiple since the line needs to get serialized only once
+        return PlainTextComponentSerializer.plainText().serialize(getName()).equalsIgnoreCase(signLine);
     }
 
     public abstract @Nullable String getCreatePermission();

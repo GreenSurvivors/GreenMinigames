@@ -10,6 +10,7 @@ import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.tool.ExecutorHolderEditToolMode;
 import au.com.mineauz.minigamesregions.tool.NodeToolMode;
 import au.com.mineauz.minigamesregions.tool.RegionToolMode;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -56,7 +57,7 @@ public class Main extends JavaPlugin {
                 getLogger().severe("Minigames plugin not found! You must have the plugin to use Regions!");
                 plugin = null;
                 minigames = null;
-                this.getPluginLoader().disablePlugin(this);
+                Bukkit.getPluginManager().disablePlugin(this);
                 return;
             }
 
@@ -78,7 +79,7 @@ public class Main extends JavaPlugin {
             plugin = null;
             minigames = null;
             Minigames.getCmpnntLogger().error("Failed to enable Minigames Regions " + getDescription().getVersion() + ": ", e);
-            getPluginLoader().disablePlugin(this);
+            Bukkit.getPluginManager().disablePlugin(this);
         }
     }
 

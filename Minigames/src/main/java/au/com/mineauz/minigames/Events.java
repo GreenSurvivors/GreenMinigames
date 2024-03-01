@@ -18,11 +18,21 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.OfflineMinigamePlayer;
+import au.com.mineauz.minigames.signs.AMinigameSign;
+import au.com.mineauz.minigames.signs.BetSign;
+import au.com.mineauz.minigames.signs.JoinSign;
+import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -64,7 +74,7 @@ public class Events implements Listener {
         if (mgPlayer.isInMinigame()) {
             if (required.contains(mgPlayer)) {
                 ResourcePackModule module = ResourcePackModule.getMinigameModule(mgPlayer.getMinigame());
-                if (!module.isEnabled()) return;
+                if (module == null || !module.isEnabled()) return;
                 if (!module.isForced()) return;
                 switch (event.getStatus()) {
                     case ACCEPTED, SUCCESSFULLY_LOADED -> required.remove(mgPlayer);
@@ -271,13 +281,15 @@ public class Events implements Listener {
 
         if (event.getAction() == Action.LEFT_CLICK_BLOCK && !(event.useInteractedBlock() == Event.Result.DENY)) {
             Block cblock = event.getClickedBlock();
-            if (cblock.getState() instanceof Sign sign && sign.getSide(Side.FRONT).getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")) {
+            if (cblock.getState() instanceof Sign sign && SignBase.isMinigameSign(sign.getSide(Side.FRONT).line(0))) {
                 // wax signs automatically
                 sign.setWaxed(true);
                 sign.update();
                 if (event.getPlayer().hasPermission("minigame.sign.use.details")) {
-                    if ((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !mgPlayer.isInMinigame()) {
-                        Minigame mgm = mdata.getMinigame(sign.getLine(2));
+                    AMinigameSign mgSign = Minigames.getPlugin().getMinigameSigns().getMgSign(sign.getSide(Side.FRONT).line(1));
+
+                    if (!mgPlayer.isInMinigame() && (mgSign instanceof BetSign || mgSign instanceof JoinSign)) {
+                        Minigame mgm = AMinigameSign.getMinigame(sign);
 
                         if (mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
                             if (!mgm.isEnabled()) {
@@ -311,18 +323,17 @@ public class Events implements Listener {
                                                     MinigameUtils.convertTime(Duration.ofSeconds(mgm.getMinigameTimer().getTimeLeft()))));
                                 }
 
-                                if (mgm.isTeamGame()) {
-                                    StringBuilder sc = new StringBuilder();
-                                    int c = 0;
-                                    for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
-                                        c++;
-                                        sc.append(t.getColor().getColor().toString()).append(" ").append(t.getScore()).append(ChatColor.WHITE);
-                                        if (c != TeamsModule.getMinigameModule(mgm).getTeams().size()) {
-                                            sc.append(" : ");
-                                        }
+                                TeamsModule teamsModule = TeamsModule.getMinigameModule(mgm);
+                                if (mgm.isTeamGame() && teamsModule != null) {
+                                    List<ComponentLike> list = new ArrayList<>(teamsModule.getTeams().size());
+
+                                    for (Team team : teamsModule.getTeams()) {
+                                        list.add(Component.text().append(team.getColoredDisplayName()).appendSpace().append(Component.text(team.getScore())));
                                     }
+
                                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MgMiscLangKey.MINIGAME_INFO_SCORE,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), sc.toString()));
+                                            Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(),
+                                                    Component.join(JoinConfiguration.separator(Component.text(" : ").color(NamedTextColor.WHITE)), list)));
                                 }
 
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MgMiscLangKey.MINIGAME_INFO_PLAYERCOUNT,
@@ -364,8 +375,10 @@ public class Events implements Listener {
                 event.setCancelled(true);
             } else if (event.getClickedBlock() != null && (Tag.ALL_SIGNS.isTagged(event.getClickedBlock().getType()))) {
                 Sign sign = (Sign) event.getClickedBlock().getState();
-                if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")) {
-                    Minigame minigame = mdata.getMinigame(sign.getLine(2));
+
+                AMinigameSign mgSign = Minigames.getPlugin().getMinigameSigns().getMgSign(sign.getSide(Side.FRONT).line(1));
+                Minigame minigame = AMinigameSign.getMinigame(sign);
+                if (SignBase.isMinigameSign(sign.getSide(Side.FRONT).line(0)) && mgSign instanceof JoinSign && minigame != null) {
                     tool.setMinigame(minigame);
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_MINIGAME_MSG,
                             Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()));
