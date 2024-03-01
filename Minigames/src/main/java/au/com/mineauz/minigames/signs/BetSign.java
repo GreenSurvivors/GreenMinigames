@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -37,12 +36,12 @@ public class BetSign extends AMinigameSign {
     }
 
     @Override
-    public boolean signCreate(@NotNull SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) { // todo update
         Sign sign = (Sign) event.getBlock().getState();
         Minigame minigame = getMinigame(sign, event.line(2));
 
         if (minigame != null) {
-            event.setLine(1, ChatColor.GREEN + "Bet");
+            event.line(1, getName());
             event.line(2, minigame.getDisplayName());
             setPersistentMinigame(sign, minigame);
 
@@ -99,12 +98,12 @@ public class BetSign extends AMinigameSign {
                     }
 
                     if (!sign.getLine(3).startsWith("$")) {
-                        plugin.getPlayerManager().joinMinigame(mgPlayer, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, 0.0);
+                        plugin.getPlayerManager().joinMinigame(mgPlayer, mgm, true, 0.0);
                     } else {
                         if (plugin.hasEconomy()) {
                             //todo use  plugin.getEconomy().currencyNamePlural()
                             Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
-                            plugin.getPlayerManager().joinMinigame(mgPlayer, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, bet);
+                            plugin.getPlayerManager().joinMinigame(mgPlayer, mgm, true, bet);
                             return true;
                         } else if (plugin.getConfig().getBoolean("warnings")) {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_NOVAULT);

@@ -59,10 +59,12 @@ public class SignBase implements Listener {
         minigameSigns.add(mgSign);
     }
 
-    private @Nullable AMinigameSign getMgSign(@NotNull Component secondLine) {
+    public @Nullable AMinigameSign getMgSign(@NotNull Component secondLine) {
         // don't use a map here, with names as keys since it might be possible to reload messages via command
+        String strLine = PlainTextComponentSerializer.plainText().serialize(secondLine);
+
         for (AMinigameSign mgSign : minigameSigns) {
-            if (mgSign.isType(secondLine)) {
+            if (mgSign.isType(strLine)) {
                 return mgSign;
             }
         }
@@ -77,12 +79,16 @@ public class SignBase implements Listener {
         }
     }
 
+    public static boolean isMinigameSign(@NotNull Component firstLine) {
+        String firstLineStr = PlainTextComponentSerializer.plainText().serialize(firstLine);
+
+        return (MinigameMessageManager.getStrippedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLineStr) ||
+                alternativeMgmPattern.matcher(firstLineStr).matches());
+    }
+
     @EventHandler(ignoreCancelled = true)
     private void signPlace(SignChangeEvent event) {
-        String firstLine = PlainTextComponentSerializer.plainText().serialize(event.line(0));
-
-        if (MinigameMessageManager.getUnformattedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLine) ||
-                alternativeMgmPattern.matcher(firstLine).matches()) {
+        if (isMinigameSign(event.line(0))) {
             if (event.getSide() == Side.FRONT) {
                 AMinigameSign mgSign = getMgSign(event.line(2));
 
@@ -119,9 +125,8 @@ public class SignBase implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block cblock = event.getClickedBlock();
             if (cblock != null && cblock.getState() instanceof Sign sign) {
-                String firstLine = PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(0));
                 AMinigameSign mgSign = getMgSign(sign.getSide(Side.FRONT).line(2));
-                if (MinigameMessageManager.getUnformattedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLine) && mgSign != null) {
+                if (isMinigameSign(sign.getSide(Side.FRONT).line(0)) && mgSign != null) {
 
                     if (mgSign.getUsePermission() != null && !event.getPlayer().hasPermission(mgSign.getUsePermission())) {
                         event.setCancelled(true);
@@ -141,9 +146,8 @@ public class SignBase implements Listener {
     private void signBreak(BlockBreakEvent event) {
         if (Tag.ALL_SIGNS.isTagged(event.getBlock().getType())) {
             Sign sign = (Sign) event.getBlock().getState();
-            String firstLine = PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(0));
             AMinigameSign mgSign = getMgSign(sign.getSide(Side.FRONT).line(2));
-            if (MinigameMessageManager.getUnformattedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLine) && mgSign != null) {
+            if (isMinigameSign(sign.getSide(Side.FRONT).line(0)) && mgSign != null) {
 
                 if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
                     event.setCancelled(true);
