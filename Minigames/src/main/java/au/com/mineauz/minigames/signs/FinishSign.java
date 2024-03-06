@@ -132,8 +132,6 @@ public class FinishSign extends AMinigameSign {
     }
 
     @Override
-    public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
-
+    public void signBreak(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
     }
-
 }

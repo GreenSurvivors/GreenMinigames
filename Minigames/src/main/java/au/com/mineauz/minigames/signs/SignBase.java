@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 public class SignBase implements Listener {
     private static final List<AMinigameSign> minigameSigns = new ArrayList<>();
-    private static final Pattern alternativeMgmPattern = Pattern.compile("(?:\\[mgm])|(?:\\[mg])", Pattern.CASE_INSENSITIVE);
+    private static final Pattern alternativeMgmPattern = Pattern.compile("(?:\\[mgm])|(?:\\[mg])", Pattern.CASE_INSENSITIVE); // todo don't hardcode
     private final HashSet<CTFFlag> takenFlags = new HashSet<>();
 
     static {
@@ -72,6 +72,7 @@ public class SignBase implements Listener {
         return null;
     }
 
+    //todo move to ctf module
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     private void takeFlag(@NotNull TakeCTFFlagEvent event) {
         if (event.getFlag() != null && event.getFlag().getAttachedToLocation() != null) {
@@ -90,7 +91,7 @@ public class SignBase implements Listener {
     private void signPlace(SignChangeEvent event) {
         if (isMinigameSign(event.line(0))) {
             if (event.getSide() == Side.FRONT) {
-                AMinigameSign mgSign = getMgSign(event.line(2));
+                AMinigameSign mgSign = getMgSign(event.line(1));
 
                 if (mgSign != null) {
                     event.line(0, MinigameMessageManager.getMgMessage(MgSignLangKey.MINIGAME));
@@ -125,7 +126,7 @@ public class SignBase implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block cblock = event.getClickedBlock();
             if (cblock != null && cblock.getState() instanceof Sign sign) {
-                AMinigameSign mgSign = getMgSign(sign.getSide(Side.FRONT).line(2));
+                AMinigameSign mgSign = getMgSign(sign.getSide(Side.FRONT).line(1));
                 if (isMinigameSign(sign.getSide(Side.FRONT).line(0)) && mgSign != null) {
 
                     if (mgSign.getUsePermission() != null && !event.getPlayer().hasPermission(mgSign.getUsePermission())) {
@@ -143,7 +144,7 @@ public class SignBase implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    private void signBreak(BlockBreakEvent event) {
+    private void signBreak(@NotNull BlockBreakEvent event) {
         if (Tag.ALL_SIGNS.isTagged(event.getBlock().getType())) {
             Sign sign = (Sign) event.getBlock().getState();
             AMinigameSign mgSign = getMgSign(sign.getSide(Side.FRONT).line(2));

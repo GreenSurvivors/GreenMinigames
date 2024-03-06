@@ -12,7 +12,6 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -61,13 +60,13 @@ public class MenuItemAddTeam extends MenuItem {
                 MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMiscLangKey.TEAM_ERROR_COLOR_TAKEN);
             }
 
-            List<String> teams = new ArrayList<>(tm.getTeams().size() + 1);
+            List<TeamColor> teams = new ArrayList<>(tm.getTeams().size() + 1);
             for (Team t : tm.getTeams()) {
-                teams.add(WordUtils.capitalizeFully(t.getColor().toString().replace("_", " ")));
+                teams.add(t.getColor());
             }
-            teams.add("None");
+            teams.add(TeamColor.NONE);
             getContainer().removeItem(0);
-            getContainer().addItem(new MenuItemList(Material.PAPER, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DEFAULTWINNINGTEAM_NAME), tm.getDefaultWinnerCallback(), teams), 0);
+            getContainer().addItem(new MenuItemList<>(Material.PAPER, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DEFAULTWINNINGTEAM_NAME), tm.getDefaultWinnerCallback(), teams), 0);
 
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());

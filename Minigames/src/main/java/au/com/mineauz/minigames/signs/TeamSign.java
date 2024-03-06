@@ -14,11 +14,13 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.apache.commons.text.WordUtils;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TeamSign extends AMinigameSign {
 
@@ -41,13 +43,13 @@ public class TeamSign extends AMinigameSign {
     public boolean signCreate(@NotNull SignChangeEvent event) {
         event.line(1, getName());
 
-        if (event.getLine(2).equalsIgnoreCase("neutral")) {
+        if (event.getLine(2).equalsIgnoreCase("neutral")) { // todo
             event.setLine(2, ChatColor.GRAY + "Neutral");
             return true;
         } else {
             TeamColor color = TeamColor.matchColor(event.getLine(2));
             if (color != null) {
-                event.line(2, Component.text(WordUtils.capitalizeFully(color.toString().replace("_", " ")), color.getColor()));
+                event.line(2, color.getCompName());
                 return true;
             }
         }
@@ -61,10 +63,10 @@ public class TeamSign extends AMinigameSign {
         if (mgPlayer.isInMinigame()) {
             Minigame mgm = mgPlayer.getMinigame();
             if (mgm.isTeamGame()) {
-                if (mgPlayer.getTeam() != matchTeam(mgm, sign.getLine(2))) {
+                if (mgPlayer.getTeam() != matchTeam(mgm, sign.getSide(Side.FRONT).line(2))) {
                     if (!mgm.isWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral")) {
                         Team sm = null;
-                        Team nt = matchTeam(mgm, sign.getLine(2));
+                        Team nt = matchTeam(mgm, sign.getSide(Side.FRONT).line(2));
                         if (nt != null) {
                             if (nt.hasRoom()) {
                                 for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
@@ -89,9 +91,9 @@ public class TeamSign extends AMinigameSign {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_TEAM_ASSIGN_ERROR_FULL);
                             }
                         }
-                    } else if (sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getLine(2)) != mgPlayer.getTeam()) {
+                    } else if (sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getSide(Side.FRONT).line(2)) != mgPlayer.getTeam()) {
                         Team currentTeam = mgPlayer.getTeam();
-                        Team nt = matchTeam(mgm, sign.getLine(2));
+                        Team nt = matchTeam(mgm, sign.getSide(Side.FRONT).line(2));
                         if (currentTeam != null) {
                             if (nt != null) {
                                 if (nt.getPlayers().size() - currentTeam.getPlayers().size() < 2) { //todo this breaks with more then 2 teams
@@ -133,13 +135,14 @@ public class TeamSign extends AMinigameSign {
     }
 
     @Override
-    public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
+    public void signBreak(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
     }
 
-    private Team matchTeam(Minigame mgm, String text) {
-        TeamColor col = TeamColor.matchColor(ChatColor.stripColor(text).replace(" ", "_"));
-        if (TeamsModule.getMinigameModule(mgm).hasTeam(col))
+    private @Nullable Team matchTeam(@NotNull Minigame mgm, @NotNull Component text) {
+        TeamColor col = TeamColor.matchColor(PlainTextComponentSerializer.plainText().serialize(text).replace(" ", "_"));
+        if (col != null && TeamsModule.getMinigameModule(mgm).hasTeam(col)) {
             return TeamsModule.getMinigameModule(mgm).getTeam(col);
+        }
         return null;
     }
 }
