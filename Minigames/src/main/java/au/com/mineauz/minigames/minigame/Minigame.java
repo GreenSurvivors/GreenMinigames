@@ -39,7 +39,7 @@ import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Minigame implements ScriptObject {
-    private final String name; //todo maybe component
+    private final String name;
     private final Map<String, AFlag<?>> configFlags = new HashMap<>();
     private final ComponentFlag displayName = new ComponentFlag(null, "displayName");
     private final ComponentFlag objective = new ComponentFlag(null, "objective");
@@ -1011,11 +1011,11 @@ public class Minigame implements ScriptObject {
         return sbManager;
     }
 
-    public Component getObjective() {
+    public @Nullable Component getObjective() {
         return objective.getFlag();
     }
 
-    public void setObjective(Component objective) {
+    public void setObjective(@Nullable Component objective) {
         this.objective.setFlag(objective);
     }
 

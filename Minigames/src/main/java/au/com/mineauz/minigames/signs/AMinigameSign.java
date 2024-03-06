@@ -47,7 +47,7 @@ public abstract class AMinigameSign {
 
     public abstract boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer);
 
-    public abstract void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer);
+    public abstract void signBreak(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer);
 
     public static @Nullable Minigame getMinigame(@NotNull Sign sign) {
         Minigame result = Minigames.getPlugin().getMinigameManager().getMinigame(
