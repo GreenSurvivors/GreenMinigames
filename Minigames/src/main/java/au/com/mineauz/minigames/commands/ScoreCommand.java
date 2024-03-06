@@ -290,6 +290,6 @@ public class ScoreCommand extends ACommand {
             return CommandDispatcher.tabCompleteMatch(pt, args[1]);
         }
         List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
-        return CommandDispatcher.tabCompleteMatch(mgs, args[args.length - 1]);
+        return CommandDispatcher.tabCompleteMatch(mgs, args[1]);
     }
 }

@@ -159,14 +159,10 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         if (args != null && args.length > 0) {
             ACommand comd = getCommand(args[0]);
 
-            if (comd != null) {
+            if (comd != null && args.length > 1) {
                 String[] shortArgs;
-                if (args.length > 1) {
-                    shortArgs = new String[args.length - 1];
-                    System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
-                } else {
-                    shortArgs = new String[]{};
-                }
+                shortArgs = new String[args.length - 1];
+                System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
 
                 List<String> l = comd.onTabComplete(sender, shortArgs);
                 return Objects.requireNonNullElseGet(l, () -> List.of(""));

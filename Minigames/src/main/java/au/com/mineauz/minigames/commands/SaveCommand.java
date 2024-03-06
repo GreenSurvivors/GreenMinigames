@@ -68,7 +68,11 @@ public class SaveCommand extends ACommand {
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
-        List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
-        return CommandDispatcher.tabCompleteMatch(mgs, args[args.length - 1]);
+        if (args.length == 1) {
+            List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
+            return CommandDispatcher.tabCompleteMatch(mgs, args[0]);
+        }
+
+        return null;
     }
 }
