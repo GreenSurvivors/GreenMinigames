@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.bukkit.Location;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,23 +38,37 @@ public abstract class MinigameTypeBase implements Listener {
      *
      * @param player the player
      * @param mgm    the Game
-     * @return True if they join1
+     * @return True if the player joins
      */
     public abstract boolean joinMinigame(@NotNull MinigamePlayer player, @NotNull Minigame mgm);
 
     public abstract void quitMinigame(@NotNull MinigamePlayer player, Minigame mgm, boolean forced);
 
-    public abstract void endMinigame(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame mgm);
+    public abstract void endMinigame(@NotNull List<@NotNull MinigamePlayer> winners,
+                                     @NotNull List<@NotNull MinigamePlayer> losers, @NotNull Minigame mgm);
 
-    public void callGeneralQuit(MinigamePlayer player, Minigame minigame) {
-        if (!player.getPlayer().isDead()) {
-            if (player.getPlayer().getWorld() != minigame.getQuitLocation().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") &&
-                    plugin.getConfig().getBoolean("warnings")) {
-                MinigameMessageManager.sendMgMessage(player, MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
-            }
-            player.teleport(minigame.getQuitLocation());
+    public void callGeneralQuit(@NotNull MinigamePlayer player, @NotNull Minigame minigame) {
+        Location location;
+        if (minigame.getQuitLocation() == null) {
+            location = minigame.getEndLocation();
         } else {
-            player.setQuitPos(minigame.getQuitLocation());
+            location = minigame.getQuitLocation();
+        }
+
+        if (!player.getPlayer().isDead()) {
+            if (location != null) {
+                if (player.getPlayer().getWorld() != location.getWorld() && player.getPlayer().hasPermission("minigame.set.quit") &&
+                        plugin.getConfig().getBoolean("warnings")) {
+                    MinigameMessageManager.sendMgMessage(player, MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
+                }
+
+                player.teleport(location);
+            }
+        } else {
+            if (location != null) {
+                player.setQuitPos(minigame.getQuitLocation());
+            }
+
             player.setRequiredQuit(true);
         }
     }

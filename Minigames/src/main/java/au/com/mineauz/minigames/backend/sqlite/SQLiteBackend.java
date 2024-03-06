@@ -301,7 +301,10 @@ public class SQLiteBackend extends Backend {
             handler.endTransaction();
         } catch (SQLException e) {
             Minigames.getCmpnntLogger().error("", e);
-            handler.endTransactionFail();
+
+            if (handler != null) {
+                handler.endTransactionFail();
+            }
         } finally {
             if (handler != null) {
                 handler.release();

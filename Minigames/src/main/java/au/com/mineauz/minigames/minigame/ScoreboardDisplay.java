@@ -144,7 +144,7 @@ public class ScoreboardDisplay {
 
         // Find the corner that is the top left part of the scoreboard
         Location min = rootBlock.clone();
-        min.add(-horizontal.getModX() * (width / 2), -1, -horizontal.getModZ() * (width / 2));
+        min.add(-horizontal.getModX() * ((double) width / 2.0D), -1, -horizontal.getModZ() * ((double) width / 2.0D));
 
         // Grab each sign of the scoreboards in order
         Block block = min.getBlock();

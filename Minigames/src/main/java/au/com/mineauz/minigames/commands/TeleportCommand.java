@@ -136,18 +136,21 @@ public class TeleportCommand extends ACommand {
                 if (mgPlayer.isInMinigame()) {
                     int pos = 0;
                     Team team = null;
-                    if (args.length == 3)
+                    if (args.length == 3) {
                         team = TeamsModule.getMinigameModule(mgPlayer.getMinigame()).getTeam(TeamColor.matchColor(args[2]));
-                    else if (mgPlayer.getTeam() != null)
+                    } else if (mgPlayer.getTeam() != null) {
                         team = mgPlayer.getTeam();
+                    }
 
-                    if (args.length >= 3 && args[2].matches("[0-9]+") && !args[2].equals("0"))
+                    if (args.length >= 3 && args[2].matches("[0-9]+") && !args[2].equals("0")) {
                         pos = Integer.parseInt(args[2]) - 1;
+                    }
 
-                    if (team == null && pos >= mgPlayer.getMinigame().getStartLocations().size())
+                    if (team == null && pos >= mgPlayer.getMinigame().getStartLocations().size()) {
                         pos = mgPlayer.getMinigame().getStartLocations().size() - 1;
-                    else if (team != null && pos >= team.getStartLocations().size())
+                    } else if (team != null && pos >= team.getStartLocations().size()) {
                         pos = team.getStartLocations().size() - 1;
+                    }
 
                     if (team != null) {
                         mgPlayer.teleport(team.getStartLocations().get(pos));

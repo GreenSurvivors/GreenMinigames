@@ -488,23 +488,22 @@ public class MinigamePlayerManager {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_CHECKPOINT_REVERT);
 
             // Reset the player's health and extinguish flames when they revert
-            Player p = mgPlayer.getPlayer();
-            if ((p != null) && (p.isOnline())) {
-                p.setFireTicks(0);
-                AttributeInstance maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            Player player = mgPlayer.getPlayer();
+            if (player.isOnline()) {
+                player.setFireTicks(0);
+                AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (maxHealth != null) {
-                    p.setHealth(maxHealth.getValue());
+                    player.setHealth(maxHealth.getValue());
                 }
-                p.setFoodLevel(20);
-                p.setSaturation(20f);
-                p.setRemainingAir(p.getMaximumAir());
+                player.setFoodLevel(20);
+                player.setSaturation(20f);
+                player.setRemainingAir(player.getMaximumAir());
             }
         }
     }
 
     public void quitMinigame(@NotNull MinigamePlayer mgPlayer, boolean forced) {
         Minigame minigame = mgPlayer.getMinigame();
-
         boolean isWinner = GameOverModule.getMinigameModule(minigame).getWinners().contains(mgPlayer);
 
         QuitMinigameEvent event = new QuitMinigameEvent(mgPlayer, minigame, forced, isWinner);
@@ -555,8 +554,9 @@ public class MinigamePlayerManager {
                         Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName())), MinigameMessageType.ERROR, mgPlayer);
             } else {
-                if (mgPlayer.getEndTime() == 0)
+                if (mgPlayer.getEndTime() == 0) {
                     mgPlayer.setEndTime(System.currentTimeMillis());
+                }
 
                 if (isWinner) {
                     GameOverModule.getMinigameModule(minigame).getWinners().remove(mgPlayer);
