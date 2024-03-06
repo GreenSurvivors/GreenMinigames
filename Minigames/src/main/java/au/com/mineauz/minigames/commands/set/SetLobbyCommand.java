@@ -173,9 +173,9 @@ public class SetLobbyCommand extends ASetCommand {
         if (args.length > 0) {
             return switch (args.length) {
                 case 1 ->
-                        CommandDispatcher.tabCompleteMatch(List.of("canmove", "caninteract", "teleport", "playerWait"), args[args.length - 1]);
-                case 2 -> CommandDispatcher.tabCompleteMatch(List.of("playerwait", "startwait"), args[args.length - 1]);
-                default -> CommandDispatcher.tabCompleteMatch(List.of("true", "false"), args[args.length - 1]);
+                        CommandDispatcher.tabCompleteMatch(List.of("canmove", "caninteract", "teleport", "playerWait"), args[0]);
+                case 2 -> CommandDispatcher.tabCompleteMatch(List.of("playerwait", "startwait"), args[1]);
+                default -> CommandDispatcher.tabCompleteMatch(List.of("true", "false"), args[2]);
             };
         }
         return null;
