@@ -399,9 +399,10 @@ public enum MgCommandLangKey implements MinigameLangKey {
     COMMAND_TOGGLETIMER_RESUME_SUCCESS("command.toggleTimer.resume.success"),
     COMMAND_TOGGLETIMER_USAGE("command.toggleTimer.usage"),
     COMMAND_TOOL_DESCRIPTION("command.tool.description"),
-    COMMAND_TOOL_ERROR_NOMGSELECTED("command.tool.error.noMGSelected"),
-    COMMAND_TOOL_ERROR_NOMODE("command.tool.error.noMode"),
+    COMMAND_TOOL_ERROR_NOTMODE("command.tool.error.notMode"),
     COMMAND_TOOL_ERROR_NOTOOL("command.tool.error.noTool"),
+    COMMAND_TOOL_ERROR_SELECT_NOMINIGAME("command.tool.error.select.noMinigame"),
+    COMMAND_TOOL_ERROR_SELECT_NOMODE("command.tool.error.select.noMode"),
     COMMAND_TOOL_SETMODE("command.tool.setMode"),
     COMMAND_TOOL_SETTEAM("command.tool.setTeam"),
     COMMAND_TOOL_USAGE("command.tool.usage");

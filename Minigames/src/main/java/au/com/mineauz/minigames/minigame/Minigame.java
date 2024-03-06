@@ -112,7 +112,7 @@ public class Minigame implements ScriptObject {
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final List<MinigamePlayer> spectators = new ArrayList<>();
     private final RecorderData blockRecorder = new RecorderData(this);
-    //CTF
+    //CTF <-- todo move ctf stuff into it's mechanic
     private final Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<>();
     private final Map<String, CTFFlag> droppedFlag = new HashMap<>();
     private MinigameState state = MinigameState.IDLE;
@@ -142,8 +142,8 @@ public class Minigame implements ScriptObject {
         this.playersAtStart = playersAtStart;
     }
 
-    private void setup(@NotNull MinigameType type, @Nullable Location start) {
-        this.type.setFlag(type);
+    private void setup(@NotNull MinigameType minigameType, @Nullable Location start) {
+        this.type.setFlag(minigameType);
         startLocations.setFlag(new ArrayList<>());
 
         if (start != null)
@@ -211,7 +211,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(randomizeStart);
         addConfigFlag(startWaitTime);
         addConfigFlag(timer);
-        addConfigFlag(this.type);
+        addConfigFlag(type);
         addConfigFlag(unlimitedAmmo);
         addConfigFlag(usePermissions);
         addConfigFlag(timerDisplayType);
@@ -741,6 +741,7 @@ public class Minigame implements ScriptObject {
         this.mechanic.setFlag(gameMechanicBase.getMechanicName());
     }
 
+    //todo move CtfFlags to CTF mechanic
     public boolean isFlagCarrier(@Nullable MinigamePlayer mgPlayer) {
         return flagCarriers.containsKey(mgPlayer);
     }
@@ -753,14 +754,14 @@ public class Minigame implements ScriptObject {
         flagCarriers.remove(mgPlayer);
     }
 
-    public @Nullable CTFFlag getFlagCarrier(@NotNull MinigamePlayer mgPlayer) {
+    public @Nullable CTFFlag getCarriedFlag(@NotNull MinigamePlayer mgPlayer) {
         return flagCarriers.get(mgPlayer);
     }
 
     public void resetFlags() {
-        for (MinigamePlayer mgPlayer : flagCarriers.keySet()) {
-            getFlagCarrier(mgPlayer).respawnFlag();
-            getFlagCarrier(mgPlayer).stopCarrierParticleEffect();
+        for (CTFFlag ctfFlag : flagCarriers.values()) {
+            ctfFlag.respawnFlag();
+            ctfFlag.stopCarrierParticleEffect();
         }
         flagCarriers.clear();
         for (String id : droppedFlag.keySet()) {

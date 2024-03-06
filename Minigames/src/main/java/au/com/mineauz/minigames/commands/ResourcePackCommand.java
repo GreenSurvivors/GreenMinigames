@@ -66,8 +66,7 @@ public class ResourcePackCommand extends ACommand {
                         if (sender instanceof Player player) {
                             mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]));
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
                             return true;
                         }
                     } else {

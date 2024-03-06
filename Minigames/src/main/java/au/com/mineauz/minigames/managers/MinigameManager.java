@@ -387,7 +387,7 @@ public class MinigameManager {
         } else if (minigame.getQuitLocation() == null) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOQUITLOC);
             return false;
-        } else if (minigame.getType() == null || this.minigameType(minigame.getType()).cannotStart(minigame, mgPlayer)) { //type specific reasons we cannot start.
+        } else if (this.minigameType(minigame.getType()).cannotStart(minigame, mgPlayer)) { //type specific reasons we cannot start.
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_INVALIDTYPE);
             return false;
         } else if (!minigame.getMechanic().validTypes().contains(minigame.getType())) {

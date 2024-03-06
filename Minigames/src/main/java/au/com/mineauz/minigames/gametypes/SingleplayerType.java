@@ -16,7 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -104,7 +103,7 @@ public class SingleplayerType extends MinigameTypeBase {
     }
 
     @Override
-    public void endMinigame(@NotNull List<@NotNull MinigamePlayer> winners, @Nullable List<@Nullable MinigamePlayer> losers, @NotNull Minigame mgm) {
+    public void endMinigame(@NotNull List<@NotNull MinigamePlayer> winners, @NotNull List<@NotNull MinigamePlayer> losers, @NotNull Minigame mgm) {
         for (MinigamePlayer player : winners) {
             if (player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName())) {
                 player.getStoredPlayerCheckpoints().removeCheckpoint(mgm.getName());

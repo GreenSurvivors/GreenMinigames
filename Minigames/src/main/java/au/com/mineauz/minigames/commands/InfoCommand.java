@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -72,7 +73,10 @@ public class InfoCommand extends ACommand {
                     Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()))).appendNewline();
             outputBuilder.append(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DIVIDER_LARGE)).appendNewline();
             outputBuilder.append(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_INFO_OUTPUT_DESCRIPTION,
-                    Placeholder.component(MinigamePlaceHolderKey.OBJECTIVE.getKey(), minigame.getObjective()))).appendNewline();
+                    Placeholder.component(MinigamePlaceHolderKey.OBJECTIVE.getKey(),
+                            minigame.getObjective() == null ?
+                                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET) :
+                                    minigame.getObjective()))).appendNewline();
             outputBuilder.append(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_INFO_OUTPUT_GAMETYPE,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), minigame.getType().getName()))).appendNewline();
 

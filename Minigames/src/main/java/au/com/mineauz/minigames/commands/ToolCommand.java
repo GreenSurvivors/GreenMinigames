@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -60,38 +61,50 @@ public class ToolCommand extends ACommand {
                 if (args[0].equalsIgnoreCase("minigame") && args.length == 2) {
                     if (Minigames.getPlugin().getMinigameManager().hasMinigame(args[1])) {
                         MinigameTool tool;
-                        Minigame mg = Minigames.getPlugin().getMinigameManager().getMinigame(args[1]);
+                        Minigame minigame = Minigames.getPlugin().getMinigameManager().getMinigame(args[1]);
                         tool = MinigameTool.hasMinigameTool(mgPlayer) ? MinigameTool.getMinigameTool(mgPlayer) : MinigameTool.giveMinigameTool(mgPlayer);
 
-                        tool.setMinigame(mg);
+                        tool.setMinigame(minigame);
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[1]));
                     }
                 } else if (args[0].equalsIgnoreCase("select")) {
-                    MinigameTool tool = !MinigameTool.hasMinigameTool(mgPlayer) ? MinigameTool.giveMinigameTool(mgPlayer) : MinigameTool.getMinigameTool(mgPlayer);
+                    MinigameTool tool = MinigameTool.hasMinigameTool(mgPlayer) ? MinigameTool.getMinigameTool(mgPlayer) : MinigameTool.giveMinigameTool(mgPlayer);
 
                     if (tool.getMinigame() != null && tool.getMode() != null) {
-                        tool.getMode().select(mgPlayer, tool.getMinigame(),
-                                TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(tool.getTeamColor()));
+                        TeamsModule teamsModule = TeamsModule.getMinigameModule(tool.getMinigame());
+                        Team team = null;
+
+                        if (teamsModule != null && tool.getTeamColor() != null) {
+                            team = teamsModule.getTeam(tool.getTeamColor());
+                        }
+
+                        tool.getMode().select(mgPlayer, tool.getMinigame(), team);
                     } else {
                         if (tool.getMode() == null) {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOOL_ERROR_NOMODE);
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOOL_ERROR_SELECT_NOMODE);
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOOL_ERROR_NOMGSELECTED);
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOOL_ERROR_SELECT_NOMINIGAME);
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("deselect")) {
                     MinigameTool tool = !MinigameTool.hasMinigameTool(mgPlayer) ? MinigameTool.giveMinigameTool(mgPlayer) : MinigameTool.getMinigameTool(mgPlayer);
 
                     if (tool.getMinigame() != null && tool.getMode() != null) {
-                        tool.getMode().deselect(mgPlayer, tool.getMinigame(),
-                                TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(tool.getTeamColor()));
+                        TeamsModule teamsModule = TeamsModule.getMinigameModule(tool.getMinigame());
+                        Team team = null;
+
+                        if (teamsModule != null && tool.getTeamColor() != null) {
+                            team = teamsModule.getTeam(tool.getTeamColor());
+                        }
+
+                        tool.getMode().deselect(mgPlayer, tool.getMinigame(), team);
                     } else {
                         if (tool.getMode() == null) {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOOL_ERROR_NOMODE);
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOOL_ERROR_SELECT_NOMODE);
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOOL_ERROR_NOMGSELECTED);
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOOL_ERROR_SELECT_NOMINIGAME);
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("team") && args.length == 2) {
@@ -107,10 +120,17 @@ public class ToolCommand extends ACommand {
                     }
                 } else if (ToolModes.getToolMode(args[0]) != null) {
                     MinigameTool tool = MinigameTool.hasMinigameTool(mgPlayer) ? MinigameTool.getMinigameTool(mgPlayer) : MinigameTool.giveMinigameTool(mgPlayer);
+                    ToolMode toolMode = ToolModes.getToolMode(args[0]);
 
-                    tool.setMode(ToolModes.getToolMode(args[0]));
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_TOOL_SETMODE,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), tool.getMode().getName().toLowerCase().replace("_", " ")));
+                    if (toolMode != null) {
+                        tool.setMode(toolMode);
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_TOOL_SETMODE,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), toolMode.getName().toLowerCase().replace("_", " ")));
+                    } else {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOOL_ERROR_NOTMODE,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                        return false;
+                    }
                 } else {
                     return false;
                 }
