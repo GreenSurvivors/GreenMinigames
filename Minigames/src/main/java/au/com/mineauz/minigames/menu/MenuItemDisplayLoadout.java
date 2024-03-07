@@ -110,7 +110,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         MenuItemBack menuItemBack = new MenuItemBack(loadoutMenu);
         loadoutSettingsMenu.addItem(menuItemBack, getContainer().getSize() - 9);
 
-        LoadoutModule.addAddonMenuItems(loadoutSettingsMenu, loadout);
+        loadout.addAddonMenuItems(loadoutSettingsMenu);
 
         Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
 
