@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
@@ -21,6 +20,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -28,11 +28,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements RewardScheme {
+public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends RewardScheme {
     private final EnumFlag<Comparison> comparisonType = new EnumFlag<>(Comparison.Greater, "comparison");
     private final BooleanFlag enableRewardsOnLoss = new BooleanFlag(false, "loss-rewards");
     private final BooleanFlag lossUsesSecondary = new BooleanFlag(true, "loss-use-secondary");
@@ -40,15 +39,8 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     private final TreeMap<T, Rewards> primaryRewards = new TreeMap<>();
     private final TreeMap<T, Rewards> secondaryRewards = new TreeMap<>();
 
-    public HierarchyRewardScheme() {
-    }
-
-    @Override
-    public Map<String, AFlag<?>> getFlags() {
-        return Map.of(
-                "comparison", comparisonType,
-                "loss-rewards", enableRewardsOnLoss,
-                "loss-use-secondary", lossUsesSecondary);
+    public HierarchyRewardScheme(@NotNull String name) {
+        super(name);
     }
 
     @Override
@@ -141,9 +133,13 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     }
 
     @Override
-    public void save(ConfigurationSection config) {
-        ConfigurationSection primary = config.createSection("score-primary");
-        ConfigurationSection secondary = config.createSection("score-secondary");
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        comparisonType.saveValue(config, path);
+        enableRewardsOnLoss.saveValue(config, path);
+        lossUsesSecondary.saveValue(config, path);
+
+        ConfigurationSection primary = config.createSection(path + ".score-primary");
+        ConfigurationSection secondary = config.createSection(path + ".score-secondary");
 
         save(primaryRewards, primary);
         save(secondaryRewards, secondary);
@@ -157,26 +153,33 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     }
 
     @Override
-    public void load(ConfigurationSection config) {
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        comparisonType.loadValue(config, path);
+        enableRewardsOnLoss.loadValue(config, path);
+        lossUsesSecondary.loadValue(config, path);
+
         ConfigurationSection primary = config.getConfigurationSection("score-primary");
         ConfigurationSection secondary = config.getConfigurationSection("score-secondary");
-        if (primary != null)
+        if (primary != null) {
             load(primaryRewards, primary);
-        if (secondary != null)
+        }
+        if (secondary != null) {
             load(secondaryRewards, secondary);
+        }
     }
 
-    protected abstract T loadValue(String key);
+    protected abstract T loadKey(String key);
 
     private void load(TreeMap<T, Rewards> map, @NotNull ConfigurationSection section) {
         map.clear();
         for (String key : section.getKeys(false)) {
-            T value = loadValue(key);
+            T value = loadKey(key);
 
             ConfigurationSection subSection = section.getConfigurationSection(key);
             Rewards reward = new Rewards();
-            if (subSection != null)
+            if (subSection != null) {
                 reward.load(subSection);
+            }
             map.put(value, reward);
         }
     }
@@ -298,7 +301,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
         @Override
         public void checkValidEntry(String entry) {
             try {
-                T value = loadValue(entry);
+                T value = loadKey(entry);
                 if (map.containsKey(value)) {
                     MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_DUPLICATE);
                 } else {
@@ -369,7 +372,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             boolean show = true;
 
             try {
-                T value = loadValue(entry);
+                T value = loadKey(entry);
                 Rewards reward = new Rewards();
 
                 if (map.containsKey(value)) {

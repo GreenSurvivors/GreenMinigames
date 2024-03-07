@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MaterialListFlag extends AFlag<List<Material>> {
+public class MaterialListFlag extends AFlag<List<Material>> { // todo replace with GENERIC<T> list flag AFlag<List<AFlag<T>>>
 
     public MaterialListFlag(List<Material> value, String name) {
         setFlag(value);

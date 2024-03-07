@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
@@ -25,9 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GameOverModule extends MinigameModule {
     private final TimeFlag timer = new TimeFlag(0L, "gameOver.timer"); // in seconds
@@ -48,29 +45,26 @@ public class GameOverModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, AFlag<?>> getConfigFlags() {
-        Map<String, AFlag<?>> map = new HashMap<>();
-        map.put(timer.getName(), timer);
-        map.put(invincible.getName(), invincible);
-        map.put(humiliation.getName(), humiliation);
-        return map;
-    }
-
-    @Override
     public boolean useSeparateConfig() {
         return false;
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        timer.saveValue(config, path);
+        invincible.saveValue(config, path);
+        humiliation.saveValue(config, path);
     }
 
     @Override
-    public void load(FileConfiguration config) {
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        timer.loadValue(config, path);
+        invincible.loadValue(config, path);
+        humiliation.loadValue(config, path);
     }
 
     @Override
-    public void addEditMenuOptions(Menu previous) {
+    public void addEditMenuOptions(@NotNull Menu previous) {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_GAMEOVER_NAME, previous.getViewer());
         menu.addItem(timer.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_GAMEOVER_TIME_NAME, 0L, null));
 
@@ -85,7 +79,7 @@ public class GameOverModule extends MinigameModule {
     }
 
     @Override
-    public boolean displayMechanicSettings(Menu previous) {
+    public boolean displayMechanicSettings(@NotNull Menu previous) {
         return false;
     }
 

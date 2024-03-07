@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -12,8 +11,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public class JuggernautModule extends MinigameModule {
     private MinigamePlayer juggernaut = null;
@@ -27,29 +24,24 @@ public class JuggernautModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, AFlag<?>> getConfigFlags() {
-        return null;
-    }
-
-    @Override
     public boolean useSeparateConfig() {
         return false;
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
     }
 
     @Override
-    public void load(FileConfiguration config) {
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
     }
 
     @Override
-    public void addEditMenuOptions(Menu menu) {
+    public void addEditMenuOptions(@NotNull Menu menu) {
     }
 
     @Override
-    public boolean displayMechanicSettings(Menu previous) {
+    public boolean displayMechanicSettings(@NotNull Menu previous) {
         return false;
     }
 

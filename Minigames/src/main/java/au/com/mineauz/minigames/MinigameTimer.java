@@ -125,7 +125,7 @@ public class MinigameTimer {
         this.timeLeft = time;
     }
 
-    public enum DisplayType{
+    public enum DisplayType {
         XP_BAR,
         BOSS_BAR,
         NONE

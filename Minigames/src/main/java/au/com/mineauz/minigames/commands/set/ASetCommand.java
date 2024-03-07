@@ -16,5 +16,5 @@ public abstract class ASetCommand implements ICommandInfo {
                                       @NotNull String @Nullable [] args);
 
     abstract public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                           @NotNull String @NotNull [] args);
+                                                                  @NotNull String @NotNull [] args);
 }

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -12,57 +11,41 @@ import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * The standard reward scheme handles the previous reward behaviour.
  * It provides rewards only on victory and has a primary and secondary
  * reward. The primary reward is acquired on the first completion only.
  */
-public class StandardRewardScheme implements RewardScheme {
-    private final Rewards primaryReward;
-    private final RewardsFlag primaryRewardFlag;
+public class StandardRewardScheme extends RewardScheme {
+    private final RewardsFlag primaryRewardFlag = new RewardsFlag(new Rewards(), "reward");
+    private final RewardsFlag secondaryRewardFlag = new RewardsFlag(new Rewards(), "reward2");
 
-    private final Rewards secondaryReward;
-    private final RewardsFlag secondaryRewardFlag;
-
-    public StandardRewardScheme() {
-        primaryReward = new Rewards();
-        primaryRewardFlag = new RewardsFlag(null, "reward");
-        primaryRewardFlag.setFlag(primaryReward);
-
-        secondaryReward = new Rewards();
-        secondaryRewardFlag = new RewardsFlag(null, "reward2");
-        secondaryRewardFlag.setFlag(secondaryReward);
-    }
-
-    @Override
-    public Map<String, AFlag<?>> getFlags() {
-        return Map.of(
-                "reward", primaryRewardFlag,
-                "reward2", secondaryRewardFlag);
+    protected StandardRewardScheme(@NotNull String name) {
+        super(name);
     }
 
     public Rewards getPrimaryReward() {
-        return primaryReward;
+        return primaryRewardFlag.getFlag();
     }
 
     public Rewards getSecondaryReward() {
-        return secondaryReward;
+        return secondaryRewardFlag.getFlag();
     }
 
     @Override
     public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
-        List<RewardType> rewards = primaryReward.getReward();
+        List<RewardType> rewards = primaryRewardFlag.getFlag().getReward();
 
         if (firstCompletion && rewards != null) {
             MinigameMessageManager.debugMessage("Issue Primary Reward for " + player.getName());
             giveRewards(rewards, player);
         } else {
-            rewards = secondaryReward.getReward();
+            rewards = secondaryRewardFlag.getFlag().getReward();
             if (rewards != null) {
                 MinigameMessageManager.debugMessage("Issue Secondary Reward for " + player.getName());
                 giveRewards(rewards, player);
@@ -87,16 +70,20 @@ public class StandardRewardScheme implements RewardScheme {
     }
 
     @Override
-    public void load(ConfigurationSection config) {
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        primaryRewardFlag.loadValue(config, path);
+        secondaryRewardFlag.loadValue(config, path);
     }
 
     @Override
-    public void save(ConfigurationSection config) {
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        primaryRewardFlag.loadValue(config, path);
+        secondaryRewardFlag.loadValue(config, path);
     }
 
     @Override
     public void addMenuItems(Menu menu) {
-        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME, primaryReward));
-        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME, secondaryReward));
+        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME, primaryRewardFlag.getFlag()));
+        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME, secondaryRewardFlag.getFlag()));
     }
 }

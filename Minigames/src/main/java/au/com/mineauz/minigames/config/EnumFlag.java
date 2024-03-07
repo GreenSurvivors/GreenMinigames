@@ -44,7 +44,7 @@ public class EnumFlag<T extends Enum<T>> extends AFlag<T> {
      */
     @Override
     public MenuItemEnum<T> getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                @Nullable List<@NotNull Component> description) {
+                                       @Nullable List<@NotNull Component> description) {
         return new MenuItemEnum<>(displayMat, name, new Callback<>() {
 
             @Override

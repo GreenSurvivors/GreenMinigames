@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.menu.Callback;
@@ -8,9 +7,6 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class LobbySettingsModule extends MinigameModule {
     private final BooleanFlag canMovePlayerWait = new BooleanFlag(true, "canMovePlayerWait");
@@ -30,33 +26,28 @@ public class LobbySettingsModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, AFlag<?>> getConfigFlags() {
-        Map<String, AFlag<?>> map = new HashMap<>();
-        addConfigFlag(canInteractPlayerWait, map);
-        addConfigFlag(canInteractStartWait, map);
-        addConfigFlag(canMovePlayerWait, map);
-        addConfigFlag(canMoveStartWait, map);
-        addConfigFlag(teleportOnPlayerWait, map);
-        addConfigFlag(teleportOnStart, map);
-        addConfigFlag(playerWaitTime, map);
-        return map;
-    }
-
-    private void addConfigFlag(AFlag<?> flag, Map<String, AFlag<?>> flags) {
-        flags.put(flag.getName(), flag);
-    }
-
-    @Override
     public boolean useSeparateConfig() {
         return false;
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        canInteractPlayerWait.saveValue(config, path);
+        canInteractStartWait.saveValue(config, path);
+        canMovePlayerWait.saveValue(config, path);
+        canMoveStartWait.saveValue(config, path);
+        teleportOnPlayerWait.saveValue(config, path);
+        playerWaitTime.saveValue(config, path);
     }
 
     @Override
-    public void load(FileConfiguration config) {
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        canInteractPlayerWait.loadValue(config, path);
+        canInteractStartWait.loadValue(config, path);
+        canMovePlayerWait.loadValue(config, path);
+        canMoveStartWait.loadValue(config, path);
+        teleportOnPlayerWait.loadValue(config, path);
+        playerWaitTime.loadValue(config, path);
     }
 
     public boolean canMovePlayerWait() {
@@ -220,13 +211,12 @@ public class LobbySettingsModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(Menu menu) {
+    public void addEditMenuOptions(@NotNull Menu menu) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
-    public boolean displayMechanicSettings(Menu previous) {
+    public boolean displayMechanicSettings(@NotNull Menu previous) {
         return false;
     }
 }

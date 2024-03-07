@@ -16,6 +16,11 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
+
+    protected TimeRewardScheme(@NotNull String name) {
+        super(name);
+    }
+
     @Override
     protected Integer decrement(Integer value) {
         return value - 1;
@@ -27,7 +32,7 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
     }
 
     @Override
-    protected Integer loadValue(String key) {
+    protected Integer loadKey(String key) {
         int value = Integer.parseInt(key);
         if (value <= 0) {
             throw new IllegalArgumentException();

@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -9,9 +8,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class CTFModule extends MinigameModule {
     private final BooleanFlag useFlagAsCapturePoint = new BooleanFlag(true, "useFlagAsCapturePoint");
@@ -29,7 +25,7 @@ public class CTFModule extends MinigameModule {
         return useFlagAsCapturePoint.getFlag();
     }
 
-    public void setUseFlagAsCapturePoint(Boolean useFlagAsCapturePoint) {
+    public void setUseFlagAsCapturePoint(boolean useFlagAsCapturePoint) {
         this.useFlagAsCapturePoint.setFlag(useFlagAsCapturePoint);
     }
 
@@ -37,16 +33,8 @@ public class CTFModule extends MinigameModule {
         return bringFlagBackManual.getFlag();
     }
 
-    public void setBringFlagBackManual(Boolean bringFlagBackManual) {
+    public void setBringFlagBackManual(boolean bringFlagBackManual) {
         this.bringFlagBackManual.setFlag(bringFlagBackManual);
-    }
-
-    @Override
-    public Map<String, AFlag<?>> getConfigFlags() {
-        Map<String, AFlag<?>> flags = new HashMap<>();
-        flags.put("useFlagAsCapturePoint", useFlagAsCapturePoint);
-        flags.put("bringFlagBackManual", bringFlagBackManual);
-        return flags;
     }
 
     @Override
@@ -55,15 +43,19 @@ public class CTFModule extends MinigameModule {
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        useFlagAsCapturePoint.saveValue(config, path);
+        bringFlagBackManual.saveValue(config, path);
     }
 
     @Override
-    public void load(FileConfiguration config) {
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        useFlagAsCapturePoint.loadValue(config, path);
+        bringFlagBackManual.loadValue(config, path);
     }
 
     @Override
-    public void addEditMenuOptions(Menu menu) {
+    public void addEditMenuOptions(@NotNull Menu menu) {
     }
 
     @Override

@@ -74,8 +74,8 @@ public class MenuItem {
      * Adds the description part to the end of the lore of an itemStack.
      * If a description part with the same type key will get replaced at the same place if it was already there.
      *
-     * @param descriptionToken         unique identifier the description part is registered as
-     * @param descriptionPart the part of description to get written. If null the part will get removed.
+     * @param descriptionToken unique identifier the description part is registered as
+     * @param descriptionPart  the part of description to get written. If null the part will get removed.
      */
     public void setDescriptionPart(final @NotNull String descriptionToken,
                                    @Nullable List<@NotNull Component> descriptionPart) {
@@ -128,9 +128,9 @@ public class MenuItem {
      * A description part with the same type key will get removed if one was already present in the description.
      * This will not skip over values if a higher position was provided
      *
-     * @param descriptionToken         unique identifier the description part is registered as
-     * @param postion         the position to insert the part at. (Positions are of description parts - NOT elements of Components!)
-     * @param descriptionPart the part of description to get inserted
+     * @param descriptionToken unique identifier the description part is registered as
+     * @param postion          the position to insert the part at. (Positions are of description parts - NOT elements of Components!)
+     * @param descriptionPart  the part of description to get inserted
      */
     public void setDescriptionPartAtIndex(final @NotNull String descriptionToken, int postion,
                                           final @Nullable List<@NotNull Component> descriptionPart) {

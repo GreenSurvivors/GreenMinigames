@@ -1,7 +1,6 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -65,57 +64,56 @@ public class RegionModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, AFlag<?>> getConfigFlags() {
-        return null;
-    }
-
-    @Override
     public boolean useSeparateConfig() {
         return true;
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public void save(@NotNull FileConfiguration config, @NotNull String mainPath) {
         Set<String> rs = regions.keySet();
         for (String name : rs) {
             Region r = regions.get(name);
             Map<String, Object> sloc = r.getFirstPoint().serialize();
             for (String i : sloc.keySet()) {
-                if (!i.equals("yaw") && !i.equals("pitch"))
-                    config.set(getMinigame() + ".regions." + name + ".point1." + i, sloc.get(i));
+                if (!i.equals("yaw") && !i.equals("pitch")) {
+                    config.set(mainPath + ".regions." + name + ".point1." + i, sloc.get(i));
+                }
             }
             sloc = r.getSecondPoint().serialize();
             for (String i : sloc.keySet()) {
-                if (!i.equals("yaw") && !i.equals("pitch"))
-                    config.set(getMinigame() + ".regions." + name + ".point2." + i, sloc.get(i));
+                if (!i.equals("yaw") && !i.equals("pitch")) {
+                    config.set(mainPath + ".regions." + name + ".point2." + i, sloc.get(i));
+                }
             }
 
             if (r.getTickDelay() != 20) {
-                config.set(getMinigame() + ".regions." + name + ".tickDelay", r.getTickDelay());
+                config.set(mainPath + ".regions." + name + ".tickDelay", r.getTickDelay());
             }
 
             int c = 0;
             for (RegionExecutor ex : r.getExecutors()) {
-                String path = getMinigame() + ".regions." + name + ".executors." + c;
-                config.set(path + ".trigger", ex.getTrigger().getName());
+                String executorsPath = mainPath + ".regions." + name + ".executors." + c;
+                config.set(executorsPath + ".trigger", ex.getTrigger().getName());
                 int acc = 0;
                 for (ActionInterface act : ex.getActions()) {
-                    config.set(path + ".actions." + acc + ".type", act.getName());
-                    act.saveArguments(config, path + ".actions." + acc + ".arguments");
+                    config.set(executorsPath + ".actions." + acc + ".type", act.getName());
+                    act.saveArguments(config, executorsPath + ".actions." + acc + ".arguments");
                     acc++;
                 }
 
                 acc = 0;
                 for (ACondition con : ex.getConditions()) {
-                    config.set(path + ".conditions." + acc + ".type", con.getName());
-                    con.saveArguments(config, path + ".conditions." + acc + ".arguments");
+                    config.set(executorsPath + ".conditions." + acc + ".type", con.getName());
+                    con.saveArguments(config, executorsPath + ".conditions." + acc + ".arguments");
                     acc++;
                 }
 
-                if (ex.isTriggerPerPlayer())
-                    config.set(path + ".isTriggeredPerPlayer", ex.isTriggerPerPlayer());
-                if (ex.getTriggerCount() != 0)
-                    config.set(path + ".triggerCount", ex.getTriggerCount());
+                if (ex.isTriggerPerPlayer()) {
+                    config.set(executorsPath + ".isTriggeredPerPlayer", ex.isTriggerPerPlayer());
+                }
+                if (ex.getTriggerCount() != 0) {
+                    config.set(executorsPath + ".triggerCount", ex.getTriggerCount());
+                }
                 c++;
             }
         }
@@ -125,44 +123,46 @@ public class RegionModule extends MinigameModule {
             Node n = nodes.get(name);
             Map<String, Object> sloc = n.getLocation().serialize();
             for (String i : sloc.keySet()) {
-                config.set(getMinigame() + ".nodes." + name + ".point." + i, sloc.get(i));
+                config.set(mainPath + ".nodes." + name + ".point." + i, sloc.get(i));
             }
 
             int c = 0;
             for (NodeExecutor ex : n.getExecutors()) {
-                String path = getMinigame() + ".nodes." + name + ".executors." + c;
-                config.set(path + ".trigger", ex.getTrigger().getName());
+                String executorsPath = mainPath + ".nodes." + name + ".executors." + c;
+                config.set(executorsPath + ".trigger", ex.getTrigger().getName());
 
                 int acc = 0;
                 for (ActionInterface act : ex.getActions()) {
-                    config.set(path + ".actions." + acc + ".type", act.getName());
-                    act.saveArguments(config, path + ".actions." + acc + ".arguments");
+                    config.set(executorsPath + ".actions." + acc + ".type", act.getName());
+                    act.saveArguments(config, executorsPath + ".actions." + acc + ".arguments");
                     acc++;
                 }
 
                 acc = 0;
                 for (ACondition con : ex.getConditions()) {
-                    config.set(path + ".conditions." + acc + ".type", con.getName());
-                    con.saveArguments(config, path + ".conditions." + acc + ".arguments");
+                    config.set(executorsPath + ".conditions." + acc + ".type", con.getName());
+                    con.saveArguments(config, executorsPath + ".conditions." + acc + ".arguments");
                     acc++;
                 }
 
-                if (ex.isTriggerPerPlayer())
-                    config.set(path + ".isTriggeredPerPlayer", ex.isTriggerPerPlayer());
-                if (ex.getTriggerCount() != 0)
-                    config.set(path + ".triggerCount", ex.getTriggerCount());
+                if (ex.isTriggerPerPlayer()) {
+                    config.set(executorsPath + ".isTriggeredPerPlayer", ex.isTriggerPerPlayer());
+                }
+                if (ex.getTriggerCount() != 0) {
+                    config.set(executorsPath + ".triggerCount", ex.getTriggerCount());
+                }
                 c++;
             }
         }
     }
 
     @Override
-    public void load(FileConfiguration config) {
-        if (config.contains(getMinigame() + ".regions")) {
+    public void load(@NotNull FileConfiguration config, @NotNull String mainPath) {
+        if (config.contains(mainPath + ".regions")) {
             Set<String> rs = config.getConfigurationSection(getMinigame() + ".regions").getKeys(false);
             for (String name : rs) {
-                String cloc1 = getMinigame() + ".regions." + name + ".point1.";
-                String cloc2 = getMinigame() + ".regions." + name + ".point2.";
+                String cloc1 = mainPath + ".regions." + name + ".point1.";
+                String cloc2 = mainPath + ".regions." + name + ".point2.";
                 World w1 = Minigames.getPlugin().getServer().getWorld(config.getString(cloc1 + "world"));
                 World w2 = Minigames.getPlugin().getServer().getWorld(config.getString(cloc2 + "world"));
                 double x1 = config.getDouble(cloc1 + "x");
@@ -176,56 +176,56 @@ public class RegionModule extends MinigameModule {
 
                 regions.put(name, new Region(name, getMinigame(), loc1, loc2));
                 Region region = regions.get(name);
-                if (config.contains(getMinigame() + ".regions." + name + ".tickDelay")) {
-                    region.changeTickDelay(config.getLong(getMinigame() + ".regions." + name + ".tickDelay"));
+                if (config.contains(mainPath + ".regions." + name + ".tickDelay")) {
+                    region.changeTickDelay(config.getLong(mainPath + ".regions." + name + ".tickDelay"));
                 }
-                if (config.contains(getMinigame() + ".regions." + name + ".executors")) {
-                    Set<String> ex = config.getConfigurationSection(getMinigame() + ".regions." + name + ".executors").getKeys(false);
+                if (config.contains(mainPath + ".regions." + name + ".executors")) {
+                    Set<String> ex = config.getConfigurationSection(mainPath + ".regions." + name + ".executors").getKeys(false);
                     for (String i : ex) {
-                        String path = getMinigame() + ".regions." + name + ".executors." + i;
-                        Trigger trigger = TriggerRegistry.matchTrigger(config.getString(path + ".trigger"));
+                        String executorsPath = mainPath + ".regions." + name + ".executors." + i;
+                        Trigger trigger = TriggerRegistry.matchTrigger(config.getString(executorsPath + ".trigger"));
 
                         if (trigger != null) {
                             RegionExecutor rex = new RegionExecutor(trigger);
 
-                            if (config.contains(path + ".actions")) {
-                                for (String a : config.getConfigurationSection(path + ".actions").getKeys(false)) {
-                                    ActionInterface ai = ActionRegistry.getActionByName(config.getString(path + ".actions." + a + ".type"));
+                            if (config.contains(executorsPath + ".actions")) {
+                                for (String a : config.getConfigurationSection(executorsPath + ".actions").getKeys(false)) {
+                                    ActionInterface ai = ActionRegistry.getActionByName(config.getString(executorsPath + ".actions." + a + ".type"));
                                     if (ai != null) {
-                                        ai.loadArguments(config, path + ".actions." + a + ".arguments");
+                                        ai.loadArguments(config, executorsPath + ".actions." + a + ".arguments");
                                         rex.addAction(ai);
                                     }
                                 }
                             }
-                            if (config.contains(path + ".conditions")) {
-                                for (String c : config.getConfigurationSection(path + ".conditions").getKeys(false)) {
-                                    ACondition ci = ConditionRegistry.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
+                            if (config.contains(executorsPath + ".conditions")) {
+                                for (String c : config.getConfigurationSection(executorsPath + ".conditions").getKeys(false)) {
+                                    ACondition ci = ConditionRegistry.getConditionByName(config.getString(executorsPath + ".conditions." + c + ".type"));
                                     if (ci != null) {
-                                        ci.loadArguments(config, path + ".conditions." + c + ".arguments");
+                                        ci.loadArguments(config, executorsPath + ".conditions." + c + ".arguments");
                                         rex.addCondition(ci);
                                     }
                                 }
                             }
 
-                            if (config.contains(path + ".isTriggeredPerPlayer")) {
-                                rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
+                            if (config.contains(executorsPath + ".isTriggeredPerPlayer")) {
+                                rex.setTriggerPerPlayer(config.getBoolean(executorsPath + ".isTriggeredPerPlayer"));
                             }
-                            if (config.contains(path + ".triggerCount")) {
-                                rex.setTriggerCount(config.getInt(path + ".triggerCount"));
+                            if (config.contains(executorsPath + ".triggerCount")) {
+                                rex.setTriggerCount(config.getInt(executorsPath + ".triggerCount"));
                             }
                             region.addExecutor(rex);
                         } else {
-                            Minigames.getCmpnntLogger().error("Couldn't load trigger in path " + path);
+                            Minigames.getCmpnntLogger().error("Couldn't load trigger in path " + executorsPath);
                         }
                     }
                 }
             }
         }
 
-        if (config.contains(getMinigame() + ".nodes")) {
-            Set<String> rs = config.getConfigurationSection(getMinigame() + ".nodes").getKeys(false);
+        if (config.contains(mainPath + ".nodes")) {
+            Set<String> rs = config.getConfigurationSection(mainPath + ".nodes").getKeys(false);
             for (String name : rs) {
-                String cloc1 = getMinigame() + ".nodes." + name + ".point.";
+                String cloc1 = mainPath + ".nodes." + name + ".point.";
                 World w1 = Minigames.getPlugin().getServer().getWorld(config.getString(cloc1 + "world"));
                 double x1 = config.getDouble(cloc1 + "x");
                 double y1 = config.getDouble(cloc1 + "y");
@@ -240,31 +240,35 @@ public class RegionModule extends MinigameModule {
 
                 nodes.put(name, new Node(name, getMinigame(), loc1));
                 Node n = nodes.get(name);
-                if (config.contains(getMinigame() + ".nodes." + name + ".executors")) {
-                    Set<String> ex = config.getConfigurationSection(getMinigame() + ".nodes." + name + ".executors").getKeys(false);
+                if (config.contains(mainPath + ".nodes." + name + ".executors")) {
+                    Set<String> ex = config.getConfigurationSection(mainPath + ".nodes." + name + ".executors").getKeys(false);
                     for (String i : ex) {
-                        String path = getMinigame() + ".nodes." + name + ".executors." + i;
-                        NodeExecutor rex = new NodeExecutor(TriggerRegistry.matchTrigger(config.getString(path + ".trigger")));
+                        String executorsPath = mainPath + ".nodes." + name + ".executors." + i;
+                        NodeExecutor rex = new NodeExecutor(TriggerRegistry.matchTrigger(config.getString(executorsPath + ".trigger")));
 
-                        if (config.contains(path + ".actions")) {
-                            for (String a : config.getConfigurationSection(path + ".actions").getKeys(false)) {
-                                ActionInterface ai = ActionRegistry.getActionByName(config.getString(path + ".actions." + a + ".type"));
-                                ai.loadArguments(config, path + ".actions." + a + ".arguments");
-                                rex.addAction(ai);
+                        if (config.contains(executorsPath + ".actions")) {
+                            for (String actionName : config.getConfigurationSection(executorsPath + ".actions").getKeys(false)) {
+                                ActionInterface ai = ActionRegistry.getActionByName(config.getString(executorsPath + ".actions." + actionName + ".type"));
+                                if (ai != null) {
+                                    ai.loadArguments(config, executorsPath + ".actions." + actionName + ".arguments");
+                                    rex.addAction(ai);
+                                } else {
+                                    Main.getPlugin().getComponentLogger().warn("Could not load action named '" + actionName + "' in minigames config of " + getMinigame().getName());
+                                }
                             }
                         }
-                        if (config.contains(path + ".conditions")) {
-                            for (String c : config.getConfigurationSection(path + ".conditions").getKeys(false)) {
-                                ACondition ci = ConditionRegistry.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
-                                ci.loadArguments(config, path + ".conditions." + c + ".arguments");
+                        if (config.contains(executorsPath + ".conditions")) {
+                            for (String c : config.getConfigurationSection(executorsPath + ".conditions").getKeys(false)) {
+                                ACondition ci = ConditionRegistry.getConditionByName(config.getString(executorsPath + ".conditions." + c + ".type"));
+                                ci.loadArguments(config, executorsPath + ".conditions." + c + ".arguments");
                                 rex.addCondition(ci);
                             }
                         }
 
-                        if (config.contains(path + ".isTriggeredPerPlayer"))
-                            rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
-                        if (config.contains(path + ".triggerCount"))
-                            rex.setTriggerCount(config.getInt(path + ".triggerCount"));
+                        if (config.contains(executorsPath + ".isTriggeredPerPlayer"))
+                            rex.setTriggerPerPlayer(config.getBoolean(executorsPath + ".isTriggeredPerPlayer"));
+                        if (config.contains(executorsPath + ".triggerCount"))
+                            rex.setTriggerCount(config.getInt(executorsPath + ".triggerCount"));
                         n.addExecutor(rex);
                     }
                 }
@@ -405,7 +409,7 @@ public class RegionModule extends MinigameModule {
 
 
     @Override
-    public void addEditMenuOptions(Menu menu) {
+    public void addEditMenuOptions(@NotNull Menu menu) {
         final MenuItemCustom menuItemCustom = new MenuItemCustom(Material.DIAMOND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME));
         final Menu fmenu = menu;
         menuItemCustom.setClick(() -> {
@@ -416,7 +420,7 @@ public class RegionModule extends MinigameModule {
     }
 
     @Override
-    public boolean displayMechanicSettings(Menu previous) {
+    public boolean displayMechanicSettings(@NotNull Menu previous) {
         return false;
     }
 }

@@ -290,7 +290,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
 
     /**
      * If the identifier is null this uses the core language file
-     *
+     * <p>
      * Reads a String from the ressource bundle, splits it at "{@code <newline>}" and then deserializes it via MiniMessage.
      * This was first and formost written for Lore of ItemStacks, where newlines don't exist in the common way,
      * but every line is an element of a list.

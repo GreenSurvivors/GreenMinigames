@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.ComparableVersion;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
@@ -10,8 +9,6 @@ import org.bstats.charts.CustomChart;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public abstract class MinigameModule {
     private static ComparableVersion minRequired = null;
@@ -23,7 +20,7 @@ public abstract class MinigameModule {
         this.name = name;
     }
 
-    public static void setVersion(ComparableVersion version) {
+    public static void setVersion(@Nullable ComparableVersion version) {
         minRequired = version;
     }
 
@@ -34,8 +31,7 @@ public abstract class MinigameModule {
      * @return true if the version exceeds your version
      */
     public static boolean checkVersion() {
-        if (minRequired == null) return true;
-        return !(minRequired.compareTo(Minigames.getVERSION()) > 0);
+        return minRequired == null || !(minRequired.compareTo(Minigames.getVERSION()) > 0);
     }
 
     public static void addMetricChart(CustomChart chart) {
@@ -50,21 +46,19 @@ public abstract class MinigameModule {
         return name;
     }
 
-    public Minigame getMinigame() {
+    public @NotNull Minigame getMinigame() {
         return mgm;
     }
 
-    public abstract Map<String, AFlag<?>> getConfigFlags();
-
     public abstract boolean useSeparateConfig();
 
-    public abstract void save(FileConfiguration config);
+    public abstract void save(@NotNull FileConfiguration config, @NotNull String path);
 
-    public abstract void load(FileConfiguration config);
+    public abstract void load(@NotNull FileConfiguration config, @NotNull String path);
 
-    public abstract void addEditMenuOptions(Menu menu);
+    public abstract void addEditMenuOptions(@NotNull Menu menu);
 
-    public abstract boolean displayMechanicSettings(Menu previous);
+    public abstract boolean displayMechanicSettings(@NotNull Menu previous);
 
     /**
      * You should override this method if the module should provide more placeholders for a game it services.
