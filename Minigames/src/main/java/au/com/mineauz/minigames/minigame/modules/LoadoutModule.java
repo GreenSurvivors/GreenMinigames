@@ -17,22 +17,20 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class LoadoutModule extends MinigameModule {
-    private static final Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = new HashMap<>();
-    private final Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
-    //private final LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
+    private static final Map<String, LoadoutAddonFactory> registeredAddons = new HashMap<>();
+    private final Map<String, PlayerLoadout> loadouts = new HashMap<>();
 
     public LoadoutModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
         PlayerLoadout defaultLoadout = new PlayerLoadout("default");
         defaultLoadout.setDeletable(false);
-        extraLoadouts.put("default", defaultLoadout);
+        loadouts.put("default", defaultLoadout);
     }
 
     public static @Nullable LoadoutModule getMinigameModule(@NotNull Minigame mgm) {
@@ -42,37 +40,43 @@ public class LoadoutModule extends MinigameModule {
     /**
      * Registers a loadout addon. This addon will be available for all loadouts on all games.
      *
-     * @param plugin The plugin registering the addon
-     * @param addon  The addon to register
+     * @param addonFactory  The addon to register
      */
-    public static void registerAddon(Plugin plugin, LoadoutAddon<?> addon) {
-        addons.put(addon.getClass(), addon);
+    public @Nullable LoadoutAddonFactory registerAddon(@NotNull LoadoutAddonFactory addonFactory) {
+        LoadoutAddonFactory replacedFactory = registeredAddons.put(addonFactory.getAddonName(), addonFactory);
+
+        for (PlayerLoadout loadout : loadouts.values()) {
+            if (replacedFactory != null) {
+                loadout.unregisterAddon(replacedFactory.getAddonName());
+            }
+
+            loadout.registerAddon(addonFactory);
+        }
+
+        return replacedFactory;
     }
 
     /**
      * Unregisters a previously registered addon
      *
-     * @param addon The addon to unregister
+     * @param addonName The addon to unregister
      */
-    public static void unregisterAddon(Class<? extends LoadoutAddon<?>> addon) {
-        addons.remove(addon);
+    public void unregisterAddon(@NotNull String addonName) {
+        registeredAddons.remove(addonName);
+
+        for (PlayerLoadout loadout : loadouts.values()) {
+            loadout.unregisterAddon(addonName);
+        }
     }
 
     /**
      * Retrieves a registered addon
      *
-     * @param addonClass The addon class to get the addon for
+     * @param addonName The addon name to get the addon for
      * @return The addon or null
      */
-    @SuppressWarnings("unchecked")
-    public static <T extends LoadoutAddon<?>> T getAddon(Class<T> addonClass) {
-        return (T) addons.get(addonClass);
-    }
-
-    public static void addAddonMenuItems(Menu menu, PlayerLoadout loadout) {
-        for (LoadoutAddon<?> addon : addons.values()) {
-            addon.addMenuOptions(menu, loadout);
-        }
+    public static LoadoutAddonFactory getAddonFactory(@NotNull String addonName) {
+        return registeredAddons.get(addonName);
     }
 
     @Override
@@ -83,7 +87,7 @@ public class LoadoutModule extends MinigameModule {
     @Override
     public void save(@NotNull FileConfiguration config, @NotNull String path) {
         LoadoutFlag loadoutFlag;
-        for (Map.Entry<String, PlayerLoadout> loadoutEntry : extraLoadouts.entrySet()) {
+        for (Map.Entry<String, PlayerLoadout> loadoutEntry : loadouts.entrySet()) {
             loadoutFlag = new LoadoutFlag(loadoutEntry.getValue(), loadoutEntry.getKey());
             loadoutFlag.saveValue(config, path + ".loadouts");
         }
@@ -101,7 +105,7 @@ public class LoadoutModule extends MinigameModule {
                     loadoutFlag.getFlag().setDeletable(false);
                 }
                 loadoutFlag.loadValue(config, path + "." + getName().toLowerCase());
-                extraLoadouts.put(loadoutFlag.getName(), loadoutFlag.getFlag());
+                loadouts.put(loadoutFlag.getName(), loadoutFlag.getFlag());
             }
         }
 
@@ -114,32 +118,32 @@ public class LoadoutModule extends MinigameModule {
     }
 
     public void addLoadout(String name) {
-        extraLoadouts.put(name, new PlayerLoadout(name));
+        loadouts.put(name, new PlayerLoadout(name));
     }
 
     public void deleteLoadout(String name) {
-        extraLoadouts.remove(name);
+        loadouts.remove(name);
     }
 
     public Set<String> getLoadoutNames() {
-        return extraLoadouts.keySet();
+        return loadouts.keySet();
     }
 
     public Set<PlayerLoadout> getLoadouts() {
-        return new HashSet<>(extraLoadouts.values());
+        return new HashSet<>(loadouts.values());
     }
 
     public Map<String, PlayerLoadout> getLoadoutMap() {
-        return extraLoadouts;
+        return loadouts;
     }
 
     public @Nullable PlayerLoadout getLoadout(@NotNull String name) {
-        if (extraLoadouts.containsKey(name)) {
-            return extraLoadouts.get(name);
+        if (loadouts.containsKey(name)) {
+            return loadouts.get(name);
         } else {
-            for (String loadout : extraLoadouts.keySet()) {
+            for (String loadout : loadouts.keySet()) {
                 if (loadout.equalsIgnoreCase(name)) {
-                    return extraLoadouts.get(loadout);
+                    return loadouts.get(loadout);
                 }
             }
         }
@@ -147,15 +151,15 @@ public class LoadoutModule extends MinigameModule {
     }
 
     public boolean hasLoadouts() {
-        return !extraLoadouts.isEmpty();
+        return !loadouts.isEmpty();
     }
 
     public boolean hasLoadout(String name) {
         if (!name.equalsIgnoreCase("default")) {
-            if (extraLoadouts.containsKey(name)) {
-                return extraLoadouts.containsKey(name);
+            if (loadouts.containsKey(name)) {
+                return loadouts.containsKey(name);
             } else {
-                for (String loadout : extraLoadouts.keySet()) {
+                for (String loadout : loadouts.keySet()) {
                     if (loadout.equalsIgnoreCase(name)) {
                         return true;
                     }
@@ -170,10 +174,10 @@ public class LoadoutModule extends MinigameModule {
     public void displaySelectionMenu(final MinigamePlayer mgPlayer, final boolean equip) {
         Menu m = new Menu(6, MgMenuLangKey.MENU_LOADOUT_SELECT_NAME, mgPlayer);
 
-        for (final PlayerLoadout loadout : extraLoadouts.values()) {
+        for (final PlayerLoadout loadout : loadouts.values()) {
             if (loadout.isDisplayedInMenu()) {
                 if (!loadout.getUsePermissions() || mgPlayer.getPlayer().hasPermission("minigame.loadout." + loadout.getName().toLowerCase())) {
-                    if (!mgPlayer.getMinigame().isTeamGame() || loadout.getTeamColor() == null ||
+                    if (mgPlayer.isInMinigame() && !mgPlayer.getMinigame().isTeamGame() || loadout.getTeamColor() == null ||
                             mgPlayer.getTeam().getColor() == loadout.getTeamColor()) {
                         MenuItemCustom c = new MenuItemCustom(Material.GLASS, loadout.getDisplayName());
                         if (!loadout.getItemSlots().isEmpty()) {
@@ -204,32 +208,10 @@ public class LoadoutModule extends MinigameModule {
     @Override
     public void addEditMenuOptions(@NotNull Menu menu) {
         // TODO Move loadout menu stuff here
-
     }
 
     @Override
     public boolean displayMechanicSettings(@NotNull Menu previous) {
         return false;
-    }
-
-    /**
-     * Represents a custom loadout element.
-     * This can be used to add things like disguises
-     * or commands.
-     *
-     * @param <T> The value type for this loadout addon.arg1
-     */
-    public interface LoadoutAddon<T> {
-        String getName();
-
-        void addMenuOptions(Menu menu, PlayerLoadout loadout);
-
-        void save(ConfigurationSection section, T value);
-
-        T load(ConfigurationSection section);
-
-        void applyLoadout(MinigamePlayer player, T value);
-
-        void clearLoadout(MinigamePlayer player, T value);
     }
 }

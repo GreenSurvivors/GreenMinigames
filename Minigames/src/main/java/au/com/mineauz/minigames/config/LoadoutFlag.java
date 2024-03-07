@@ -20,12 +20,12 @@ public class LoadoutFlag extends AFlag<PlayerLoadout> {
 
     @Override
     public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
-        getFlag().save(config.createSection(path + "." + getName()));
+        getFlag().save(config, path + "." + getName());
     }
 
     @Override
     public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        getFlag().load(config.getConfigurationSection(path + "." + getName()));
+        getFlag().load(config, path + "." + getName());
     }
 
     @Deprecated

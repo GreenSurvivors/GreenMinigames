@@ -13,7 +13,7 @@ public class CTFModule extends MinigameModule {
     private final BooleanFlag useFlagAsCapturePoint = new BooleanFlag(true, "useFlagAsCapturePoint");
     private final BooleanFlag bringFlagBackManual = new BooleanFlag(false, "bringFlagBackManual");
 
-    public CTFModule(@NotNull Minigame mgm, String name) {
+    public CTFModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
     }
 

@@ -1,14 +1,18 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule.LoadoutAddon;
+import au.com.mineauz.minigames.minigame.modules.ALoadoutAddon;
+import au.com.mineauz.minigames.minigame.modules.LoadoutAddonFactory;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -17,18 +21,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 public class PlayerLoadout {
-    private final Map<Integer, ItemStack> itemSlot = new HashMap<>();
-    private final List<PotionEffect> potions = new ArrayList<>();
-    private final Map<Class<? extends LoadoutAddon>, Object> addonValues = new HashMap<>();
+    private final static Pattern NUMBER = Pattern.compile("[+-]?[0-9]+");
+
+    private final Map<Integer, ItemStack> itemSlots = new HashMap<>();
+    private final List<PotionEffect> effects = new ArrayList<>();
+    private final @NotNull Map<@NotNull String, @NotNull ALoadoutAddon> addons = new HashMap<>();
     private final @NotNull String loadoutName;
     private boolean usePermission = false;
     private boolean fallDamage = true;
     private boolean hunger = false;
     private int level = -1;
-    private boolean deleteable = true;
+    private boolean deletable = true;
     private @Nullable Component displayname = null;
     private boolean lockInventory = false;
     private boolean lockArmour = false;
@@ -92,26 +98,26 @@ public class PlayerLoadout {
     }
 
     public void addItem(ItemStack item, int slot) {
-        itemSlot.put(slot, item);
+        itemSlots.put(slot, item);
     }
 
     public void addPotionEffect(PotionEffect effect) {
-        for (PotionEffect pot : potions) {
-            if (effect.getType().getName().equals(pot.getType().getName())) {
-                potions.remove(pot);
+        for (PotionEffect pot : effects) {
+            if (effect.getType().getKey().equals(pot.getType().getKey())) {
+                effects.remove(pot);
                 break;
             }
         }
-        potions.add(effect);
+        effects.add(effect);
     }
 
     public void removePotionEffect(PotionEffect effect) {
-        if (potions.contains(effect)) {
-            potions.remove(effect);
+        if (effects.contains(effect)) {
+            effects.remove(effect);
         } else {
-            for (PotionEffect pot : potions) {
-                if (pot.getType().getName().equals(effect.getType().getName())) {
-                    potions.remove(pot);
+            for (PotionEffect pot : effects) {
+                if (pot.getType().getKey().equals(effect.getType().getKey())) {
+                    effects.remove(pot);
                     break;
                 }
             }
@@ -119,10 +125,9 @@ public class PlayerLoadout {
     }
 
     public List<PotionEffect> getAllPotionEffects() {
-        return potions;
+        return effects;
     }
 
-    @SuppressWarnings("unchecked")
     public void equipLoadout(@NotNull MinigamePlayer mgPlayer) {
         mgPlayer.getPlayer().getInventory().clear();
         mgPlayer.getPlayer().getInventory().setHelmet(null);
@@ -132,10 +137,10 @@ public class PlayerLoadout {
         for (PotionEffect potion : mgPlayer.getPlayer().getActivePotionEffects()) {
             mgPlayer.getPlayer().removePotionEffect(potion.getType());
         }
-        if (!itemSlot.isEmpty()) {
+        if (!itemSlots.isEmpty()) {
             Player player = mgPlayer.getPlayer();
 
-            for (Map.Entry<Integer, ItemStack> slotItem : itemSlot.entrySet()) {
+            for (Map.Entry<Integer, ItemStack> slotItem : itemSlots.entrySet()) {
                 if (slotItem.getKey() >= 0 && slotItem.getKey() < 100) {
                     player.getInventory().setItem(slotItem.getKey(), slotItem.getValue());
                 } else {
@@ -152,39 +157,33 @@ public class PlayerLoadout {
         }
 
         final MinigamePlayer fplayer = mgPlayer;
-        Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> fplayer.getPlayer().addPotionEffects(potions));
+        Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> fplayer.getPlayer().addPotionEffects(effects));
 
-        for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
-            LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
-            if (addon != null) {
-                addon.applyLoadout(mgPlayer, addonValue.getValue());
-            }
+        for (ALoadoutAddon addon : addons.values()) {
+            addon.applyLoadout(mgPlayer);
         }
 
-        if (level != -1)
+        if (level != -1) {
             mgPlayer.getPlayer().setLevel(level);
+        }
     }
 
-    @SuppressWarnings("unchecked")
-    public void removeLoadout(MinigamePlayer player) {
-        for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
-            LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
-            if (addon != null) {
-                addon.clearLoadout(player, addonValue.getValue());
-            }
+    public void removeLoadout(@NotNull MinigamePlayer player) {
+        for (ALoadoutAddon addon : addons.values()) {
+            addon.clearLoadout(player);
         }
     }
 
     public Set<Integer> getItemSlots() {
-        return itemSlot.keySet();
+        return itemSlots.keySet();
     }
 
     public ItemStack getItem(int slot) {
-        return itemSlot.get(slot);
+        return itemSlots.get(slot);
     }
 
     public void clearLoadout() {
-        itemSlot.clear();
+        itemSlots.clear();
     }
 
     public boolean hasFallDamage() {
@@ -258,11 +257,11 @@ public class PlayerLoadout {
     }
 
     public boolean isDeletable() {
-        return deleteable;
+        return deletable;
     }
 
     public void setDeletable(boolean value) {
-        deleteable = value;
+        deletable = value;
     }
 
     public boolean isInventoryLocked() {
@@ -383,158 +382,145 @@ public class PlayerLoadout {
     }
 
     /**
-     * Sets an addons value in this loadout
-     *
-     * @param addon The addon
-     * @param value The value to use
+     * registers an addon in this loadout
+     * @param addonFactory The addonFactory
      */
-    public <T> void setAddonValue(Class<? extends LoadoutAddon<T>> addon, T value) {
-        addonValues.put(addon, value);
+    public void registerAddon(@NotNull LoadoutAddonFactory addonFactory) {
+        addons.put(addonFactory.getAddonName(), addonFactory.makeNewLoadoutAddon());
+    }
+
+    public void addAddonMenuItems(@NotNull Menu menu) {
+        for (ALoadoutAddon addon : addons.values()) {
+            addon.addMenuOptions(menu);
+        }
     }
 
     /**
-     * Gets an addons value in this loadout
-     *
-     * @param addon The addon
-     * @return The value of the addon, or null
+     * unregisters an addon in this loadout
+     * @param name The addons name
      */
-    @SuppressWarnings("unchecked")
-    public <T> T getAddonValue(Class<? extends LoadoutAddon<T>> addon) {
-        return (T) addonValues.get(addon);
+    public void unregisterAddon(@NotNull String name) {
+        addons.remove(name);
     }
 
-    @SuppressWarnings("unchecked")
-    public void save(ConfigurationSection section) {
-        for (Integer slot : getItemSlots())
-            section.set("items." + slot, getItem(slot));
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        for (Integer slot : getItemSlots()) {
+            config.set(path + ".items." + slot, getItem(slot));
+        }
 
         for (PotionEffect eff : getAllPotionEffects()) {
-            section.set("potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
-            section.set("potions." + eff.getType().getName() + ".dur", eff.getDuration());
+            config.set(path + ".potions." + eff.getType().getKey() + ".amp", eff.getAmplifier());
+            config.set(path + ".potions." + eff.getType().getKey() + ".dur", eff.getDuration());
         }
 
         if (getUsePermissions()) {
-            section.set("usepermissions", true);
+            config.set(path + ".usepermissions", true);
         }
 
         if (!hasFallDamage()) {
-            section.set("falldamage", hasFallDamage());
+            config.set(path + ".falldamage", hasFallDamage());
         }
 
         if (hasHunger()) {
-            section.set("hunger", hasHunger());
+            config.set(path + ".hunger", hasHunger());
         }
 
-        section.set("displayName", MiniMessage.miniMessage().serialize(getDisplayName()));
+        config.set(path + ".displayName", MiniMessage.miniMessage().serialize(getDisplayName()));
 
         if (isArmourLocked()) {
-            section.set("armourLocked", isArmourLocked());
+            config.set(path + ".armourLocked", isArmourLocked());
         }
 
         if (isInventoryLocked()) {
-            section.set("inventoryLocked", isInventoryLocked());
+            config.set(path + ".inventoryLocked", isInventoryLocked());
         }
 
         if (getTeamColor() != null) {
-            section.set("team", getTeamColor().toString());
+            config.set(path + ".team", getTeamColor().toString());
         }
 
         if (!isDisplayedInMenu()) {
-            section.set("displayInMenu", isDisplayedInMenu());
+            config.set(path + ".displayInMenu", isDisplayedInMenu());
         }
 
         if (!allowOffHand()) {
-            section.set("allowOffhand", allowOffHand());
+            config.set(path + ".allowOffhand", allowOffHand());
         }
 
-        for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
-            ConfigurationSection subSection = section.createSection("addons." + addonValue.getKey().getName().replace('.', '-'));
-            LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
-            addon.save(subSection, addonValue.getValue());
+        for (ALoadoutAddon addon : addons.values()) {
+            String subPath = path + ".addons." + addon.getName().replace('.', '-');
+            addon.save(config, subPath);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void load(ConfigurationSection section) {
-        if (section.contains("items")) {
-            ConfigurationSection itemSection = section.getConfigurationSection("items");
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        ConfigurationSection itemSection = config.getConfigurationSection(path + ".items");
+        if (itemSection != null) {
             for (String key : itemSection.getKeys(false)) {
-                if (key.matches("[-]?[0-9]+")) {
+                if (NUMBER.matcher(key).matches()) {
                     addItem(itemSection.getItemStack(key), Integer.parseInt(key));
                 }
             }
         }
 
-        if (section.contains("potions")) {
-            ConfigurationSection potionSection = section.getConfigurationSection("potions");
+        ConfigurationSection potionSection = config.getConfigurationSection(path + ".potions");
+        if (potionSection != null) {
             for (String effectName : potionSection.getKeys(false)) {
-                if (PotionEffectType.getByName(effectName) == null) {
-                    continue;
+                PotionEffectType effectType = Registry.EFFECT.get(NamespacedKey.fromString(effectName.toLowerCase(java.util.Locale.ENGLISH)));
+
+                if (effectType != null) {
+                    PotionEffect effect = new PotionEffect(effectType,
+                            potionSection.getInt(effectName + ".dur"),
+                            potionSection.getInt(effectName + ".amp")
+                    );
+
+                    addPotionEffect(effect);
                 }
-
-                PotionEffect effect = new PotionEffect(PotionEffectType.getByName(effectName),
-                        potionSection.getInt(effectName + ".dur"),
-                        potionSection.getInt(effectName + ".amp")
-                );
-
-                addPotionEffect(effect);
             }
         }
 
-        if (section.contains("usepermissions")) {
-            setUsePermissions(section.getBoolean("usepermissions"));
+        if (config.contains(path + ".usepermissions")) {
+            setUsePermissions(config.getBoolean(path + ".usepermissions"));
         }
 
-        if (section.contains("falldamage")) {
-            setHasFallDamage(section.getBoolean("falldamage"));
+        if (config.contains(path + ".falldamage")) {
+            setHasFallDamage(config.getBoolean(path + ".falldamage"));
         }
 
-        if (section.contains("hunger")) {
-            setHasHunger(section.getBoolean("hunger"));
+        if (config.contains(path + ".hunger")) {
+            setHasHunger(config.getBoolean(path + ".hunger"));
         }
 
-        if (section.contains("displayName")) {
-            setDisplayName(MiniMessage.miniMessage().deserialize(section.getString("displayName")));
+        String rawDisplayName = config.getString(path + ".displayName");
+        if (rawDisplayName != null) {
+            setDisplayName(MiniMessage.miniMessage().deserialize(rawDisplayName));
         }
 
-        if (section.contains("inventoryLocked")) {
-            setInventoryLocked(section.getBoolean("inventoryLocked"));
+        if (config.contains(path + ".inventoryLocked")) {
+            setInventoryLocked(config.getBoolean(path + ".inventoryLocked"));
         }
 
-        if (section.contains("armourLocked")) {
-            setArmourLocked(section.getBoolean("armourLocked"));
+        if (config.contains(path + ".armourLocked")) {
+            setArmourLocked(config.getBoolean(path + ".armourLocked"));
         }
 
-        if (section.contains("team")) {
-            setTeamColor(TeamColor.matchColor(section.getString("team")));
+        String rawTeamColor = config.getString(path + ".team");
+        if (rawTeamColor != null) {
+            setTeamColor(TeamColor.matchColor(rawTeamColor));
         }
 
-        if (section.contains("displayInMenu")) {
-            setDisplayInMenu(section.getBoolean("displayInMenu"));
+        if (config.contains(path + ".displayInMenu")) {
+            setDisplayInMenu(config.getBoolean(path + ".displayInMenu"));
         }
 
-        if (section.contains("allowOffhand")) {
-            setAllowOffHand(section.getBoolean("allowOffhand"));
+        if (config.contains(path + ".allowOffhand")) {
+            setAllowOffHand(config.getBoolean(path + ".allowOffhand"));
         }
 
-        if (section.contains("addons")) {
-            ConfigurationSection addonSection = section.getConfigurationSection("addons");
-
-            for (String addonKey : addonSection.getKeys(false)) {
-                try {
-                    // First determine the class
-                    Class<?> rawClass = Class.forName(addonKey.replace('-', '.'));
-                    if (LoadoutAddon.class.isAssignableFrom(rawClass)) {
-                        Class<? extends LoadoutAddon> clazz = rawClass.asSubclass(LoadoutAddon.class);
-
-                        // Now we can load the value
-                        LoadoutAddon<Object> addon = LoadoutModule.getAddon(clazz);
-                        Object value = addon.load(addonSection.getConfigurationSection(addonKey));
-                        addonValues.put(clazz, value);
-                    }
-                } catch (ClassNotFoundException e) {
-                    // Ignore it
-                }
+        ConfigurationSection addonSection = config.getConfigurationSection(path + ".addons");
+        if (addonSection != null) {
+            for (ALoadoutAddon addon : addons.values()) {
+                addon.load(config, path + ".addons");
             }
         }
     }
