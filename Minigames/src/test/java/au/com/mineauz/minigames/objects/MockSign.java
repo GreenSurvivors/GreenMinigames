@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.objects;
 
 import be.seeseemelk.mockbukkit.block.state.SignMock;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;

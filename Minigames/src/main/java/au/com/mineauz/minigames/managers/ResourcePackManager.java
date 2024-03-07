@@ -5,6 +5,8 @@ import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.objects.ResourcePack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -60,14 +62,19 @@ public class ResourcePackManager { //todo work with multiple ressource packs
         }
     }
 
-    public ResourcePack getResourcePack(String name) {
-        if (!enabled) return null;
-        ResourcePack pack = resources.get(name);
-        if (pack != null && pack.isValid()) return pack;
-        else return null;
+    public @Nullable ResourcePack getResourcePack(@NotNull String name) {
+        if (enabled) {
+            ResourcePack pack = resources.get(name);
+
+            if (pack != null && pack.isValid()) {
+                return pack;
+            }
+        }
+
+        return null;
     }
 
-    public ResourcePack addResourcePack(ResourcePack pack) {
+    public @Nullable ResourcePack addResourcePack(@NotNull ResourcePack pack) {
         if (!enabled) return null;
         return resources.put(pack.getName(), pack);
     }

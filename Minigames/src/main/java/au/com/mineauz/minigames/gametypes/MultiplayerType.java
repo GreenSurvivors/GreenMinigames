@@ -35,8 +35,8 @@ import java.util.List;
 
 public class MultiplayerType extends MinigameTypeBase {
     private static final Minigames plugin = Minigames.getPlugin();
-    private final MinigamePlayerManager pdata = plugin.getPlayerManager();
     private static final int secondsUntilLateJoin = 5; // todo configurable
+    private final MinigamePlayerManager pdata = plugin.getPlayerManager();
 
     public MultiplayerType() {
         setType(MinigameType.MULTIPLAYER);

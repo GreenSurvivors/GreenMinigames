@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.minigame.modules;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerLoadout;
-import au.com.mineauz.minigames.config.AFlag;
-import au.com.mineauz.minigames.config.LoadoutSetFlag;
+import au.com.mineauz.minigames.config.LoadoutFlag;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -18,8 +18,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,13 +26,13 @@ import java.util.*;
 public class LoadoutModule extends MinigameModule {
     private static final Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = new HashMap<>();
     private final Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
-    private final LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
+    //private final LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
 
     public LoadoutModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
-        PlayerLoadout def = new PlayerLoadout("default");
-        def.setDeletable(false);
-        extraLoadouts.put("default", def);
+        PlayerLoadout defaultLoadout = new PlayerLoadout("default");
+        defaultLoadout.setDeletable(false);
+        extraLoadouts.put("default", defaultLoadout);
     }
 
     public static @Nullable LoadoutModule getMinigameModule(@NotNull Minigame mgm) {
@@ -78,85 +76,40 @@ public class LoadoutModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, AFlag<?>> getConfigFlags() {
-        Map<String, AFlag<?>> flags = new HashMap<>();
-        flags.put(loadoutsFlag.getName(), loadoutsFlag);
-        return flags;
-    }
-
-    @Override
     public boolean useSeparateConfig() {
         return false;
     }
 
     @Override
-    public void save(FileConfiguration config) {
-        //Do Nothing
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        LoadoutFlag loadoutFlag;
+        for (Map.Entry<String, PlayerLoadout> loadoutEntry : extraLoadouts.entrySet()) {
+            loadoutFlag = new LoadoutFlag(loadoutEntry.getValue(), loadoutEntry.getKey());
+            loadoutFlag.saveValue(config, path + ".loadouts");
+        }
     }
 
     @Override
-    public void load(FileConfiguration config) {
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        final ConfigurationSection configSection = config.getConfigurationSection(path + ".loadouts");
+        if (configSection != null) {
+            LoadoutFlag loadoutFlag;
 
-        //TODO: Remove entire load after 1.7 <-- figure out if it's save to do so, I believe the loadouts handle loading themselves
-        if (config.contains(getMinigame() + ".loadout")) {
-            Set<String> keys = config.getConfigurationSection(getMinigame() + ".loadout").getKeys(false);
-            for (String key : keys) {
-                if (key.matches("[-]?[0-9]+")) {
-                    getLoadout("default").addItem(config.getItemStack(getMinigame() + ".loadout." + key), Integer.parseInt(key));
+            for (String loadout : configSection.getKeys(false)) {
+                loadoutFlag = new LoadoutFlag(new PlayerLoadout(loadout), loadout);
+                if (loadout.equals("default")) {
+                    loadoutFlag.getFlag().setDeletable(false);
                 }
-            }
-            if (config.contains(getMinigame() + ".loadout.potions")) {
-                keys = config.getConfigurationSection(getMinigame() + ".loadout.potions").getKeys(false);
-                for (String eff : keys) {
-                    if (PotionEffectType.getByName(eff) != null) {
-                        PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
-                                config.getInt(getMinigame() + ".loadout.potions." + eff + ".dur"),
-                                config.getInt(getMinigame() + ".loadout.potions." + eff + ".amp"), true);
-                        getLoadout("default").addPotionEffect(effect);
-                    }
-                }
-            }
-            if (config.contains(getMinigame() + ".loadout.usepermissions")) {
-                getLoadout("default").setUsePermissions(config.getBoolean(getMinigame() + ".loadout.usepermissions"));
-            }
-            if (config.contains(getMinigame() + ".loadout.falldamage")) {
-                getLoadout("default").setHasFallDamage(config.getBoolean(getMinigame() + ".loadout.falldamage"));
-            }
-            if (config.contains(getMinigame() + ".loadout.hunger")) {
-                getLoadout("default").setHasHunger(config.getBoolean(getMinigame() + ".loadout.hunger"));
+                loadoutFlag.loadValue(config, path + "." + getName().toLowerCase());
+                extraLoadouts.put(loadoutFlag.getName(), loadoutFlag.getFlag());
             }
         }
-        if (config.contains(getMinigame() + ".extraloadouts")) {
-            Set<String> keys = config.getConfigurationSection(getMinigame() + ".extraloadouts").getKeys(false);
-            for (String loadout : keys) {
-                addLoadout(loadout);
-                Set<String> items = config.getConfigurationSection(getMinigame() + ".extraloadouts." + loadout).getKeys(false);
-                for (String key : items) {
-                    if (key.matches("[-]?[0-9]+"))
-                        getLoadout(loadout).addItem(config.getItemStack(getMinigame() + ".extraloadouts." + loadout + "." + key), Integer.parseInt(key));
-                }
-                if (config.contains(getMinigame() + ".extraloadouts." + loadout + ".potions")) {
-                    Set<String> pots = config.getConfigurationSection(getMinigame() + ".extraloadouts." + loadout + ".potions").getKeys(false);
-                    for (String eff : pots) {
-                        if (PotionEffectType.getByName(eff) != null) {
-                            PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
-                                    config.getInt(getMinigame() + ".extraloadouts." + loadout + ".potions." + eff + ".dur"),
-                                    config.getInt(getMinigame() + ".extraloadouts." + loadout + ".potions." + eff + ".amp"));
-                            getLoadout(loadout).addPotionEffect(effect);
-                        }
-                    }
-                }
 
-                if (config.contains(getMinigame() + ".extraloadouts." + loadout + ".usepermissions")) {
-                    getLoadout(loadout).setUsePermissions(config.getBoolean(getMinigame() + ".extraloadouts." + loadout + ".usepermissions"));
-                }
-
-                if (config.contains(getMinigame() + ".extraloadouts." + loadout + ".falldamage"))
-                    getLoadout(loadout).setHasFallDamage(config.getBoolean(getMinigame() + ".extraloadouts." + loadout + ".falldamage"));
-
-                if (config.contains(getMinigame() + ".extraloadouts." + loadout + ".hunger"))
-                    getLoadout(loadout).setHasHunger(config.getBoolean(getMinigame() + ".extraloadouts." + loadout + ".hunger"));
-            }
+        if (config.contains(path + ".loadout")) {
+            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + path + ".loadout");
+        }
+        if (config.contains(path + ".extraloadouts")) {
+            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + path + ".extraloadouts");
         }
     }
 
@@ -249,13 +202,13 @@ public class LoadoutModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(Menu menu) {
+    public void addEditMenuOptions(@NotNull Menu menu) {
         // TODO Move loadout menu stuff here
 
     }
 
     @Override
-    public boolean displayMechanicSettings(Menu previous) {
+    public boolean displayMechanicSettings(@NotNull Menu previous) {
         return false;
     }
 

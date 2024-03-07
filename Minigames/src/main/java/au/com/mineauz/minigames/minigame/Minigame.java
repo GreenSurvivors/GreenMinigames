@@ -1419,26 +1419,13 @@ public class Minigame implements ScriptObject {
 
         for (MinigameModule module : getModules()) {
             if (!module.useSeparateConfig()) {
-                module.save(cfg);
+                module.save(cfg, name);
 
-                if (module.getConfigFlags() != null) {
-                    for (AFlag<?> flag : module.getConfigFlags().values()) {
-                        if (flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
-                            flag.saveValue(cfg, name);
-                    }
-                }
             } else {
                 MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
                 modsave.getConfig().set(name, null);
                 modsave.getConfig().createSection(name);
-                module.save(modsave.getConfig());
-
-                if (module.getConfigFlags() != null) {
-                    for (AFlag<?> flag : module.getConfigFlags().values()) {
-                        if (flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
-                            flag.saveValue(modsave.getConfig(), name);
-                    }
-                }
+                module.save(modsave.getConfig(), name);
 
                 modsave.saveConfig();
             }
@@ -1480,25 +1467,10 @@ public class Minigame implements ScriptObject {
         FileConfiguration cfg = minigame.getConfig();
         for (MinigameModule module : getModules()) {
             if (!module.useSeparateConfig()) {
-                module.load(cfg);
-
-                if (module.getConfigFlags() != null) {
-                    for (String flag : module.getConfigFlags().keySet()) {
-                        if (cfg.contains(name + "." + flag))
-                            module.getConfigFlags().get(flag).loadValue(cfg, name);
-                    }
-                }
+                module.load(cfg, name);
             } else {
                 MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
-                module.load(modsave.getConfig());
-
-                if (module.getConfigFlags() != null) {
-                    for (String flag : module.getConfigFlags().keySet()) {
-                        if (modsave.getConfig().contains(name + "." + flag)) {
-                            module.getConfigFlags().get(flag).loadValue(modsave.getConfig(), name);
-                        }
-                    }
-                }
+                module.load(modsave.getConfig(), name);
             }
         }
 
@@ -1510,7 +1482,7 @@ public class Minigame implements ScriptObject {
 
         //dataFixerUpper
         if (cfg.contains(name + ".useXPBarTimer")) {
-            if (cfg.getBoolean(name + ".useXPBarTimer")){
+            if (cfg.getBoolean(name + ".useXPBarTimer")) {
                 timerDisplayType.setFlag(MinigameTimer.DisplayType.XP_BAR);
             } else {
                 timerDisplayType.setFlag(MinigameTimer.DisplayType.NONE);

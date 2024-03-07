@@ -202,7 +202,7 @@ public class MinigameUtils {
     /**
      * Limits the length of a Component ignoring all default formats and styles within it
      *
-     * @param component    The string to limit
+     * @param component The string to limit
      * @param maxLength The maximum number of characters to allow
      * @return The Component, where it's plain text part is never longer than maxLength
      */

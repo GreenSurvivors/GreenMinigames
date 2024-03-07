@@ -9,8 +9,14 @@ import au.com.mineauz.minigames.stats.MinigameStatistics;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.jetbrains.annotations.NotNull;
 
 public class DeathsRewardScheme extends HierarchyRewardScheme<Integer> {
+
+    protected DeathsRewardScheme(@NotNull String name) {
+        super(name);
+    }
+
     @Override
     protected Integer decrement(Integer value) {
         return value - 1;
@@ -22,7 +28,7 @@ public class DeathsRewardScheme extends HierarchyRewardScheme<Integer> {
     }
 
     @Override
-    protected Integer loadValue(String key) {
+    protected Integer loadKey(String key) {
         return Integer.valueOf(key);
     }
 

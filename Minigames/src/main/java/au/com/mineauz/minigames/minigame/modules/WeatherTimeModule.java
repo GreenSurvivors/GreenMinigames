@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
@@ -16,9 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.WeatherType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class WeatherTimeModule extends MinigameModule {
     private final TimeFlag time = new TimeFlag(0L, "customTime.value");
@@ -41,15 +37,23 @@ public class WeatherTimeModule extends MinigameModule {
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        time.saveValue(config, path);
+        useCustomTime.saveValue(config, path);
+        weather.saveValue(config, path);
+        useCustomWeather.saveValue(config, path);
     }
 
     @Override
-    public void load(FileConfiguration config) {
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        time.loadValue(config, path);
+        useCustomTime.loadValue(config, path);
+        weather.loadValue(config, path);
+        useCustomWeather.loadValue(config, path);
     }
 
     @Override
-    public void addEditMenuOptions(Menu previosMenu) {
+    public void addEditMenuOptions(@NotNull Menu previosMenu) {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_TIMEWEATHER_NAME, previosMenu.getViewer());
 
         menu.addItem(useCustomTime.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_USE_NAME));
@@ -62,18 +66,8 @@ public class WeatherTimeModule extends MinigameModule {
     }
 
     @Override
-    public boolean displayMechanicSettings(Menu previous) {
+    public boolean displayMechanicSettings(@NotNull Menu previous) {
         return false;
-    }
-
-    @Override
-    public Map<String, AFlag<?>> getConfigFlags() {
-        Map<String, AFlag<?>> map = new HashMap<>();
-        map.put(time.getName(), time);
-        map.put(useCustomTime.getName(), useCustomTime);
-        map.put(useCustomWeather.getName(), useCustomWeather);
-        map.put(weather.getName(), weather);
-        return map;
     }
 
     public long getTime() {

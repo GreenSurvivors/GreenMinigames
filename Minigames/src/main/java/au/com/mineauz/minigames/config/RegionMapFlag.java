@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class RegionMapFlag extends AFlag<Map<String, MgRegion>> {
+public class RegionMapFlag extends AFlag<Map<String, MgRegion>> { // todo move this logic into Minigames or redo this into a List
+    // dataFixerUpper
     private final @Nullable String legacyFistPointLabel, legacySecondPointLabel;
 
     public RegionMapFlag(@NotNull Map<String, MgRegion> value, @NotNull String name, @Nullable String legacyFirstPoint, @Nullable String legacySecondPoint) {

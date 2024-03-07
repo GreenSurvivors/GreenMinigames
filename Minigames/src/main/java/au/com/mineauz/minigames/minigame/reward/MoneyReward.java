@@ -91,6 +91,7 @@ public class MoneyReward extends RewardType {
             this.reward = reward;
             updateDescription();
         }
+
         public void updateDescription() {
             List<Component> description;
             int pos = options.indexOf(getRarity());
@@ -145,26 +146,26 @@ public class MoneyReward extends RewardType {
             MenuItemDecimal dec = new MenuItemDecimal(Material.PAPER,
                     MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MONEYREWARD_ITEM_NAME),
                     new Callback<>() {
-                @Override
-                public Double getValue() {
-                    return reward.money;
-                }
+                        @Override
+                        public Double getValue() {
+                            return reward.money;
+                        }
 
-                @Override
-                public void setValue(Double value) {
-                    reward.money = value;
+                        @Override
+                        public void setValue(Double value) {
+                            reward.money = value;
 
-                    ItemMeta meta = getDisplayItem().getItemMeta();
-                    Economy economy = PLUGIN.getEconomy();
-                    if (economy != null) {
-                        meta.displayName(Component.text(economy.format(value)));
-                    } else {
-                        meta.displayName(Component.text("$" + value));
-                    }
+                            ItemMeta meta = getDisplayItem().getItemMeta();
+                            Economy economy = PLUGIN.getEconomy();
+                            if (economy != null) {
+                                meta.displayName(Component.text(economy.format(value)));
+                            } else {
+                                meta.displayName(Component.text("$" + value));
+                            }
 
-                    getDisplayItem().setItemMeta(meta);
-                }
-            }, 50d, 100d, 1d, null);
+                            getDisplayItem().setItemMeta(meta);
+                        }
+                    }, 50d, 100d, 1d, null);
             m.addItem(dec);
             m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
             m.displayMenu(getContainer().getViewer());

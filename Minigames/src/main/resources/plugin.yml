@@ -4,7 +4,7 @@ version: ${plugin.version}
 api-version: "${paper.api.version}"
 author: _Razz_ Schmoller Addstar Narimm GreenSurvivors
 softdepend:
-    - WorldEdit
+  - WorldEdit
 description: ${project.description}
 
 libraries:

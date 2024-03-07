@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.ComponentFlag;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
@@ -19,9 +18,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ResourcePackModule extends MinigameModule { //todo rework to work with multiple ressource packs
     private final BooleanFlag enabled = new BooleanFlag(false, "resourcePackEnabled");
@@ -62,29 +58,22 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
     }
 
     @Override
-    public Map<String, AFlag<?>> getConfigFlags() {
-        Map<String, AFlag<?>> map = new HashMap<>();
-        addConfigFlag(enabled, map);
-        addConfigFlag(resourcePackDisplayName, map);
-        return map;
-    }
-
-    private void addConfigFlag(AFlag<?> flag, Map<String, AFlag<?>> flags) {
-        flags.put(flag.getName(), flag);
-    }
-
-    @Override
     public boolean useSeparateConfig() {
         return false;
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        enabled.saveValue(config, path);
+        resourcePackDisplayName.saveValue(config, path);
+        forced.saveValue(config, path);
     }
 
     @Override
-    public void load(FileConfiguration config) {
-
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        enabled.loadValue(config, path);
+        resourcePackDisplayName.loadValue(config, path);
+        forced.loadValue(config, path);
     }
 
     @Override
@@ -94,17 +83,17 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
         menu.addItem(enabled.getMenuItem(Material.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_ENABLE_NAME));
         MenuItemComponent item = new MenuItemComponent(Material.PAPER, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_DISPLAYNAME_NAME,
                 new Callback<>() {
-            @Override
-            public Component getValue() {
-                return resourcePackDisplayName.getFlag();
-            }
+                    @Override
+                    public Component getValue() {
+                        return resourcePackDisplayName.getFlag();
+                    }
 
-            @Override
-            public void setValue(Component value) {
-                resourcePackDisplayName.setFlag(value);
-                resourcePackName = PlainTextComponentSerializer.plainText().serialize(value);
-            }
-        }) {
+                    @Override
+                    public void setValue(Component value) {
+                        resourcePackDisplayName.setFlag(value);
+                        resourcePackName = PlainTextComponentSerializer.plainText().serialize(value);
+                    }
+                }) {
             @Override
             public void checkValidEntry(String entry) {
                 if (entry.isEmpty()) {
@@ -131,7 +120,7 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
     }
 
     @Override
-    public boolean displayMechanicSettings(Menu previous) {
+    public boolean displayMechanicSettings(@NotNull Menu previous) {
         return false;
     }
 }

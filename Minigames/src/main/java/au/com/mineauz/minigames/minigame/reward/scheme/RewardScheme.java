@@ -1,25 +1,33 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import org.bukkit.configuration.ConfigurationSection;
-
-import java.util.Map;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * RewardSchemes allow more flexibility for reward handling.
  * The previous simple Primary/Secondary reward system is under {@link StandardRewardScheme}
  */
-public interface RewardScheme {
+public abstract class RewardScheme {
+    protected final @NotNull String name;
+
+    public RewardScheme(@NotNull String name) {
+        this.name = name;
+    }
+
+    public @NotNull String getName() {
+        return name;
+    }
+
     /**
      * Adds menu items to the /mg edit menu for this scheme. These are added under a sub menu
      *
      * @param menu The menu to add into.
      */
-    void addMenuItems(Menu menu);
+    public abstract void addMenuItems(Menu menu);
 
     /**
      * Awards the player with the rewards specified in this scheme.
@@ -29,7 +37,7 @@ public interface RewardScheme {
      * @param minigame        The minigame they were playing
      * @param firstCompletion True if this is the first time they are completing the minigame
      */
-    void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion);
+    public abstract void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion);
 
     /**
      * Awards the player with the rewards specified in this scheme.
@@ -39,24 +47,19 @@ public interface RewardScheme {
      * @param data     The SQLData for the minigame.
      * @param minigame The minigame they were playing
      */
-    void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame);
-
-    /**
-     * @return Returns the map of flags used for saving and loading values
-     */
-    Map<String, AFlag<?>> getFlags();
+    public abstract void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame);
 
     /**
      * Saves any extra info for this scheme. Flags will be saved elsewhere
      *
      * @param config The config to write into
      */
-    void save(ConfigurationSection config);
+    public abstract void save(@NotNull FileConfiguration config, @NotNull String path);
 
     /**
      * Loads any extra info for this scheme. Flags will be loaded elsewhere
      *
      * @param config The config to read from
      */
-    void load(ConfigurationSection config);
+    public abstract void load(@NotNull FileConfiguration config, @NotNull String path);
 }

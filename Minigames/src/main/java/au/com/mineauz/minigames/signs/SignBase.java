@@ -59,6 +59,13 @@ public class SignBase implements Listener {
         minigameSigns.add(mgSign);
     }
 
+    public static boolean isMinigameSign(@NotNull Component firstLine) {
+        String firstLineStr = PlainTextComponentSerializer.plainText().serialize(firstLine);
+
+        return (MinigameMessageManager.getStrippedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLineStr) ||
+                alternativeMgmPattern.matcher(firstLineStr).matches());
+    }
+
     public @Nullable AMinigameSign getMgSign(@NotNull Component secondLine) {
         // don't use a map here, with names as keys since it might be possible to reload messages via command
         String strLine = PlainTextComponentSerializer.plainText().serialize(secondLine);
@@ -78,13 +85,6 @@ public class SignBase implements Listener {
         if (event.getFlag() != null && event.getFlag().getAttachedToLocation() != null) {
             this.takenFlags.add(event.getFlag());
         }
-    }
-
-    public static boolean isMinigameSign(@NotNull Component firstLine) {
-        String firstLineStr = PlainTextComponentSerializer.plainText().serialize(firstLine);
-
-        return (MinigameMessageManager.getStrippedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLineStr) ||
-                alternativeMgmPattern.matcher(firstLineStr).matches());
     }
 
     @EventHandler(ignoreCancelled = true)

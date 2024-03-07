@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
@@ -51,38 +50,37 @@ public class TreasureHuntModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, AFlag<?>> getConfigFlags() {
-        Map<String, AFlag<?>> flags = new HashMap<>();
-        flags.put(location.getName(), location);
-        flags.put(maxRadius.getName(), maxRadius);
-        flags.put(maxHeight.getName(), maxHeight);
-        flags.put(minTreasure.getName(), minTreasure);
-        flags.put(maxTreasure.getName(), maxTreasure);
-        flags.put(treasureWaitTime.getName(), treasureWaitTime);
-        flags.put(hintWaitTime.getName(), hintWaitTime);
-        return flags;
-    }
-
-    @Override
     public boolean useSeparateConfig() {
         return false;
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        location.saveValue(config, path);
+        maxRadius.saveValue(config, path);
+        minTreasure.saveValue(config, path);
+        maxTreasure.saveValue(config, path);
+        treasureWaitTime.saveValue(config, path);
+        hintWaitTime.saveValue(config, path);
     }
 
     @Override
-    public void load(FileConfiguration config) {
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        location.loadValue(config, path);
+        maxRadius.loadValue(config, path);
+        minTreasure.loadValue(config, path);
+        maxTreasure.loadValue(config, path);
+        treasureWaitTime.loadValue(config, path);
+        hintWaitTime.loadValue(config, path);
     }
 
     @Override
-    public void addEditMenuOptions(Menu menu) {
+    public void addEditMenuOptions(@NotNull Menu menu) {
 
     }
 
     @Override
-    public boolean displayMechanicSettings(Menu previous) {
+    public boolean displayMechanicSettings(@NotNull Menu previous) {
         Menu treasureHunt = new Menu(6, getMinigame().getDisplayName(), previous.getViewer());
 
         List<MenuItem> itemsTreasureHunt = new ArrayList<>(5);

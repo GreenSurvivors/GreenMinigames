@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Callback;
@@ -17,9 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class InfectionModule extends MinigameModule {
     private final IntegerFlag infectedPercent = new IntegerFlag(18, "infectedPercent");
@@ -38,25 +35,22 @@ public class InfectionModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, AFlag<?>> getConfigFlags() {
-        Map<String, AFlag<?>> flags = new HashMap<>();
-        flags.put(infectedPercent.getName(), infectedPercent);
-        flags.put(infectedTeam.getName(), infectedTeam);
-        flags.put(survivorTeam.getName(), survivorTeam);
-        return flags;
-    }
-
-    @Override
     public boolean useSeparateConfig() {
         return false;
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        infectedPercent.saveValue(config, path);
+        infectedTeam.saveValue(config, path);
+        survivorTeam.saveValue(config, path);
     }
 
     @Override
-    public void load(FileConfiguration config) {
+    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+        infectedPercent.loadValue(config, path);
+        infectedTeam.loadValue(config, path);
+        survivorTeam.loadValue(config, path);
     }
 
     public Callback<TeamColor> getInfectedTeamCallback() {
@@ -124,11 +118,11 @@ public class InfectionModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(Menu menu) {
+    public void addEditMenuOptions(@NotNull Menu menu) {
     }
 
     @Override
-    public boolean displayMechanicSettings(Menu previous) {
+    public boolean displayMechanicSettings(@NotNull Menu previous) {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_INFECTED_NAME, previous.getViewer());
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
