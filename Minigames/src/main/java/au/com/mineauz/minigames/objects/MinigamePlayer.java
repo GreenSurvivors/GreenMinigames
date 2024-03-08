@@ -81,7 +81,8 @@ public class MinigamePlayer implements ScriptObject {
         this.player = player;
         this.spc = new StoredPlayerCheckpoints(this.getUUID().toString());
 
-        final File plcp = new File(Minigames.getPlugin().getDataFolder() + "/playerdata/checkpoints/" + this.getUUID() + ".yml");
+        final File plcp = new File(Minigames.getPlugin().getDataFolder() + File.separator + "playerdata" +
+                File.separator + "checkpoints" + File.separator + this.getUUID() + ".yml");
         if (plcp.exists()) {
             this.getStoredPlayerCheckpoints().loadCheckpoints();
         }
@@ -721,7 +722,7 @@ public class MinigamePlayer implements ScriptObject {
 
     public void saveClaimedRewards() {
         if (!this.claimedRewards.isEmpty()) {
-            final MinigameSave save = new MinigameSave("playerdata/data/" + this.getUUID());
+            final MinigameSave save = new MinigameSave("playerdata" + File.separator + "data" + File.separator + this.getUUID());
             final FileConfiguration cfg = save.getConfig();
             cfg.set("claims", this.claimedRewards);
             save.saveConfig();
@@ -729,10 +730,11 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void loadClaimedRewards() {
-        final File f = new File(Minigames.getPlugin().getDataFolder() + "/playerdata/data/" + this.getUUID() + ".yml");
+        final File f = new File(Minigames.getPlugin().getDataFolder() + File.separator + "playerdata" +
+                File.separator + "data" + File.separator + this.getUUID() + ".yml");
         if (f.exists()) {
-            final MinigameSave s = new MinigameSave("playerdata/data/" + this.getUUID());
-            this.claimedRewards = s.getConfig().getStringList("claims");
+            final MinigameSave save = new MinigameSave("playerdata" + File.separator + "data" + File.separator + this.getUUID());
+            this.claimedRewards = save.getConfig().getStringList("claims");
         }
     }
 

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,11 +55,11 @@ public class ReloadCommand extends ACommand {
         Minigames.getPlugin().getMinigameManager().getAllMinigames().clear();
 
         try {
-            PLUGIN.getConfig().load(PLUGIN.getDataFolder() + "/config.yml");
+            PLUGIN.getConfig().load(PLUGIN.getDataFolder() + File.separator + "config.yml");
         } catch (FileNotFoundException ex) {
             PLUGIN.getLogger().info("Failed to load config, creating one.");
             try {
-                PLUGIN.getConfig().save(PLUGIN.getDataFolder() + "/config.yml");
+                PLUGIN.getConfig().save(PLUGIN.getDataFolder() + File.separator + "config.yml");
             } catch (IOException e) {
                 Minigames.getCmpnntLogger().error("Could not save config.yml!", e);
             }

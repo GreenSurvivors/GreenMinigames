@@ -155,8 +155,9 @@ public class TakeItemAction extends AAction { // todo make material match option
     @Override
     public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
         //datafixerupper
-        if (config.contains(path + ".type")) {
-            config.set(path + ".type", null);
+        char configSeparator = config.options().pathSeparator();
+        if (config.contains(path + configSeparator + "type")) {
+            config.set(path + configSeparator + "type", null);
         }
         itemToSearchFor.saveValue(config, path);
         count.saveValue(config, path);
@@ -165,8 +166,9 @@ public class TakeItemAction extends AAction { // todo make material match option
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
         // datafixerupper
-        if (config.contains(path + ".type")) {
-            Material legacy = Material.matchMaterial(config.getString(path + ".type", ""));
+        char configSeparator = config.options().pathSeparator();
+        if (config.contains(path + configSeparator + "type")) {
+            Material legacy = Material.matchMaterial(config.getString(path + configSeparator + "type", ""));
             if (legacy != null) {
                 itemToSearchFor.setFlag(new ItemStack(legacy));
             } else {

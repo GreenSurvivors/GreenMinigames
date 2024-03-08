@@ -10,21 +10,21 @@ import java.io.File;
 import java.io.IOException;
 
 public class MinigameSave {
-    private final @NotNull String name;
+    private final @NotNull String path;
     private final @Nullable String minigame;
     private FileConfiguration minigameSave = null;
     private File minigameSaveFile = null;
 
-    public MinigameSave(@NotNull String name) {
-        this.name = name;
+    public MinigameSave(@NotNull String path) {
+        this.path = path;
         this.minigame = null;
         reloadFile();
         saveConfig();
     }
 
-    public MinigameSave(@NotNull String minigame, @NotNull String name) {
+    public MinigameSave(@NotNull String minigame, @NotNull String path) {
         this.minigame = minigame;
-        this.name = name;
+        this.path = path;
         reloadFile();
         saveConfig();
     }
@@ -32,11 +32,12 @@ public class MinigameSave {
     public void reloadFile() {
         if (minigame != null) {
             if (minigameSaveFile == null) {
-                minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + "/minigames/" + minigame + "/", name + ".yml");
+                minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + File.separator + "minigames" +
+                        File.separator + minigame + File.separator, path + ".yml");
             }
         } else {
             if (minigameSaveFile == null) {
-                minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + "/", name + ".yml");
+                minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + File.separator, path + ".yml");
             }
         }
         minigameSave = YamlConfiguration.loadConfiguration(minigameSaveFile);
@@ -52,9 +53,9 @@ public class MinigameSave {
     public void saveConfig() {
         if (minigameSave == null || minigameSaveFile == null) {
             if (minigame != null) {
-                Minigames.getCmpnntLogger().info("Could not save " + minigame + File.separator + name + " config file!");
+                Minigames.getCmpnntLogger().info("Could not save " + minigame + File.separator + path + " config file!");
             } else {
-                Minigames.getCmpnntLogger().info("Could not save " + name + " config file!");
+                Minigames.getCmpnntLogger().info("Could not save " + path + " config file!");
             }
             return;
         }
@@ -62,9 +63,9 @@ public class MinigameSave {
             minigameSave.save(minigameSaveFile);
         } catch (IOException ex) {
             if (minigame != null) {
-                Minigames.getCmpnntLogger().error("Could not save " + minigame + File.separator + name + " config file!");
+                Minigames.getCmpnntLogger().error("Could not save " + minigame + File.separator + path + " config file!");
             } else {
-                Minigames.getCmpnntLogger().error("Could not save " + name + " config file!");
+                Minigames.getCmpnntLogger().error("Could not save " + path + " config file!");
             }
         }
     }

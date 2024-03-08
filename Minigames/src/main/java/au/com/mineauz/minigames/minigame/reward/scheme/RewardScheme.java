@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -54,12 +54,12 @@ public abstract class RewardScheme {
      *
      * @param config The config to write into
      */
-    public abstract void save(@NotNull FileConfiguration config, @NotNull String path);
+    public abstract void save(@NotNull Configuration config, @NotNull String path);
 
     /**
      * Loads any extra info for this scheme. Flags will be loaded elsewhere
      *
      * @param config The config to read from
      */
-    public abstract void load(@NotNull FileConfiguration config, @NotNull String path);
+    public abstract void load(@NotNull Configuration config, @NotNull String path);
 }

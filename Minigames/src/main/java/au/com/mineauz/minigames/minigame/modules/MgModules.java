@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;

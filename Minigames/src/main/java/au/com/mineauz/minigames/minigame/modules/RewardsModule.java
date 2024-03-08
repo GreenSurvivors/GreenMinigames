@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.minigame.reward;
+package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -7,8 +7,6 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.MgModules;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.MgRewardSchemes;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardSchemeRegistry;
@@ -57,20 +55,20 @@ public class RewardsModule extends MinigameModule {
 
     @Override
     public void save(@NotNull FileConfiguration config, @NotNull String path) {
-        config.set(path + ".reward-scheme", scheme.getName());
-        scheme.save(config, path + ".rewards");
+        config.set(path + config.options().pathSeparator() + "reward-scheme", scheme.getName());
+        scheme.save(config, path + config.options().pathSeparator() + "rewards");
     }
 
     @Override
     public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        String name = config.getString(path + ".reward-scheme", "standard");
+        String name = config.getString(path + config.options().pathSeparator() + "reward-scheme", "standard");
 
         scheme = RewardSchemeRegistry.createScheme(name);
         if (scheme == null) {
             scheme = MgRewardSchemes.STANDARD.makeScheme();
         }
 
-        scheme.load(config, path + ".rewards");
+        scheme.load(config, path + config.options().pathSeparator() + "rewards");
     }
 
     @Override

@@ -12,7 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandReward extends RewardType {
+public class CommandReward extends ARewardType {
     private final static String DESCRIPTION_TOKEN = "CommandReward_description";
     private String command = "say Hello World!";
 
@@ -34,7 +34,7 @@ public class CommandReward extends RewardType {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "COMMAND";
     }
 
@@ -50,17 +50,17 @@ public class CommandReward extends RewardType {
     }
 
     @Override
-    public MenuItem getMenuItem() {
+    public @NotNull MenuItem getMenuItem() {
         return new CommandRewardItem(this);
     }
 
     @Override
-    public void saveReward(String path, ConfigurationSection config) {
+    public void saveReward(@NotNull Configuration config, @NotNull String path) {
         config.set(path, command);
     }
 
     @Override
-    public void loadReward(String path, ConfigurationSection config) {
+    public void loadReward(@NotNull Configuration config, @NotNull String path) {
         command = config.getString(path);
     }
 

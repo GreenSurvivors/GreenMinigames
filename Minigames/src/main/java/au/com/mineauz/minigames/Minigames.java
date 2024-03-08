@@ -15,7 +15,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
-import au.com.mineauz.minigames.minigame.reward.RewardsModule;
+import au.com.mineauz.minigames.minigame.modules.RewardsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import au.com.mineauz.minigames.recorder.BasicRecorder;
@@ -32,6 +32,7 @@ import org.bstats.charts.SimpleBarChart;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -138,27 +139,30 @@ public class Minigames extends JavaPlugin {
         this.playerManager.saveDeniedCommands();
 
         final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
+        Configuration globalConfig = globalLoadouts.getConfig();
         if (this.minigameManager.hasLoadouts()) {
             for (final PlayerLoadout loadout : this.minigameManager.getGlobalLoadouts()) {
+                char globalPathSeparator = globalConfig.options().pathSeparator();
+
                 for (final Integer slot : loadout.getItemSlots()) {
-                    globalLoadouts.getConfig().set(loadout.getName() + '.' + slot, loadout.getItem(slot));
+                    globalConfig.set(loadout.getName() + globalPathSeparator + slot, loadout.getItem(slot));
                 }
                 if (!loadout.getAllPotionEffects().isEmpty()) {
                     for (final PotionEffect eff : loadout.getAllPotionEffects()) {
-                        globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
-                        globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".dur", eff.getDuration());
+                        globalConfig.set(loadout.getName() + globalPathSeparator + "potions" + globalPathSeparator + eff.getType().getName() + globalPathSeparator + "amp", eff.getAmplifier());
+                        globalConfig.set(loadout.getName() + globalPathSeparator + "potions" + globalPathSeparator + eff.getType().getName() + globalPathSeparator + "dur", eff.getDuration());
                     }
                 } else {
-                    globalLoadouts.getConfig().set(loadout + ".potions", null);
+                    globalConfig.set(loadout.getName() + globalPathSeparator + "potions", null);
                 }
                 if (loadout.getUsePermissions()) {
-                    globalLoadouts.getConfig().set(loadout + ".usepermissions", true);
+                    globalConfig.set(loadout.getName() + globalPathSeparator + "usepermissions", true);
                 } else {
-                    globalLoadouts.getConfig().set(loadout + ".usepermissions", null);
+                    globalConfig.set(loadout.getName() + globalPathSeparator + "usepermissions", null);
                 }
             }
         } else {
-            globalLoadouts.getConfig().set("globalloadouts", null);
+            globalConfig.set("globalloadouts", null);
         }
         globalLoadouts.saveConfig();
         this.minigameManager.saveRewardSigns();
@@ -172,15 +176,14 @@ public class Minigames extends JavaPlugin {
         try {
             plugin = this;
             switch (this.checkVersion()) {
-                case -1:
+                case -1 -> {
                     logger.warn("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Paper Version: " + PAPER_VERSION.getCanonical());
                     logger.warn("Your version is newer: " + Bukkit.getBukkitVersion());
                     logger.warn("Please check for an updated");
-
-                    break;
-                case 0:
-                    break;
-                case 1:
+                }
+                case 0 -> {
+                }
+                case 1 -> {
                     if (!this.getConfig().getBoolean("forceload", true)) {
                         logger.warn("This version of Minigames (" + VERSION.getCanonical() + ") " +
                                 "is designed for Bukkit Version: " + PAPER_VERSION.getCanonical());
@@ -197,6 +200,7 @@ public class Minigames extends JavaPlugin {
                                 "is designed for Bukkit Version: " + PAPER_VERSION.getCanonical());
                         logger.warn("Your version is " + Bukkit.getBukkitVersion());
                     }
+                }
             }
             final PluginDescriptionFile desc = this.getDescription();
             ConfigurationSerialization.registerClass(ResourcePack.class);
@@ -251,47 +255,50 @@ public class Minigames extends JavaPlugin {
 
     private void setupLoadOuts() {
         final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
-        final Set<String> keys = globalLoadouts.getConfig().getKeys(false);
-        for (final String loadout : keys) {
-            this.minigameManager.addGlobalLoadout(loadout);
-            ConfigurationSection loadOutSection = globalLoadouts.getConfig().getConfigurationSection(loadout);
+        Configuration globalConfig = globalLoadouts.getConfig();
+        char globalPathSeparator = globalConfig.options().pathSeparator();
+
+        final Set<String> keys = globalConfig.getKeys(false);
+        for (final String loadoutName : keys) {
+            this.minigameManager.addGlobalLoadout(loadoutName);
+            ConfigurationSection loadOutSection = globalConfig.getConfigurationSection(loadoutName);
             if (loadOutSection != null) {
                 final Set<String> items = loadOutSection.getKeys(false);
                 for (final String slot : items) {
                     if (COMPILE.matcher(slot).matches()) {
-                        this.minigameManager.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + '.' + slot), Integer.parseInt(slot));
+                        this.minigameManager.getLoadout(loadoutName).addItem(globalConfig.getItemStack(loadoutName + '.' + slot), Integer.parseInt(slot));
                     }
                 }
             }
-            if (globalLoadouts.getConfig().contains(loadout + ".potions")) {
-                ConfigurationSection potionLoadOutSection = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions");
+            if (globalConfig.contains(loadoutName + globalPathSeparator + "potions")) {
+                ConfigurationSection potionLoadOutSection = globalConfig.getConfigurationSection(loadoutName + globalPathSeparator + "potions");
                 if (potionLoadOutSection != null) {
                     final Set<String> pots = potionLoadOutSection.getKeys(false);
                     for (final String eff : pots) {
                         PotionEffectType type = PotionEffectType.getByName(eff);
                         if (type != null) {
                             final PotionEffect effect = new PotionEffect(type,
-                                    globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".dur"),
-                                    globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".amp"));
-                            this.minigameManager.getLoadout(loadout).addPotionEffect(effect);
+                                    globalConfig.getInt(loadoutName + globalPathSeparator + "potions" + globalPathSeparator + eff + globalPathSeparator + "dur"),
+                                    globalConfig.getInt(loadoutName + globalPathSeparator + "potions" + globalPathSeparator + eff + globalPathSeparator + "amp"));
+                            this.minigameManager.getLoadout(loadoutName).addPotionEffect(effect);
                         }
                     }
                 }
             }
-            if (globalLoadouts.getConfig().contains(loadout + ".usepermissions")) {
-                this.minigameManager.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
+            if (globalConfig.contains(loadoutName + globalPathSeparator + "usepermissions")) {
+                this.minigameManager.getLoadout(loadoutName).setUsePermissions(globalConfig.getBoolean(loadoutName + globalPathSeparator + "usepermissions"));
             }
         }
     }
 
     private void loadPresets() {
-        final String prespath = this.getDataFolder() + "/presets/";
+        final String prespath = this.getDataFolder() + File.separator + "presets" + File.separator;
         final String[] presets = {"spleef", "lms", "ctf", "infection"};
         File pres;
-        for (final String preset : presets) {
+        for (String preset : presets) {
             pres = new File(prespath + preset + ".yml");
             if (!pres.exists()) {
-                this.saveResource("presets/" + preset + ".yml", false);
+                this.saveResource("presets" + File.separator + preset + ".yml", false);
             }
         }
     }
@@ -316,7 +323,7 @@ public class Minigames extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
 
         try {
-            this.getConfig().load(this.getDataFolder() + "/config.yml");
+            this.getConfig().load(this.getDataFolder() + File.separator + "config.yml");
             List<String> mgs = new ArrayList<>();
             if (this.getConfig().contains("minigames")) {
                 mgs = this.getConfig().getStringList("minigames");
@@ -341,7 +348,7 @@ public class Minigames extends JavaPlugin {
         } catch (final FileNotFoundException ex) {
             this.getComponentLogger().info("Failed to load config, creating one.");
             try {
-                this.getConfig().save(this.getDataFolder() + "/config.yml");
+                this.getConfig().save(this.getDataFolder() + File.separator + "config.yml");
             } catch (final IOException e) {
                 this.getComponentLogger().error("Could not save config.yml!", e);
             }

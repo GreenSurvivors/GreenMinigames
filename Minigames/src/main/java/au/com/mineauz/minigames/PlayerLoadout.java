@@ -11,8 +11,8 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -403,58 +403,61 @@ public class PlayerLoadout {
         addons.remove(name);
     }
 
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+    public void save(@NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
+
         for (Integer slot : getItemSlots()) {
-            config.set(path + ".items." + slot, getItem(slot));
+            config.set(path + configSeparator + "items" + configSeparator + slot, getItem(slot));
         }
 
         for (PotionEffect eff : getAllPotionEffects()) {
-            config.set(path + ".potions." + eff.getType().getKey() + ".amp", eff.getAmplifier());
-            config.set(path + ".potions." + eff.getType().getKey() + ".dur", eff.getDuration());
+            config.set(path + configSeparator + "potions" + configSeparator + eff.getType().getKey() + configSeparator + "amp", eff.getAmplifier());
+            config.set(path + configSeparator + "potions" + configSeparator + eff.getType().getKey() + configSeparator + "dur", eff.getDuration());
         }
 
         if (getUsePermissions()) {
-            config.set(path + ".usepermissions", true);
+            config.set(path + configSeparator + "usepermissions", true);
         }
 
         if (!hasFallDamage()) {
-            config.set(path + ".falldamage", hasFallDamage());
+            config.set(path + configSeparator + "falldamage", hasFallDamage());
         }
 
         if (hasHunger()) {
-            config.set(path + ".hunger", hasHunger());
+            config.set(path + configSeparator + "hunger", hasHunger());
         }
 
-        config.set(path + ".displayName", MiniMessage.miniMessage().serialize(getDisplayName()));
+        config.set(path + configSeparator + "displayName", MiniMessage.miniMessage().serialize(getDisplayName()));
 
         if (isArmourLocked()) {
-            config.set(path + ".armourLocked", isArmourLocked());
+            config.set(path + configSeparator + "armourLocked", isArmourLocked());
         }
 
         if (isInventoryLocked()) {
-            config.set(path + ".inventoryLocked", isInventoryLocked());
+            config.set(path + configSeparator + "inventoryLocked", isInventoryLocked());
         }
 
         if (getTeamColor() != null) {
-            config.set(path + ".team", getTeamColor().toString());
+            config.set(path + configSeparator + "team", getTeamColor().name());
         }
 
         if (!isDisplayedInMenu()) {
-            config.set(path + ".displayInMenu", isDisplayedInMenu());
+            config.set(path + configSeparator + "displayInMenu", isDisplayedInMenu());
         }
 
         if (!allowOffHand()) {
-            config.set(path + ".allowOffhand", allowOffHand());
+            config.set(path + configSeparator + "allowOffhand", allowOffHand());
         }
 
         for (ALoadoutAddon addon : addons.values()) {
-            String subPath = path + ".addons." + addon.getName().replace('.', '-');
+            String subPath = path + configSeparator + "addons" + configSeparator + addon.getName().replace('.', '-');
             addon.save(config, subPath);
         }
     }
 
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        ConfigurationSection itemSection = config.getConfigurationSection(path + ".items");
+    public void load(@NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
+        ConfigurationSection itemSection = config.getConfigurationSection(path + configSeparator + "items");
         if (itemSection != null) {
             for (String key : itemSection.getKeys(false)) {
                 if (NUMBER.matcher(key).matches()) {
@@ -463,15 +466,15 @@ public class PlayerLoadout {
             }
         }
 
-        ConfigurationSection potionSection = config.getConfigurationSection(path + ".potions");
+        ConfigurationSection potionSection = config.getConfigurationSection(path + configSeparator + "potions");
         if (potionSection != null) {
             for (String effectName : potionSection.getKeys(false)) {
                 PotionEffectType effectType = Registry.EFFECT.get(NamespacedKey.fromString(effectName.toLowerCase(java.util.Locale.ENGLISH)));
 
                 if (effectType != null) {
                     PotionEffect effect = new PotionEffect(effectType,
-                            potionSection.getInt(effectName + ".dur"),
-                            potionSection.getInt(effectName + ".amp")
+                            potionSection.getInt(effectName + configSeparator + "dur"),
+                            potionSection.getInt(effectName + configSeparator + "amp")
                     );
 
                     addPotionEffect(effect);
@@ -479,48 +482,48 @@ public class PlayerLoadout {
             }
         }
 
-        if (config.contains(path + ".usepermissions")) {
-            setUsePermissions(config.getBoolean(path + ".usepermissions"));
+        if (config.contains(path + configSeparator + "usepermissions")) {
+            setUsePermissions(config.getBoolean(path + configSeparator + "usepermissions"));
         }
 
-        if (config.contains(path + ".falldamage")) {
-            setHasFallDamage(config.getBoolean(path + ".falldamage"));
+        if (config.contains(path + configSeparator + "falldamage")) {
+            setHasFallDamage(config.getBoolean(path + configSeparator + "falldamage"));
         }
 
-        if (config.contains(path + ".hunger")) {
-            setHasHunger(config.getBoolean(path + ".hunger"));
+        if (config.contains(path + configSeparator + "hunger")) {
+            setHasHunger(config.getBoolean(path + configSeparator + "hunger"));
         }
 
-        String rawDisplayName = config.getString(path + ".displayName");
+        String rawDisplayName = config.getString(path + configSeparator + "displayName");
         if (rawDisplayName != null) {
             setDisplayName(MiniMessage.miniMessage().deserialize(rawDisplayName));
         }
 
-        if (config.contains(path + ".inventoryLocked")) {
-            setInventoryLocked(config.getBoolean(path + ".inventoryLocked"));
+        if (config.contains(path + configSeparator + "inventoryLocked")) {
+            setInventoryLocked(config.getBoolean(path + configSeparator + "inventoryLocked"));
         }
 
-        if (config.contains(path + ".armourLocked")) {
-            setArmourLocked(config.getBoolean(path + ".armourLocked"));
+        if (config.contains(path + configSeparator + "armourLocked")) {
+            setArmourLocked(config.getBoolean(path + configSeparator + "armourLocked"));
         }
 
-        String rawTeamColor = config.getString(path + ".team");
+        String rawTeamColor = config.getString(path + configSeparator + "team");
         if (rawTeamColor != null) {
             setTeamColor(TeamColor.matchColor(rawTeamColor));
         }
 
-        if (config.contains(path + ".displayInMenu")) {
-            setDisplayInMenu(config.getBoolean(path + ".displayInMenu"));
+        if (config.contains(path + configSeparator + "displayInMenu")) {
+            setDisplayInMenu(config.getBoolean(path + configSeparator + "displayInMenu"));
         }
 
-        if (config.contains(path + ".allowOffhand")) {
-            setAllowOffHand(config.getBoolean(path + ".allowOffhand"));
+        if (config.contains(path + configSeparator + "allowOffhand")) {
+            setAllowOffHand(config.getBoolean(path + configSeparator + "allowOffhand"));
         }
 
-        ConfigurationSection addonSection = config.getConfigurationSection(path + ".addons");
+        ConfigurationSection addonSection = config.getConfigurationSection(path + configSeparator + "addons");
         if (addonSection != null) {
             for (ALoadoutAddon addon : addons.values()) {
-                addon.load(config, path + ".addons");
+                addon.load(config, path + configSeparator + "addons");
             }
         }
     }

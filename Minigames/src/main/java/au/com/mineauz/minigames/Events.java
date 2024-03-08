@@ -224,7 +224,9 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onPlayerConnect(@NotNull PlayerJoinEvent event) {
         pdata.addMinigamePlayer(event.getPlayer());
-        File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getUniqueId() + ".yml");
+
+        File pldata = new File(plugin.getDataFolder() + File.separator + "playerdata " + File.separator +
+                "inventories" + File.separator + event.getPlayer().getUniqueId() + ".yml");
         final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         if (pldata.exists()) {
             mgPlayer.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getUniqueId()));

@@ -12,10 +12,10 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.RewardsModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
+import au.com.mineauz.minigames.minigame.reward.ARewardType;
 import au.com.mineauz.minigames.minigame.reward.ItemReward;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
-import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
@@ -129,7 +129,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
 
                         final ItemStack[] items = new ItemStack[27];
                         for (int i = 0; i < numItems; i++) {
-                            RewardType rew = ((StandardRewardScheme) rewards.getScheme()).getPrimaryReward().getReward().get(0);
+                            ARewardType rew = ((StandardRewardScheme) rewards.getScheme()).getPrimaryReward().getReward().get(0);
                             if (rew instanceof ItemReward irew) {
                                 items[i] = irew.getRewardItem();
                             }

@@ -26,7 +26,7 @@ public class RewardTypes {
         }
     }
 
-    public static @Nullable RewardType getRewardType(final @NotNull String name, @NotNull Rewards rewards) {
+    public static @Nullable ARewardType getRewardType(final @NotNull String name, @NotNull Rewards rewards) {
         if (types.containsKey(name.toUpperCase())) {
             return types.get(name.toUpperCase()).makeNewType(rewards);
         }
@@ -42,14 +42,14 @@ public class RewardTypes {
         ITEM(ItemReward::new),
         MONEY(MoneyReward::new);
 
-        final @NotNull Function<@NotNull Rewards, ? extends @NotNull RewardType> init;
+        final @NotNull Function<@NotNull Rewards, ? extends @NotNull ARewardType> init;
 
-        MgRewardType(@NotNull Function<@NotNull Rewards, ? extends @NotNull RewardType> init) {
+        MgRewardType(@NotNull Function<@NotNull Rewards, ? extends @NotNull ARewardType> init) {
             this.init = init;
         }
 
         @Override
-        public @NotNull RewardType makeNewType(@NotNull Rewards rewards) {
+        public @NotNull ARewardType makeNewType(@NotNull Rewards rewards) {
             return init.apply(rewards);
         }
 
@@ -60,7 +60,7 @@ public class RewardTypes {
     }
 
     public interface RewardTypeFactory {
-        @NotNull RewardType makeNewType(@NotNull Rewards rewards);
+        @NotNull ARewardType makeNewType(@NotNull Rewards rewards);
 
         @NotNull String getName();
     }

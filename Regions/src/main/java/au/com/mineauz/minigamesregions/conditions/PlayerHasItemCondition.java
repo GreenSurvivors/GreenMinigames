@@ -251,31 +251,33 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
         // remove legacy
         // datafixerupper
-        config.set(path + ".type", null);
-        config.set(path + ".name", null);
-        config.set(path + ".lore", null);
+        char configSeparator = config.options().pathSeparator();
+        config.set(path + configSeparator + "type", null);
+        config.set(path + configSeparator + "name", null);
+        config.set(path + configSeparator + "lore", null);
     }
 
     @Override
     public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        if (config.contains(path + ".type")) { // load legacy data
-            Material flag = Material.getMaterial(config.getString(path + ".type"));
+        char configSeparator = config.options().pathSeparator();
+        if (config.contains(path + configSeparator + "type")) { // load legacy data
+            Material flag = Material.getMaterial(config.getString(path + configSeparator + "type"));
 
             // datafixerupper
             if (flag != null) {
                 ItemStack legacyItem = new ItemStack(flag);
                 ItemMeta meta = legacyItem.getItemMeta();
 
-                if (config.contains(path + ".name")) {
-                    String displayname = config.getString(path + ".name");
+                if (config.contains(path + configSeparator + "name")) {
+                    String displayname = config.getString(path + configSeparator + "name");
 
                     if (displayname != null) {
                         meta.setDisplayName(displayname);
                     }
                 }
 
-                if (config.contains(path + ".lore")) {
-                    String lore = config.getString(path + ".lore");
+                if (config.contains(path + configSeparator + "lore")) {
+                    String lore = config.getString(path + configSeparator + "lore");
 
                     meta.setLore(Arrays.stream(lore.split(";")).toList());
                 }

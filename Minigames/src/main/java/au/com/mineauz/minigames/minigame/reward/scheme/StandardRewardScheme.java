@@ -6,12 +6,12 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
+import au.com.mineauz.minigames.minigame.reward.ARewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class StandardRewardScheme extends RewardScheme {
 
     @Override
     public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
-        List<RewardType> rewards = primaryRewardFlag.getFlag().getReward();
+        List<ARewardType> rewards = primaryRewardFlag.getFlag().getReward();
 
         if (firstCompletion && rewards != null) {
             MinigameMessageManager.debugMessage("Issue Primary Reward for " + player.getName());
@@ -60,8 +60,8 @@ public class StandardRewardScheme extends RewardScheme {
         // No lose awards
     }
 
-    private void giveRewards(List<RewardType> rewards, MinigamePlayer player) {
-        for (RewardType reward : rewards) {
+    private void giveRewards(List<ARewardType> rewards, MinigamePlayer player) {
+        for (ARewardType reward : rewards) {
             if (reward != null) {
                 MinigameMessageManager.debugMessage("Giving " + player.getName() + " " + reward.getName() + " reward type.");
                 reward.giveReward(player);
@@ -70,13 +70,13 @@ public class StandardRewardScheme extends RewardScheme {
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+    public void load(@NotNull Configuration config, @NotNull String path) {
         primaryRewardFlag.loadValue(config, path);
         secondaryRewardFlag.loadValue(config, path);
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+    public void save(@NotNull Configuration config, @NotNull String path) {
         primaryRewardFlag.loadValue(config, path);
         secondaryRewardFlag.loadValue(config, path);
     }

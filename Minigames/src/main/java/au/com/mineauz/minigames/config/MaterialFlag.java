@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemMaterial;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,24 +16,30 @@ import java.util.List;
  * Created by benjamincharlton on 15/11/2018.
  */
 public class MaterialFlag extends AFlag<Material> {
-    public MaterialFlag(Material mat, String name) {
+
+    public MaterialFlag(Material mat, @NotNull String name) {
         setFlag(mat);
         setDefaultFlag(mat);
         setName(name);
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
-        config.set(path + "." + getName(), getFlag().name());
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+        if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
+            config.set(path + config.options().pathSeparator() + getName(), getFlag().name());
+        } else {
+            config.set(path + config.options().pathSeparator() + getName(), null);
+        }
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        if (config.contains(path + "." + getName())) {
-            Material flag = Material.matchMaterial(config.getString(path + "." + getName()));
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        if (config.contains(path + config.options().pathSeparator() + getName())) {
+            Material flag = Material.matchMaterial(config.getString(path + config.options().pathSeparator() + getName(), ""));
             if (flag == null) {
-                flag = Material.STONE;
-                Minigames.getCmpnntLogger().warn("Failed to load Material from config at :" + path + "." + getName() + " Value: " + config.getString(path + "." + getName()));
+                flag = getDefaultFlag();
+                Minigames.getCmpnntLogger().warn("Failed to load Material from config at :" + path + config.options().pathSeparator() + getName() +
+                        " Value: " + config.getString(path + config.options().pathSeparator() + getName()));
             }
             setFlag(flag);
         } else {

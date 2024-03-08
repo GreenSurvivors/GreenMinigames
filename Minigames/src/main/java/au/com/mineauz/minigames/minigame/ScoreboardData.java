@@ -59,28 +59,25 @@ public class ScoreboardData {
     }
 
     public void saveDisplays(MinigameSave save, String name) {
-        FileConfiguration root = save.getConfig();
-        ConfigurationSection section = root.createSection(name + ".scoreboards");
+        FileConfiguration config = save.getConfig();
 
         int index = 0;
         for (ScoreboardDisplay display : displays.values()) {
-            ConfigurationSection displaySection = section.createSection(String.valueOf(index++));
-            display.save(displaySection);
+            display.save(config, name + config.options().pathSeparator() + "scoreboards" + config.options().pathSeparator() + index++);
         }
     }
 
     public void loadDisplays(MinigameSave save, Minigame mgm) {
-        FileConfiguration con = save.getConfig();
-        ConfigurationSection root = con.getConfigurationSection(mgm.getName() + ".scoreboards");
+        FileConfiguration config = save.getConfig();
+        ConfigurationSection root = config.getConfigurationSection(mgm.getName() + config.options().pathSeparator() + "scoreboards");
 
         if (root == null) {
             return;
         }
 
         for (String key : root.getKeys(false)) {
-            ConfigurationSection displayConf = root.getConfigurationSection(key);
-
-            ScoreboardDisplay display = ScoreboardDisplay.load(mgm, displayConf);
+            ScoreboardDisplay display = ScoreboardDisplay.load(mgm, config, mgm.getName() + config.options().pathSeparator() +
+                    "scoreboards" + config.options().pathSeparator() + key);
             if (display != null) {
                 addDisplay(display);
             }

@@ -368,7 +368,8 @@ public class RecorderData implements Listener {
             return;
         }
 
-        File file = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName() + "/backup.json");
+        File file = new File(plugin.getDataFolder() + File.separator + "minigames" + File.separator +
+                minigame.getName() + File.separator + "backup.json");
 
         // register custom serializer for Position.
         // this is purely for backwards compatibility.
@@ -401,7 +402,8 @@ public class RecorderData implements Listener {
             Minigames.getCmpnntLogger().info("Converted backup for: " + minigame.getName());
             return true;
         } else {
-            File file = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName() + "/backup.json");
+            File file = new File(plugin.getDataFolder() + File.separator + "minigames" + File.separator +
+                    minigame.getName() + File.separator + "backup.json");
 
             if (file.exists() && file.isFile() && file.canRead()) {
                 // register custom deserializer for Position.
@@ -440,8 +442,9 @@ public class RecorderData implements Listener {
         return false;
     }
 
-    private boolean covertOldFormat() {
-        File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName() + "/backup.dat");
+    private boolean covertOldFormat() { // dataFixerUpper
+        File f = new File(plugin.getDataFolder() + File.separator + "minigames" + File.separator +
+                minigame.getName() + File.separator + "backup.dat");
 
         if (!f.exists()) {
             return false;

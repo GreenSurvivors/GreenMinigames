@@ -11,7 +11,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
+import au.com.mineauz.minigames.minigame.reward.ARewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
@@ -19,8 +19,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -119,8 +119,8 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends Rew
 
         // Apply reward
         if (reward != null) {
-            List<RewardType> rewardItems = reward.getReward();
-            for (RewardType item : rewardItems) {
+            List<ARewardType> rewardItems = reward.getReward();
+            for (ARewardType item : rewardItems) {
                 item.giveReward(player);
             }
         }
@@ -133,54 +133,50 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends Rew
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+    public void save(@NotNull Configuration config, @NotNull String path) {
         comparisonType.saveValue(config, path);
         enableRewardsOnLoss.saveValue(config, path);
         lossUsesSecondary.saveValue(config, path);
 
-        ConfigurationSection primary = config.createSection(path + ".score-primary");
-        ConfigurationSection secondary = config.createSection(path + ".score-secondary");
-
-        save(primaryRewards, primary);
-        save(secondaryRewards, secondary);
+        save(primaryRewards, config, path + config.options().pathSeparator() + "score-primary");
+        save(secondaryRewards, config, path + config.options().pathSeparator() + "score-secondary");
     }
 
-    private void save(TreeMap<T, Rewards> map, ConfigurationSection section) {
+    private void save(@NotNull TreeMap<@NotNull T, @NotNull Rewards> map, @NotNull Configuration config, @NotNull String path) {
         for (Entry<T, Rewards> entry : map.entrySet()) {
-            ConfigurationSection scoreSection = section.createSection(String.valueOf(entry.getKey()));
-            entry.getValue().save(scoreSection);
+            entry.getValue().save(config, path + config.options().pathSeparator() + entry.getKey());
         }
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+    public void load(@NotNull Configuration config, @NotNull String path) {
         comparisonType.loadValue(config, path);
         enableRewardsOnLoss.loadValue(config, path);
         lossUsesSecondary.loadValue(config, path);
 
-        ConfigurationSection primary = config.getConfigurationSection("score-primary");
-        ConfigurationSection secondary = config.getConfigurationSection("score-secondary");
-        if (primary != null) {
-            load(primaryRewards, primary);
-        }
-        if (secondary != null) {
-            load(secondaryRewards, secondary);
-        }
+        load(primaryRewards, config, path + config.options().pathSeparator() + "score-primary");
+        load(secondaryRewards, config, path + config.options().pathSeparator() + "score-secondary");
     }
 
     protected abstract T loadKey(String key);
 
-    private void load(TreeMap<T, Rewards> map, @NotNull ConfigurationSection section) {
+    private void load(@NotNull TreeMap<@NotNull T, @NotNull Rewards> map, @NotNull Configuration config, @NotNull String path) {
         map.clear();
-        for (String key : section.getKeys(false)) {
-            T value = loadKey(key);
+        ConfigurationSection section = config.getConfigurationSection(path);
+        char configSeparator = config.options().pathSeparator();
 
-            ConfigurationSection subSection = section.getConfigurationSection(key);
-            Rewards reward = new Rewards();
-            if (subSection != null) {
-                reward.load(subSection);
+        if (section != null) {
+            for (String key : section.getKeys(false)) {
+                T value = loadKey(key);
+
+                ConfigurationSection subSection = config.getConfigurationSection(path + configSeparator + key);
+
+                Rewards reward = new Rewards();
+                if (subSection != null) {
+                    reward.load(config, path + configSeparator + key);
+                }
+                map.put(value, reward);
             }
-            map.put(value, reward);
         }
     }
 
@@ -335,7 +331,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends Rew
         }
     }
 
-    private class MenuItemAddReward extends MenuItem {
+    public class MenuItemAddReward extends MenuItem {
         private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
 
         public MenuItemAddReward(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,

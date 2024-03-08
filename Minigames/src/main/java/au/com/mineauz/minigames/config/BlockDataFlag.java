@@ -10,36 +10,44 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 public class BlockDataFlag extends AFlag<BlockData> {
 
-    public BlockDataFlag(BlockData value, String name) {
+    public BlockDataFlag(BlockData value, @NotNull String name) {
         setDefaultFlag(value);
         setFlag(value);
         setName(name);
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
-        config.set(path + "." + getName(), getFlag().getAsString());
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+        if (getFlag() != getDefaultFlag()) {
+            config.set(path + config.options().pathSeparator() + getName(), getFlag().getAsString());
+        } else {
+            config.set(path + config.options().pathSeparator() + getName(), null);
+        }
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        String obj = config.getString(path + "." + getName());
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        String obj = config.getString(path + config.options().pathSeparator() + getName(), "");
         BlockData data = null;
         try {
             data = Bukkit.createBlockData(obj);
         } catch (NullPointerException | IllegalArgumentException e) {
             Minigames.getCmpnntLogger().warn("couldn't load Blockdata flag. Legacy data loading was removed.", e);
         }
-        setFlag(Objects.requireNonNullElseGet(data, Material.STONE::createBlockData));
+
+        if (data != null) {
+            setFlag(data);
+        } else {
+            setFlag(getDefaultFlag());
+        }
     }
 
     /**

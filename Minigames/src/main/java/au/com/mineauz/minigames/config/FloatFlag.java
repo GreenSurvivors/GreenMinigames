@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemDecimal;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,20 +12,24 @@ import java.util.List;
 
 public class FloatFlag extends AFlag<Float> {
 
-    public FloatFlag(Float value, String name) {
+    public FloatFlag(Float value, @NotNull String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
-        config.set(path + "." + getName(), getFlag().doubleValue());
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+        if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
+            config.set(path + config.options().pathSeparator() + getName(), getFlag().doubleValue());
+        } else {
+            config.set(path + config.options().pathSeparator() + getName(), null);
+        }
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        setFlag(((Double) config.getDouble(path + "." + getName())).floatValue());
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        setFlag(((Double) config.getDouble(path + config.options().pathSeparator() + getName(), getDefaultFlag())).floatValue());
     }
 
     @Override

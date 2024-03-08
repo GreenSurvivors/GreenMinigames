@@ -10,8 +10,8 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.minigame.reward.ARewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
@@ -64,7 +64,7 @@ public class RewardSign extends AMinigameSign {
                 if (!mgPlayer.hasTempClaimedReward(label)) {
                     if (mdata.hasRewardSign(loc)) {
                         Rewards rew = mdata.getRewardsRewardSign(loc);
-                        for (RewardType r : rew.getReward()) {
+                        for (ARewardType r : rew.getReward()) {
                             r.giveReward(mgPlayer);
                         }
                     }
@@ -74,7 +74,7 @@ public class RewardSign extends AMinigameSign {
                 if (!mgPlayer.hasClaimedReward(label)) {
                     if (mdata.hasRewardSign(loc)) {
                         Rewards rew = mdata.getRewardsRewardSign(loc);
-                        for (RewardType r : rew.getReward()) {
+                        for (ARewardType r : rew.getReward()) {
                             r.giveReward(mgPlayer);
                         }
 
@@ -110,7 +110,7 @@ public class RewardSign extends AMinigameSign {
             //}
 
             List<MenuItem> menuItems = new ArrayList<>();
-            for (RewardType item : rew.getRewards()) {
+            for (ARewardType item : rew.getRewards()) {
                 menuItems.add(item.getMenuItem());
             }
 

@@ -34,6 +34,7 @@ import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -104,8 +105,7 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag randomizeChests = new BooleanFlag(false, "randomizechests");
     private final IntegerFlag minChestRandom = new IntegerFlag(5, "minchestrandom");
     private final IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
-    @NotNull
-    private final ScoreboardData sbData = new ScoreboardData();
+    private final @NotNull ScoreboardData sbData = new ScoreboardData();
     private final Map<MinigameStat, StatSettings> statSettings = new HashMap<>();
     private final BooleanFlag activatePlayerRecorder = new BooleanFlag(true, "activatePlayerRecorder");
     //Unsaved data
@@ -1414,6 +1414,7 @@ public class Minigame implements ScriptObject {
     public void saveMinigame() {
         MinigameSave minigame = new MinigameSave(name, "config");
         FileConfiguration cfg = minigame.getConfig();
+        char configSeparator = cfg.options().pathSeparator();
         cfg.set(name, null);
         cfg.createSection(name);
 
@@ -1422,7 +1423,7 @@ public class Minigame implements ScriptObject {
                 module.save(cfg, name);
 
             } else {
-                MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
+                MinigameSave modsave = new MinigameSave("minigames" + File.separator + name + File.separator + module.getName().toLowerCase());
                 modsave.getConfig().set(name, null);
                 modsave.getConfig().createSection(name);
                 module.save(modsave.getConfig(), name);
@@ -1439,8 +1440,8 @@ public class Minigame implements ScriptObject {
         }
 
         //dataFixerUpper
-        if (cfg.contains(name + ".useXPBarTimer")) {
-            cfg.set(name + ".useXPBarTimer", null);
+        if (cfg.contains(name + configSeparator + "useXPBarTimer")) {
+            cfg.set(name + configSeparator + "useXPBarTimer", null);
         }
 
         if (!getRecorderData().getWBBlocks().isEmpty()) {
@@ -1448,11 +1449,11 @@ public class Minigame implements ScriptObject {
             for (Material mat : getRecorderData().getWBBlocks()) {
                 blocklist.add(mat.toString());
             }
-            minigame.getConfig().set(name + ".whitelistblocks", blocklist);
+            minigame.getConfig().set(name + configSeparator + "whitelistblocks", blocklist);
         }
 
         if (getRecorderData().getWhitelistMode()) {
-            minigame.getConfig().set(name + ".whitelistmode", getRecorderData().getWhitelistMode());
+            minigame.getConfig().set(name + configSeparator + "whitelistmode", getRecorderData().getWhitelistMode());
         }
 
         getScoreboardData().saveDisplays(minigame, name);
@@ -1465,36 +1466,37 @@ public class Minigame implements ScriptObject {
     public void loadMinigame() {
         MinigameSave minigame = new MinigameSave(name, "config");
         FileConfiguration cfg = minigame.getConfig();
+        char configSeparator = cfg.options().pathSeparator();
         for (MinigameModule module : getModules()) {
             if (!module.useSeparateConfig()) {
                 module.load(cfg, name);
             } else {
-                MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
+                MinigameSave modsave = new MinigameSave("minigames" + File.separator + name + File.separator + module.getName().toLowerCase());
                 module.load(modsave.getConfig(), name);
             }
         }
 
         for (String flag : configFlags.keySet()) {
-            if (cfg.contains(name + "." + flag)) {
+            if (cfg.contains(name + configSeparator + flag)) {
                 configFlags.get(flag).loadValue(cfg, name);
             }
         }
 
         //dataFixerUpper
-        if (cfg.contains(name + ".useXPBarTimer")) {
-            if (cfg.getBoolean(name + ".useXPBarTimer")) {
+        if (cfg.contains(name + configSeparator + "useXPBarTimer")) {
+            if (cfg.getBoolean(name + configSeparator + "useXPBarTimer")) {
                 timerDisplayType.setFlag(MinigameTimer.DisplayType.XP_BAR);
             } else {
                 timerDisplayType.setFlag(MinigameTimer.DisplayType.NONE);
             }
         }
 
-        if (minigame.getConfig().contains(name + ".whitelistmode")) {
-            getRecorderData().setWhitelistMode(minigame.getConfig().getBoolean(name + ".whitelistmode"));
+        if (minigame.getConfig().contains(name + configSeparator + "whitelistmode")) {
+            getRecorderData().setWhitelistMode(minigame.getConfig().getBoolean(name + configSeparator + "whitelistmode"));
         }
 
-        if (minigame.getConfig().contains(name + ".whitelistblocks")) {
-            List<String> blocklist = minigame.getConfig().getStringList(name + ".whitelistblocks");
+        if (minigame.getConfig().contains(name + configSeparator + "whitelistblocks")) {
+            List<String> blocklist = minigame.getConfig().getStringList(name + configSeparator + "whitelistblocks");
             for (String block : blocklist) {
                 Material material = Material.matchMaterial(block);
                 if (material == null) {

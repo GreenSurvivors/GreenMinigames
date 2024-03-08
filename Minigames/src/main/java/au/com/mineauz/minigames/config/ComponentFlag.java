@@ -5,27 +5,31 @@ import au.com.mineauz.minigames.menu.MenuItemComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class ComponentFlag extends AFlag<Component> {
-    public ComponentFlag(Component value, String name) {
+    public ComponentFlag(Component value, @NotNull String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
-        config.set(path + "." + getName(), MiniMessage.miniMessage().serialize(getFlag()));
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+        if (getFlag() != getDefaultFlag()) {
+            config.set(path + config.options().pathSeparator() + getName(), MiniMessage.miniMessage().serialize(getFlag()));
+        } else {
+            config.set(path + config.options().pathSeparator() + getName(), null);
+        }
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        final String confStr = config.getString(path + "." + getName());
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        final String confStr = config.getString(path + config.options().pathSeparator() + getName());
         if (confStr != null) {
             setFlag(MiniMessage.miniMessage().deserialize(confStr));
         } else {
