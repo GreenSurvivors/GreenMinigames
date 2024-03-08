@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.menu.MenuItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,20 +12,28 @@ import java.util.List;
 
 public class LoadoutFlag extends AFlag<PlayerLoadout> {
 
-    public LoadoutFlag(PlayerLoadout value, String name) {
+    public LoadoutFlag(PlayerLoadout value, @NotNull String name) {
         setFlag(value);
         setDefaultFlag(null);
         setName(name);
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
-        getFlag().save(config, path + "." + getName());
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+        if (getFlag() != null) {
+            getFlag().save(config, path + config.options().pathSeparator() + getName());
+        } else {
+            config.set(path + config.options().pathSeparator() + getName(), null);
+        }
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        getFlag().load(config, path + "." + getName());
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        if (getFlag() != null) {
+            getFlag().load(config, path + config.options().pathSeparator() + getName());
+        } else {
+            setFlag(getDefaultFlag());
+        }
     }
 
     @Deprecated

@@ -38,7 +38,7 @@ public class TeamsModule extends MinigameModule {
     @Override
     public void save(@NotNull FileConfiguration config, @NotNull String path) {
         for (TeamFlag teamFlag : teams.values()) {
-            teamFlag.saveValue(config, path + ".teams");
+            teamFlag.saveValue(config, path + config.options().pathSeparator() + "teams");
         }
 
         defaultWinner.saveValue(config, path);
@@ -47,18 +47,20 @@ public class TeamsModule extends MinigameModule {
     @Override
     public void load(@NotNull FileConfiguration config, @NotNull String path) {
         // this does not have a dataFixerUpper
-        if (config.contains(path + ".startposred") || config.contains(path + ".startposblue")) {
-            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + getMinigame().getName() + ".startpos*");
+        if (config.contains(path + config.options().pathSeparator() + "startposred") ||
+                config.contains(path + config.options().pathSeparator() + "startposblue")) {
+            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " +
+                    path + config.options().pathSeparator() + "startpos*");
         }
 
-        final ConfigurationSection configSection = config.getConfigurationSection(path + ".teams");
+        final ConfigurationSection configSection = config.getConfigurationSection(path + config.options().pathSeparator() + "teams");
         if (configSection != null) {
             Set<String> teamNames = configSection.getKeys(false);
             Scoreboard scoreboard = getMinigame().getScoreboardManager();
 
             for (String teamName : teamNames) {
                 TeamFlag tf = new TeamFlag(null, teamName, getMinigame());
-                tf.loadValue(config, path + "." + getName().toLowerCase());
+                tf.loadValue(config, path + config.options().pathSeparator() + getName().toLowerCase());
 
                 teams.put(tf.getFlag().getColor(), tf);
                 String sbTeam = tf.getFlag().getColor().toString().toLowerCase();

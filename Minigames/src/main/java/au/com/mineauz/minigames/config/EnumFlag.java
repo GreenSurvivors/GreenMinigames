@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemEnum;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +14,7 @@ public class EnumFlag<T extends Enum<T>> extends AFlag<T> {
     private final Class<T> enumClass;
 
     @SuppressWarnings("unchecked")
-    public EnumFlag(T value, String name) {
+    public EnumFlag(T value, @NotNull String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -22,20 +22,30 @@ public class EnumFlag<T extends Enum<T>> extends AFlag<T> {
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
-        config.set(path + "." + getName(), getFlag().name());
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+        if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
+            config.set(path + config.options().pathSeparator() + getName(), getFlag().name());
+        } else {
+            config.set(path + config.options().pathSeparator() + getName(), null);
+        }
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        String configStr = config.getString(path + "." + getName());
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        String configStr = config.getString(path + config.options().pathSeparator() + getName());
+        boolean notFound = true;
 
         // case-insensitive loading
         for (T value : enumClass.getEnumConstants()) {
             if (value.name().equalsIgnoreCase(configStr)) {
+                notFound = false;
                 setFlag(value);
                 break;
             }
+        }
+
+        if (notFound) {
+            setFlag(getDefaultFlag());
         }
     }
 

@@ -179,8 +179,9 @@ public class SpawnEntityAction extends AAction {
         type.saveValue(config, path);
 
         /* // temp
+        char configSeparator = config.options().pathSeparator();
         for (Map.Entry<String, ConfigSerializableBridge<?>> entry : settings.entrySet()) {
-            config.set(path + ".settings." + entry.getKey(), entry.getValue().serialize());
+            config.set(path + configSeparator + "settings" + configSeparator + entry.getKey(), entry.getValue().serialize());
         }*/
     }
 
@@ -190,17 +191,18 @@ public class SpawnEntityAction extends AAction {
         type.loadValue(config, path);
         /*
         settings.clear();
-        ConfigurationSection section = config.getConfigurationSection(path + ".settings");
+        char configSeparator = config.options().pathSeparator();
+        ConfigurationSection section = config.getConfigurationSection(path + configSeparator + "settings");
         if (section != null) { // may was empty
             Set<String> keys = section.getKeys(false);
 
             for (String key : keys) {
-                ConfigSerializableBridge<?> serializableBridge = ConfigSerializableBridge.deserialize(config.get(path + ".settings." + key));
+                ConfigSerializableBridge<?> serializableBridge = ConfigSerializableBridge.deserialize(config.get(path + configSeparator + "settings" + configSeparator + key));
 
                 if (serializableBridge != null) {
                     settings.put(key, serializableBridge);
                 } else {
-                    Minigames.getCmpnntLogger().warn("Key \"" + key + "\" of ConfigSerializableBridge in SpawnEntityAction of path \"" + path + ".settings." + key + "\" failed to load!");
+                    Minigames.getCmpnntLogger().warn("Key \"" + key + "\" of ConfigSerializableBridge in SpawnEntityAction of path \"" + path + configSeparator + "settings" + configSeparator + key + "\" failed to load!");
                 }
             }
         }*/

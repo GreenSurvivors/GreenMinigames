@@ -86,16 +86,18 @@ public class LoadoutModule extends MinigameModule {
 
     @Override
     public void save(@NotNull FileConfiguration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
         LoadoutFlag loadoutFlag;
         for (Map.Entry<String, PlayerLoadout> loadoutEntry : loadouts.entrySet()) {
             loadoutFlag = new LoadoutFlag(loadoutEntry.getValue(), loadoutEntry.getKey());
-            loadoutFlag.saveValue(config, path + ".loadouts");
+            loadoutFlag.saveValue(config, path + configSeparator + "loadouts");
         }
     }
 
     @Override
     public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        final ConfigurationSection configSection = config.getConfigurationSection(path + ".loadouts");
+        char configSeparator = config.options().pathSeparator();
+        final ConfigurationSection configSection = config.getConfigurationSection(path + configSeparator + "loadouts");
         if (configSection != null) {
             LoadoutFlag loadoutFlag;
 
@@ -104,16 +106,16 @@ public class LoadoutModule extends MinigameModule {
                 if (loadout.equals("default")) {
                     loadoutFlag.getFlag().setDeletable(false);
                 }
-                loadoutFlag.loadValue(config, path + "." + getName().toLowerCase());
+                loadoutFlag.loadValue(config, path + configSeparator + getName().toLowerCase());
                 loadouts.put(loadoutFlag.getName(), loadoutFlag.getFlag());
             }
         }
 
-        if (config.contains(path + ".loadout")) {
-            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + path + ".loadout");
+        if (config.contains(path + configSeparator + configSeparator + "loadout")) {
+            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + path + configSeparator + "loadout");
         }
-        if (config.contains(path + ".extraloadouts")) {
-            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + path + ".extraloadouts");
+        if (config.contains(path + configSeparator + "extraloadouts")) {
+            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + path + configSeparator + "extraloadouts");
         }
     }
 

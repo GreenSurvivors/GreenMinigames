@@ -4,8 +4,8 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MgRegion;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,33 +37,38 @@ public class RegionMapFlag extends AFlag<Map<String, MgRegion>> { // todo move t
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
+
         if (!getFlag().isEmpty()) {
             RegionFlag regionFlag;
 
             for (MgRegion region : getFlag().values()) {
-                regionFlag = new RegionFlag(region, getName() + "." + region.getName());
+                regionFlag = new RegionFlag(region, getName() + configSeparator + region.getName());
                 regionFlag.saveValue(config, path);
             }
+        } else {
+            config.set(path + configSeparator + getName(), null);
         }
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
         Map<String, MgRegion> regions = new HashMap<>();
-        ConfigurationSection section = config.getConfigurationSection(path + "." + getName());
+        ConfigurationSection section = config.getConfigurationSection(path + configSeparator + getName());
         if (section != null) {
             Set<String> regionNames = section.getKeys(false);
             RegionFlag regionFlag;
 
             for (String regionName : regionNames) {
-                regionFlag = new RegionFlag(null, getName() + "." + regionName);
+                regionFlag = new RegionFlag(null, getName() + configSeparator + regionName);
                 regionFlag.loadValue(config, path);
                 regions.put(regionFlag.getFlag().getName(), regionFlag.getFlag());
             }
         }
 
-        //import legacy regions from before regions existed
+        //dataFixerUpper - import legacy regions from before regions existed
         if (legacyFistPointLabel != null && legacySecondPointLabel != null) {
             SimpleLocationFlag locFlag1 = new SimpleLocationFlag(null, legacyFistPointLabel);
             SimpleLocationFlag locFlag2 = new SimpleLocationFlag(null, legacySecondPointLabel);
@@ -71,6 +76,10 @@ public class RegionMapFlag extends AFlag<Map<String, MgRegion>> { // todo move t
             if (locFlag1.getFlag() != null && locFlag2.getFlag() != null) {
                 regions.put("legacy", new MgRegion("legacy", locFlag1.getFlag(), locFlag2.getFlag()));
             }
+        }
+
+        if (regions.isEmpty()) {
+            regions = getDefaultFlag();
         }
 
         setFlag(regions);

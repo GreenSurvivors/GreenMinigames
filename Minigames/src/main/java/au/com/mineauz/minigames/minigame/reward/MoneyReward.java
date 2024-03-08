@@ -13,7 +13,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MoneyReward extends RewardType {
+public class MoneyReward extends ARewardType {
     private final static Minigames PLUGIN = Minigames.getPlugin();
     private final static String DESCRIPTION_TOKEN = "Reward_description";
     private double money = 0d;
@@ -36,7 +36,7 @@ public class MoneyReward extends RewardType {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "MONEY";
     }
 
@@ -59,17 +59,17 @@ public class MoneyReward extends RewardType {
     }
 
     @Override
-    public MenuItem getMenuItem() {
+    public @NotNull MenuItem getMenuItem() {
         return new MenuItemReward(this);
     }
 
     @Override
-    public void saveReward(String path, ConfigurationSection config) {
+    public void saveReward(@NotNull Configuration config, @NotNull String path) {
         config.set(path, money);
     }
 
     @Override
-    public void loadReward(String path, ConfigurationSection config) {
+    public void loadReward(@NotNull Configuration config, @NotNull String path) {
         money = config.getDouble(path);
     }
 

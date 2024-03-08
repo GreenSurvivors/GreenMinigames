@@ -10,6 +10,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -189,14 +190,16 @@ public class MinigameUtils {
     /**
      * Saves a short location (x, y, z, world) to a configuration section
      *
-     * @param section  The ConfigurationSection to save into
+     * @param config  The Configuration to save into
      * @param location The location to save
      */
-    public static void saveShortLocation(ConfigurationSection section, Location location) {
-        section.set("x", location.getX());
-        section.set("y", location.getY());
-        section.set("z", location.getZ());
-        section.set("world", location.getWorld().getName());
+    public static void saveShortLocation(@NotNull Configuration config, @NotNull String path, @NotNull Location location) {
+        char configSeparator = config.options().pathSeparator();
+
+        config.set(path + configSeparator + "world", location.getWorld().getName());
+        config.set(path + configSeparator + "x", location.getX());
+        config.set(path + configSeparator + "y", location.getY());
+        config.set(path + configSeparator + "z", location.getZ());
     }
 
     /**

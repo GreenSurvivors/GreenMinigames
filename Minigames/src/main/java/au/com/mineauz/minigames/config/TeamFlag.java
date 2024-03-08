@@ -6,7 +6,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Set;
 
 public class TeamFlag extends AFlag<Team> {
-    private final Minigame mgm;
+    private final @NotNull Minigame mgm;
 
-    public TeamFlag(Team value, String name, Minigame mgm) {
+    public TeamFlag(Team value, @NotNull String name, @NotNull Minigame mgm) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -24,33 +24,37 @@ public class TeamFlag extends AFlag<Team> {
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
-        config.set(path + "." + getName() + ".displayName", getFlag().getDisplayName());
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
+
+        config.set(path + configSeparator + getName() + configSeparator + "displayName", getFlag().getDisplayName());
         if (!getFlag().getStartLocations().isEmpty()) {
             for (int i = 0; i < getFlag().getStartLocations().size(); i++) {
-                LocationFlag locf = new LocationFlag(null, "startpos." + i);
+                LocationFlag locf = new LocationFlag(null, "startpos" + configSeparator + i);
                 locf.setFlag(getFlag().getStartLocations().get(i));
-                locf.saveValue(config, path + "." + getName());
+                locf.saveValue(config, path + configSeparator + getName());
             }
         }
 
-        getFlag().save(config, path + "." + getName());
+        getFlag().save(config, path + configSeparator + getName());
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        Team team = new Team(TeamColor.valueOf(getName()), mgm);
-        team.setDisplayName(config.getString(path + "." + getName() + ".displayName"));
-        if (config.contains(path + "." + getName() + ".startpos")) {
-            Set<String> locations = config.getConfigurationSection(path + "." + getName() + ".startpos").getKeys(false);
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
+
+        Team team = new Team(TeamColor.matchColor(getName()), mgm);
+        team.setDisplayName(config.getString(path + configSeparator + getName() + configSeparator + "displayName"));
+        if (config.contains(path + configSeparator + getName() + configSeparator + "startpos")) {
+            Set<String> locations = config.getConfigurationSection(path + configSeparator + getName() + configSeparator + "startpos").getKeys(false);
             for (String loc : locations) {
-                LocationFlag locf = new LocationFlag(null, "startpos." + loc);
-                locf.loadValue(config, path + "." + getName());
+                LocationFlag locf = new LocationFlag(null, "startpos" + configSeparator + loc);
+                locf.loadValue(config, path + configSeparator + getName());
                 team.addStartLocation(locf.getFlag());
             }
         }
 
-        team.load(config, path + "." + getName());
+        team.load(config, path + configSeparator + getName());
         setFlag(team);
     }
 

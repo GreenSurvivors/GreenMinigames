@@ -108,9 +108,11 @@ public class GiveItemAction extends AAction {
         count.saveValue(config, path);
 
         //dataFixerUpper
-        config.set(path + ".type", null);
-        config.set(path + ".name", null);
-        config.set(path + ".lore", null);
+
+        char configSeparator = config.options().pathSeparator();
+        config.set(path + configSeparator + "type", null);
+        config.set(path + configSeparator + "name", null);
+        config.set(path + configSeparator + "lore", null);
     }
 
     @Override
@@ -122,27 +124,28 @@ public class GiveItemAction extends AAction {
         tempItem.setAmount(count.getFlag());
 
         //dataFixerUpper
-        if (config.contains(path + ".type")) {
-            Material mat = Material.matchMaterial(config.getString(path + ".type", ""));
+        char configSeparator = config.options().pathSeparator();
+        if (config.contains(path + configSeparator + "type")) {
+            Material mat = Material.matchMaterial(config.getString(path + configSeparator + "type", ""));
 
             if (mat != null) {
                 tempItem.setType(mat);
             }
         }
         ItemMeta meta = tempItem.getItemMeta();
-        if (config.contains(path + ".name")) {
-            Material mat = Material.matchMaterial(config.getString(path + ".type", ""));
+        if (config.contains(path + configSeparator + "name")) {
+            Material mat = Material.matchMaterial(config.getString(path + configSeparator + "type", ""));
 
             if (mat != null) {
                 tempItem.setType(mat);
             }
         }
 
-        if (config.contains(path + ".name")) {
-            meta.displayName(MiniMessage.miniMessage().deserialize(config.getString(path + ".name", "")));
+        if (config.contains(path + configSeparator + "name")) {
+            meta.displayName(MiniMessage.miniMessage().deserialize(config.getString(path + configSeparator + "name", "")));
         }
-        if (config.contains(path + ".lore")) {
-            List<Component> newLore = Arrays.stream(config.getString(path + ".lore", "").split(";")).
+        if (config.contains(path + configSeparator + "lore")) {
+            List<Component> newLore = Arrays.stream(config.getString(path + configSeparator + "lore", "").split(";")).
                     map(MiniMessage.miniMessage()::deserialize).toList(); //as the description states semicolons will be used for new lines
             meta.lore(newLore);
         }

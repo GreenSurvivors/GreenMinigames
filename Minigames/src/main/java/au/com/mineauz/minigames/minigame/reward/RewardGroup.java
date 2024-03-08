@@ -1,15 +1,16 @@
 package au.com.mineauz.minigames.minigame.reward;
 
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RewardGroup {
     private final String groupName;
-    //    private List<RewardItem> items = new ArrayList<RewardItem>();
-    private final List<RewardType> items = new ArrayList<>();
+    private final List<ARewardType> items = new ArrayList<>();
     private RewardRarity rarity;
 
     public RewardGroup(String groupName, RewardRarity rarity) {
@@ -17,54 +18,51 @@ public class RewardGroup {
         this.rarity = rarity;
     }
 
-    public static RewardGroup load(ConfigurationSection section, Rewards container) {
-        RewardRarity rarity = RewardRarity.valueOf(section.getString("rarity"));
-        RewardGroup group = new RewardGroup(section.getName(), rarity);
+    public static @Nullable RewardGroup load(@NotNull Configuration config, @NotNull String path, @NotNull Rewards container) {
+        char configSeparator = config.options().pathSeparator();
+        ConfigurationSection section = config.getConfigurationSection(path);
+        if (section != null) {
+            RewardRarity rarity = RewardRarity.valueOf(config.getString(path + configSeparator + "rarity"));
 
-        // Load contents
-        for (String key : section.getKeys(false)) {
-            if (key.equals("rarity")) {
-                continue;
-            }
-
-            ConfigurationSection itemSection = section.getConfigurationSection(key);
-
-            // Upgrade from pre 1.7
-            // TODO: Remove after 1.7 release
-            if (!itemSection.contains("data")) {
-                ItemStack item = itemSection.getItemStack("item");
-                RewardType it;
-                if (item != null) {
-                    it = RewardTypes.getRewardType("ITEM", container);
-                    it.loadReward("item", itemSection);
-                } else {
-                    it = RewardTypes.getRewardType("MONEY", container);
-                    it.loadReward("money", itemSection);
-                }
-                group.addItem(it);
+            int index = path.lastIndexOf(configSeparator);
+            String groupName;
+            if (index > 0) {
+                groupName = path.substring(index + 1);
             } else {
-                RewardType rew = RewardTypes.getRewardType(itemSection.getString("type"), container);
-                rew.loadReward("data", itemSection);
+                groupName = path;
+            }
+            RewardGroup group = new RewardGroup(groupName, rarity);
+
+            // Load contents
+            for (String key : section.getKeys(false)) {
+                if (key.equals("rarity")) {
+                    continue;
+                }
+
+                ARewardType rew = RewardTypes.getRewardType(config.getString(path + configSeparator + key + "type"), container);
+                rew.loadReward(config, path + key + configSeparator + "data");
                 group.addItem(rew);
             }
-        }
 
-        return group;
+            return group;
+        } else {
+            return null;
+        }
     }
 
     public String getName() {
         return groupName;
     }
 
-    public void addItem(RewardType item) {
+    public void addItem(ARewardType item) {
         items.add(item);
     }
 
-    public void removeItem(RewardType item) {
+    public void removeItem(ARewardType item) {
         items.remove(item);
     }
 
-    public List<RewardType> getItems() {
+    public List<ARewardType> getItems() {
         return items;
     }
 
@@ -80,15 +78,15 @@ public class RewardGroup {
         items.clear();
     }
 
-    public void save(ConfigurationSection section) {
+    public void save(@NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
         int index = 0;
-        for (RewardType item : items) {
-            ConfigurationSection itemSection = section.createSection(String.valueOf(index));
-            itemSection.set("type", item.getName());
-            item.saveReward("data", itemSection);
+        for (ARewardType item : items) {
+            config.set(path + configSeparator + index + configSeparator + "type", item.getName());
+            item.saveReward(config, path + configSeparator + index + configSeparator + "data");
             index++;
         }
 
-        section.set("rarity", rarity.name());
+        config.set(path + configSeparator + "rarity", rarity.name());
     }
 }

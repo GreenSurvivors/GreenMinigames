@@ -11,7 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ItemReward extends RewardType {
+public class ItemReward extends ARewardType {
     private ItemStack item = new ItemStack(Material.DIAMOND);
 
     public ItemReward(Rewards rewards) {
@@ -32,7 +32,7 @@ public class ItemReward extends RewardType {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "ITEM";
     }
 
@@ -58,17 +58,17 @@ public class ItemReward extends RewardType {
     }
 
     @Override
-    public MenuItem getMenuItem() {
+    public @NotNull MenuItem getMenuItem() {
         return new MenuItemReward(this);
     }
 
     @Override
-    public void saveReward(String path, ConfigurationSection config) {
+    public void saveReward(@NotNull Configuration config, @NotNull String path) {
         config.set(path, item);
     }
 
     @Override
-    public void loadReward(String path, ConfigurationSection config) {
+    public void loadReward(Configuration config, @NotNull String path) {
         item = config.getItemStack(path);
     }
 

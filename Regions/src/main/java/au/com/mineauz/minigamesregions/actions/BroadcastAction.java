@@ -162,7 +162,7 @@ public class BroadcastAction extends AAction {
         messageType.saveValue(config, path);
 
         // dataFixerUpper
-        config.set(path + ".redText", null);
+        config.set(path + config.options().pathSeparator() + "redText", null);
     }
 
     @Override
@@ -171,7 +171,7 @@ public class BroadcastAction extends AAction {
         excludeExecutor.loadValue(config, path);
 
         // dataFixerUpper
-        if (config.getBoolean(path + ".redText")) {
+        if (config.getBoolean(path + config.options().pathSeparator() + "redText")) {
             messageType.setFlag(MinigameMessageType.ERROR);
         } else {
             messageType.loadValue(config, path);

@@ -6,7 +6,7 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,9 +64,9 @@ public abstract class AFlag<T> {
         };
     }
 
-    public abstract void saveValue(@NotNull FileConfiguration config, @NotNull String path);
+    public abstract void saveValue(@NotNull Configuration config, @NotNull String path);
 
-    public abstract void loadValue(@NotNull FileConfiguration config, @NotNull String path);
+    public abstract void loadValue(@NotNull Configuration config, @NotNull String path);
 
     public MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
         return getMenuItem(displayMaterial, MinigameMessageManager.getMgMessage(langKey));

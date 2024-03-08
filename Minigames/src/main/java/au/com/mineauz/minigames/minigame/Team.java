@@ -20,7 +20,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team.Option;
@@ -420,7 +420,7 @@ public class Team implements ScriptObject {
         return getColor().name();
     }
 
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+    public void load(@NotNull Configuration config, @NotNull String path) {
         maxPlayers.loadValue(config, path);
         playerAssignMsg.loadValue(config, path);
         joinAnnounceMsg.loadValue(config, path);
@@ -436,7 +436,7 @@ public class Team implements ScriptObject {
         gameAutobalanceMsg.setFlag(gameAutobalanceMsg.getFlag().replaceFirst("%s", "<player>").replaceFirst("%s", "<team>"));
     }
 
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+    public void save(@NotNull Configuration config, @NotNull String path) {
         maxPlayers.saveValue(config, path);
         playerAssignMsg.saveValue(config, path);
         joinAnnounceMsg.saveValue(config, path);

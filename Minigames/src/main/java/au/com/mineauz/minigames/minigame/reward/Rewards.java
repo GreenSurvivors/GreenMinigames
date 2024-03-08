@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -8,7 +9,9 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,15 +19,14 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Rewards {
-
-    private final List<RewardType> items = new ArrayList<>();
+    private final List<ARewardType> items = new ArrayList<>();
     private final List<RewardGroup> groups = new ArrayList<>();
 
     public boolean isEmpty() {
         return items.isEmpty() && groups.isEmpty();
     }
 
-    public List<RewardType> getReward() {
+    public List<ARewardType> getReward() {
         double rand = ThreadLocalRandom.current().nextDouble();
         RewardRarity rarity;
         List<Object> itemsCopyList = new ArrayList<>();
@@ -45,14 +47,14 @@ public class Rewards {
         }
 
         if (!itemsCopyList.isEmpty()) {
-            RewardType item = null;
+            ARewardType item = null;
             RewardGroup group = null;
             final RewardRarity originalRarity = rarity;
             boolean up = false;
 
             while (item == null && group == null) {
                 for (Object ritem : itemsCopyList) {
-                    if (ritem instanceof RewardType ri) {
+                    if (ritem instanceof ARewardType ri) {
                         if (ri.getRarity() == rarity) {
                             item = ri;
                             break;
@@ -90,15 +92,15 @@ public class Rewards {
         return null;
     }
 
-    public void addReward(RewardType reward) {
+    public void addReward(ARewardType reward) {
         items.add(reward);
     }
 
-    public void removeReward(RewardType item) {
+    public void removeReward(ARewardType item) {
         items.remove(item);
     }
 
-    public List<RewardType> getRewards() {
+    public List<ARewardType> getRewards() {
         return items;
     }
 
@@ -130,7 +132,7 @@ public class Rewards {
                 parent), 44);
 
         List<MenuItem> mi = new ArrayList<>();
-        for (RewardType item : items) {
+        for (ARewardType item : items) {
             mi.add(item.getMenuItem());
         }
 
@@ -147,35 +149,43 @@ public class Rewards {
         return rewardMenu;
     }
 
-    public void save(ConfigurationSection section) {
+    public void save(@NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
         int index = 0;
-        for (RewardType item : items) {
-            ConfigurationSection itemSection = section.createSection(String.valueOf(index));
-            itemSection.set("type", item.getName());
-            itemSection.set("rarity", item.getRarity().name());
-            item.saveReward("data", itemSection);
+        for (ARewardType item : items) {
+            config.set(path + configSeparator + index + configSeparator + "type", item.getName());
+            config.set(path + configSeparator + index + configSeparator + "rarity", item.getRarity().name());
+            item.saveReward(config, path + configSeparator + index + configSeparator + "data");
             index++;
         }
 
         for (RewardGroup group : groups) {
-            ConfigurationSection groupSection = section.createSection(group.getName());
-            group.save(groupSection);
+            group.save(config, path + configSeparator + group.getName());
         }
     }
 
-    public void load(ConfigurationSection section) {
-        for (String key : section.getKeys(false)) {
-            // Load reward item
-            if (section.contains(key + ".type")) {
-                ConfigurationSection itemSection = section.getConfigurationSection(key);
-                RewardType rew = RewardTypes.getRewardType(itemSection.getString("type"), this);
-                rew.loadReward("data", itemSection);
-                rew.setRarity(RewardRarity.valueOf(itemSection.getString("rarity")));
-                addReward(rew);
-                // Load reward group
-            } else {
-                ConfigurationSection groupSection = section.getConfigurationSection(key);
-                groups.add(RewardGroup.load(groupSection, this));
+    public void load(@NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
+        ConfigurationSection section = config.getConfigurationSection(path);
+
+        if (section != null) {
+            for (String key : section.getKeys(false)) {
+                // Load reward item
+                if (section.contains(key + configSeparator + "type")) {
+                    final String rawRewardType = section.getString(key + configSeparator + "type", "");
+                    ARewardType rewardType = RewardTypes.getRewardType(rawRewardType, this);
+                    if (rewardType != null) {
+                        rewardType.loadReward(config, path + configSeparator + key + configSeparator + "data");
+                        rewardType.setRarity(RewardRarity.valueOf(config.getString(
+                                path + configSeparator + key + configSeparator + "rarity")));
+                        addReward(rewardType);
+                    } else {
+                        Minigames.getCmpnntLogger().warn("Could not load rewardType of '" +
+                                path + configSeparator + key + configSeparator + "type' with value: '" + rawRewardType + "'! Ignoring.");
+                    }
+                } else { // Load reward group
+                    groups.add(RewardGroup.load(config, path + configSeparator + key, this));
+                }
             }
         }
     }

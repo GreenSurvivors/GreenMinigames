@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,15 +19,17 @@ public class RewardsFlag extends AFlag<Rewards> {
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
         if (!getFlag().isEmpty()) {
-            getFlag().save(config.createSection(path + "." + getName()));
+            getFlag().save(config, path + config.options().pathSeparator() + getName());
+        } else {
+            config.set(path + config.options().pathSeparator() + getName(), null);
         }
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        getFlag().load(config.getConfigurationSection(path + "." + getName()));
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        getFlag().load(config, path + config.options().pathSeparator() + getName());
     }
 
     @Override

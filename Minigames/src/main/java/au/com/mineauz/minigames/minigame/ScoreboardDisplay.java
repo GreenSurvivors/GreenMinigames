@@ -20,8 +20,9 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.sign.Side;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +61,13 @@ public class ScoreboardDisplay {
         needsLoad = true;
     }
 
-    public static ScoreboardDisplay load(Minigame minigame, ConfigurationSection section) {
-        int width = section.getInt("width");
-        int height = section.getInt("height");
-        Location location = MinigameUtils.loadShortLocation(section.getConfigurationSection("location"));
-        BlockFace facing = BlockFace.valueOf(section.getString("dir"));
+    public static ScoreboardDisplay load(@NotNull Minigame minigame, @NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
+
+        int width = config.getInt(path + configSeparator + "width");
+        int height = config.getInt(path + configSeparator + "height");
+        Location location = MinigameUtils.loadShortLocation(config.getConfigurationSection(path + configSeparator + "location"));
+        BlockFace facing = BlockFace.valueOf(config.getString(path + configSeparator + "dir"));
 
         // from invalid world
         if (location == null) {
@@ -72,9 +75,9 @@ public class ScoreboardDisplay {
         }
 
         ScoreboardDisplay display = new ScoreboardDisplay(minigame, width, height, location, facing);
-        display.setOrder(ScoreboardOrder.valueOf(section.getString("order")));
-        MinigameStat stat = MinigameStatistics.getStat(section.getString("stat", "wins"));
-        StatisticValueField field = StatisticValueField.valueOf(section.getString("field", "Total"));
+        display.setOrder(ScoreboardOrder.valueOf(config.getString(path + configSeparator + "order")));
+        MinigameStat stat = MinigameStatistics.getStat(config.getString(path + configSeparator + "stat", "wins"));
+        StatisticValueField field = StatisticValueField.valueOf(config.getString(path + configSeparator + "field", "Total"));
         display.setStat(stat, field);
         Block block = location.getBlock();
         block.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
@@ -323,14 +326,16 @@ public class ScoreboardDisplay {
         }
     }
 
-    public void save(ConfigurationSection section) {
-        section.set("height", height);
-        section.set("width", width);
-        section.set("dir", facing.name());
-        section.set("stat", stat.getName());
-        section.set("field", field.name());
-        section.set("order", order.name());
-        MinigameUtils.saveShortLocation(section.createSection("location"), rootBlock);
+    public void save(@NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
+
+        config.set(path + configSeparator + "height", height);
+        config.set(path + configSeparator + "width", width);
+        config.set(path + configSeparator + "dir", facing.name());
+        config.set(path + configSeparator + "stat", stat.getName());
+        config.set(path + configSeparator + "field", field.name());
+        config.set(path + configSeparator + "order", order.name());
+        MinigameUtils.saveShortLocation(config, path + configSeparator + "location", rootBlock);
     }
 
     public void placeRootSign() {

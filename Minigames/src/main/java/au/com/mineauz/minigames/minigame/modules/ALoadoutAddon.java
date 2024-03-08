@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,9 +26,9 @@ public abstract class ALoadoutAddon {
 
     public abstract void addMenuOptions(@NotNull Menu menu);
 
-    public abstract void save(@NotNull FileConfiguration config, @NotNull String path);
+    public abstract void save(@NotNull Configuration config, @NotNull String path);
 
-    public abstract void load(@NotNull FileConfiguration config, @NotNull String path);
+    public abstract void load(@NotNull Configuration config, @NotNull String path);
 
     public abstract void applyLoadout(@NotNull MinigamePlayer player);
 

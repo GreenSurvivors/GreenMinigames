@@ -3,8 +3,8 @@ package au.com.mineauz.minigames.menu;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.minigame.reward.ARewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardTypes;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import net.kyori.adventure.text.Component;
@@ -59,7 +59,7 @@ public class MenuItemRewardAdd extends MenuItem {
         final Menu orig = getContainer();
         for (RewardTypes.RewardTypeFactory factory : RewardTypes.getRewardTypeFactories()) {
             final MenuItemCustom custom = new MenuItemCustom(Material.STONE, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_TYPE_NAME));
-            final RewardType rewType = factory.makeNewType(rewards);
+            final ARewardType rewType = factory.makeNewType(rewards);
 
             if (rewType.isUsable()) {
                 ItemMeta meta = custom.getDisplayItem().getItemMeta();

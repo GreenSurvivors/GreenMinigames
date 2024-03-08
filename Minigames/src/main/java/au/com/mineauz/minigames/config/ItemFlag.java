@@ -4,8 +4,8 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemItemNbt;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,14 +23,18 @@ public class ItemFlag extends AFlag<ItemStack> {
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
-        config.set(path + "." + getName(), getFlag());
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+        if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
+            config.set(path + config.options().pathSeparator() + getName(), getFlag());
+        } else {
+            config.set(path + config.options().pathSeparator() + getName(), null);
+        }
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        if (config.contains(path + "." + getName())) {
-            Object object = config.get(path + "." + getName());
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        if (config.contains(path + config.options().pathSeparator() + getName())) {
+            Object object = config.get(path + config.options().pathSeparator() + getName());
 
             if (object instanceof ItemStack itemStack) { // bukkit already did the work for us
                 setFlag(itemStack);

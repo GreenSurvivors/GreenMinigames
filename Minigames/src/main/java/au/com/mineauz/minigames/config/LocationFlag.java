@@ -1,11 +1,13 @@
 package au.com.mineauz.minigames.config;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.MenuItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.World;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,25 +22,41 @@ public class LocationFlag extends AFlag<Location> {
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
-        config.set(path + "." + getName() + ".x", getFlag().getX());
-        config.set(path + "." + getName() + ".y", getFlag().getY());
-        config.set(path + "." + getName() + ".z", getFlag().getZ());
-        config.set(path + "." + getName() + ".world", getFlag().getWorld().getName());
-        config.set(path + "." + getName() + ".yaw", getFlag().getYaw());
-        config.set(path + "." + getName() + ".pitch", getFlag().getPitch());
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+        if (!getFlag().equals(getDefaultFlag())) {
+            config.set(path + config.options().pathSeparator() + getName(), getFlag());
+        } else {
+            config.set(path + config.options().pathSeparator() + getName(), null);
+        }
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        double x = config.getDouble(path + "." + getName() + ".x");
-        double y = config.getDouble(path + "." + getName() + ".y");
-        double z = config.getDouble(path + "." + getName() + ".z");
-        float yaw = ((Double) config.getDouble(path + "." + getName() + ".yaw")).floatValue();
-        float pitch = ((Double) config.getDouble(path + "." + getName() + ".pitch")).floatValue();
-        String world = config.getString(path + "." + getName() + ".world");
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        char configSeparator = config.options().pathSeparator();
+        Location result = config.getLocation(path + configSeparator + getName());
 
-        setFlag(new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch));
+        if (result == null && config.contains(path + configSeparator + getName() + configSeparator + "world")) { // dataFixerUpper
+            double x = config.getDouble(path + configSeparator + getName() + configSeparator + "x");
+            double y = config.getDouble(path + configSeparator + getName() + configSeparator + "y");
+            double z = config.getDouble(path + configSeparator + getName() + configSeparator + "z");
+            float yaw = ((Double) config.getDouble(path + configSeparator + getName() + configSeparator + "yaw")).floatValue();
+            float pitch = ((Double) config.getDouble(path + configSeparator + getName() + configSeparator + "pitch")).floatValue();
+            String worldName = config.getString(path + configSeparator + getName() + configSeparator + "world", "not found!");
+            World world = Bukkit.getWorld(worldName);
+
+            if (world != null) {
+                result = new Location(world, x, y, z, yaw, pitch);
+            } else {
+                Minigames.getCmpnntLogger().warn("Could not load legacy location flag at '" + path + configSeparator + getName() +
+                        "' because World '" + worldName + "' is not a valid name!");
+            }
+        }
+
+        if (result == null) {
+            result = getDefaultFlag();
+        }
+
+        setFlag(result);
     }
 
     @Deprecated

@@ -3,14 +3,14 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.menu.MenuItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StrListFlag extends AFlag<List<String>> {
+public class StrListFlag extends AFlag<List<String>> { // todo replace with GENERIC<T> list flag AFlag<List<AFlag<T>>>
 
     public StrListFlag(List<String> value, String name) {
         setFlag(value);
@@ -19,13 +19,19 @@ public class StrListFlag extends AFlag<List<String>> {
     }
 
     @Override
-    public void saveValue(@NotNull FileConfiguration config, @NotNull String path) {
-        config.set(path + "." + getName(), getFlag());
+    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+        config.set(path + config.options().pathSeparator() + getName(), getFlag());
     }
 
     @Override
-    public void loadValue(@NotNull FileConfiguration config, @NotNull String path) {
-        setFlag(config.getStringList(path + "." + getName()));
+    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+        List<String> result = config.getStringList(path + config.options().pathSeparator() + getName());
+
+        if (result.isEmpty()) {
+            result = getDefaultFlag();
+        }
+
+        setFlag(result);
     }
 
     @Deprecated

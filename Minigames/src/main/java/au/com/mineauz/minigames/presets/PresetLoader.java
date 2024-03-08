@@ -21,9 +21,9 @@ public class PresetLoader {
 
     public static void loadPreset(@NotNull String preset, @NotNull Minigame minigame, Audience audience) {
         preset = preset.toLowerCase();
-        File file = new File(Minigames.getPlugin().getDataFolder() + "/presets/" + preset + ".yml");
+        File file = new File(Minigames.getPlugin().getDataFolder() + File.separator + "presets" + File.separator + preset + ".yml");
         if (file.exists()) {
-            MinigameSave save = new MinigameSave("presets/" + preset);
+            MinigameSave save = new MinigameSave("presets" + File.separator + preset);
             FileConfiguration config = save.getConfig();
 
             for (String opt : config.getConfigurationSection(preset).getKeys(false)) {
@@ -46,12 +46,12 @@ public class PresetLoader {
 
     public static void getPresetInfo(@NotNull String preset, @NotNull Audience audience) {
         preset = preset.toLowerCase();
-        File file = new File(Minigames.getPlugin().getDataFolder() + "/presets/" + preset + ".yml");
+        File file = new File(Minigames.getPlugin().getDataFolder() + File.separator + "presets" + File.separator + preset + ".yml");
         if (file.exists()) {
-            MinigameSave save = new MinigameSave("presets/" + preset);
+            MinigameSave save = new MinigameSave("presets" + File.separator + preset);
             FileConfiguration config = save.getConfig();
 
-            String info = config.getString(preset + ".info");
+            String info = config.getString(preset + config.options().pathSeparator() + "info");
             if (info != null) {
                 MinigameMessageManager.sendMessage(audience, MinigameMessageType.INFO,
                         MiniMessage.miniMessage().deserialize(info));
