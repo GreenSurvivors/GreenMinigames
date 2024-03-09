@@ -23,6 +23,9 @@ import java.util.List;
 
 public class JuggernautMechanic extends GameMechanicBase {
 
+    protected JuggernautMechanic() {
+    }
+
     @Override
     public String getMechanicName() {
         return "juggernaut";
@@ -43,20 +46,20 @@ public class JuggernautMechanic extends GameMechanicBase {
     }
 
     @Override
-    public JuggernautModule displaySettings(Minigame minigame) {
+    public JuggernautModule displaySettings(@NotNull Minigame minigame) {
         return JuggernautModule.getMinigameModule(minigame);
     }
 
     @Override
-    public void startMinigame(Minigame minigame, MinigamePlayer caller) {
+    public void startMinigame(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
     }
 
     @Override
-    public void stopMinigame(Minigame minigame) {
+    public void stopMinigame(@NotNull Minigame minigame) {
     }
 
     @Override
-    public void onJoinMinigame(Minigame minigame, MinigamePlayer player) {
+    public void onJoinMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player) {
     }
 
     @Override
@@ -86,8 +89,8 @@ public class JuggernautMechanic extends GameMechanicBase {
     }
 
     @Override
-    public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
-                            List<MinigamePlayer> losers) {
+    public void endMinigame(@NotNull Minigame minigame, @NotNull List<@NotNull MinigamePlayer> winners,
+                            @NotNull List<@NotNull MinigamePlayer> losers) {
         JuggernautModule.getMinigameModule(minigame).setJuggernaut(null);
 
         minigame.getScoreboardManager().getTeam("juggernaut").unregister();

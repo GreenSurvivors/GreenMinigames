@@ -31,7 +31,7 @@ public enum TeamColor {
     WHITE(NamedTextColor.WHITE, Material.WHITE_WOOL),
     YELLOW(NamedTextColor.YELLOW, Material.YELLOW_WOOL),
 
-    NONE(NamedTextColor.RED, Material.BARRIER);
+    NONE(NamedTextColor.DARK_RED, Material.BARRIER);
 
     private final NamedTextColor color;
     private final Material displaMaterial;
@@ -41,9 +41,9 @@ public enum TeamColor {
         this.displaMaterial = displaMaterial;
     }
 
-    public static @Nullable TeamColor matchColor(@NotNull String color) {
+    public static @Nullable TeamColor matchColor(@NotNull String colorName) {
         for (TeamColor col : values()) {
-            if (color.equalsIgnoreCase(col.toString())) {
+            if (colorName.equalsIgnoreCase(col.name()) || colorName.equalsIgnoreCase(col.getUserFriendlyName())) {
                 return col;
             }
         }
@@ -54,25 +54,20 @@ public enum TeamColor {
         return Arrays.stream(TeamColor.values()).filter(tc -> tc != NONE).collect(Collectors.toSet());
     }
 
-    public static Set<String> validColorNames() {
-        return validColors().stream().map(Enum::toString).collect(Collectors.toSet());
-    }
-
-    public static Set<String> colorNames() {
-        return Arrays.stream(values()).map(Enum::toString).collect(Collectors.toSet());
-    }
-
     public static Component validColorNamesComp() {
         return Component.join(JoinConfiguration.separator(MiniMessage.miniMessage().deserialize("<gray>, </gray>")),
                 validColors().stream().map(TeamColor::getCompName).collect(Collectors.toSet()));
     }
 
     public Component getCompName() {
-        return Component.text(this.toString(), this.getColor());
+        return Component.text(this.getUserFriendlyName(), this.getColor());
     }
 
-    @Override
-    public @NotNull String toString() {
+    /**
+     * Not to confuse with {@link TeamColor#name()}, this returns a user-friendly representation,
+     * potentially containing spaces instead of underlines
+     */
+    public @NotNull String getUserFriendlyName() {
         return WordUtils.capitalizeFully(super.toString().replaceAll("_", " "));
     }
 

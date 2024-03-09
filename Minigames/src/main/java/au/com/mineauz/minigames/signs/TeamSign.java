@@ -12,12 +12,13 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,12 +43,13 @@ public class TeamSign extends AMinigameSign {
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
         event.line(1, getName());
+        PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
 
-        if (event.getLine(2).equalsIgnoreCase("neutral")) { // todo
-            event.setLine(2, ChatColor.GRAY + "Neutral");
+        if (plainSerializer.serialize(event.line(2)).equalsIgnoreCase("neutral")) { // todo
+            event.line(2, Component.text("Neutral", NamedTextColor.GRAY));
             return true;
         } else {
-            TeamColor color = TeamColor.matchColor(event.getLine(2));
+            TeamColor color = TeamColor.matchColor(plainSerializer.serialize(event.line(2)));
             if (color != null) {
                 event.line(2, color.getCompName());
                 return true;
@@ -63,10 +65,13 @@ public class TeamSign extends AMinigameSign {
         if (mgPlayer.isInMinigame()) {
             Minigame mgm = mgPlayer.getMinigame();
             if (mgm.isTeamGame()) {
-                if (mgPlayer.getTeam() != matchTeam(mgm, sign.getSide(Side.FRONT).line(2))) {
-                    if (!mgm.isWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral")) {
+                SignSide frontSide = sign.getSide(Side.FRONT);
+                PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
+
+                if (mgPlayer.getTeam() != matchTeam(mgm, frontSide.line(2))) {
+                    if (!mgm.isWaitingForPlayers() && !plainSerializer.serialize(frontSide.line(2)).equalsIgnoreCase("Neutral")) {
                         Team sm = null;
-                        Team nt = matchTeam(mgm, sign.getSide(Side.FRONT).line(2));
+                        Team nt = matchTeam(mgm, frontSide.line(2));
                         if (nt != null) {
                             if (nt.hasRoom()) {
                                 for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
@@ -91,7 +96,7 @@ public class TeamSign extends AMinigameSign {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_TEAM_ASSIGN_ERROR_FULL);
                             }
                         }
-                    } else if (sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getSide(Side.FRONT).line(2)) != mgPlayer.getTeam()) {
+                    } else if (plainSerializer.serialize(frontSide.line(2)).equalsIgnoreCase("Neutral") || matchTeam(mgm, frontSide.line(2)) != mgPlayer.getTeam()) {
                         Team currentTeam = mgPlayer.getTeam();
                         Team nt = matchTeam(mgm, sign.getSide(Side.FRONT).line(2));
                         if (currentTeam != null) {

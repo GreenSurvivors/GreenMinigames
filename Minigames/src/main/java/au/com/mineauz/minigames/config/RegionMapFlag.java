@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.config;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MgRegion;
 import net.kyori.adventure.text.Component;
@@ -45,7 +46,7 @@ public class RegionMapFlag extends AFlag<Map<String, MgRegion>> { // todo move t
 
             for (MgRegion region : getFlag().values()) {
                 regionFlag = new RegionFlag(region, getName() + configSeparator + region.getName());
-                regionFlag.saveValue(config, path);
+                regionFlag.saveValue(config, path + configSeparator + region.getName());
             }
         } else {
             config.set(path + configSeparator + getName(), null);
@@ -63,8 +64,14 @@ public class RegionMapFlag extends AFlag<Map<String, MgRegion>> { // todo move t
 
             for (String regionName : regionNames) {
                 regionFlag = new RegionFlag(null, getName() + configSeparator + regionName);
-                regionFlag.loadValue(config, path);
-                regions.put(regionFlag.getFlag().getName(), regionFlag.getFlag());
+                regionFlag.loadValue(config, path + configSeparator + getName() + configSeparator + regionName);
+                if (regionFlag.getFlag() != null) {
+                    regions.put(regionFlag.getFlag().getName(), regionFlag.getFlag());
+                } else {
+                    Minigames.getCmpnntLogger().error("Could not add MgRegion into RegionMapFlag because it failed to load. " +
+                            "('" + path + configSeparator + getName() + configSeparator + regionName + "') Throwing new exception to not overwriting it!");
+                    throw new RuntimeException("invalid MgRegion at '" + path + configSeparator + getName() + configSeparator + regionName + "'");
+                }
             }
         }
 

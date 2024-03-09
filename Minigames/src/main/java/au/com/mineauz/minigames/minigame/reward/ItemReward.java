@@ -68,7 +68,7 @@ public class ItemReward extends ARewardType {
     }
 
     @Override
-    public void loadReward(Configuration config, @NotNull String path) {
+    public void loadReward(@NotNull Configuration config, @NotNull String path) {
         item = config.getItemStack(path);
     }
 

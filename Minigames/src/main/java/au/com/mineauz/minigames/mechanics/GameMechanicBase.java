@@ -26,12 +26,11 @@ import java.util.EnumSet;
 import java.util.List;
 
 public abstract class GameMechanicBase implements Listener {
-    public static Minigames plugin;
-    public final MinigamePlayerManager pdata;
-    public final MinigameManager mdata;
+    protected final static Minigames plugin = Minigames.getPlugin();
+    protected final MinigamePlayerManager pdata;
+    protected final MinigameManager mdata;
 
     public GameMechanicBase() {
-        plugin = Minigames.getPlugin();
         pdata = plugin.getPlayerManager();
         mdata = plugin.getMinigameManager();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -74,7 +73,7 @@ public abstract class GameMechanicBase implements Listener {
      * @return List of {@link MinigamePlayer} that have been moved to a different or new team.
      */
 
-    public List<MinigamePlayer> balanceTeam(@NotNull List<@NotNull MinigamePlayer> players, @NotNull Minigame minigame) {
+    public @NotNull List<@NotNull MinigamePlayer> balanceTeam(@NotNull List<@NotNull MinigamePlayer> players, @NotNull Minigame minigame) {
         List<MinigamePlayer> result = new ArrayList<>();
         if (minigame.isTeamGame()) {
             // add teamless players to team with the least amount of other players
@@ -162,7 +161,7 @@ public abstract class GameMechanicBase implements Listener {
      *
      * @return The module that has been assigned
      */
-    public abstract MinigameModule displaySettings(Minigame minigame);
+    public abstract MinigameModule displaySettings(@NotNull Minigame minigame);
 
     /**
      * Called when a global Minigame has been started.
@@ -170,14 +169,14 @@ public abstract class GameMechanicBase implements Listener {
      * @param minigame the game
      * @param caller   The player who initiated the global Minigame or null if not by a player.
      */
-    public abstract void startMinigame(Minigame minigame, MinigamePlayer caller);
+    public abstract void startMinigame(@NotNull Minigame minigame, @Nullable MinigamePlayer caller);
 
     /**
      * Called when a global Minigame has been stopped.
      *
      * @param minigame the game
      */
-    public abstract void stopMinigame(Minigame minigame);
+    public abstract void stopMinigame(@NotNull Minigame minigame);
 
     /**
      * Called when a player joins a Minigame. Called after the player has completely joined the game.
@@ -185,7 +184,7 @@ public abstract class GameMechanicBase implements Listener {
      * @param minigame the game
      * @param player   the player
      */
-    public abstract void onJoinMinigame(Minigame minigame, MinigamePlayer player);
+    public abstract void onJoinMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player);
 
     /**
      * Called when a player quits a Minigame or is forced to quit by the Minigame. Called as the quit function has started.
@@ -194,7 +193,7 @@ public abstract class GameMechanicBase implements Listener {
      * @param player   the player
      * @param forced   true if forced
      */
-    public abstract void quitMinigame(Minigame minigame, MinigamePlayer player, boolean forced);
+    public abstract void quitMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player, boolean forced);
 
     /**
      * Called when a player (or group of players) wins a Minigame. Called as the end function has been started, so winners and
@@ -204,5 +203,6 @@ public abstract class GameMechanicBase implements Listener {
      * @param winners  winning players
      * @param losers   losing players
      */
-    public abstract void endMinigame(Minigame minigame, List<MinigamePlayer> winners, List<MinigamePlayer> losers);
+    public abstract void endMinigame(@NotNull Minigame minigame, @NotNull List<@NotNull MinigamePlayer> winners,
+                                     @NotNull List<@NotNull MinigamePlayer> losers);
 }

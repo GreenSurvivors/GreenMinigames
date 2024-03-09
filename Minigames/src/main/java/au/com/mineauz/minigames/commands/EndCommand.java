@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class EndCommand extends ACommand {
@@ -235,7 +236,7 @@ public class EndCommand extends ACommand {
             if (minigame != null) {
                 if (minigame.isTeamGame()) {
                     TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
-                    List<String> result = teamsModule.getTeams().stream().map(team -> team.getColor().toString()).toList();
+                    List<String> result = teamsModule.getTeams().stream().map(team -> team.getColor().name().toLowerCase(Locale.ENGLISH)).toList();
 
                     return CommandDispatcher.tabCompleteMatch(result, args[1]);
                 }

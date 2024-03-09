@@ -24,7 +24,7 @@ public class MockSign extends SignMock implements Sign {
 
     @Override
     @Deprecated
-    public String[] getLines() {
+    public String @NotNull [] getLines() {
         String[] out = new String[lines.size()];
         return lines.toArray(out);
     }

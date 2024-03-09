@@ -332,15 +332,15 @@ public class PlayerLoadout {
         allowOffHand = allow;
     }
 
-    public TeamColor getTeamColor() {
+    public @Nullable TeamColor getTeamColor() {
         return team;
     }
 
-    public void setTeamColor(TeamColor color) {
+    public void setTeamColor(@Nullable TeamColor color) {
         team = color;
     }
 
-    public Callback<TeamColor> getTeamColorCallback() {
+    public @NotNull Callback<TeamColor> getTeamColorCallback() {
         return new Callback<>() {
 
             @Override
@@ -362,7 +362,7 @@ public class PlayerLoadout {
         return displayInMenu;
     }
 
-    public Callback<Boolean> getDisplayInMenuCallback() {
+    public @NotNull Callback<Boolean> getDisplayInMenuCallback() {
         return new Callback<>() {
 
             @Override

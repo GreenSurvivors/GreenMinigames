@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ToolCommand extends ACommand {
 
@@ -154,7 +155,7 @@ public class ToolCommand extends ACommand {
             if (args[0].equalsIgnoreCase("team")) {
                 List<String> ret = new ArrayList<>();
                 for (TeamColor col : TeamColor.values()) {
-                    ret.add(col.toString());
+                    ret.add(col.name().toLowerCase(Locale.ENGLISH));
                 }
                 return CommandDispatcher.tabCompleteMatch(ret, args[1]);
             } else if (args[0].equalsIgnoreCase("minigame")) {

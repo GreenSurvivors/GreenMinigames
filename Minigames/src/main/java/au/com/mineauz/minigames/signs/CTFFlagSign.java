@@ -1,20 +1,20 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.events.TakeCTFFlagEvent;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
-import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.mechanics.CTFMechanic;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class CTFFlagSign extends AMinigameSign {
@@ -36,19 +36,24 @@ public class CTFFlagSign extends AMinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
+        PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
+
         event.line(1, getName());
-        if (TeamColor.matchColor(event.getLine(2)) != null) {
-            TeamColor col = TeamColor.matchColor(event.getLine(2));
-            event.setLine(2, col.getColor() + WordUtils.capitalizeFully(col.toString()));
-        } else if (event.getLine(2).equalsIgnoreCase("neutral")) {
-            event.setLine(2, ChatColor.GRAY + "Neutral");
-        } else if (event.getLine(2).equalsIgnoreCase("capture") && !event.getLine(3).isEmpty()) {
-            event.setLine(2, ChatColor.GREEN + "Capture");
-            if (TeamColor.matchColor(event.getLine(3)) != null) {
-                TeamColor col = TeamColor.matchColor(event.getLine(3));
-                event.setLine(3, col.getColor() + WordUtils.capitalizeFully(col.toString()));
-            } else if (event.getLine(3).equalsIgnoreCase("neutral")) {
-                event.setLine(3, ChatColor.GRAY + "Neutral");
+        TeamColor col = TeamColor.matchColor(plainSerializer.serialize(event.line(2)));
+
+        if (col != null) {
+            event.line(2, Component.text(WordUtils.capitalizeFully(col.toString()), col.getColor()));
+        } else if (plainSerializer.serialize(event.line(2)).equalsIgnoreCase("neutral")) {
+            event.line(2, Component.text("Neutral", NamedTextColor.GRAY));
+        } else if (plainSerializer.serialize(event.line(2)).equalsIgnoreCase("capture") &&
+                !plainSerializer.serialize(event.line(3)).isEmpty()) {
+            event.line(2, Component.text("Capture", NamedTextColor.GREEN));
+
+            col = TeamColor.matchColor(plainSerializer.serialize(event.line(3)));
+            if (col != null) {
+                event.line(3, Component.text(WordUtils.capitalizeFully(col.toString()), col.getColor()));
+            } else if (plainSerializer.serialize(event.line(3)).equalsIgnoreCase("neutral")) {
+                event.line(3, Component.text("Neutral", NamedTextColor.GRAY));
             } else {
                 event.getBlock().breakNaturally();
                 MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_TEAM_INVALIDFORMAT);
@@ -59,23 +64,20 @@ public class CTFFlagSign extends AMinigameSign {
         return true;
     }
 
+    // the error in this Java doc is known. We don't need access, we need dokumention.
+
+    /**
+     * actual handling of taking the flag is in {@link CTFMechanic#takeFlag(PlayerInteractEvent)}
+     */
     @Override
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
         if (mgPlayer.isInMinigame()) {
             if (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
-                Minigame mgm = mgPlayer.getMinigame();
-
-                if (mgm.isSpectator(mgPlayer)) {
+                if (mgPlayer.getMinigame().isSpectator(mgPlayer)) {
                     return false;
                 }
-                if (!sign.getLine(2).isEmpty() && mgPlayer.getPlayer().isOnGround() &&
-                        mgm.getMechanicName().equals("ctf") &&
-                        !mgPlayer.hasFlag(ChatColor.stripColor(sign.getLine(2))) &&
-                        !mgPlayer.getTeam().getDisplayName().equals(ChatColor.stripColor(sign.getLine(2) + " Team"))) {
-                    TakeCTFFlagEvent ev = new TakeCTFFlagEvent(mgm, mgPlayer, ChatColor.stripColor(sign.getLine(2)));
-                    Bukkit.getPluginManager().callEvent(ev);
-                    return true;
-                }
+
+                // actual handling is in CTFMechanic!
             } else {
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
             }

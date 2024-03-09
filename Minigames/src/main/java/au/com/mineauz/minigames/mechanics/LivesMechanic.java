@@ -19,6 +19,9 @@ import java.util.List;
 
 public class LivesMechanic extends GameMechanicBase {
 
+    protected LivesMechanic() {
+    }
+
     @Override
     public String getMechanicName() {
         return "lives";
@@ -44,30 +47,30 @@ public class LivesMechanic extends GameMechanicBase {
     }
 
     @Override
-    public MinigameModule displaySettings(Minigame minigame) {
+    public MinigameModule displaySettings(@NotNull Minigame minigame) {
         return null;
     }
 
     @Override
-    public void startMinigame(Minigame minigame, MinigamePlayer caller) {
+    public void startMinigame(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
     }
 
     @Override
-    public void stopMinigame(Minigame minigame) {
+    public void stopMinigame(@NotNull Minigame minigame) {
     }
 
     @Override
-    public void onJoinMinigame(Minigame minigame, MinigamePlayer player) {
+    public void onJoinMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player) {
     }
 
     @Override
-    public void quitMinigame(Minigame minigame, MinigamePlayer player,
+    public void quitMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player,
                              boolean forced) {
     }
 
     @Override
-    public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
-                            List<MinigamePlayer> losers) {
+    public void endMinigame(@NotNull Minigame minigame, @NotNull List<@NotNull MinigamePlayer> winners,
+                            @NotNull List<@NotNull MinigamePlayer> losers) {
     }
 
     @EventHandler

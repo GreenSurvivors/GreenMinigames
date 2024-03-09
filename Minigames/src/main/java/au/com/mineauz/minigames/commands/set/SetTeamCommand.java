@@ -20,6 +20,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class SetTeamCommand extends ASetCommand {
 
@@ -197,20 +199,23 @@ public class SetTeamCommand extends ASetCommand {
             return CommandDispatcher.tabCompleteMatch(List.of("add", "rename", "remove", "list", "maxplayers"), args[0]);
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("add")) {
-                return CommandDispatcher.tabCompleteMatch(new ArrayList<>(TeamColor.validColorNames()), args[1]);
+                List<String> result = TeamColor.validColors().stream().map(color -> color.name().toLowerCase(Locale.ENGLISH)).collect(Collectors.toList());
+
+                return CommandDispatcher.tabCompleteMatch(result, args[1]);
             } else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("rename")) {
                 TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
 
                 if (teamsModule != null) {
-                    return CommandDispatcher.tabCompleteMatch(teamsModule.getTeams().stream().map(t -> t.getColor().toString()).toList(), args[1]);
+                    return CommandDispatcher.tabCompleteMatch(teamsModule.getTeams().stream().
+                            map(team -> team.getColor().name().toLowerCase(Locale.ENGLISH)).toList(), args[1]);
                 }
             } else if (args[0].equalsIgnoreCase("maxplayers")) {
                 TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
 
                 if (teamsModule != null) {
                     List<String> cols = new ArrayList<>();
-                    for (Team t : teamsModule.getTeams()) {
-                        cols.add(t.getColor().toString());
+                    for (Team team : teamsModule.getTeams()) {
+                        cols.add(team.getColor().name().toLowerCase(Locale.ENGLISH));
                     }
 
                     return CommandDispatcher.tabCompleteMatch(cols, args[1]);

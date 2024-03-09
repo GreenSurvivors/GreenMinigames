@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 
 public class SetDefaultWinnerCommand extends ASetCommand {
 
@@ -85,7 +86,7 @@ public class SetDefaultWinnerCommand extends ASetCommand {
 
             if (teamsModule != null) {
                 return CommandDispatcher.tabCompleteMatch(teamsModule.getTeams().stream().map(t ->
-                        t.getColor().toString().toLowerCase()).toList(), args[0]);
+                        t.getColor().name().toLowerCase(Locale.ENGLISH)).toList(), args[0]);
             }
         }
         return null;

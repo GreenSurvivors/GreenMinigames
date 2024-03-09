@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SetSurvivorTeamCommand extends ASetCommand {
     @Override
@@ -103,12 +104,12 @@ public class SetSurvivorTeamCommand extends ASetCommand {
 
                 TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
                 if (teamsModule != null) {
-                    for (Team t : teamsModule.getTeams()) {
-                        teams.add(t.getColor().toString().toLowerCase());
+                    for (Team team : teamsModule.getTeams()) {
+                        teams.add(team.getColor().name().toLowerCase(Locale.ENGLISH));
                     }
                 }
 
-                teams.add(TeamColor.NONE.toString());
+                teams.add(TeamColor.NONE.name().toLowerCase(Locale.ENGLISH));
                 teams.add("default");
 
                 teams.add(WordUtils.capitalizeFully(infectionModule.getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));

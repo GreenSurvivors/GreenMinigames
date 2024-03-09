@@ -35,11 +35,7 @@ public class StatSettings {
      * @return Returns the current format of this stat for this minigame
      */
     public StatFormat getFormat() {
-        if (format == null) {
-            return stat.getFormat();
-        } else {
-            return format;
-        }
+        return Objects.requireNonNullElseGet(format, stat::getFormat);
     }
 
     /**
