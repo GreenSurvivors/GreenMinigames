@@ -185,7 +185,7 @@ public class SetStartCommand extends ASetCommand {
 
         if (teamsModule != null) {
             List<String> teams = teamsModule.getTeamColors().stream().
-                    map(t -> WordUtils.capitalizeFully(t.toString().replace("_", " "))).
+                    map(team -> WordUtils.capitalizeFully(team.name())).
                     collect(Collectors.toCollection(ArrayList::new));
             if (args.length == 1) {
                 teams.add("Clear");

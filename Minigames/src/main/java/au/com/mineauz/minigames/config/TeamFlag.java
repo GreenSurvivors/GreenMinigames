@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.config;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -43,19 +44,26 @@ public class TeamFlag extends AFlag<Team> {
     public void loadValue(@NotNull Configuration config, @NotNull String path) {
         char configSeparator = config.options().pathSeparator();
 
-        Team team = new Team(TeamColor.matchColor(getName()), mgm);
-        team.setDisplayName(config.getString(path + configSeparator + getName() + configSeparator + "displayName"));
-        if (config.contains(path + configSeparator + getName() + configSeparator + "startpos")) {
-            Set<String> locations = config.getConfigurationSection(path + configSeparator + getName() + configSeparator + "startpos").getKeys(false);
-            for (String loc : locations) {
-                LocationFlag locf = new LocationFlag(null, "startpos" + configSeparator + loc);
-                locf.loadValue(config, path + configSeparator + getName());
-                team.addStartLocation(locf.getFlag());
+        final TeamColor color = TeamColor.matchColor(getName());
+        if (color != null) {
+            Team team = new Team(color, mgm);
+            team.setDisplayName(config.getString(path + configSeparator + getName() + configSeparator + "displayName"));
+            if (config.contains(path + configSeparator + getName() + configSeparator + "startpos")) {
+                Set<String> locations = config.getConfigurationSection(path + configSeparator + getName() + configSeparator + "startpos").getKeys(false);
+                for (String loc : locations) {
+                    LocationFlag locf = new LocationFlag(null, "startpos" + configSeparator + loc);
+                    locf.loadValue(config, path + configSeparator + getName());
+                    team.addStartLocation(locf.getFlag());
+                }
             }
-        }
 
-        team.load(config, path + configSeparator + getName());
-        setFlag(team);
+            team.load(config, path + configSeparator + getName());
+            setFlag(team);
+        } else {
+            Minigames.getCmpnntLogger().error("Could not load TeamColor '" + getName() + "' of path '" + path + configSeparator + getName() + "'. " +
+                    "Throwing Exception to not overwriting the config!");
+            throw new RuntimeException("Invalid TeamColor '" + getName() + "' of path '" + path + configSeparator + getName() + "'");
+        }
     }
 
     @Deprecated

@@ -18,13 +18,17 @@ import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.signs.CTFFlagSign;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -37,6 +41,9 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class CTFMechanic extends GameMechanicBase {
+
+    protected CTFMechanic() {
+    }
 
     /**
      * Sending a ctf relevant message
@@ -67,30 +74,29 @@ public class CTFMechanic extends GameMechanicBase {
     }
 
     @Override
-    public MinigameModule displaySettings(Minigame minigame) {
+    public MinigameModule displaySettings(@NotNull Minigame minigame) {
         return minigame.getModule(MgModules.CAPTURE_THE_FLAG.getName());
     }
 
     @Override
-    public void startMinigame(Minigame minigame, MinigamePlayer caller) {
+    public void startMinigame(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
     }
 
     @Override
-    public void stopMinigame(Minigame minigame) {
+    public void stopMinigame(@NotNull Minigame minigame) {
     }
 
     @Override
-    public void onJoinMinigame(Minigame minigame, MinigamePlayer player) {
+    public void onJoinMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player) {
     }
 
     @Override
-    public void quitMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player,
-                             boolean forced) {
-        CTFFlag carriedFlag = minigame.getCarriedFlag(player);
+    public void quitMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer, boolean forced) {
+        CTFFlag carriedFlag = minigame.getCarriedFlag(mgPlayer);
         if (carriedFlag != null) {
             carriedFlag.stopCarrierParticleEffect();
             carriedFlag.respawnFlag();
-            minigame.removeFlagCarrier(player);
+            minigame.removeFlagCarrier(mgPlayer);
         }
         if (minigame.getPlayers().size() == 1) {
             minigame.resetFlags();
@@ -98,13 +104,13 @@ public class CTFMechanic extends GameMechanicBase {
     }
 
     @Override
-    public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
-                            List<MinigamePlayer> losers) {
-        for (MinigamePlayer pl : winners) {
-            if (minigame.isFlagCarrier(pl)) {
-                minigame.getCarriedFlag(pl).stopCarrierParticleEffect();
-                minigame.getCarriedFlag(pl).respawnFlag();
-                minigame.removeFlagCarrier(pl);
+    public void endMinigame(@NotNull Minigame minigame, @NotNull List<@NotNull MinigamePlayer> winners, @NotNull List<@NotNull MinigamePlayer> losers) {
+        for (MinigamePlayer mgPlayer : winners) {
+            CTFFlag carriedFlag = minigame.getCarriedFlag(mgPlayer);
+            if (carriedFlag != null) {
+                carriedFlag.stopCarrierParticleEffect();
+                carriedFlag.respawnFlag();
+                minigame.removeFlagCarrier(mgPlayer);
             }
         }
         if (minigame.getPlayers().size() == 1) {
@@ -116,14 +122,20 @@ public class CTFMechanic extends GameMechanicBase {
     private void takeFlag(@NotNull PlayerInteractEvent event) { //todo better system of getting type of sign --> should be a getter in sign base
         MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         if (mgPlayer.isInMinigame() && !mgPlayer.getPlayer().isDead() && mgPlayer.getMinigame().hasStarted()) {
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK && (event.getClickedBlock().getState() instanceof Sign sign) && mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK &&
+                    event.getClickedBlock() != null &&
+                    event.getClickedBlock().getState() instanceof Sign sign &&
+                    mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
+                SignSide signFrontSide = sign.getSide(Side.FRONT);
+                PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
+
                 Minigame mgm = mgPlayer.getMinigame();
-                if (mgm.getMechanicName().equals("ctf") && sign.getLine(1).equals(ChatColor.GREEN + "Flag")) {
+                if (mgm.getMechanic() == GameMechanics.MgMechanics.CTF.getMechanic() && new CTFFlagSign().isType(signFrontSide.line(1))) { // I hate that java does have this static inheritance restriction
                     Team team = mgPlayer.getTeam();
 
                     String sloc = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
-
-                    if (sign.getLine(2).equalsIgnoreCase(team.getTextColor() + team.getColor().toString()) &&
+                    @Nullable TeamColor colorOnLine2 = TeamColor.matchColor(plainTextSerializer.serialize(signFrontSide.line(2)));
+                    if (colorOnLine2 == team.getColor() &&
                             mgm.hasDroppedFlag(sloc) &&
                             !(sloc.equals(MinigameUtils.createLocationID(mgm.getDroppedFlag(sloc).getSpawnLocation())))) {
                         if (CTFModule.getMinigameModule(mgm).getBringFlagBackManual()) {
@@ -137,14 +149,15 @@ public class CTFMechanic extends GameMechanicBase {
                             MinigameMessageManager.sendMinigameMessage(mgm, MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_FLAG_RETURNEDTEAM,
                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName(), team.getTextColor()))), MinigameMessageType.INFO);
                         }
-                    } else if ((!sign.getLine(2).equalsIgnoreCase(team.getTextColor() + team.getColor().toString()) && !sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
-                            sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral")) {
+                    } else if ((colorOnLine2 != team.getColor() &&
+                            !signFrontSide.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
+                            signFrontSide.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral")) {
                         if (mgm.getCarriedFlag(mgPlayer) == null) {
                             TakeCTFFlagEvent ev = null;
                             if (!mgm.hasDroppedFlag(sloc) &&
-                                    (TeamsModule.getMinigameModule(mgm).hasTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) ||
-                                            sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))) {
-                                Team oTeam = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2))));
+                                    (TeamsModule.getMinigameModule(mgm).hasTeam(colorOnLine2) ||
+                                            signFrontSide.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))) {
+                                Team oTeam = TeamsModule.getMinigameModule(mgm).getTeam(colorOnLine2);
                                 CTFFlag flag = new CTFFlag(sign, oTeam, mgm);
                                 ev = new TakeCTFFlagEvent(mgm, mgPlayer, flag);
                                 Bukkit.getPluginManager().callEvent(ev);
@@ -182,9 +195,11 @@ public class CTFMechanic extends GameMechanicBase {
                             }
                         }
 
-                    } else if (team == TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) && CTFModule.getMinigameModule(mgm).getUseFlagAsCapturePoint() ||
-                            (team == TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(3)))) && sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
-                            (sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture") && sign.getLine(3).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))) {
+                    } else if (team == TeamsModule.getMinigameModule(mgm).getTeam(colorOnLine2) && CTFModule.getMinigameModule(mgm).getUseFlagAsCapturePoint() ||
+                            (team == TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(plainTextSerializer.serialize(signFrontSide.line(3)))) &&
+                                    signFrontSide.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
+                            (signFrontSide.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture") &&
+                                    signFrontSide.getLine(3).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))) {
 
                         String clickID = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
 

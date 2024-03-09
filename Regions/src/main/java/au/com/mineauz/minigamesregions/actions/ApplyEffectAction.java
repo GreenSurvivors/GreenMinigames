@@ -109,16 +109,31 @@ public class ApplyEffectAction extends AAction {
         dur.loadValue(config, path);
         amp.loadValue(config, path);
 
-        NamespacedKey key = NamespacedKey.fromString(typeNameSpacedKey.getFlag().toLowerCase(java.util.Locale.ENGLISH));
+        String temp = typeNameSpacedKey.getFlag().toLowerCase(java.util.Locale.ENGLISH);
+
+        temp = switch (temp) { // dataFixerUpper
+            case "slow" -> "slowness";
+            case "fast_digging" -> "haste";
+            case "slow_digging" -> "mining_fatigue";
+            case "increase_damage" -> "strength";
+            case "heal" -> "instant_health";
+            case "harm" -> "instant_damage";
+            case "jump" -> "jump_boost";
+            case "confusion" -> "nausea";
+            case "damage_resistance" -> "resistance";
+            default -> temp;
+        };
+
+        NamespacedKey key = NamespacedKey.fromString(temp);
         if (key != null) {
             type = Registry.EFFECT.get(key);
 
             if (type == null) {
-                Minigames.getCmpnntLogger().error("Could not find status effect from name spaced key \"" + typeNameSpacedKey.getFlag() + "\". " +
+                Minigames.getCmpnntLogger().error("Could not find status effect from name spaced key \"" + temp + "\". " +
                         "ApplyEffectAction under \"" + path + "\" will fail.");
             }
         } else {
-            Minigames.getCmpnntLogger().error("Could not get name spaced key \"" + typeNameSpacedKey.getFlag() + "\". " +
+            Minigames.getCmpnntLogger().error("Could not get name spaced key \"" + temp + "\". " +
                     "ApplyEffectAction under \"" + path + "\" will fail.");
         }
     }

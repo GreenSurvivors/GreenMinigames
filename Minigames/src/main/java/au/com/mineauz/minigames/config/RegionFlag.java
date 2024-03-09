@@ -41,26 +41,26 @@ public class RegionFlag extends AFlag<MgRegion> {
         char configSeparator = config.options().pathSeparator();
 
         if (getFlag() != null) {
-            config.set(path + configSeparator + getName() + configSeparator + "name", getFlag().getName());
-            config.set(path + configSeparator + getName() + configSeparator + "world", getFlag().getWorld().getName());
-            config.set(path + configSeparator + getName() + configSeparator + "pos1", getFlag().getPos1().x() + ":" + getFlag().getPos1().y() + ":" + getFlag().getPos1().z());
-            config.set(path + configSeparator + getName() + configSeparator + "pos2", getFlag().getPos2().x() + ":" + getFlag().getPos2().y() + ":" + getFlag().getPos2().z());
+            config.set(path + configSeparator + "name", getFlag().getName());
+            config.set(path + configSeparator + "world", getFlag().getWorld().getName());
+            config.set(path + configSeparator + "pos1", getFlag().getPos1().x() + ":" + getFlag().getPos1().y() + ":" + getFlag().getPos1().z());
+            config.set(path + configSeparator + "pos2", getFlag().getPos2().x() + ":" + getFlag().getPos2().y() + ":" + getFlag().getPos2().z());
         } else {
-            config.set(path + configSeparator + getName(), null);
+            config.set(path, null);
         }
     }
 
     @Override
     public void loadValue(@NotNull Configuration config, @NotNull String path) {
         char configSeparator = config.options().pathSeparator();
-        String name = config.getString(path + configSeparator + getName() + configSeparator + "name");
+        String name = config.getString(path + configSeparator + "name");
         MgRegion result = null;
 
         if (name != null) {
-            String worldName = config.getString(path + configSeparator + getName() + configSeparator + "world", "not found!");
+            String worldName = config.getString(path + configSeparator + "world", "not found!");
 
-            String[] slitPos1 = config.getString(path + configSeparator + getName() + configSeparator + "pos1").split(":");
-            String[] slitPos2 = config.getString(path + configSeparator + getName() + configSeparator + "pos2").split(":");
+            String[] slitPos1 = config.getString(path + configSeparator + "pos1").split(":");
+            String[] slitPos2 = config.getString(path + configSeparator + "pos2").split(":");
 
             double x1 = Double.parseDouble(slitPos1[0]);
             double y1 = Double.parseDouble(slitPos1[1]);
@@ -74,7 +74,9 @@ public class RegionFlag extends AFlag<MgRegion> {
             if (world != null) {
                 result = new MgRegion(world, name, Position.fine(x1, y1, z1), Position.fine(x2, y2, z2));
             } else {
-                Minigames.getCmpnntLogger().warn("Could not load Region because world '" + worldName + "' was invalid. Falling back to default Region.");
+                Minigames.getCmpnntLogger().warn("Could not load Region because world '" + worldName + "' was invalid. " +
+                        "Throwing error so the config don't get overwritten.");
+                throw new RuntimeException("invalid worldName at '" + path + configSeparator + getName() + "'");
             }
         } else {
             //import legacy regions from before regions existed

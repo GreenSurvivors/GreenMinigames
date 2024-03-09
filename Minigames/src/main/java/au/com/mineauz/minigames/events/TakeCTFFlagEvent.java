@@ -8,25 +8,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class TakeCTFFlagEvent extends AbstractCancellableMinigameEvent {
     private final @Nullable CTFFlag flag;
-    private final String flagName;
-    private final MinigamePlayer player;
-    private boolean displayMessage = true;
+    private final @NotNull MinigamePlayer player;
+    //private boolean displayMessage = true; //unused; todo
 
     public TakeCTFFlagEvent(@NotNull Minigame minigame, @NotNull MinigamePlayer player, @Nullable CTFFlag flag) {
-        this(minigame, player, flag, null);
-    }
-
-    public TakeCTFFlagEvent(@NotNull Minigame minigame, @NotNull MinigamePlayer player, String flagName) {
-        this(minigame, player, null, flagName);
-    }
-
-    public TakeCTFFlagEvent(@NotNull Minigame minigame, @NotNull MinigamePlayer player, @Nullable CTFFlag flag, String flagName) {
         super(minigame);
         this.flag = flag;
-        this.flagName = flagName;
         this.player = player;
     }
-
 
     public boolean isCTFFlag() {
         return flag != null;
@@ -36,19 +25,15 @@ public class TakeCTFFlagEvent extends AbstractCancellableMinigameEvent {
         return flag;
     }
 
-    public String getFlagName() {
-        return flagName;
-    }
-
-    public boolean shouldDisplayMessage() {
+    /*public boolean shouldDisplayMessage() {
         return displayMessage;
-    }
+    }*/
 
-    public void setShouldDisplayMessage(boolean arg0) {
+    /*public void setShouldDisplayMessage(boolean arg0) {
         displayMessage = arg0;
-    }
+    }*/
 
-    public MinigamePlayer getPlayer() {
+    public @NotNull MinigamePlayer getPlayer() {
         return player;
     }
 }

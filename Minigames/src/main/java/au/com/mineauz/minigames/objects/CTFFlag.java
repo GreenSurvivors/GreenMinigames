@@ -69,7 +69,7 @@ public class CTFFlag {
         return currentLocation;
     }
 
-    public void setCurrentLocation(Location currentLocation) {
+    public void setCurrentLocation(@Nullable Location currentLocation) {
         this.currentLocation = currentLocation;
     }
 

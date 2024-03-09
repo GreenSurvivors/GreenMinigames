@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ScoreCommand extends ACommand {
 
@@ -285,7 +286,9 @@ public class ScoreCommand extends ACommand {
             for (Player pl : PLUGIN.getServer().getOnlinePlayers()) {
                 pt.add(pl.getName());
             }
-            pt.addAll(TeamColor.validColorNames());
+            for (TeamColor color : TeamColor.validColors()) {
+                pt.add(color.name().toLowerCase(Locale.ENGLISH));
+            }
 
             return CommandDispatcher.tabCompleteMatch(pt, args[1]);
         }

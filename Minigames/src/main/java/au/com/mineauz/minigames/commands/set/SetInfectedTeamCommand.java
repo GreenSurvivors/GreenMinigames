@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SetInfectedTeamCommand extends ASetCommand {
 
@@ -112,10 +113,10 @@ public class SetInfectedTeamCommand extends ASetCommand {
         if (infectionModule != null && teamsModule != null) {
             if (args.length == 1) {
                 List<String> teams = new ArrayList<>();
-                for (Team t : teamsModule.getTeams()) {
-                    teams.add(t.getColor().toString().toLowerCase());
+                for (Team team : teamsModule.getTeams()) {
+                    teams.add(team.getColor().name().toLowerCase(Locale.ENGLISH));
                 }
-                teams.add(TeamColor.NONE.toString());
+                teams.add(TeamColor.NONE.name().toLowerCase(Locale.ENGLISH));
                 teams.add("default");
                 teams.add(WordUtils.capitalizeFully(infectionModule.getDefaultInfectedTeam().toString().toLowerCase()));
                 teams.add(WordUtils.capitalizeFully(infectionModule.getDefaultSurvivorTeam().toString().toLowerCase()));

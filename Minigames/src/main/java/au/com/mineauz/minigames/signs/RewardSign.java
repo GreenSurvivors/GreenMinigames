@@ -104,10 +104,6 @@ public class RewardSign extends AMinigameSign {
                 return null;
             });
             rewardMenu.addItem(mic, 44);
-            //List<String> list = new ArrayList<String>();
-            //for(RewardRarity r : RewardRarity.values()){
-            //    list.add(r.toString());
-            //}
 
             List<MenuItem> menuItems = new ArrayList<>();
             for (ARewardType item : rew.getRewards()) {

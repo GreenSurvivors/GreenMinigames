@@ -20,10 +20,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SwitchTeamAction extends AAction {
     private final StringFlag teamTo = new StringFlag("ALL", "To");
@@ -110,23 +108,23 @@ public class SwitchTeamAction extends AAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu prev) {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
-        List<String> teams = new ArrayList<>(TeamColor.colorNames());
+
+        List<String> teams = Arrays.stream(TeamColor.values()).map(TeamColor::getUserFriendlyName).collect(Collectors.toCollection(ArrayList::new));
         teams.add("All"); //todo ?
         menu.addItem(new MenuItemList<>(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_DESCRIPTION), new Callback<>() {
 
             @Override
             public String getValue() {
-                return WordUtils.capitalizeFully(teamFrom.getFlag());
+                return WordUtils.capitalizeFully(teamFrom.getFlag()).replaceAll("_", " ");
             }
 
             @Override
             public void setValue(String value) {
-                teamFrom.setFlag(value.toUpperCase());
+                teamFrom.setFlag(value.toUpperCase().replaceAll(" ", "_"));
             }
-
-
         }, teams));
+
         menu.addItem(new MenuItemList<>(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_DESCRIPTION), new Callback<>() {
 

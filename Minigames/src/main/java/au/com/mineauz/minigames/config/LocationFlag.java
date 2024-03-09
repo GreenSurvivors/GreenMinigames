@@ -23,7 +23,7 @@ public class LocationFlag extends AFlag<Location> {
 
     @Override
     public void saveValue(@NotNull Configuration config, @NotNull String path) {
-        if (!getFlag().equals(getDefaultFlag())) {
+        if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
             config.set(path + config.options().pathSeparator() + getName(), getFlag());
         } else {
             config.set(path + config.options().pathSeparator() + getName(), null);
@@ -48,7 +48,8 @@ public class LocationFlag extends AFlag<Location> {
                 result = new Location(world, x, y, z, yaw, pitch);
             } else {
                 Minigames.getCmpnntLogger().warn("Could not load legacy location flag at '" + path + configSeparator + getName() +
-                        "' because World '" + worldName + "' is not a valid name!");
+                        "' because World '" + worldName + "' is not a valid name! Throwing error so the config don't get overwritten.");
+                throw new RuntimeException("invalid worldName at '" + path + configSeparator + getName() + "'");
             }
         }
 
