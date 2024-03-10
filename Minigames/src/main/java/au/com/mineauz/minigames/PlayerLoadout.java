@@ -469,7 +469,22 @@ public class PlayerLoadout {
         ConfigurationSection potionSection = config.getConfigurationSection(path + configSeparator + "potions");
         if (potionSection != null) {
             for (String effectName : potionSection.getKeys(false)) {
-                PotionEffectType effectType = Registry.EFFECT.get(NamespacedKey.fromString(effectName.toLowerCase(java.util.Locale.ENGLISH)));
+
+                String temp = effectName.toLowerCase(Locale.ENGLISH);
+                temp = switch (temp) { // dataFixerUpper
+                    case "slow" -> "slowness";
+                    case "fast_digging" -> "haste";
+                    case "slow_digging" -> "mining_fatigue";
+                    case "increase_damage" -> "strength";
+                    case "heal" -> "instant_health";
+                    case "harm" -> "instant_damage";
+                    case "jump" -> "jump_boost";
+                    case "confusion" -> "nausea";
+                    case "damage_resistance" -> "resistance";
+                    default -> temp;
+                };
+
+                PotionEffectType effectType = Registry.EFFECT.get(NamespacedKey.fromString(temp));
 
                 if (effectType != null) {
                     PotionEffect effect = new PotionEffect(effectType,
@@ -478,6 +493,9 @@ public class PlayerLoadout {
                     );
 
                     addPotionEffect(effect);
+                } else {
+                    Minigames.getCmpnntLogger().error("Could not find status effect from NameSpacedKey \"" + temp + "\". " +
+                            "Loadout effect under \"" + path + configSeparator + "potions" + "\" will fail.");
                 }
             }
         }

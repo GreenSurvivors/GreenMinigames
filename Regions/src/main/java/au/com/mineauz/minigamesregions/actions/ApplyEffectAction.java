@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ApplyEffectAction extends AAction {
@@ -109,8 +110,7 @@ public class ApplyEffectAction extends AAction {
         dur.loadValue(config, path);
         amp.loadValue(config, path);
 
-        String temp = typeNameSpacedKey.getFlag().toLowerCase(java.util.Locale.ENGLISH);
-
+        String temp = typeNameSpacedKey.getFlag().toLowerCase(Locale.ENGLISH);
         temp = switch (temp) { // dataFixerUpper
             case "slow" -> "slowness";
             case "fast_digging" -> "haste";
@@ -129,11 +129,11 @@ public class ApplyEffectAction extends AAction {
             type = Registry.EFFECT.get(key);
 
             if (type == null) {
-                Minigames.getCmpnntLogger().error("Could not find status effect from name spaced key \"" + temp + "\". " +
+                Minigames.getCmpnntLogger().error("Could not find status effect from NameSpacedKey \"" + temp + "\". " +
                         "ApplyEffectAction under \"" + path + "\" will fail.");
             }
         } else {
-            Minigames.getCmpnntLogger().error("Could not get name spaced key \"" + temp + "\". " +
+            Minigames.getCmpnntLogger().error("Could not get NameSpacedKey \"" + temp + "\". " +
                     "ApplyEffectAction under \"" + path + "\" will fail.");
         }
     }
