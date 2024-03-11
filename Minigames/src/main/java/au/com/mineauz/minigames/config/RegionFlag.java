@@ -75,7 +75,7 @@ public class RegionFlag extends AFlag<MgRegion> {
                 result = new MgRegion(world, name, Position.fine(x1, y1, z1), Position.fine(x2, y2, z2));
             } else {
                 Minigames.getCmpnntLogger().warn("Could not load Region because world '" + worldName + "' was invalid. " +
-                        "Throwing error so the config don't get overwritten.");
+                        "Throwing exception so the config don't get overwritten.");
                 throw new RuntimeException("invalid worldName at '" + path + configSeparator + getName() + "'");
             }
         } else {

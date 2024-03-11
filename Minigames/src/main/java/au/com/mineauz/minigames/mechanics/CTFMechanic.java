@@ -23,7 +23,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -64,7 +63,7 @@ public class CTFMechanic extends GameMechanicBase {
     }
 
     @Override
-    public EnumSet<MinigameType> validTypes() {
+    public @NotNull EnumSet<@NotNull MinigameType> validTypes() {
         return EnumSet.of(MinigameType.MULTIPLAYER);
     }
 
@@ -137,7 +136,7 @@ public class CTFMechanic extends GameMechanicBase {
                     @Nullable TeamColor colorOnLine2 = TeamColor.matchColor(plainTextSerializer.serialize(signFrontSide.line(2)));
                     if (colorOnLine2 == team.getColor() &&
                             mgm.hasDroppedFlag(sloc) &&
-                            !(sloc.equals(MinigameUtils.createLocationID(mgm.getDroppedFlag(sloc).getSpawnLocation())))) {
+                            !(sloc.equals(MinigameUtils.createLocationID(mgm.getDroppedFlag(sloc).getSpawnLocation())))) { //todo this whole if/else needs a reordering
                         if (CTFModule.getMinigameModule(mgm).getBringFlagBackManual()) {
                             CTFFlag flag = mgm.getDroppedFlag(sloc);
                             flag.stopTimer();
@@ -149,14 +148,12 @@ public class CTFMechanic extends GameMechanicBase {
                             MinigameMessageManager.sendMinigameMessage(mgm, MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_FLAG_RETURNEDTEAM,
                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName(), team.getTextColor()))), MinigameMessageType.INFO);
                         }
-                    } else if ((colorOnLine2 != team.getColor() &&
-                            !signFrontSide.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
-                            signFrontSide.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral")) {
+                    } else if ((colorOnLine2 != team.getColor() && !CTFFlagSign.isCapture(signFrontSide.line(2))) ||
+                            CTFFlagSign.isNeutral(signFrontSide.line(2))) {
                         if (mgm.getCarriedFlag(mgPlayer) == null) {
                             TakeCTFFlagEvent ev = null;
                             if (!mgm.hasDroppedFlag(sloc) &&
-                                    (TeamsModule.getMinigameModule(mgm).hasTeam(colorOnLine2) ||
-                                            signFrontSide.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))) {
+                                    (TeamsModule.getMinigameModule(mgm).hasTeam(colorOnLine2) || CTFFlagSign.isNeutral(signFrontSide.line(2)))) {
                                 Team oTeam = TeamsModule.getMinigameModule(mgm).getTeam(colorOnLine2);
                                 CTFFlag flag = new CTFFlag(sign, oTeam, mgm);
                                 ev = new TakeCTFFlagEvent(mgm, mgPlayer, flag);
@@ -197,9 +194,8 @@ public class CTFMechanic extends GameMechanicBase {
 
                     } else if (team == TeamsModule.getMinigameModule(mgm).getTeam(colorOnLine2) && CTFModule.getMinigameModule(mgm).getUseFlagAsCapturePoint() ||
                             (team == TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(plainTextSerializer.serialize(signFrontSide.line(3)))) &&
-                                    signFrontSide.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
-                            (signFrontSide.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture") &&
-                                    signFrontSide.getLine(3).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))) {
+                                    CTFFlagSign.isCapture(signFrontSide.line(2))) ||
+                            (CTFFlagSign.isCapture(signFrontSide.line(2)) && CTFFlagSign.isNeutral(signFrontSide.line(3)))) {
 
                         String clickID = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
 

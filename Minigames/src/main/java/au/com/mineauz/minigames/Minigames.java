@@ -23,6 +23,8 @@ import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.stats.MinigameStatistics;
 import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
@@ -30,7 +32,6 @@ import org.bstats.charts.CustomChart;
 import org.bstats.charts.MultiLineChart;
 import org.bstats.charts.SimpleBarChart;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -339,7 +340,7 @@ public class Minigames extends JavaPlugin {
                             game.loadMinigame();
                             this.minigameManager.addMinigame(game);
                         } catch (final Exception e) {
-                            this.getLogger().severe(ChatColor.RED + "Failed to load \"" + minigame + "\"! The configuration file may be corrupt or missing!");
+                            this.getComponentLogger().error(Component.text("Failed to load \"" + minigame + "\"! The configuration file may be corrupt or missing!", NamedTextColor.RED));
                             getCmpnntLogger().error("", e);
                         }
                     }

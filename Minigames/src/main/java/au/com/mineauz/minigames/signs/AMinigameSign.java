@@ -1,6 +1,8 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
@@ -26,6 +28,10 @@ public abstract class AMinigameSign {
 
     public boolean isType(@NotNull String signLine) { // but this is the best way for multiple since the line needs to get serialized only once
         return PlainTextComponentSerializer.plainText().serialize(getName()).equalsIgnoreCase(signLine);
+    }
+
+    public static boolean isNeutral(@NotNull Component signLine) {
+        return PlainTextComponentSerializer.plainText().serialize(signLine).equalsIgnoreCase(MinigameMessageManager.getStrippedMgMessage(MgSignLangKey.TEAM_NEUTRAL));
     }
 
     public abstract @Nullable String getCreatePermission();

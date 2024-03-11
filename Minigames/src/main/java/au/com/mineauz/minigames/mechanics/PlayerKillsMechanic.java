@@ -30,7 +30,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     }
 
     @Override
-    public EnumSet<MinigameType> validTypes() {
+    public @NotNull EnumSet<@NotNull MinigameType> validTypes() {
         return EnumSet.of(MinigameType.MULTIPLAYER);
     }
 

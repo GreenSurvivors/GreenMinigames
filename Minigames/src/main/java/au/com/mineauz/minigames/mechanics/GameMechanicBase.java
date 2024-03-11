@@ -48,7 +48,7 @@ public abstract class GameMechanicBase implements Listener {
      *
      * @return All valid game types.
      */
-    public abstract EnumSet<MinigameType> validTypes();
+    public abstract @NotNull EnumSet<@NotNull MinigameType> validTypes();
 
     /**
      * Checks if a mechanic is allowed to start with the current settings. Caller

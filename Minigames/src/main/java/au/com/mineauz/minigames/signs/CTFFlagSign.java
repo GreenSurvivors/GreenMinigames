@@ -2,13 +2,14 @@ package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.mechanics.CTFMechanic;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
@@ -34,6 +35,10 @@ public class CTFFlagSign extends AMinigameSign {
         return null;
     }
 
+    public static boolean isCapture(@NotNull Component signLine) {
+        return PlainTextComponentSerializer.plainText().serialize(signLine).equalsIgnoreCase(MinigameMessageManager.getStrippedMgMessage(MgSignLangKey.SUBTYPE_CAPTURE));
+    }
+
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
         PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
@@ -43,20 +48,20 @@ public class CTFFlagSign extends AMinigameSign {
 
         if (col != null) {
             event.line(2, Component.text(WordUtils.capitalizeFully(col.toString()), col.getColor()));
-        } else if (plainSerializer.serialize(event.line(2)).equalsIgnoreCase("neutral")) {
-            event.line(2, Component.text("Neutral", NamedTextColor.GRAY));
-        } else if (plainSerializer.serialize(event.line(2)).equalsIgnoreCase("capture") &&
-                !plainSerializer.serialize(event.line(3)).isEmpty()) {
-            event.line(2, Component.text("Capture", NamedTextColor.GREEN));
+        } else if (isNeutral(event.line(2))) {
+            event.line(2, MinigameMessageManager.getMgMessage(MgSignLangKey.TEAM_NEUTRAL));
+        } else if (isCapture(event.line(2)) && !plainSerializer.serialize(event.line(3)).isEmpty()) {
+            event.line(2, MinigameMessageManager.getMgMessage(MgSignLangKey.SUBTYPE_CAPTURE));
 
             col = TeamColor.matchColor(plainSerializer.serialize(event.line(3)));
             if (col != null) {
                 event.line(3, Component.text(WordUtils.capitalizeFully(col.toString()), col.getColor()));
-            } else if (plainSerializer.serialize(event.line(3)).equalsIgnoreCase("neutral")) {
-                event.line(3, Component.text("Neutral", NamedTextColor.GRAY));
+            } else if (isNeutral(event.line(3))) {
+                event.line(3, MinigameMessageManager.getMgMessage(MgSignLangKey.TEAM_NEUTRAL));
             } else {
                 event.getBlock().breakNaturally();
-                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_TEAM_INVALIDFORMAT);
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_TEAM_INVALIDFORMAT,
+                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), MinigameMessageManager.getMgMessage(MgSignLangKey.TEAM_NEUTRAL)));
                 return false;
             }
         }

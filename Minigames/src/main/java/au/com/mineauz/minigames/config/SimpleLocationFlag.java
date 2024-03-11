@@ -55,7 +55,7 @@ public class SimpleLocationFlag extends AFlag<Location> {
                 result = new Location(world, x, y, z);
             } else {
                 Minigames.getCmpnntLogger().warn("Could not simple location flag at '" + path + configSeparator + getName() +
-                        "' because World '" + worldName + "' is not a valid name! Throwing error so the config don't get overwritten.");
+                        "' because World '" + worldName + "' is not a valid name! Throwing exception so the config don't get overwritten.");
                 throw new RuntimeException("invalid worldName at '" + path + configSeparator + getName() + "'");
             }
         }

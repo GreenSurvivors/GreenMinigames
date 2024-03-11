@@ -12,7 +12,6 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -45,8 +44,8 @@ public class TeamSign extends AMinigameSign {
         event.line(1, getName());
         PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
 
-        if (plainSerializer.serialize(event.line(2)).equalsIgnoreCase("neutral")) { // todo
-            event.line(2, Component.text("Neutral", NamedTextColor.GRAY));
+        if (isNeutral(event.line(2))) {
+            event.line(2, MinigameMessageManager.getMgMessage(MgSignLangKey.TEAM_NEUTRAL));
             return true;
         } else {
             TeamColor color = TeamColor.matchColor(plainSerializer.serialize(event.line(2)));
@@ -56,7 +55,8 @@ public class TeamSign extends AMinigameSign {
             }
         }
 
-        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_TEAM_INVALIDFORMAT);
+        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_TEAM_INVALIDFORMAT,
+                Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), MinigameMessageManager.getMgMessage(MgSignLangKey.TEAM_NEUTRAL)));
         return false;
     }
 
@@ -69,7 +69,7 @@ public class TeamSign extends AMinigameSign {
                 PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
 
                 if (mgPlayer.getTeam() != matchTeam(mgm, frontSide.line(2))) {
-                    if (!mgm.isWaitingForPlayers() && !plainSerializer.serialize(frontSide.line(2)).equalsIgnoreCase("Neutral")) {
+                    if (!mgm.isWaitingForPlayers() && !isNeutral(frontSide.line(2))) {
                         Team sm = null;
                         Team nt = matchTeam(mgm, frontSide.line(2));
                         if (nt != null) {
@@ -96,7 +96,7 @@ public class TeamSign extends AMinigameSign {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_TEAM_ASSIGN_ERROR_FULL);
                             }
                         }
-                    } else if (plainSerializer.serialize(frontSide.line(2)).equalsIgnoreCase("Neutral") || matchTeam(mgm, frontSide.line(2)) != mgPlayer.getTeam()) {
+                    } else if (isNeutral(frontSide.line(2)) || matchTeam(mgm, frontSide.line(2)) != mgPlayer.getTeam()) {
                         Team currentTeam = mgPlayer.getTeam();
                         Team nt = matchTeam(mgm, sign.getSide(Side.FRONT).line(2));
                         if (currentTeam != null) {
