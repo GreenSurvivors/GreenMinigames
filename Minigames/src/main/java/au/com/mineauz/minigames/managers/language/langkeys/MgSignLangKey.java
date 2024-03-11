@@ -7,6 +7,8 @@ public enum MgSignLangKey implements MinigameLangKey {
     TYPE_BET("sign.type.bet"),
     TYPE_CHECKPOINT("sign.type.checkpoint"),
     TYPE_CTFFLAG("sign.type.flag"),
+    SUBTYPE_CAPTURE("sign.subtype.capture"),
+    TEAM_NEUTRAL("sign.team.neutral"),
     TYPE_FINISH("sign.type.finish"),
     TYPE_TELEPORT("sign.type.teleport"),
     TYPE_JOIN("sign.type.join"),

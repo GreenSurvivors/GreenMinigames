@@ -111,7 +111,7 @@ public class RegionModule extends MinigameModule {
                 }
 
                 if (ex.isTriggerPerPlayer()) {
-                    config.set(executorsPath + configSeparator + "osTriggeredPerPlayer", ex.isTriggerPerPlayer());
+                    config.set(executorsPath + configSeparator + "isTriggeredPerPlayer", ex.isTriggerPerPlayer());
                 }
                 if (ex.getTriggerCount() != 0) {
                     config.set(executorsPath + configSeparator + "triggerCount", ex.getTriggerCount());
