@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends RewardScheme {
+public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARewardScheme {
     private final EnumFlag<Comparison> comparisonType = new EnumFlag<>(Comparison.Greater, "comparison");
     private final BooleanFlag enableRewardsOnLoss = new BooleanFlag(false, "loss-rewards");
     private final BooleanFlag lossUsesSecondary = new BooleanFlag(true, "loss-use-secondary");

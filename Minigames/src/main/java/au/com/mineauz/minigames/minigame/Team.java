@@ -55,8 +55,8 @@ public class Team implements ScriptObject {
      */
     public Team(TeamColor color, Minigame minigame) {
         this.color = color;
-        displayName = WordUtils.capitalizeFully(color.toString()) + " Team";
-        scoreboardName = color.toString().toLowerCase();
+        displayName = WordUtils.capitalizeFully(color.getUserFriendlyName()) + " Team";
+        scoreboardName = color.getUserFriendlyName().toLowerCase();
         mgm = minigame;
     }
 
@@ -77,8 +77,8 @@ public class Team implements ScriptObject {
      */
     public boolean setColor(TeamColor color) {
         if (!TeamsModule.getMinigameModule(mgm).hasTeam(color)) {
-            if (displayName.toLowerCase().equals(this.color.toString().toLowerCase() + " team"))
-                displayName = WordUtils.capitalizeFully(color.toString()) + " Team";
+            if (displayName.toLowerCase().equals(this.color.getUserFriendlyName().toLowerCase() + " team"))
+                displayName = WordUtils.capitalizeFully(color.getUserFriendlyName()) + " Team";
             TeamsModule.getMinigameModule(mgm).removeTeam(this.color);
             this.color = color;
             TeamsModule.getMinigameModule(mgm).addTeam(color, this);
@@ -344,13 +344,14 @@ public class Team implements ScriptObject {
         return nametagVisibility.getFlag();
     }
 
-    public void setNameTagVisibility(OptionStatus vis) {
+    public void setNameTagVisibility(@NotNull OptionStatus vis) {
         nametagVisibility.setFlag(vis);
-        org.bukkit.scoreboard.Team team = mgm.getScoreboardManager().getTeam(color.toString().toLowerCase());
-        if (team != null)
+        org.bukkit.scoreboard.Team team = mgm.getScoreboardManager().getTeam(color.getUserFriendlyName().toLowerCase());
+        if (team != null) {
             team.setOption(Option.NAME_TAG_VISIBILITY, vis);
-        else
+        } else {
             Minigames.getCmpnntLogger().warn("No team set for visibility call");
+        }
     }
 
     public Callback<VisibilityMapper> getNameTagVisibilityCallback() {

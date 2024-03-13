@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
  * RewardSchemes allow more flexibility for reward handling.
  * The previous simple Primary/Secondary reward system is under {@link StandardRewardScheme}
  */
-public abstract class RewardScheme {
+public abstract class ARewardScheme {
     protected final @NotNull String name;
 
-    public RewardScheme(@NotNull String name) {
+    public ARewardScheme(@NotNull String name) {
         this.name = name;
     }
 

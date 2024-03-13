@@ -70,7 +70,6 @@ public class CTFFlagSign extends AMinigameSign {
     }
 
     // the error in this Java doc is known. We don't need access, we need dokumention.
-
     /**
      * actual handling of taking the flag is in {@link CTFMechanic#takeFlag(PlayerInteractEvent)}
      */

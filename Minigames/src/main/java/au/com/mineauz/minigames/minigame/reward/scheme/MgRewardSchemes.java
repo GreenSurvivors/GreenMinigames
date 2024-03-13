@@ -13,10 +13,10 @@ public enum MgRewardSchemes implements RewardSchemeFactory {
     REVERTS("reverts", RevertsRewardScheme::new);
 
     final @NotNull String name;
-    final @NotNull Function<@NotNull String, @NotNull RewardScheme> constructor;
+    final @NotNull Function<@NotNull String, @NotNull ARewardScheme> constructor;
 
 
-    MgRewardSchemes(@NotNull String name, @NotNull Function<@NotNull String, @NotNull RewardScheme> constructor) {
+    MgRewardSchemes(@NotNull String name, @NotNull Function<@NotNull String, @NotNull ARewardScheme> constructor) {
         this.name = name;
         this.constructor = constructor;
     }
@@ -26,7 +26,7 @@ public enum MgRewardSchemes implements RewardSchemeFactory {
     }
 
     @Override
-    public @NotNull RewardScheme makeScheme() {
+    public @NotNull ARewardScheme makeScheme() {
         return constructor.apply(name);
     }
 

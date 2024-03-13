@@ -97,11 +97,11 @@ public class PlayerLoadout {
         return loadoutName;
     }
 
-    public void addItem(ItemStack item, int slot) {
+    public void addItem(@NotNull ItemStack item, int slot) {
         itemSlots.put(slot, item);
     }
 
-    public void addPotionEffect(PotionEffect effect) {
+    public void addPotionEffect(@NotNull PotionEffect effect) {
         for (PotionEffect pot : effects) {
             if (effect.getType().getKey().equals(pot.getType().getKey())) {
                 effects.remove(pot);
@@ -111,7 +111,7 @@ public class PlayerLoadout {
         effects.add(effect);
     }
 
-    public void removePotionEffect(PotionEffect effect) {
+    public void removePotionEffect(@NotNull PotionEffect effect) {
         if (effects.contains(effect)) {
             effects.remove(effect);
         } else {
@@ -427,7 +427,10 @@ public class PlayerLoadout {
             config.set(path + configSeparator + "hunger", hasHunger());
         }
 
-        config.set(path + configSeparator + "displayName", MiniMessage.miniMessage().serialize(getDisplayName()));
+        String displayName = MiniMessage.miniMessage().serialize(getDisplayName());
+        if (!loadoutName.equalsIgnoreCase(displayName)) {
+            config.set(path + configSeparator + "displayName", displayName);
+        }
 
         if (isArmourLocked()) {
             config.set(path + configSeparator + "armourLocked", isArmourLocked());
