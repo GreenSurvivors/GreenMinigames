@@ -121,8 +121,8 @@ public class TeamsModule extends MinigameModule {
     public @NotNull Team addTeam(@NotNull TeamColor color, @Nullable String name) {
         if (!hasTeam(color)) {
             teams.put(color, new TeamFlag(new Team(color, getMinigame()), color.name(), getMinigame()));
-            String teamNameString = color.toString().toLowerCase();
-            org.bukkit.scoreboard.@NotNull Team bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(teamNameString);
+            String teamNameString = color.getUserFriendlyName().toLowerCase();
+            @NotNull org.bukkit.scoreboard.Team bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(teamNameString);
             bukkitTeam.setAllowFriendlyFire(false);
             bukkitTeam.setCanSeeFriendlyInvisibles(true);
             bukkitTeam.color(color.getColor());
@@ -142,7 +142,7 @@ public class TeamsModule extends MinigameModule {
      */
     public void addTeam(@NotNull TeamColor color, @NotNull Team team) {
         teams.put(color, new TeamFlag(team, color.name(), getMinigame()));
-        String sbTeam = color.toString().toLowerCase();
+        String sbTeam = color.getUserFriendlyName().toLowerCase();
         Scoreboard scoreboard = getMinigame().getScoreboardManager();
         org.bukkit.scoreboard.Team bukkitTeam = scoreboard.getTeam(sbTeam);
         if (bukkitTeam != null) {
@@ -174,15 +174,18 @@ public class TeamsModule extends MinigameModule {
         if (hasTeam(color)) {
             teams.remove(color);
             org.bukkit.scoreboard.Team bukkitTeam =
-                    getMinigame().getScoreboardManager().getTeam(color.toString().toLowerCase());
-            if (bukkitTeam != null) bukkitTeam.unregister();
+                    getMinigame().getScoreboardManager().getTeam(color.getUserFriendlyName().toLowerCase());
+            if (bukkitTeam != null) {
+                bukkitTeam.unregister();
+            }
         }
     }
 
     public boolean hasTeamStartLocations() {
         for (TeamFlag teamFlag : teams.values()) {
-            if (!teamFlag.getFlag().hasStartLocations())
+            if (!teamFlag.getFlag().hasStartLocations()) {
                 return false;
+            }
         }
         return true;
     }

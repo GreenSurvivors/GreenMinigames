@@ -24,7 +24,7 @@ public final class RewardSchemeRegistry {
         definedSchemes.put(factory.getSchemeName().toLowerCase(), factory);
     }
 
-    public static @Nullable RewardScheme createScheme(String name) {
+    public static @Nullable ARewardScheme createScheme(String name) {
         RewardSchemeFactory factory = definedSchemes.get(name);
 
         if (factory != null) {

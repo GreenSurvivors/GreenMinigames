@@ -21,7 +21,7 @@ import java.util.List;
  * It provides rewards only on victory and has a primary and secondary
  * reward. The primary reward is acquired on the first completion only.
  */
-public class StandardRewardScheme extends RewardScheme {
+public class StandardRewardScheme extends ARewardScheme {
     private final RewardsFlag primaryRewardFlag = new RewardsFlag(new Rewards(), "reward");
     private final RewardsFlag secondaryRewardFlag = new RewardsFlag(new Rewards(), "reward2");
 

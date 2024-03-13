@@ -142,8 +142,8 @@ public class RegionEvents implements Listener {
         if (event.getMinigame().getPlayers().isEmpty()) {
             for (Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()) {
                 for (RegionExecutor ex : region.getExecutors()) {
-                    if (ex.getTrigger() == MgRegTrigger.TIME_TICK) {
-                        region.startTickTask();
+                    if (ex.getTrigger() == MgRegTrigger.CONFIG_TIME) {
+                        region.startConfigTimerTask();
                     }
                     if (ex.getTrigger() == MgRegTrigger.TIME_GAMETICK) {
                         region.startGameTickTask();

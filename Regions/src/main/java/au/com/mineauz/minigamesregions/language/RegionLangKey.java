@@ -114,7 +114,13 @@ public enum RegionLangKey implements LangKey {
     MENU_ACTION_SWITCHTEAM_TO_DESCRIPTION("menu.action.switchTeam.to.description"),
     MENU_ACTION_SWITCHTEAM_TO_NAME("menu.action.switchTeam.to.name"),
     MENU_ACTION_TAKEITEM_ITEM_NAME("menu.action.takeItem.item.name"),
+    MENU_ACTION_TAKEITEM_LORE_DESCRIPTION("menu.action.takeItem.lore.description"),
+    MENU_ACTION_TAKEITEM_MATCH_ENCHANTMENTS_NAME("menu.action.takeItem.match.enchantments.name"),
+    MENU_ACTION_TAKEITEM_MATCH_EXACT_NAME("menu.action.takeItem.match.exact.name"),
+    MENU_ACTION_TAKEITEM_MATCH_LORE_NAME("menu.action.takeItem.match.lore.name"),
+    MENU_ACTION_TAKEITEM_MATCH_NAME_NAME("menu.action.takeItem.match.name.name"),
     MENU_ACTION_TAKEITEM_NAME("menu.action.takeItem.name"),
+    MENU_ACTION_TAKEITEM_NAME_DESCRIPTION("menu.action.takeItem.name.description"),
     MENU_ACTION_TELEPORT_NAME("menu.action.teleport.name"),
     MENU_ACTION_TIMEDTRIGGER_DELAY_NAME("menu.action.timedTrigger.delay.name"),
     MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME("menu.action.timedTrigger.isRegion.name"),
@@ -236,6 +242,7 @@ public enum RegionLangKey implements LangKey {
     TOOL_REGION_DESELECTED("tool.region.deselected"),
     TOOL_REGION_EDIT("tool.region.edit"),
     TOOL_REGION_SELECTED("tool.region.selected"),
+    TRIGGER_CONFIG_TIME_NAME("trigger.time.config.name"),
     TRIGGER_GAME_ENDED_NAME("trigger.game.ended.name"),
     TRIGGER_GAME_ENDPHASE_NAME("trigger.gameEndPhase.name"),
     TRIGGER_GAME_JOIN_NAME("trigger.player.gameJoin.name"),
@@ -267,14 +274,7 @@ public enum RegionLangKey implements LangKey {
     TRIGGER_REMOTE_TIMED_NAME("trigger.remote.timed.name"),
     TRIGGER_TICK_ERROR_CONDITION("trigger.tick.error.condition"),
     TRIGGER_TIME_GAMETICK_NAME("trigger.time.gameTick.name"),
-    TRIGGER_TIME_TICK_NAME("trigger.time.tick.name"),
-    TRIGGER_TIME_TIMER_NAME("trigger.time.timer.name"),
-    MENU_ACTION_TAKEITEM_MATCH_ENCHANTMENTS_NAME("menu.action.takeItem.match.enchantments.name"),
-    MENU_ACTION_TAKEITEM_MATCH_EXACT_NAME("menu.action.takeItem.match.exact.name"),
-    MENU_ACTION_TAKEITEM_MATCH_LORE_NAME("menu.action.takeItem.match.lore.name"),
-    MENU_ACTION_TAKEITEM_MATCH_NAME_NAME("menu.action.takeItem.match.name.name"),
-    MENU_ACTION_TAKEITEM_NAME_DESCRIPTION("menu.action.takeItem.name.description"),
-    MENU_ACTION_TAKEITEM_LORE_DESCRIPTION("menu.action.takeItem.lore.description");
+    TRIGGER_TIME_TIMER_NAME("trigger.time.timer.name");
 
     private final @NotNull String path;
 

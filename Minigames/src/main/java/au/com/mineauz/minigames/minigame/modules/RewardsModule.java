@@ -7,8 +7,8 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.reward.scheme.ARewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.MgRewardSchemes;
-import au.com.mineauz.minigames.minigame.reward.scheme.RewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardSchemeRegistry;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
@@ -17,7 +17,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 public class RewardsModule extends MinigameModule {
-    private RewardScheme scheme;
+    private ARewardScheme scheme;
 
     public RewardsModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
@@ -31,12 +31,12 @@ public class RewardsModule extends MinigameModule {
     }
 
 
-    public RewardScheme getScheme() {
+    public ARewardScheme getScheme() {
         return scheme;
     }
 
     @SuppressWarnings("unused")
-    public void setRewardScheme(RewardScheme scheme) {
+    public void setRewardScheme(ARewardScheme scheme) {
         this.scheme = scheme;
     }
 
@@ -61,7 +61,7 @@ public class RewardsModule extends MinigameModule {
 
     @Override
     public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        String name = config.getString(path + config.options().pathSeparator() + "reward-scheme", "standard");
+        String name = config.getString(path + config.options().pathSeparator() + "reward-scheme", MgRewardSchemes.STANDARD.getSchemeName());
 
         scheme = RewardSchemeRegistry.createScheme(name);
         if (scheme == null) {

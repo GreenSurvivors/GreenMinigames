@@ -13,7 +13,7 @@ public enum MgRegTrigger implements Trigger {
     PLAYER_BLOCK_BREAK(true, true, true, RegionLangKey.TRIGGER_PLAYER_BLOCK_BREAK_NAME, "BLOCK_BREAK"),
     PLAYER_BLOCK_CLICK_LEFT(false, true, true, RegionLangKey.TRIGGER_PLAYER_BLOCK_CLICK_LEFT_NAME, "LEFT_CLICK_BLOCK"),
     PLAYER_BLOCK_CLICK_RIGHT(false, true, true, RegionLangKey.TRIGGER_PLAYER_BLOCK_CLICK_RIGHT_NAME, "RIGHT_CLICK_BLOCK"),
-    PLAYER_BLOCK_INTERACT(false, true, true, RegionLangKey.TRIGGER_PLAYER_BLOCK_INTERACT_NAME, "INTERACT"), // todo block or Entity interact?
+    PLAYER_BLOCK_INTERACT(false, true, true, RegionLangKey.TRIGGER_PLAYER_BLOCK_INTERACT_NAME, "INTERACT"), // buttons and pressure plates for now
     PLAYER_BLOCK_PLACE(true, true, true, RegionLangKey.TRIGGER_PLAYER_BLOCK_PLACE_NAME, "BLOCK_PLACE"),
     PLAYER_CTFFLAG_DROP(true, true, true, RegionLangKey.TRIGGER_PLAYER_CTFFLAG_DROP_NAME, "PLAYER_DROP_FLAG"),
     PLAYER_CTFFLAG_TAKE(true, true, true, RegionLangKey.TRIGGER_PLAYER_CTFFLAG_TAKE_NAME, "PLAYER_TAKE_FLAG"),
@@ -36,9 +36,9 @@ public enum MgRegTrigger implements Trigger {
     RANDOM(true, true, true, RegionLangKey.TRIGGER_RANDOM_NAME),
     REMOTE(true, true, true, RegionLangKey.TRIGGER_REMOTE_NAME),
     REMOTE_TIMED(true, true, true, RegionLangKey.TRIGGER_REMOTE_TIMED_NAME, "TIMED_REMOTE"),
-    TIME_GAMETICK(true, false, false, RegionLangKey.TRIGGER_TIME_GAMETICK_NAME, "GAME_TICK"), // todo is it the same as tick?
-    TIME_MINIGAMETIMER(false, true, true, RegionLangKey.TRIGGER_TIME_TIMER_NAME, "MINIGAME_TIMER"),
-    TIME_TICK(true, false, true, RegionLangKey.TRIGGER_TIME_TICK_NAME, "TICK"); // todo is it the same as gametick?
+    TIME_GAMETICK(true, true, false, RegionLangKey.TRIGGER_TIME_GAMETICK_NAME, "GAME_TICK"), // will tick every game tick --> 20 times per second!
+    TIME_MINIGAMETIMER(false, true, true, RegionLangKey.TRIGGER_TIME_TIMER_NAME, "MINIGAME_TIMER"), // will tick every second -whenever the minigame itself does its important timer taks
+    CONFIG_TIME(true, true, true, RegionLangKey.TRIGGER_CONFIG_TIME_NAME, "TICK"); // will tick every <minigame>regions.<regionName>.tickDelay - per default also every second
 
 
     private final boolean useInRegions, useInNodes, triggerOnPlayerAvailable;

@@ -33,7 +33,7 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final int gameTickDelay = 1;
     private final @NotNull Minigame minigame;
-    private long taskDelay = 20;
+    private long taskDelay = 20; //todo make ingame configurable
     private int taskID;
     private int gameTickTaskID;
     private boolean enabled = true;
@@ -119,7 +119,7 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
             List<MinigamePlayer> plys = new ArrayList<>(players);
             for (MinigamePlayer player : plys) {
-                execute(MgRegTrigger.TIME_TICK, player);
+                execute(MgRegTrigger.CONFIG_TIME, player);
             }
         }, 0, delay);
     }
@@ -128,7 +128,7 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
         return taskDelay;
     }
 
-    public void startTickTask() {
+    public void startConfigTimerTask() {
         if (taskID != -1) {
             removeTickTask();
         }
@@ -136,7 +136,7 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
             List<MinigamePlayer> plys = new ArrayList<>(players);
             for (MinigamePlayer player : plys) {
-                execute(MgRegTrigger.TIME_TICK, player);
+                execute(MgRegTrigger.CONFIG_TIME, player);
             }
         }, 0, taskDelay);
     }
