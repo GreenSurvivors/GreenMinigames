@@ -3,14 +3,15 @@ package au.com.mineauz.minigames.events;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.jetbrains.annotations.Nullable;
 
 public class TakeFlagEvent extends AbstractCancellableMinigameEvent {
-    private final CTFFlag flag;
+    private final @Nullable CTFFlag flag;
     private final String flagName;
     private boolean displayMessage = true;
     private final MinigamePlayer player;
 
-    public TakeFlagEvent(Minigame minigame, MinigamePlayer player, CTFFlag flag) {
+    public TakeFlagEvent(Minigame minigame, MinigamePlayer player, @Nullable CTFFlag flag) {
         this(minigame, player, flag, null);
     }
 
@@ -18,7 +19,7 @@ public class TakeFlagEvent extends AbstractCancellableMinigameEvent {
         this(minigame, player, null, flagName);
     }
 
-    public TakeFlagEvent(Minigame minigame, MinigamePlayer player, CTFFlag flag, String flagName) {
+    public TakeFlagEvent(Minigame minigame, MinigamePlayer player, @Nullable CTFFlag flag, String flagName) {
         super(minigame);
         this.flag = flag;
         this.flagName = flagName;
@@ -30,7 +31,7 @@ public class TakeFlagEvent extends AbstractCancellableMinigameEvent {
         return flag != null;
     }
 
-    public CTFFlag getFlag() {
+    public @Nullable CTFFlag getFlag() {
         return flag;
     }
 

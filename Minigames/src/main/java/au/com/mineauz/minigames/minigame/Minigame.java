@@ -824,7 +824,7 @@ public class Minigame implements ScriptObject {
         droppedFlag.remove(id);
     }
 
-    public CTFFlag getDroppedFlag(String id) {
+    public @Nullable CTFFlag getDroppedFlag(String id) {
         return droppedFlag.get(id);
     }
 
