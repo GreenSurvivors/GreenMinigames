@@ -1281,7 +1281,7 @@ public class Minigame implements ScriptObject {
                 MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MAX_DESCRIPTION, 0, null));
 
         mainMenu.addItem(new MenuItemStatisticsSettings(Material.WRITABLE_BOOK, MgMenuLangKey.MENU_MINIGAME_STATISTIC_NAME, this));
-        mainMenu.addItem(activatePlayerRecorder.getMenuItem(Material.COMMAND_BLOCK, "Activate Player Block Recorder"));
+        mainMenu.addItem(activatePlayerRecorder.getMenuItem(Material.COMMAND_BLOCK, MgMenuLangKey.MENU_PLAYER_BLOCK_RECORDER));
 
         mainMenu.addItem(new MenuItemNewLine());
 

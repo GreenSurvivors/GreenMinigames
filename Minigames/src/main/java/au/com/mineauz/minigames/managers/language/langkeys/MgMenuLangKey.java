@@ -157,6 +157,7 @@ public enum MgMenuLangKey implements MinigameLangKey {
     MENU_PLAYERSETTINGS_PAINTBALL_MODE_NAME("menu.playerSettings.paintball.mode.name"),
     MENU_PLAYERSETTINGS_SINGLEPLAYERFLAG_NAME("menu.playerSettings.singleplayerFlag.name"),
     MENU_PLAYERSETTINGS_UNLIMITEDAMMO_NAME("menu.playerSettings.unlimitedAmmo.name"),
+    MENU_PLAYER_BLOCK_RECORDER("menu.minigame.playerBlockRecorder.name"),
     MENU_PLAYSOUND_MENU_NAME("menu.playSound.menu.name"),
     MENU_PLAYSOUND_PITCH_NAME("menu.playSound.pitch.name"),
     MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME("menu.playSound.privatePlayback.name"),

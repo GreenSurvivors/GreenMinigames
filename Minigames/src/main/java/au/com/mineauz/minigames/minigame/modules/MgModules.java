@@ -26,7 +26,7 @@ public enum MgModules implements ModuleFactory {
         this.name = name;
     }
 
-    public @NotNull MinigameModule makeNewModule(Minigame minigame) {
+    public @NotNull MinigameModule makeNewModule(@NotNull Minigame minigame) {
         return minigameModuleInit.apply(minigame, name);
     }
 
