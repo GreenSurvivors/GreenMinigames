@@ -149,6 +149,7 @@ public enum MgMiscLangKey implements MinigameLangKey { //todo this gets rather b
     PLAYER_TEAM_ASSIGN_JOINTEAM("player.team.assign.joinTeam"),
     PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG("player.team.autobalance.minigameMsg"),
     PLAYER_TEAM_AUTOBALANCE_PLYMSG("player.team.autobalance.plyMsg"),
+    PLUGIN_PREFIX("minigame.prefix"),
     POSITION("position"),
     PRESET_INFO_NOINFO("preset.info.noInfo"),
     PRESET_LOAD_ERROR_NOTFOUND("preset.load.error.notFound"),

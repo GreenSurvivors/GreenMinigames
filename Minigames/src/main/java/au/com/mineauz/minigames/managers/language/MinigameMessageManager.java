@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.managers.language;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -349,8 +350,8 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         target.sendMessage(init.append(message));
     }
 
-    private static Component getPluginPrefix(MinigameMessageType type) { //todo get from langfile
-        Component init = Component.text("[Minigames] ");
+    private static Component getPluginPrefix(MinigameMessageType type) {
+        Component init = getMessage(BUNDLE_KEY, MgMiscLangKey.PLUGIN_PREFIX).appendSpace();
         return switch (type) {
             case ERROR, TIE -> init.color(NamedTextColor.RED);
             case WARNING -> init.color(NamedTextColor.GOLD);
