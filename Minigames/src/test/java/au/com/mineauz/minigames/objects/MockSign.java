@@ -145,4 +145,8 @@ public class MockSign extends BlockStateMock implements Sign {
     public @NotNull SignSide getSide(@NotNull Side side) {
         return null;
     }
+
+    public @NotNull Side getInteractableSideFor(double v, double v1) {
+        return null;
+    }
 }

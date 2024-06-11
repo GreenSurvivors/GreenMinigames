@@ -11,10 +11,7 @@ import be.seeseemelk.mockbukkit.block.BlockMock;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SoundGroup;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockSupport;
-import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
@@ -140,6 +137,14 @@ public class TestHelper {
             @Override
             public void mirror(@NotNull Mirror mirror) {
 
+            }
+
+            public @NotNull BlockState createBlockState() {
+                return null;
+            }
+
+            public float getDestroySpeed(@NotNull ItemStack itemStack, boolean b) {
+                return 0;
             }
 
             @Override
