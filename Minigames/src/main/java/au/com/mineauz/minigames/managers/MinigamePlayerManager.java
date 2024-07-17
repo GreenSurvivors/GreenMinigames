@@ -161,7 +161,7 @@ public class MinigamePlayerManager {
         mgPlayer.updateInventory();
 
         if (minigame.canDisplayScoreboard()) {
-            mgPlayer.getPlayer().setScoreboard(minigame.getScoreboardManager());
+            mgPlayer.getPlayer().setScoreboard(minigame.getScoreboard());
             minigame.setScore(mgPlayer, 1);
             minigame.setScore(mgPlayer, 0);
         }
@@ -275,7 +275,7 @@ public class MinigamePlayerManager {
             }
 
             if (minigame.canDisplayScoreboard()) {
-                mgPlayer.getPlayer().setScoreboard(minigame.getScoreboardManager());
+                mgPlayer.getPlayer().setScoreboard(minigame.getScoreboard());
             }
 
             for (PotionEffect potion : mgPlayer.getPlayer().getActivePotionEffects()) {
@@ -697,7 +697,7 @@ public class MinigamePlayerManager {
                     }
                 }
 
-                minigame.getScoreboardManager().resetScores(mgPlayer.getName());
+                minigame.getScoreboard().resetScores(mgPlayer.getName());
 
                 for (MinigamePlayer pl : minigame.getSpectators()) {
                     mgPlayer.getPlayer().showPlayer(plugin, pl.getPlayer());

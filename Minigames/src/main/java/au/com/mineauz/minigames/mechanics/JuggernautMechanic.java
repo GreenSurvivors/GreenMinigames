@@ -83,8 +83,8 @@ public class JuggernautMechanic extends GameMechanicBase {
         }
 
         if (minigame.getPlayers().size() == 1) {
-            if (minigame.getScoreboardManager().getTeam("juggernaut") != null)
-                minigame.getScoreboardManager().getTeam("juggernaut").unregister();
+            if (minigame.getScoreboard().getTeam("juggernaut") != null)
+                minigame.getScoreboard().getTeam("juggernaut").unregister();
         }
     }
 
@@ -93,7 +93,7 @@ public class JuggernautMechanic extends GameMechanicBase {
                             @NotNull List<@NotNull MinigamePlayer> losers) {
         JuggernautModule.getMinigameModule(minigame).setJuggernaut(null);
 
-        minigame.getScoreboardManager().getTeam("juggernaut").unregister();
+        minigame.getScoreboard().getTeam("juggernaut").unregister();
     }
 
     private MinigamePlayer assignNewJuggernaut(List<MinigamePlayer> players, MinigamePlayer exclude) {
@@ -121,8 +121,8 @@ public class JuggernautMechanic extends GameMechanicBase {
         if (event.getMinigame().getMechanic() == this) {
             Minigame mgm = event.getMinigame();
 
-            mgm.getScoreboardManager().registerNewTeam("juggernaut");
-            mgm.getScoreboardManager().getTeam("juggernaut").setPrefix(ChatColor.RED.toString());
+            mgm.getScoreboard().registerNewTeam("juggernaut");
+            mgm.getScoreboard().getTeam("juggernaut").setPrefix(ChatColor.RED.toString());
 
             MinigamePlayer j = assignNewJuggernaut(event.getPlayers(), null);
             JuggernautModule.getMinigameModule(event.getMinigame()).setJuggernaut(j);

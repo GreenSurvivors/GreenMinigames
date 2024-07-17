@@ -166,7 +166,7 @@ public class Team implements ScriptObject {
      */
     public void setScore(int amount) {
         score = amount;
-        Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName());
+        Objective obj = mgm.getScoreboard().getObjective(mgm.getName());
         if (obj != null) {
             obj.getScore(getDisplayName()).setScore(score);
         }
@@ -187,7 +187,7 @@ public class Team implements ScriptObject {
      */
     public int addScore(int amount) {
         score += amount;
-        Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName());
+        Objective obj = mgm.getScoreboard().getObjective(mgm.getName());
         if (obj != null) {
             obj.getScore(getDisplayName()).setScore(score);
         }
@@ -199,7 +199,7 @@ public class Team implements ScriptObject {
      */
     public void resetScore() {
         score = 0;
-        mgm.getScoreboardManager().resetScores(getDisplayName());
+        mgm.getScoreboard().resetScores(getDisplayName());
     }
 
     /**
@@ -219,8 +219,8 @@ public class Team implements ScriptObject {
     public void addPlayer(MinigamePlayer player) {
         players.add(player);
         player.setTeam(this);
-        player.getPlayer().setScoreboard(mgm.getScoreboardManager());
-        org.bukkit.scoreboard.Team team = mgm.getScoreboardManager().getTeam(scoreboardName);
+        player.getPlayer().setScoreboard(mgm.getScoreboard());
+        org.bukkit.scoreboard.Team team = mgm.getScoreboard().getTeam(scoreboardName);
         if (team != null) {
             team.addEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
         }
@@ -233,7 +233,7 @@ public class Team implements ScriptObject {
      */
     public void removePlayer(MinigamePlayer player) {
         players.remove(player);
-        Scoreboard board = mgm.getScoreboardManager();
+        Scoreboard board = mgm.getScoreboard();
         org.bukkit.scoreboard.Team team = board.getTeam(scoreboardName);
         if (team != null) {
             team.removeEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
@@ -346,7 +346,7 @@ public class Team implements ScriptObject {
 
     public void setNameTagVisibility(@NotNull OptionStatus vis) {
         nametagVisibility.setFlag(vis);
-        org.bukkit.scoreboard.Team team = mgm.getScoreboardManager().getTeam(color.getUserFriendlyName().toLowerCase());
+        org.bukkit.scoreboard.Team team = mgm.getScoreboard().getTeam(color.getUserFriendlyName().toLowerCase());
         if (team != null) {
             team.setOption(Option.NAME_TAG_VISIBILITY, vis);
         } else {

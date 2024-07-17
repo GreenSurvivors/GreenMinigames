@@ -11,6 +11,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class JuggernautModule extends MinigameModule {
     private MinigamePlayer juggernaut = null;
@@ -49,16 +50,16 @@ public class JuggernautModule extends MinigameModule {
         return juggernaut;
     }
 
-    public void setJuggernaut(MinigamePlayer player) {
+    public void setJuggernaut(@Nullable MinigamePlayer player) {
         if (juggernaut != null) {
-            Team team = juggernaut.getMinigame().getScoreboardManager().getTeam("juggernaut");
+            Team team = juggernaut.getMinigame().getScoreboard().getTeam("juggernaut");
             juggernaut.setLoadout(null);
-            team.removeEntry(team.getColor() + juggernaut.getPlayer().getDisplayName());
+            team.removeEntry(team.getColor() + juggernaut.getPlayer().getDisplayName()); // todo find modern equivalent
         }
         juggernaut = player;
 
         if (juggernaut != null) {
-            Team team = player.getMinigame().getScoreboardManager().getTeam("juggernaut");
+            Team team = player.getMinigame().getScoreboard().getTeam("juggernaut");
             team.addEntry(team.getColor() + player.getPlayer().getDisplayName());
 
             MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);

@@ -56,7 +56,7 @@ public class TeamsModule extends MinigameModule {
         final ConfigurationSection configSection = config.getConfigurationSection(path + config.options().pathSeparator() + "teams");
         if (configSection != null) {
             Set<String> teamNames = configSection.getKeys(false);
-            Scoreboard scoreboard = getMinigame().getScoreboardManager();
+            Scoreboard scoreboard = getMinigame().getScoreboard();
 
             for (String teamName : teamNames) {
                 TeamFlag tf = new TeamFlag(null, teamName, getMinigame());
@@ -122,7 +122,7 @@ public class TeamsModule extends MinigameModule {
         if (!hasTeam(color)) {
             teams.put(color, new TeamFlag(new Team(color, getMinigame()), color.name(), getMinigame()));
             String teamNameString = color.getUserFriendlyName().toLowerCase();
-            @NotNull org.bukkit.scoreboard.Team bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(teamNameString);
+            @NotNull org.bukkit.scoreboard.Team bukkitTeam = getMinigame().getScoreboard().registerNewTeam(teamNameString);
             bukkitTeam.setAllowFriendlyFire(false);
             bukkitTeam.setCanSeeFriendlyInvisibles(true);
             bukkitTeam.color(color.getColor());
@@ -143,12 +143,12 @@ public class TeamsModule extends MinigameModule {
     public void addTeam(@NotNull TeamColor color, @NotNull Team team) {
         teams.put(color, new TeamFlag(team, color.name(), getMinigame()));
         String sbTeam = color.getUserFriendlyName().toLowerCase();
-        Scoreboard scoreboard = getMinigame().getScoreboardManager();
+        Scoreboard scoreboard = getMinigame().getScoreboard();
         org.bukkit.scoreboard.Team bukkitTeam = scoreboard.getTeam(sbTeam);
         if (bukkitTeam != null) {
             bukkitTeam.unregister();
         }
-        bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(sbTeam);
+        bukkitTeam = getMinigame().getScoreboard().registerNewTeam(sbTeam);
         bukkitTeam.setAllowFriendlyFire(false);
         bukkitTeam.setCanSeeFriendlyInvisibles(true);
         bukkitTeam.setDisplayName(team.getDisplayName());
@@ -174,7 +174,7 @@ public class TeamsModule extends MinigameModule {
         if (hasTeam(color)) {
             teams.remove(color);
             org.bukkit.scoreboard.Team bukkitTeam =
-                    getMinigame().getScoreboardManager().getTeam(color.getUserFriendlyName().toLowerCase());
+                    getMinigame().getScoreboard().getTeam(color.getUserFriendlyName().toLowerCase());
             if (bukkitTeam != null) {
                 bukkitTeam.unregister();
             }

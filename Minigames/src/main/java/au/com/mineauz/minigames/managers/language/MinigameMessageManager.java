@@ -27,6 +27,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -43,7 +44,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
     /**
      * Stores each prop file with an identifier
      */
-    private final static @NotNull Hashtable<String, ResourceBundle> propertiesHashMap = new Hashtable<>();
+    private final static @NotNull ConcurrentHashMap<String, ResourceBundle> propertiesHashMap = new ConcurrentHashMap<>();
 
     public static void registerCoreLanguage() {
         CodeSource src = Minigames.class.getProtectionDomain().getCodeSource();

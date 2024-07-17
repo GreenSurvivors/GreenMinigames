@@ -117,7 +117,7 @@ public class Minigame implements ScriptObject {
     private final Map<String, CTFFlag> droppedFlag = new HashMap<>();
     private MinigameState state = MinigameState.IDLE;
     private FloorDegenerator sFloorDegen;
-    private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
+    private @NotNull Scoreboard scoreboard = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
     //Multiplayer
     private MultiplayerTimer mpTimer = null;
     private MinigameTimer miniTimer = null;
@@ -148,9 +148,9 @@ public class Minigame implements ScriptObject {
 
         if (start != null)
             startLocations.getFlag().add(start);
-        if (sbManager != null) {
-            sbManager.registerNewObjective(this.name, Criteria.DUMMY, this.name);
-            sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
+        if (scoreboard != null) {
+            Objective newObjective = scoreboard.registerNewObjective(this.name, Criteria.DUMMY, Component.text(this.name));
+            newObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
         }
 
         for (ModuleFactory factory : Minigames.getPlugin().getMinigameManager().getModules()) {
@@ -587,14 +587,14 @@ public class Minigame implements ScriptObject {
     }
 
     public void setScore(@NotNull MinigamePlayer mgPlayer, int amount) {
-        if (sbManager == null) {
+        if (scoreboard == null) {
             ScoreboardManager s = Minigames.getPlugin().getServer().getScoreboardManager();
-            sbManager = s.getNewScoreboard();
+            scoreboard = s.getNewScoreboard();
             Minigames.getCmpnntLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name);
         }
-        Objective o = sbManager.getObjective(getName());
-        if (o != null) {
-            o.getScore(mgPlayer.getName()).setScore(amount);
+        Objective objective = scoreboard.getObjective(getName());
+        if (objective != null) {
+            objective.getScore(mgPlayer.getName()).setScore(amount);
         }
     }
 
@@ -1007,8 +1007,8 @@ public class Minigame implements ScriptObject {
         this.enableFlight.setFlag(enableFlight);
     }
 
-    public Scoreboard getScoreboardManager() {
-        return sbManager;
+    public @NotNull Scoreboard getScoreboard() {
+        return scoreboard;
     }
 
     public @Nullable Component getObjective() {

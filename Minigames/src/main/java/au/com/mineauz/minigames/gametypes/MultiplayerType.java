@@ -153,7 +153,7 @@ public class MultiplayerType extends MinigameTypeBase {
                     }
                 }, secondsUntilLateJoin * 20));
             }
-            mgPlayer.getPlayer().setScoreboard(mgm.getScoreboardManager());
+            mgPlayer.getPlayer().setScoreboard(mgm.getScoreboard());
             mgm.setScore(mgPlayer, 1);
             mgm.setScore(mgPlayer, 0);
         }
