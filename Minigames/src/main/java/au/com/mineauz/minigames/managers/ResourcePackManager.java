@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -53,11 +55,11 @@ public class ResourcePackManager { //todo work with multiple ressource packs
 
     private boolean loadEmptyPack() {
         try {
-            URL url = new URL("https://github.com/AddstarMC/Minigames/raw/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip");
+            URL url = new URI("https://github.com/AddstarMC/Minigames/raw/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip").toURL();
             ResourcePack empty = new ResourcePack(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME), url);
             addResourcePack(empty);
             return true;
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException | URISyntaxException e) {
             return false;
         }
     }

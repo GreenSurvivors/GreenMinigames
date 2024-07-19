@@ -18,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -247,13 +248,13 @@ public class RegionEvents implements Listener {
     }
 
     @EventHandler()
-    private void interactNode(PlayerInteractEvent event) {
+    private void interactNode(@NotNull PlayerInteractEvent event) {
         final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         if (!mgPlayer.isInMinigame()) {
             return;
         }
 
-        if (!event.isCancelled()) {
+        if (event.useInteractedBlock() != Event.Result.DENY) {
             if (event.getAction() == Action.PHYSICAL) {
                 if (Tag.PRESSURE_PLATES.isTagged(event.getClickedBlock().getType())) {
                     trigger(mgPlayer, event.getClickedBlock(), MgRegTrigger.PLAYER_BLOCK_INTERACT);

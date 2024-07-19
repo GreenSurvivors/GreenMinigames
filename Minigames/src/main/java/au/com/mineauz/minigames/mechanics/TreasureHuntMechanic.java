@@ -77,7 +77,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
             thm.clearHints();
         thm.setTreasureFound(false);
 
-        Location tcpos = mgm.getStartLocations().get(0).clone();
+        Location tcpos = mgm.getStartLocations().getFirst().clone();
         final Location rpos = tcpos;
         double rx;
         double ry;
@@ -132,7 +132,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
 
                         final ItemStack[] items = new ItemStack[27];
                         for (int i = 0; i < numItems; i++) {
-                            ARewardType rew = ((StandardRewardScheme) rewards.getScheme()).getPrimaryReward().getReward().get(0);
+                            ARewardType rew = ((StandardRewardScheme) rewards.getScheme()).getPrimaryReward().getReward().getFirst();
                             if (rew instanceof ItemReward irew) {
                                 items[i] = irew.getRewardItem();
                             }
@@ -249,18 +249,18 @@ public class TreasureHuntMechanic extends GameMechanicBase {
             String xdir;
             String zdir;
 
-            if (mgm.getStartLocations().get(0).getX() > block.getX()) {
-                dfcx = mgm.getStartLocations().get(0).getX() - block.getX();
+            if (mgm.getStartLocations().getFirst().getX() > block.getX()) {
+                dfcx = mgm.getStartLocations().getFirst().getX() - block.getX();
                 xdir = MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_WEST);
             } else {
-                dfcx = block.getX() - mgm.getStartLocations().get(0).getX();
+                dfcx = block.getX() - mgm.getStartLocations().getFirst().getX();
                 xdir = MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_EAST);
             }
-            if (mgm.getStartLocations().get(0).getZ() > block.getZ()) {
-                dfcz = mgm.getStartLocations().get(0).getZ() - block.getZ();
+            if (mgm.getStartLocations().getFirst().getZ() > block.getZ()) {
+                dfcz = mgm.getStartLocations().getFirst().getZ() - block.getZ();
                 zdir = MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_NORTH);
             } else {
-                dfcz = block.getZ() - mgm.getStartLocations().get(0).getZ();
+                dfcz = block.getZ() - mgm.getStartLocations().getFirst().getZ();
                 zdir = MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_SOUTH);
             }
             Component dir;

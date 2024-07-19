@@ -129,17 +129,10 @@ public class GiveItemAction extends AAction {
             Material mat = Material.matchMaterial(config.getString(path + configSeparator + "type", ""));
 
             if (mat != null) {
-                tempItem.setType(mat);
+                tempItem = tempItem.withType(mat);
             }
         }
         ItemMeta meta = tempItem.getItemMeta();
-        if (config.contains(path + configSeparator + "name")) {
-            Material mat = Material.matchMaterial(config.getString(path + configSeparator + "type", ""));
-
-            if (mat != null) {
-                tempItem.setType(mat);
-            }
-        }
 
         if (config.contains(path + configSeparator + "name")) {
             meta.displayName(MiniMessage.miniMessage().deserialize(config.getString(path + configSeparator + "name", "")));

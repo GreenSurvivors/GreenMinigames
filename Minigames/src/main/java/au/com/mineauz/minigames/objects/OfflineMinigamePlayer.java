@@ -40,7 +40,7 @@ public class OfflineMinigamePlayer {
         this.exp = exp;
         this.level = level;
         if (loginLocation != null && loginLocation.getWorld() == null) {
-            loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
+            loginLocation = Bukkit.getWorlds().getFirst().getSpawnLocation();
         }
         this.loginLocation = loginLocation;
         if (Minigames.getPlugin().getConfig().getBoolean("saveInventory")) {
@@ -71,10 +71,10 @@ public class OfflineMinigamePlayer {
                     (float) config.getDouble("location" + configSeparator + "yaw"),
                     (float) config.getDouble("location" + configSeparator + "pitch"));
             if (loginLocation.getWorld() == null) {
-                loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
+                loginLocation = Bukkit.getWorlds().getFirst().getSpawnLocation();
             }
         } else
-            loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
+            loginLocation = Bukkit.getWorlds().getFirst().getSpawnLocation();
 
         ItemStack[] items = Minigames.getPlugin().getServer().createInventory(null, InventoryType.PLAYER).getContents();
         ItemStack[] armour = new ItemStack[4];

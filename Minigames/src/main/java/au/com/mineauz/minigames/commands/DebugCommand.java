@@ -55,7 +55,7 @@ public class DebugCommand extends ACommand {
     public boolean onCommand(@NotNull CommandSender sender,
                              @NotNull String @NotNull [] args) {
         if (args.length > 0) {
-            switch (args[0].toUpperCase()) {
+            switch (args[0].toUpperCase()) { //todo
                 case "ON" -> {
                     if (Minigames.getPlugin().isDebugging()) {
                         sender.sendMessage(ChatColor.GRAY + "Debug mode already active.");

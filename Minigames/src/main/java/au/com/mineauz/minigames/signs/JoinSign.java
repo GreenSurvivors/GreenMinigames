@@ -47,7 +47,7 @@ public class JoinSign extends AMinigameSign {
             event.line(2, minigame.getDisplayName());
             setPersistentMinigame(sign, minigame);
 
-            if (Minigames.getPlugin().hasEconomy()) {
+            if (Minigames.getPlugin().hasEconomy()) { // todo
                 if (!event.getLine(3).isEmpty() && !event.getLine(3).matches("\\$?[0-9]+(.[0-9]{2})?")) {
                     MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_JOIN_ERROR_INVALIDMONEY);
                     return false;

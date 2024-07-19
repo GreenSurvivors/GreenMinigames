@@ -80,8 +80,7 @@ public class MenuItemBlockData extends MenuItem {
 
             // update the display item
             ItemStack stackUpdate = getDisplayItem();
-            stackUpdate.setType(item.getType());
-            setDisplayItem(stackUpdate);
+            setDisplayItem(stackUpdate.withType(item.getType()));
         } else {
             MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_BLOCKDATA_ERROR_INVALID,
                     Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item != null ? Component.translatable(item.getType().translationKey()) : Component.text("?")));
@@ -113,8 +112,7 @@ public class MenuItemBlockData extends MenuItem {
             // update the display item
             if (d.getMaterial().isItem()) {
                 ItemStack stackUpdate = getDisplayItem();
-                stackUpdate.setType(d.getMaterial());
-                setDisplayItem(stackUpdate);
+                setDisplayItem(stackUpdate.withType(d.getMaterial()));
             }
         } catch (IllegalArgumentException e) {
             MinigameMessageManager.sendMessage(getContainer().getViewer(), MinigameMessageType.ERROR, Component.text(e.getLocalizedMessage()));

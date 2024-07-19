@@ -81,7 +81,7 @@ public class PlayerCommand extends ACommand {
             } else {
                 List<Player> playerMatch = Bukkit.matchPlayer(args[0]);
                 if (!playerMatch.isEmpty()) {
-                    MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(playerMatch.get(0));
+                    MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(playerMatch.getFirst());
 
                     if (mgPlayer.isInMinigame()) {
                         TextComponent.Builder message = Component.text();

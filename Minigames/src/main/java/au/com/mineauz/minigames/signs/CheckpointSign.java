@@ -31,7 +31,7 @@ public class CheckpointSign extends AMinigameSign {
     }
 
     @Override
-    public boolean signCreate(@NotNull SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) { // todo get from lang
         event.line(1, getName());
         if (event.getLine(2).equalsIgnoreCase("global")) {
             event.setLine(2, ChatColor.BLUE + "Global");
@@ -46,7 +46,7 @@ public class CheckpointSign extends AMinigameSign {
             if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isSpectator(mgPlayer)) {
                 return false;
             }
-            if (mgPlayer.getPlayer().isOnGround()) {
+            if (mgPlayer.getPlayer().isOnGround()) { // todo why? if really necessary use something working
                 Location newloc = mgPlayer.getPlayer().getLocation();
                 if (!sign.getLine(2).equals(ChatColor.BLUE + "Global")) {
                     mgPlayer.setCheckpoint(newloc);

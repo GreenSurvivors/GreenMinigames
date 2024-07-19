@@ -44,7 +44,7 @@ public class MinigameTool {
                     MinigameMessageManager.getStrippedMgMessage(MgMiscLangKey.TOOL_SELECTED_MINIGAME_DESCRIPTION,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), "(.*)")),
                     Pattern.CASE_INSENSITIVE);
-            Matcher mgMatcher = minigamePattern.matcher(plainSerializer.serialize(lore.get(0)));
+            Matcher mgMatcher = minigamePattern.matcher(plainSerializer.serialize(lore.getFirst()));
 
             if (mgMatcher.matches()) {
                 minigame = Minigames.getPlugin().getMinigameManager().getMinigame(mgMatcher.group(1));

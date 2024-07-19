@@ -99,8 +99,7 @@ public class MatchTeamCondition extends ACondition {
             @Override
             public @NotNull ItemStack getDisplayItem() {
                 ItemStack stack = super.getDisplayItem();
-                stack.setType(getTeamMaterial());
-                return stack;
+                return stack.withType(getTeamMaterial());
             }
         });
 

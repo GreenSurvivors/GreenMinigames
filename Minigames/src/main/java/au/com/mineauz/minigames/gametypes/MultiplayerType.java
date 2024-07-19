@@ -131,7 +131,7 @@ public class MultiplayerType extends MinigameTypeBase {
                             locs.addAll(fmgm.getStartLocations());
                         }
                         Collections.shuffle(locs);
-                        fply.teleport(locs.get(0));
+                        fply.teleport(locs.getFirst());
                         fply.getLoadout().equipLoadout(fply);
                         fply.setLatejoining(false);
                         fply.setFrozen(false);
@@ -144,7 +144,7 @@ public class MultiplayerType extends MinigameTypeBase {
                     if (fply.isInMinigame()) {
                         List<Location> locs = new ArrayList<>(fmgm.getStartLocations());
                         Collections.shuffle(locs);
-                        fply.teleport(locs.get(0));
+                        fply.teleport(locs.getFirst());
                         fply.getLoadout().equipLoadout(fply);
                         fply.setLatejoining(false);
                         fply.setFrozen(false);
@@ -285,7 +285,7 @@ public class MultiplayerType extends MinigameTypeBase {
                 for (Team team : TeamsModule.getMinigameModule(mgm).getTeams()) {
                     //make the next team winner, if they have the highest score
                     if (winner == null || (team.getScore() > winner.getScore() &&
-                            (drawTeams.isEmpty() || team.getScore() > drawTeams.get(0).getScore()))) {
+                            (drawTeams.isEmpty() || team.getScore() > drawTeams.getFirst().getScore()))) {
                         winner = team;
 
                         //make the next team draw with the last winner, if their scores match
@@ -301,7 +301,7 @@ public class MultiplayerType extends MinigameTypeBase {
                         //the last winner draws
                         winner = null;
 
-                    } else if (!drawTeams.isEmpty() && drawTeams.get(0).getScore() == team.getScore()) {
+                    } else if (!drawTeams.isEmpty() && drawTeams.getFirst().getScore() == team.getScore()) {
                         //new team also draws
                         drawTeams.add(team);
                     }
@@ -474,7 +474,7 @@ public class MultiplayerType extends MinigameTypeBase {
                             starts.addAll(mg.getStartLocations());
                         }
                         Collections.shuffle(starts);
-                        respawnPos = starts.get(0);
+                        respawnPos = starts.getFirst();
                     }
                     mgPlayer.getLoadout().equipLoadout(mgPlayer);
                 } else {
@@ -487,7 +487,7 @@ public class MultiplayerType extends MinigameTypeBase {
                     } else {
                         List<Location> starts = new ArrayList<>(mg.getStartLocations());
                         Collections.shuffle(starts);
-                        respawnPos = starts.get(0);
+                        respawnPos = starts.getFirst();
                     }
 
                     mgPlayer.getLoadout().equipLoadout(mgPlayer);

@@ -30,7 +30,10 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.Criteria;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -117,7 +120,7 @@ public class Minigame implements ScriptObject {
     private final Map<String, CTFFlag> droppedFlag = new HashMap<>();
     private MinigameState state = MinigameState.IDLE;
     private FloorDegenerator sFloorDegen;
-    private @NotNull Scoreboard scoreboard = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
+    private final @NotNull Scoreboard scoreboard = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
     //Multiplayer
     private MultiplayerTimer mpTimer = null;
     private MinigameTimer miniTimer = null;
@@ -148,10 +151,8 @@ public class Minigame implements ScriptObject {
 
         if (start != null)
             startLocations.getFlag().add(start);
-        if (scoreboard != null) {
-            Objective newObjective = scoreboard.registerNewObjective(this.name, Criteria.DUMMY, Component.text(this.name));
-            newObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        }
+        Objective newObjective = scoreboard.registerNewObjective(this.name, Criteria.DUMMY, Component.text(this.name));
+        newObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         for (ModuleFactory factory : Minigames.getPlugin().getMinigameManager().getModules()) {
             addModule(factory);
@@ -587,11 +588,6 @@ public class Minigame implements ScriptObject {
     }
 
     public void setScore(@NotNull MinigamePlayer mgPlayer, int amount) {
-        if (scoreboard == null) {
-            ScoreboardManager s = Minigames.getPlugin().getServer().getScoreboardManager();
-            scoreboard = s.getNewScoreboard();
-            Minigames.getCmpnntLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name);
-        }
         Objective objective = scoreboard.getObjective(getName());
         if (objective != null) {
             objective.getScore(mgPlayer.getName()).setScore(amount);

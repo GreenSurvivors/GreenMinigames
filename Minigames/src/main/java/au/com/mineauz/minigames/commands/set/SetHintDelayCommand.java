@@ -26,11 +26,6 @@ public class SetHintDelayCommand extends ASetCommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getAliases() {
-        return null;
-    }
-
-    @Override
     public boolean canBeConsole() {
         return true;
     }

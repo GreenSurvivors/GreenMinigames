@@ -813,7 +813,7 @@ public class MinigamePlayerManager {
                 if (minigame.getShowCompletionTime()) {
                     MinigameMessageManager.sendMgMessage(mgWinner, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_COMPLETIONTIME,
                             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(),
-                                    MinigameUtils.convertTime(Duration.ofMillis(((winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime()))))));
+                                    MinigameUtils.convertTime(Duration.ofMillis(((winners.getFirst().getEndTime() - winners.getFirst().getStartTime() + winners.getFirst().getStoredTime()))))));
                 }
 
                 for (DynamicMinigameStat stat : MinigameStatistics.getDynamicStats()) {
@@ -884,7 +884,7 @@ public class MinigamePlayerManager {
                 if (!winners.isEmpty() || teamsModule.getDefaultWinner() != null) {
                     Team team;
                     if (!winners.isEmpty()) {
-                        team = winners.get(0).getTeam();
+                        team = winners.getFirst().getTeam();
                     } else {
                         team = teamsModule.getTeam(teamsModule.getDefaultWinner());
                     }
@@ -893,7 +893,7 @@ public class MinigamePlayerManager {
                     for (Team t : teams) {
                         score = score.append(Component.text(t.getColor().name(), t.getTextColor()).append(Component.text(t.getScore())));
 
-                        if (t != teams.get(teams.size() - 1)) {
+                        if (t != teams.getLast()) {
                             score = score.append(Component.text(" : "));
                         }
                     }
@@ -918,7 +918,7 @@ public class MinigamePlayerManager {
             } else {
                 if (winners.size() == 1) {
                     Component score = Component.empty();
-                    MinigamePlayer winner = winners.get(0);
+                    MinigamePlayer winner = winners.getFirst();
                     if (winner.getScore() != 0) {
                         score = MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_END_TEAM_SCORE,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(winner.getScore())));
@@ -1062,7 +1062,7 @@ public class MinigamePlayerManager {
     public void partyMode(MinigamePlayer player) {
         if (onPartyMode()) {
             Location loc = player.getPlayer().getLocation();
-            Firework firework = (Firework) player.getPlayer().getWorld().spawnEntity(loc, EntityType.FIREWORK);
+            Firework firework = (Firework) player.getPlayer().getWorld().spawnEntity(loc, EntityType.FIREWORK_ROCKET);
             FireworkMeta fwm = firework.getFireworkMeta();
 
             Random chance = new Random();

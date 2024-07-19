@@ -108,7 +108,7 @@ public abstract class GameMechanicBase implements Listener {
                         teamToBalance = teamToCheck;
                 }
                 if (teamToJoin != null && teamToBalance != null && teamToBalance.getPlayers().size() - teamToJoin.getPlayers().size() > 1) {
-                    MinigamePlayer mgPlayer = teamToBalance.getPlayers().get(0);
+                    MinigamePlayer mgPlayer = teamToBalance.getPlayers().getFirst();
                     MultiplayerType.switchTeam(minigame, mgPlayer, teamToJoin);
                     result.add(mgPlayer);
 

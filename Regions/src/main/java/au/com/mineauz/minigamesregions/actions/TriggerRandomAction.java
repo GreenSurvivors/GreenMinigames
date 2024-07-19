@@ -72,13 +72,13 @@ public class TriggerRandomAction extends AAction {
         }
         Collections.shuffle(exs);
         if (timesTriggered.getFlag() == 1) {
-            if (region.checkConditions(exs.get(0), mgPlayer) && exs.get(0).canBeTriggered(mgPlayer))
-                region.execute(exs.get(0), mgPlayer);
+            if (region.checkConditions(exs.getFirst(), mgPlayer) && exs.getFirst().canBeTriggered(mgPlayer))
+                region.execute(exs.getFirst(), mgPlayer);
         } else {
             for (int i = 0; i < timesTriggered.getFlag(); i++) {
                 if (allowSameTrigger.getFlag()) {
-                    if (region.checkConditions(exs.get(0), mgPlayer) && exs.get(0).canBeTriggered(mgPlayer)) {
-                        region.execute(exs.get(0), mgPlayer);
+                    if (region.checkConditions(exs.getFirst(), mgPlayer) && exs.getFirst().canBeTriggered(mgPlayer)) {
+                        region.execute(exs.getFirst(), mgPlayer);
                     }
                     Collections.shuffle(exs);
                 } else {
@@ -104,13 +104,13 @@ public class TriggerRandomAction extends AAction {
         }
         Collections.shuffle(exs);
         if (timesTriggered.getFlag() == 1) {
-            if (node.checkConditions(exs.get(0), mgPlayer) && exs.get(0).canBeTriggered(mgPlayer))
-                node.execute(exs.get(0), mgPlayer);
+            if (node.checkConditions(exs.getFirst(), mgPlayer) && exs.getFirst().canBeTriggered(mgPlayer))
+                node.execute(exs.getFirst(), mgPlayer);
         } else {
             for (int i = 0; i < timesTriggered.getFlag(); i++) {
                 if (allowSameTrigger.getFlag()) {
-                    if (node.checkConditions(exs.get(0), mgPlayer) && exs.get(0).canBeTriggered(mgPlayer)) {
-                        node.execute(exs.get(0), mgPlayer);
+                    if (node.checkConditions(exs.getFirst(), mgPlayer) && exs.getFirst().canBeTriggered(mgPlayer)) {
+                        node.execute(exs.getFirst(), mgPlayer);
                     }
                     Collections.shuffle(exs);
                 } else {

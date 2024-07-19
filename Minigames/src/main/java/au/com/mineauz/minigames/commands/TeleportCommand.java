@@ -60,7 +60,7 @@ public class TeleportCommand extends ACommand {
             List<Player> plys = PLUGIN.getServer().matchPlayer(args[0]);
             MinigamePlayer mgPlayer;
             if (!plys.isEmpty()) {
-                mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(plys.get(0));
+                mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(plys.getFirst());
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
@@ -184,7 +184,7 @@ public class TeleportCommand extends ACommand {
                 MinigamePlayer mgPlayer2;
 
                 if (!plys.isEmpty()) {
-                    mgPlayer2 = PLUGIN.getPlayerManager().getMinigamePlayer(plys.get(0));
+                    mgPlayer2 = PLUGIN.getPlayerManager().getMinigamePlayer(plys.getFirst());
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));

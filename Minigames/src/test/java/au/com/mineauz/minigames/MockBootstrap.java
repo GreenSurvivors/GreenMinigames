@@ -30,7 +30,7 @@ public class MockBootstrap {
 
             @Override
             public @NotNull PluginMeta getConfiguration() {
-                Enumeration<URL> resources = null;
+                Enumeration<URL> resources;
                 try {
                     resources = Minigames.class.getClassLoader().getResources("plugin.yml"); //todo use paper plugin yml
 

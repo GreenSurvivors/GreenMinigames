@@ -32,6 +32,8 @@ import org.bstats.charts.CustomChart;
 import org.bstats.charts.MultiLineChart;
 import org.bstats.charts.SimpleBarChart;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -150,8 +152,14 @@ public class Minigames extends JavaPlugin {
                 }
                 if (!loadout.getAllPotionEffects().isEmpty()) {
                     for (final PotionEffect eff : loadout.getAllPotionEffects()) {
-                        globalConfig.set(loadout.getName() + globalPathSeparator + "potions" + globalPathSeparator + eff.getType().getName() + globalPathSeparator + "amp", eff.getAmplifier());
-                        globalConfig.set(loadout.getName() + globalPathSeparator + "potions" + globalPathSeparator + eff.getType().getName() + globalPathSeparator + "dur", eff.getDuration());
+                        globalConfig.set(loadout.getName() +
+                                globalPathSeparator + "potions" +
+                                globalPathSeparator + eff.getType().getKey().getKey() +
+                                globalPathSeparator + "amp", eff.getAmplifier());
+                        globalConfig.set(loadout.getName() +
+                                globalPathSeparator + "potions" +
+                                globalPathSeparator + eff.getType().getKey().getKey() +
+                                globalPathSeparator + "dur", eff.getDuration());
                     }
                 } else {
                     globalConfig.set(loadout.getName() + globalPathSeparator + "potions", null);
@@ -276,7 +284,7 @@ public class Minigames extends JavaPlugin {
                 if (potionLoadOutSection != null) {
                     final Set<String> pots = potionLoadOutSection.getKeys(false);
                     for (final String eff : pots) {
-                        PotionEffectType type = PotionEffectType.getByName(eff);
+                        PotionEffectType type = Registry.EFFECT.get(NamespacedKey.fromString(eff));
                         if (type != null) {
                             final PotionEffect effect = new PotionEffect(type,
                                     globalConfig.getInt(loadoutName + globalPathSeparator + "potions" + globalPathSeparator + eff + globalPathSeparator + "dur"),

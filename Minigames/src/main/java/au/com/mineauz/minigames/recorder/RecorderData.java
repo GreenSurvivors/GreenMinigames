@@ -442,6 +442,7 @@ public class RecorderData implements Listener {
         return false;
     }
 
+    @Deprecated(since = "1.19")
     private boolean covertOldFormat() { // dataFixerUpper
         File f = new File(plugin.getDataFolder() + File.separator + "minigames" + File.separator +
                 minigame.getName() + File.separator + "backup.dat");

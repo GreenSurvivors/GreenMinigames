@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,8 +51,8 @@ public final class ResourcePack implements ConfigurationSerializable {
         this.displayName = MiniMessage.miniMessage().deserialize((String) input.get("name"));
         this.description = (String) input.get("description");
         try {
-            url1 = new URL((String) input.get("url"));
-        } catch (final MalformedURLException e) {
+            url1 = new URI((String) input.get("url")).toURL();
+        } catch (final MalformedURLException | URISyntaxException e) {
             Minigames.getCmpnntLogger().warn("The URL defined in the configuration is malformed: ", e);
             url1 = null;
             this.valid = false;

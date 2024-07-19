@@ -93,7 +93,7 @@ public class QuitCommand extends ACommand {
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                         return true;
                     } else {
-                        mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(players.get(0));
+                        mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(players.getFirst());
                     }
 
                     if (mgPlayer.isInMinigame()) {

@@ -36,7 +36,7 @@ public class MgBlockData {
      * the uuid of the player who changed this block.
      * If null, the block doesn't get reset if the player left the minigame
      */
-    private @Nullable UUID playerUUID = null;
+    private @Nullable UUID playerUUID;
     /**
      * inventory of the block
      */

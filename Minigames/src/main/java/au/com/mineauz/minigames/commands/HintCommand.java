@@ -82,12 +82,12 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
                                     Component.join(JoinConfiguration.commas(true), mgs.stream().map(Minigame::getDisplayName).toList())));
 
                 } else {
-                    TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgs.get(0));
+                    TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgs.getFirst());
                     if (thm != null && thm.hasTreasureLocation() && !thm.isTreasureFound()) {
                         thm.getHints(player);
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgs.get(0).getName()));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgs.getFirst().getName()));
                     }
                 }
             } else {

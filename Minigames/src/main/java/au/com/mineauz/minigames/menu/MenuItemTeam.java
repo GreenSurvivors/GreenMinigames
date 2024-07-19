@@ -28,7 +28,7 @@ public class MenuItemTeam extends MenuItem {
     public MenuItemTeam(@Nullable Component name, @NotNull List<@NotNull Component> description, @NotNull Team team) {
         super(Material.LEATHER_CHESTPLATE, name, description);
 
-        getDescription().add(0, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
+        getDescription().addFirst(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
         this.team = team;
         setTeamIcon();
     }

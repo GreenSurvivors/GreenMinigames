@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ExpressionParser {
-    private static final Pattern pathSegmentPattern = Pattern.compile("([a-z]+)(?:\\[([a-z0-9]+)\\])?");
+    private static final Pattern pathSegmentPattern = Pattern.compile("([a-z]+)(?:\\[([a-z0-9]+)])?");
 
     /**
      * Parses a path and resolves an object from the path.
@@ -203,14 +203,11 @@ public class ExpressionParser {
     }
 
     private static String asString(ScriptReference ref) {
-        if (ref == null) {
-            return "";
-        } else if (ref instanceof ScriptValue<?>) {
-            return ref.toString();
-        } else if (ref instanceof ScriptObject) {
-            return ((ScriptObject) ref).getAsString();
-        } else {
-            return String.valueOf(ref);
-        }
+        return switch (ref) {
+            case null -> "";
+            case ScriptValue<?> ignored -> ref.toString();
+            case ScriptObject scriptObject -> scriptObject.getAsString();
+            default -> String.valueOf(ref);
+        };
     }
 }

@@ -17,7 +17,6 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,6 +44,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * Stores each prop file with an identifier
      */
     private final static @NotNull ConcurrentHashMap<String, ResourceBundle> propertiesHashMap = new ConcurrentHashMap<>();
+    public static final Component DEBUG_PREFIX = Component.text("[Debug]", NamedTextColor.RED);
 
     public static void registerCoreLanguage() {
         CodeSource src = Minigames.class.getProtectionDomain().getCodeSource();
@@ -516,9 +516,14 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         sendMessage(mgPlayer.getPlayer(), type, message);
     }
 
-    public static void debugMessage(@NotNull String message) { //todo
+    @Deprecated(since = "1.21")
+    public static void debugMessage(@NotNull String message) {
+        debugMessage(Component.text(message));
+    }
+
+    public static void debugMessage(@NotNull Component message) {
         if (Minigames.getPlugin().isDebugging()) {
-            Minigames.getCmpnntLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
+            Minigames.getCmpnntLogger().info(DEBUG_PREFIX.append(message.colorIfAbsent(NamedTextColor.WHITE)));
         }
     }
 }

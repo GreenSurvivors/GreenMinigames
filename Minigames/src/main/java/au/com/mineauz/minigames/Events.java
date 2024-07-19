@@ -54,6 +54,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -666,7 +667,7 @@ public class Events implements Listener {
                 switch (event.getAction()) {
                     case NOTHING, DROP_ALL_CURSOR, DROP_ONE_CURSOR, CLONE_STACK, UNKNOWN -> {
                     } // nothing
-                    case PICKUP_ALL, PICKUP_SOME, PICKUP_HALF, PICKUP_ONE, DROP_ALL_SLOT, DROP_ONE_SLOT, HOTBAR_MOVE_AND_READD, // may take
+                    case PICKUP_ALL, PICKUP_SOME, PICKUP_HALF, PICKUP_ONE, DROP_ALL_SLOT, DROP_ONE_SLOT, // may take
                             PLACE_ALL, PLACE_SOME, PLACE_ONE, /*may place*/
                             SWAP_WITH_CURSOR, HOTBAR_SWAP /*may give and take*/ -> {
                         if (event.getClickedInventory() == topInv) {
@@ -780,7 +781,7 @@ public class Events implements Listener {
         Block block = event.getBlock();
         if (Tag.WALL_SIGNS.isTagged(block.getType())) {
             if (block.hasMetadata("MGScoreboardSign")) {
-                Minigame minigame = (Minigame) block.getMetadata("Minigame").get(0).value();
+                Minigame minigame = (Minigame) block.getMetadata("Minigame").getFirst().value();
                 minigame.getScoreboardData().removeDisplay(block);
             }
         }
@@ -799,7 +800,7 @@ public class Events implements Listener {
                     .filter(p -> pdata.getMinigamePlayer(p).getMinigame() == mgPlayer.getMinigame())
                     .toList();
             if (list.isEmpty()) return;
-            List<PotionEffectType> effects = event.getPotion().getEffects().stream().map(PotionEffect::getType).toList();
+            Collection<PotionEffect> effects = event.getPotion().getEffects();
             list.stream().filter(Predicate.not(p -> isEffectApplicable(effects, mgPlayer, pdata.getMinigamePlayer(p)))).forEach(p -> event.setIntensity(p, 0.0));
         }
     }
@@ -818,22 +819,26 @@ public class Events implements Listener {
                 .map(p -> (Player) p)
                 .toList();
         if (list.isEmpty()) return;
-        List<PotionEffectType> effects = List.of(event.getEntity().getBasePotionData().getType().getEffectType());
-        event.getAffectedEntities().removeAll(list.stream().filter(Predicate.not(p -> isEffectApplicable(effects, mgPlayer, pdata.getMinigamePlayer(p)))).toList());
+        PotionType basePotionType = event.getEntity().getBasePotionType();
+        if (basePotionType != null) {
+            @NotNull List<PotionEffect> effects = basePotionType.getPotionEffects();
+            event.getAffectedEntities().removeAll(list.stream().filter(Predicate.not(p ->
+                    isEffectApplicable(effects, mgPlayer, pdata.getMinigamePlayer(p)))).toList());
+        }
     }
 
-    private boolean isEffectApplicable(@NotNull Collection<@NotNull PotionEffectType> effectTypes,
+    private boolean isEffectApplicable(@NotNull Collection<@NotNull PotionEffect> effectTypes,
                                        @NotNull MinigamePlayer mgPlayerEffecting, @NotNull MinigamePlayer mgPlayerReceiving) {
         if (mgPlayerEffecting.getMinigame().isTeamGame()) {
             if (mgPlayerEffecting.getTeam() == mgPlayerReceiving.getTeam()) {
-                return effectTypes.stream().noneMatch(s -> s.getEffectCategory() == PotionEffectType.Category.HARMFUL);
+                return effectTypes.stream().noneMatch(s -> s.getType().getEffectCategory() == PotionEffectType.Category.HARMFUL);
             } else {
-                return effectTypes.stream().anyMatch(s -> s.getEffectCategory() == PotionEffectType.Category.BENEFICIAL);
+                return effectTypes.stream().anyMatch(s -> s.getType().getEffectCategory() == PotionEffectType.Category.BENEFICIAL);
             }
         } else if (mgPlayerEffecting == mgPlayerReceiving) {
-            return effectTypes.stream().noneMatch(s -> s.getEffectCategory() == PotionEffectType.Category.HARMFUL);
+            return effectTypes.stream().noneMatch(s -> s.getType().getEffectCategory() == PotionEffectType.Category.HARMFUL);
         } else {
-            return effectTypes.stream().noneMatch(s -> s.getEffectCategory() == PotionEffectType.Category.BENEFICIAL);
+            return effectTypes.stream().noneMatch(s -> s.getType().getEffectCategory() == PotionEffectType.Category.BENEFICIAL);
         }
     }
 }

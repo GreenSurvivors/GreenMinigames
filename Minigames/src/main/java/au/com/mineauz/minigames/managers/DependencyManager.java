@@ -47,7 +47,7 @@ public class DependencyManager {
         if (regionSelector.getIncompleteRegion() instanceof CuboidRegion cuboidRegion) {
             BlockVector3 pos1 = cuboidRegion.getPos1();
             if (!pos1.equals(BlockVector3.ZERO)) {
-                return new Location(player.getWorld(), pos1.getX(), pos1.getY(), pos1.getZ());
+                return new Location(player.getWorld(), pos1.x(), pos1.y(), pos1.z());
             }
         }
 
@@ -61,7 +61,7 @@ public class DependencyManager {
         if (regionSelector.getIncompleteRegion() instanceof CuboidRegion cuboidRegion) {
             BlockVector3 pos2 = cuboidRegion.getPos2();
             if (!pos2.equals(BlockVector3.ZERO)) {
-                return new Location(player.getWorld(), pos2.getX(), pos2.getY(), pos2.getZ());
+                return new Location(player.getWorld(), pos2.x(), pos2.y(), pos2.z());
             }
         }
 
@@ -78,8 +78,8 @@ public class DependencyManager {
                 BlockVector3 pos1 = cuboidRegion.getPos1();
                 BlockVector3 pos2 = cuboidRegion.getPos2();
                 return new SelectedRegionStatusWrapper(SelectedRegionStatus.SUCCESS,
-                        new Location(player.getWorld(), pos1.getX(), pos1.getY(), pos1.getZ()),
-                        new Location(player.getWorld(), pos2.getX(), pos2.getY(), pos2.getZ()));
+                        new Location(player.getWorld(), pos1.x(), pos1.y(), pos1.z()),
+                        new Location(player.getWorld(), pos2.x(), pos2.y(), pos2.z()));
             } else {
                 return new SelectedRegionStatusWrapper(SelectedRegionStatus.INCOMPLETE, null, null);
             }

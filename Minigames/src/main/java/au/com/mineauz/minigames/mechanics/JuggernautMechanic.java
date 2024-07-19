@@ -9,8 +9,9 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.JuggernautModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
@@ -103,7 +104,7 @@ public class JuggernautMechanic extends GameMechanicBase {
         }
         Collections.shuffle(plys);
 
-        return plys.get(0);
+        return plys.getFirst();
     }
 
     private void checkScore(MinigamePlayer mgPlayer) {
@@ -122,7 +123,7 @@ public class JuggernautMechanic extends GameMechanicBase {
             Minigame mgm = event.getMinigame();
 
             mgm.getScoreboard().registerNewTeam("juggernaut");
-            mgm.getScoreboard().getTeam("juggernaut").setPrefix(ChatColor.RED.toString());
+            mgm.getScoreboard().getTeam("juggernaut").prefix(Component.text("", NamedTextColor.RED)); // todo check if this works
 
             MinigamePlayer j = assignNewJuggernaut(event.getPlayers(), null);
             JuggernautModule.getMinigameModule(event.getMinigame()).setJuggernaut(j);

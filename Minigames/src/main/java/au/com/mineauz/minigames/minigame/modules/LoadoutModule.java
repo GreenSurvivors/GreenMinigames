@@ -183,7 +183,7 @@ public class LoadoutModule extends MinigameModule {
                             mgPlayer.getTeam().getColor() == loadout.getTeamColor()) {
                         MenuItemCustom c = new MenuItemCustom(Material.GLASS, loadout.getDisplayName());
                         if (!loadout.getItemSlots().isEmpty()) {
-                            ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItemSlots()).get(0));
+                            ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItemSlots()).getFirst());
                             c.setDisplayItem(item);
                         }
                         c.setClick(() -> {

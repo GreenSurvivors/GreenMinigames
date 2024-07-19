@@ -12,6 +12,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -63,7 +65,7 @@ public class MenuItemStatusEffectAdd extends MenuItem {
         String[] split = entry.split(", ");
         if (split.length == 3) {
             String effect = split[0].toUpperCase();
-            PotionEffectType eff = PotionEffectType.getByName(effect);
+            @Nullable PotionEffectType eff = Registry.EFFECT.get(NamespacedKey.fromString(effect));
             if (eff != null) {
                 if (split[1].matches("[+]?[0-9]+") && Integer.parseInt(split[1]) != 0) {
                     int level = Integer.parseInt(split[1]) - 1;
@@ -87,7 +89,7 @@ public class MenuItemStatusEffectAdd extends MenuItem {
                         }
                         for (int i = 0; i < 36; i++) {
                             if (!getContainer().hasMenuItem(i)) {
-                                getContainer().addItem(new MenuItemStatusEffect(Material.POTION, Component.text(eff.getName().toLowerCase().replace("_", " ")), des, peff, loadout), i);
+                                getContainer().addItem(new MenuItemStatusEffect(Material.POTION, Component.translatable(eff.translationKey()), des, peff, loadout), i);
                                 loadout.addPotionEffect(peff);
                                 break;
                             }

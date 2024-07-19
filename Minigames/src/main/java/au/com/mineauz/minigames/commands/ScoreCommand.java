@@ -58,7 +58,7 @@ public class ScoreCommand extends ACommand {
             if (color == null) {
                 List<Player> plys = PLUGIN.getServer().matchPlayer(args[1]);
                 if (!plys.isEmpty()) {
-                    mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(plys.get(0));
+                    mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(plys.getFirst());
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));

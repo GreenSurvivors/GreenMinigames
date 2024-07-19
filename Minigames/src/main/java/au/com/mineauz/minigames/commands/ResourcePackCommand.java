@@ -17,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +101,7 @@ public class ResourcePackCommand extends ACommand {
             case "addnew" -> {
                 if (args.length >= 3) {
                     try {
-                        URL url = new URL(args[2]);
+                        URL url = new URI(args[2]).toURL();
                         final ResourcePack newPack = new ResourcePack(MiniMessage.miniMessage().deserialize(args[1]), url);
                         PLUGIN.getServer().getScheduler().runTaskLaterAsynchronously(PLUGIN, () -> {
                             if (newPack.isValid()) {
@@ -112,7 +114,7 @@ public class ResourcePackCommand extends ACommand {
                         }, 100);
                         return true;
 
-                    } catch (MalformedURLException e) {
+                    } catch (MalformedURLException | URISyntaxException e) {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_ERROR_BADURL);
                         return false;
                     }

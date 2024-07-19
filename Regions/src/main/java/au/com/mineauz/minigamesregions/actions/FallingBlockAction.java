@@ -10,6 +10,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.FallingBlock;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,7 +65,8 @@ public class FallingBlockAction extends AAction {
                      z++) {
                     temp.setZ(z);
                     if (temp.getBlock().getType() != Material.AIR) {
-                        temp.getWorld().spawnFallingBlock(temp, temp.getBlock().getBlockData());
+                        temp.getWorld().spawn(temp, FallingBlock.class,
+                                fallingBlock -> fallingBlock.setBlockData(temp.getBlock().getBlockData()));
                         temp.getBlock().setType(Material.AIR);
                     }
                 }
@@ -77,8 +79,8 @@ public class FallingBlockAction extends AAction {
                                   @NotNull Node node) {
         debug(mgPlayer, node);
         if (node.getLocation().getBlock().getType() != Material.AIR) {
-            node.getLocation().getWorld().spawnFallingBlock(node.getLocation(),
-                    node.getLocation().getBlock().getBlockData());
+            node.getLocation().getWorld().spawn(node.getLocation(), FallingBlock.class, fallingBlock ->
+                    fallingBlock.setBlockData(node.getLocation().getBlock().getBlockData()));
             node.getLocation().getBlock().setType(Material.AIR);
         }
     }

@@ -70,7 +70,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
         for (Entity entity : entities) {
             if (entity.getType() == entityType.getFlag()) {
                 if (matchName.getFlag()) {
-                    Matcher matcher = namePattern.matcher((entity.getCustomName() == null) ? "" : entity.getCustomName());
+                    Matcher matcher = namePattern.matcher((entity.customName() == null) ? "" : entity.getCustomName());
                     if (!matcher.matches()) {
                         continue;
                     }

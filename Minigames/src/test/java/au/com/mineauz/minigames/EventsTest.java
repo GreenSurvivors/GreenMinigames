@@ -12,6 +12,7 @@ import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.junit.jupiter.api.Assertions;
@@ -47,14 +48,14 @@ public class EventsTest {
     public void onPlayerDisconnect() {
         PlayerMock mock = server.getPlayer(0);
         mock.setLocation(server.getWorld("GAMES").getSpawnLocation());
-        PlayerJoinEvent event = new PlayerJoinEvent(mock, "Joined the Server");
+        PlayerJoinEvent event = new PlayerJoinEvent(mock, Component.text("Joined the Server"));
         server.getPluginManager().callEvent(event);
         MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer(mock);
         JoinCommand command = new JoinCommand();
         String[] args = new String[]{game.getName()};
         command.onCommand(mock, args);
         Assertions.assertTrue(player.isInMinigame());
-        PlayerQuitEvent event2 = new PlayerQuitEvent(mock, "has left the game");
+        PlayerQuitEvent event2 = new PlayerQuitEvent(mock, Component.text("has left the game"));
         server.getPluginManager().callEvent(event2);
         Assertions.assertFalse(player.isInMinigame());
         Assertions.assertFalse(plugin.getPlayerManager().hasMinigamePlayer(player.getUUID()));
@@ -62,7 +63,7 @@ public class EventsTest {
 
     public void onPlayerConnect() {
         PlayerMock mock = server.addPlayer();
-        PlayerJoinEvent event = new PlayerJoinEvent(mock, "Joined the Server");
+        PlayerJoinEvent event = new PlayerJoinEvent(mock, Component.text("Joined the Server"));
         server.getPluginManager().callEvent(event);
         Assertions.assertTrue(plugin.getPlayerManager().hasMinigamePlayer(mock.getUniqueId()));
     }

@@ -113,7 +113,7 @@ public class ScoreboardSign extends AMinigameSign {
 
     @Override
     public void signBreak(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        Minigame minigame = (Minigame) sign.getBlock().getMetadata("Minigame").get(0).value();
+        Minigame minigame = (Minigame) sign.getBlock().getMetadata("Minigame").getFirst().value();
         if (minigame != null) {
             minigame.getScoreboardData().removeDisplay(sign.getBlock());
         }

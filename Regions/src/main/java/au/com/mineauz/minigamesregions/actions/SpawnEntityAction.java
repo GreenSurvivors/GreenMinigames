@@ -42,14 +42,14 @@ public class SpawnEntityAction extends AAction {
     private final Set<EntityType> NOT_SPAWNABLE = Set.of( //todo enabled feature by world
             EntityType.AREA_EFFECT_CLOUD, // todo needs effect
             EntityType.BLOCK_DISPLAY, // todo needs block state/data and display settings
-            EntityType.DROPPED_ITEM, // todo needs ItemMeta
+            EntityType.ITEM, // todo needs ItemMeta
             EntityType.FALLING_BLOCK, // todo needs block state/data
-            EntityType.FISHING_HOOK, // needs a fishing rod; we can't guarantee this
+            EntityType.FISHING_BOBBER, // needs a fishing rod; we can't guarantee this
             EntityType.GLOW_ITEM_FRAME, // hanging items need support and direction; we can't guarantee this
             EntityType.ITEM_DISPLAY, // todo needs ItemMeta and display settings
             EntityType.ITEM_FRAME, // hanging items need support and direction; we can't guarantee this
-            EntityType.LEASH_HITCH, // hanging items need support also does not easy leash an entity; we can't guarantee this
-            EntityType.LIGHTNING, // todo needs lightning settings
+            EntityType.LEASH_KNOT, // hanging items need support also does not easy leash an entity; we can't guarantee this
+            EntityType.LIGHTNING_BOLT, // todo needs lightning settings
             EntityType.PAINTING, // hanging items need support and direction; we can't guarantee this
             EntityType.PLAYER, // we don't support npcs; todo maybe in the future integrate citizens support?
             EntityType.TEXT_DISPLAY, // todo needs text and display settings

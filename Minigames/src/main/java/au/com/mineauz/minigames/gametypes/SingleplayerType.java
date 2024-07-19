@@ -49,8 +49,8 @@ public class SingleplayerType extends MinigameTypeBase {
         }
 
         Collections.shuffle(locs);
-        boolean result = mgPlayer.teleport(locs.get(0));
-        if (plugin.getConfig().getBoolean("warnings") && mgPlayer.getPlayer().getWorld() != locs.get(0).getWorld() &&
+        boolean result = mgPlayer.teleport(locs.getFirst());
+        if (plugin.getConfig().getBoolean("warnings") && mgPlayer.getPlayer().getWorld() != locs.getFirst().getWorld() &&
                 mgPlayer.getPlayer().hasPermission("minigame.set.start")) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
         }

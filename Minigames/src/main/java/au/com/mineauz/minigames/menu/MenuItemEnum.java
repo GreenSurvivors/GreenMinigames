@@ -127,7 +127,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
 
         int index = enumList.indexOf(current);
         if (index == -1) {
-            return enumList.get(0);
+            return enumList.getFirst();
         }
 
         ++index;
@@ -145,7 +145,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
 
         int index = enumList.indexOf(current);
         if (index == -1) {
-            return enumList.get(0);
+            return enumList.getFirst();
         }
 
         --index;
