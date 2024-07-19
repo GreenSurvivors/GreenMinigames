@@ -69,7 +69,7 @@ public class CTFFlagSign extends AMinigameSign {
         return true;
     }
 
-    // the error in this Java doc is known. We don't need access, we need dokumention.
+    // the error in this Java doc is known. We don't need access, we need documentation.
     /**
      * actual handling of taking the flag is in {@link CTFMechanic#takeFlag(PlayerInteractEvent)}
      */

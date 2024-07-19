@@ -22,8 +22,8 @@ public class FloorDegenerator {
     private final Location xSidePos2;
     private final Location zSideNeg2;
     private final Location zSidePos2;
-    private long timeDelay = 30;
-    private Minigame mgm = null;
+    private final Minigame mgm;
+    private long timeDelay;
     private int taskID = -1;
 
     private int radiusModifier = 0;

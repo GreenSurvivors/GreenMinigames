@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -126,7 +127,7 @@ public class DisplayManager {
         }
     }
 
-    protected void onRemove(IDisplayObject object) {
+    protected void onRemove(@NotNull IDisplayObject object) {
         if (object.isPlayerDisplay()) {
             playerDisplays.remove(object.getPlayer(), object);
         } else {
