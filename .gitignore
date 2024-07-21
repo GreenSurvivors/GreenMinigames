@@ -3,3 +3,7 @@ target
 .idea/
 *.iml
 docs/build/
+/buildSrc/.gradle/
+/.gradle/
+/build/
+/buildSrc/build/
