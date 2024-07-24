@@ -1,10 +1,13 @@
 package au.com.mineauz.minigames.objects;
 
+import io.papermc.paper.math.BlockPosition;
+import io.papermc.paper.math.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,17 +17,18 @@ import java.util.Objects;
  * This is the base class for all regions in the minigames plugin and its regions & nodes addon.
  * It is a cuboid region defined by 2 Positions, a World and a name
  */
+@SuppressWarnings("UnstableApiUsage") // Position
 public class MgRegion implements ConfigurationSerializable {
     private final @NotNull String name;
     private @NotNull World world;
-    private @NotNull Position pos1;
-    private @NotNull Position pos2;
+    private @NotNull BlockPosition pos1;
+    private @NotNull BlockPosition pos2;
 
     public MgRegion(@NotNull World world, @NotNull String name, @NotNull Position pos1, @NotNull Position pos2) {
         this.name = name;
         this.world = world;
-        this.pos1 = pos1;
-        this.pos2 = pos2;
+        this.pos1 = pos1.toBlock();
+        this.pos2 = pos2.toBlock();
     }
 
     public MgRegion(@NotNull String name, @NotNull Location loc1, @NotNull Location loc2) {
@@ -47,7 +51,7 @@ public class MgRegion implements ConfigurationSerializable {
     }
 
     public void setFirstPos(@NotNull Position pos1) {
-        this.pos1 = pos1;
+        this.pos1 = pos1.toBlock();
     }
 
     public void setFirstPos(@NotNull Location loc1) {
@@ -56,7 +60,7 @@ public class MgRegion implements ConfigurationSerializable {
     }
 
     public void setSecondPos(@NotNull Position pos2) {
-        this.pos2 = pos2;
+        this.pos2 = pos2.toBlock();
     }
 
     public void setSecondPos(@NotNull Location loc2) {
@@ -93,10 +97,10 @@ public class MgRegion implements ConfigurationSerializable {
      */
     public void sortPositions() {
         //temporary storage to not overwrite the max values
-        Position pos1 = new Position(getMinX(), getMinY(), getMinZ());
+        Position pos1 = Position.fine(getMinX(), getMinY(), getMinZ());
 
-        this.pos2 = new Position(getMaxX(), getMaxY(), getMaxZ());
-        this.pos1 = pos1;
+        this.pos2 = Position.fine(getMaxX(), getMaxY(), getMaxZ()).toBlock();
+        this.pos1 = pos1.toBlock();
     }
 
     public double getMinX() {
@@ -165,6 +169,21 @@ public class MgRegion implements ConfigurationSerializable {
     }
 
     /**
+     * Creates a Map representation of Position.
+     *
+     * @return Map containing the current state of this class
+     */
+    private static @NotNull Map<String, Object> serializePosition(@NotNull Position pos) {
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("x", pos.x());
+        result.put("y", pos.y());
+        result.put("z", pos.z());
+
+        return result;
+    }
+
+    /**
      * Creates a Map representation of this class.
      *
      * @return Map containing the current state of this class
@@ -175,10 +194,37 @@ public class MgRegion implements ConfigurationSerializable {
 
         result.put("name", name);
         result.put("world", world.getName());
-        result.put("pos1", pos1.serialize());
-        result.put("pos2", pos2.serialize());
+        result.put("pos1", serializePosition(pos1));
+        result.put("pos2", serializePosition(pos2));
 
         return result;
+    }
+
+    /**
+     * tries to recreate a Position from a map representation
+     *
+     * @return the fitting position or null if it fails.
+     */
+    private static @Nullable Position deserializePosition(@Nullable Map<String, Object> map) {
+        if (map != null) {
+            Double x = null, y = null, z = null;
+
+            if (map.get("x") instanceof Number numX) {
+                x = numX.doubleValue();
+            }
+            if (map.get("y") instanceof Number numY) {
+                y = numY.doubleValue();
+            }
+            if (map.get("z") instanceof Number numZ) {
+                z = numZ.doubleValue();
+            }
+
+            if (x != null && y != null && z != null) {
+                return Position.fine(x, y, z);
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -218,7 +264,7 @@ public class MgRegion implements ConfigurationSerializable {
                 }
             }
 
-            pos1 = Position.deserialize(posStrMap);
+            pos1 = deserializePosition(posStrMap);
 
             if (pos1 == null) {
                 throw new IllegalArgumentException("broken position 1");
@@ -236,7 +282,7 @@ public class MgRegion implements ConfigurationSerializable {
                 }
             }
 
-            pos2 = Position.deserialize(posStrMap);
+            pos2 = deserializePosition(posStrMap);
 
             if (pos2 == null) {
                 throw new IllegalArgumentException("broken position 2");

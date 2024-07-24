@@ -13,7 +13,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.objects.Position;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import au.com.mineauz.minigames.recorder.BasicRecorder;
 import au.com.mineauz.minigames.signs.SignBase;
@@ -23,7 +22,6 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 import com.google.common.io.Closeables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
-import io.papermc.lib.PaperLib;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.CustomChart;
@@ -79,7 +77,6 @@ public class Minigames extends JavaPlugin {
         startUpHandler = new StartUpLogHandler();
 
         //register ConfigurationSerializable
-        ConfigurationSerialization.registerClass(Position.class);
         ConfigurationSerialization.registerClass(MgRegion.class);
     }
 
@@ -257,7 +254,7 @@ public class Minigames extends JavaPlugin {
                     e.printStackTrace();
                 }
             }
-            PaperLib.suggestPaper(this);
+
             log().info(desc.getName() + " successfully enabled.");
             this.hookPlaceHolderApi();
         } catch (final Throwable e) {

@@ -5,12 +5,10 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.objects.Position;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import io.papermc.lib.PaperLib;
-import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
+import io.papermc.paper.math.Position;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -31,6 +29,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
+@SuppressWarnings("UnstableApiUsage") // Position
 public class RecorderData implements Listener {
     // list of blocks that need another block to not break
     private static final ArrayList<Material> supportedMats = new ArrayList<>();
@@ -147,8 +146,7 @@ public class RecorderData implements Listener {
     }
 
     public MgBlockData addBlock(@NotNull Block block, @Nullable MinigamePlayer modifier) {
-        BlockStateSnapshotResult blockState = PaperLib.getBlockState(block, true);
-        return addBlock(blockState.getState(), modifier);
+        return addBlock(block.getState(true), modifier);
     }
 
     public MgBlockData addBlock(@NotNull BlockState block, @Nullable MinigamePlayer modifier) {
@@ -406,7 +404,7 @@ public class RecorderData implements Listener {
                         throw new JsonParseException("'" + posStr + "' is not a valid position.");
                     }
 
-                    return new Position(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
+                    return Position.fine(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
                 } catch (JsonParseException | NumberFormatException exception) {
                     exception.printStackTrace();
                     return null;
