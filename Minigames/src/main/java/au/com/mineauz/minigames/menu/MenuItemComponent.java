@@ -60,7 +60,7 @@ public class MenuItemComponent extends MenuItem {
     }
 
     @Override
-    public ItemStack onDoubleClick() {
+    public @Nullable ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
@@ -80,7 +80,7 @@ public class MenuItemComponent extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         if (entry.equals("null") && allowNull) {
             component.setValue(null);
         } else {

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ConditionCategoryRegistry {
-    private final static @NotNull Set<IConditionCategory> conditionCategories = new LinkedHashSet<>();
+    private final static @NotNull Set<@NotNull IConditionCategory> conditionCategories = new LinkedHashSet<>();
 
     static {
         for (IConditionCategory category : RegionConditionCategories.values()) {
@@ -20,7 +20,7 @@ public class ConditionCategoryRegistry {
         conditionCategories.add(category);
     }
 
-    public List<IConditionCategory> getCategories() {
+    public @NotNull List<@NotNull IConditionCategory> getCategories() {
         return new ArrayList<>(conditionCategories);
     }
 }

@@ -199,7 +199,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD_USAGE);
     }
 

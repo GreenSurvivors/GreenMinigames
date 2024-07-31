@@ -66,7 +66,7 @@ public class MenuItemCondition extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         if (con.displayMenu(getContainer().getViewer(), getContainer())) {
             return null;
         }
@@ -74,7 +74,7 @@ public class MenuItemCondition extends MenuItem {
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @Nullable ItemStack onRightClick() {
         executor.removeCondition(con);
         getContainer().removeItem(getSlot());
         return null;

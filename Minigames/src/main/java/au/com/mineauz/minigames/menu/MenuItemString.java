@@ -20,7 +20,7 @@ import java.util.List;
 
 public class MenuItemString extends MenuItem {
     private final static String DESCRIPTION_TOKEN = "String_description";
-    private final Callback<String> stringCallback;
+    private final @NotNull Callback<String> stringCallback;
     private boolean allowNull = false;
 
     public MenuItemString(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<String> stringCallback) {
@@ -65,7 +65,7 @@ public class MenuItemString extends MenuItem {
     }
 
     @Override
-    public ItemStack onDoubleClick() {
+    public @Nullable ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
@@ -84,7 +84,7 @@ public class MenuItemString extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         if (entry.equals("null") && allowNull) {
             stringCallback.setValue(null);
         } else {

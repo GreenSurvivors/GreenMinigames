@@ -67,7 +67,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         Menu loadoutMenu = new Menu(5, loadout.getDisplayName(), getContainer().getViewer());
         Menu loadoutSettingsMenu = new Menu(6, loadout.getDisplayName(), getContainer().getViewer());
         loadoutSettingsMenu.setPreviousPage(loadoutMenu);
@@ -160,7 +160,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
     }
 
     @Override
-    public ItemStack onShiftRightClick() {
+    public @Nullable ItemStack onShiftRightClick() {
         if (allowDelete) {
             MinigamePlayer mgPlayer = getContainer().getViewer();
             mgPlayer.setNoClose(true);
@@ -179,7 +179,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         String loadoutName = loadout.getName();
 
         if (entry.equalsIgnoreCase("yes")) {

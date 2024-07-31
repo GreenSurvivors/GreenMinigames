@@ -14,7 +14,7 @@ public class AbstractMinigameEvent extends Event {
      *
      * @param game the mgm
      */
-    public AbstractMinigameEvent(@NotNull final Minigame game) {
+    public AbstractMinigameEvent(final @NotNull Minigame game) {
         super();
         this.mgm = game;
     }
@@ -28,7 +28,7 @@ public class AbstractMinigameEvent extends Event {
      *
      * @return the minigame
      */
-    public Minigame getMinigame() {
+    public @NotNull Minigame getMinigame() {
         return this.mgm;
     }
 

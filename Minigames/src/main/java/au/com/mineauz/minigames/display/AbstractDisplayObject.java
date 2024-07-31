@@ -2,39 +2,38 @@ package au.com.mineauz.minigames.display;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The type Abstract display object.
  */
 public abstract class AbstractDisplayObject implements IDisplayObject {
-
-    private final World world;
-
-    private final DisplayManager manager;
-
-    protected Player player;
+    private final @NotNull World world;
+    private final @NotNull DisplayManager manager;
+    protected @Nullable Player player;
 
     /**
      * Instantiates a new Abstract display object.
      *
-     * @param m the manager
-     * @param w the world
+     * @param manager the manager
+     * @param world the world
      */
-    public AbstractDisplayObject(final DisplayManager m, final World w) {
-        this.manager = m;
-        this.world = w;
+    public AbstractDisplayObject(final @NotNull DisplayManager manager, final @NotNull World world) {
+        this.manager = manager;
+        this.world = world;
     }
 
     /**
      * Instantiates a new Abstract display object.
      *
-     * @param m the manager
-     * @param p the player
+     * @param manager the manager
+     * @param player the player
      */
-    public AbstractDisplayObject(final DisplayManager m, final Player p) {
-        this.manager = m;
-        this.world = p.getWorld();
-        this.player = p;
+    public AbstractDisplayObject(final @NotNull DisplayManager manager, final @NotNull Player player) {
+        this.manager = manager;
+        this.world = player.getWorld();
+        this.player = player;
     }
 
     /**
@@ -53,7 +52,7 @@ public abstract class AbstractDisplayObject implements IDisplayObject {
      * @return the player
      */
     @Override
-    public Player getPlayer() {
+    public @Nullable Player getPlayer() {
         return player;
     }
 
@@ -61,7 +60,7 @@ public abstract class AbstractDisplayObject implements IDisplayObject {
      * @return the world
      */
     @Override
-    public World getWorld() {
+    public @NotNull World getWorld() {
         return world;
     }
 

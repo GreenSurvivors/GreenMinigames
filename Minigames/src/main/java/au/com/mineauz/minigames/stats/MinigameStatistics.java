@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,11 +51,11 @@ public final class MinigameStatistics {
      * @param stat The stat to add. The name of the stat must be unique and must only contain only letters and numbers
      * @throws IllegalArgumentException Thrown if the stat name is not unique or contains invalid characters
      */
-    public static void registerStat(DynamicMinigameStat stat) throws IllegalArgumentException {
+    public static void registerStat(@NotNull DynamicMinigameStat stat) throws IllegalArgumentException {
         registerStat0(stat);
     }
 
-    private static void registerStat0(MinigameStat stat) throws IllegalArgumentException {
+    private static void registerStat0(@NotNull MinigameStat stat) throws IllegalArgumentException {
         String name = stat.getName().toLowerCase();
 
         // Validity tests
@@ -70,7 +71,7 @@ public final class MinigameStatistics {
         stats.put(name, stat);
     }
 
-    private static boolean isNameValid(String name) {
+    private static boolean isNameValid(@NotNull String name) {
         for (char c : name.toCharArray()) {
             if (!Character.isDigit(c) && !Character.isLetter(c)) {
                 return false;
@@ -86,7 +87,7 @@ public final class MinigameStatistics {
      * @param name The name of the stat case-insensitive
      * @return The found stat or null
      */
-    public static MinigameStat getStat(String name) {
+    public static MinigameStat getStat(@NotNull String name) {
         return stats.get(name.toLowerCase());
     }
 
@@ -96,7 +97,7 @@ public final class MinigameStatistics {
      * @param name The name of the stat case-insensitive
      * @return True if it exists
      */
-    public static boolean hasStat(String name) {
+    public static boolean hasStat(@NotNull String name) {
         return stats.containsKey(name.toLowerCase());
     }
 
@@ -107,7 +108,7 @@ public final class MinigameStatistics {
      * @param name The name of the stat case-insensitive
      * @return True if a stat was removed
      */
-    public static boolean removeStat(String name) {
+    public static boolean removeStat(@NotNull String name) {
         MinigameStat stat = stats.get(name.toLowerCase());
 
         if (stat instanceof DynamicMinigameStat) {
@@ -120,6 +121,7 @@ public final class MinigameStatistics {
     /**
      * @return Returns an unmodifiable map of all registered stats
      */
+    @NotNull
     public static Map<String, MinigameStat> getAllStats() {
         return Collections.unmodifiableMap(stats);
     }
@@ -127,6 +129,7 @@ public final class MinigameStatistics {
     /**
      * @return Returns all dynamic stats
      */
+    @NotNull
     public static Iterable<DynamicMinigameStat> getDynamicStats() {
         return stats.values().stream()
                 .filter(DynamicMinigameStat.class::isInstance)
@@ -141,7 +144,8 @@ public final class MinigameStatistics {
      * @param statCallback The callback to be invoked when the statistic is chosen. Note: only the setValue() method will be called.
      * @return The menu to display
      */
-    public static Menu createStatSelectMenu(final Menu parent, final Callback<MinigameStat> statCallback) {
+    @NotNull
+    public static Menu createStatSelectMenu(final @NotNull Menu parent, final @NotNull Callback<MinigameStat> statCallback) {
         final Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_NAME, parent.getViewer());
 
         for (final MinigameStat stat : getAllStats().values()) {
@@ -167,7 +171,8 @@ public final class MinigameStatistics {
      * @param callback The callback to be invoked when the field is chosen. Note: only the setValue() method will be called.
      * @return The menu to display
      */
-    public static Menu createStatFieldSelectMenu(final Menu parent, StatFormat format, final Callback<StatisticValueField> callback) {
+    @NotNull
+    public static Menu createStatFieldSelectMenu(final @NotNull Menu parent, @NotNull StatFormat format, final @NotNull Callback<StatisticValueField> callback) {
         final Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_FIELD_NAME, parent.getViewer());
 
         for (final StatisticValueField field : format.getFields()) {

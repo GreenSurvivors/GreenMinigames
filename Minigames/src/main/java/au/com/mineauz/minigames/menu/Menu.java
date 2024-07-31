@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +20,13 @@ import java.util.TreeMap;
 
 public class Menu {
     private final int rows;
-    private final ItemStack[] pageView;
-    private final TreeMap<Integer, MenuItem> pageMap = new TreeMap<>(); // sorts by index
-    private final Component name;
-    private final MinigamePlayer viewer;
+    private final @Nullable ItemStack @NotNull [] pageView;
+    private final @NotNull TreeMap<@NotNull Integer, @NotNull MenuItem> pageMap = new TreeMap<>(); // sorts by index
+    private final @NotNull Component name;
+    private final @NotNull MinigamePlayer viewer;
     private boolean allowModify = false;
-    private Menu previousPage = null;
-    private Menu nextPage = null;
+    private @Nullable Menu previousPage = null;
+    private @Nullable Menu nextPage = null;
     private int reopenTimerID = -1;
     private Inventory inv = null;
 
@@ -40,7 +41,7 @@ public class Menu {
         this.viewer = viewer;
     }
 
-    public Menu(int rows, Component name, @NotNull MinigamePlayer viewer) {
+    public Menu(int rows, @NotNull Component name, @NotNull MinigamePlayer viewer) {
         if (rows > 6) {
             rows = 6;
         } else if (rows < 2) {
@@ -52,11 +53,11 @@ public class Menu {
         this.viewer = viewer;
     }
 
-    public Component getName() {
+    public @NotNull Component getName() {
         return name;
     }
 
-    public boolean addItem(MenuItem item, int slot) {
+    public boolean addItem(@NotNull MenuItem item, int slot) {
         if (!pageMap.containsKey(slot) && slot < pageView.length) {
             item.setContainer(this);
             item.setSlot(slot);
@@ -73,7 +74,7 @@ public class Menu {
         return menuItem instanceof MenuItemNewLine;
     }
 
-    public void addItem(MenuItem item) {
+    public void addItem(@NotNull MenuItem item) {
         int inc = 0;
         Menu menu = this;
         int maxItems = 9 * (rows - 1);
@@ -204,11 +205,11 @@ public class Menu {
         return rows * 9;
     }
 
-    public Menu getNextPage() {
+    public @Nullable Menu getNextPage() {
         return nextPage;
     }
 
-    public void setNextPage(Menu page) {
+    public void setNextPage(@Nullable Menu page) {
         nextPage = page;
     }
 
@@ -216,11 +217,11 @@ public class Menu {
         return nextPage != null;
     }
 
-    public Menu getPreviousPage() {
+    public @Nullable Menu getPreviousPage() {
         return previousPage;
     }
 
-    public void setPreviousPage(Menu page) {
+    public void setPreviousPage(@Nullable Menu page) {
         previousPage = page;
     }
 
@@ -228,7 +229,7 @@ public class Menu {
         return previousPage != null;
     }
 
-    public MinigamePlayer getViewer() {
+    public @NotNull MinigamePlayer getViewer() {
         return viewer;
     }
 
@@ -248,7 +249,7 @@ public class Menu {
         }
     }
 
-    public ItemStack[] getInventory() {
+    public ItemStack @NotNull [] getInventory() {
         ItemStack[] inv = new ItemStack[getSize()];
 
         for (int i = 0; i < this.inv.getContents().length; i++) {
@@ -260,7 +261,7 @@ public class Menu {
         return inv;
     }
 
-    public Set<Integer> getUsedSlots() {
+    public @NotNull Set<@NotNull Integer> getUsedSlots() {
         return pageMap.keySet();
     }
 }

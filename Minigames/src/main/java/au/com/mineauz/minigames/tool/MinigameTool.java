@@ -92,7 +92,7 @@ public class MinigameTool {
      * @param player - The player to give the tool to.
      * @return The Minigame Tool
      */
-    public static MinigameTool giveMinigameTool(MinigamePlayer player) {
+    public static @NotNull MinigameTool giveMinigameTool(@NotNull MinigamePlayer player) {
         Material toolMat = Material.matchMaterial(Minigames.getPlugin().getConfig().getString("tool", ""));
         if (toolMat == null) {
             toolMat = Material.BLAZE_ROD;
@@ -113,7 +113,7 @@ public class MinigameTool {
      * @param player The player to check
      * @return false if the player doesn't have one.
      */
-    public static boolean hasMinigameTool(MinigamePlayer player) {
+    public static boolean hasMinigameTool(@NotNull MinigamePlayer player) {
         for (ItemStack item : player.getPlayer().getInventory().getContents()) {
             if (isMinigameTool(item)) {
                 return true;

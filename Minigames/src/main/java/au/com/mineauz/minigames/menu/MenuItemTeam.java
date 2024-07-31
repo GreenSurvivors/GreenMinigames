@@ -57,24 +57,24 @@ public class MenuItemTeam extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         Menu menu = new Menu(3, getName(), getContainer().getViewer());
         menu.addItem(new MenuItemString(Material.NAME_TAG, MgMenuLangKey.MENU_DISPLAYNAME_NAME, new Callback<>() {
 
             @Override
-            public String getValue() {
+            public @NotNull String getValue() {
                 return team.getDisplayName();
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(@NotNull String value) {
                 team.setDisplayName(value);
             }
         }));
         menu.addItem(new MenuItemInteger(Material.STONE, MgMenuLangKey.MENU_TEAM_MAXPLAYERS, new Callback<>() {
 
             @Override
-            public Integer getValue() {
+            public @NotNull Integer getValue() {
                 return team.getMaxPlayers();
             }
 
@@ -102,7 +102,7 @@ public class MenuItemTeam extends MenuItem {
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @Nullable ItemStack onRightClick() {
         TeamsModule.getMinigameModule(team.getMinigame()).removeTeam(team.getColor());
         getContainer().removeItem(getSlot());
         return null;

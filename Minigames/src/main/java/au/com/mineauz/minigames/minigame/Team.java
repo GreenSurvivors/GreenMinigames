@@ -26,24 +26,25 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team.Option;
 import org.bukkit.scoreboard.Team.OptionStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class Team implements ScriptObject {
-    private final IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
-    private final List<Location> startLocations = new ArrayList<>();
-    private final StringFlag playerAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
-    private final StringFlag joinAnnounceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE), "gameAssignMsg");
-    private final StringFlag playerAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG), "autobalanceMsg");
-    private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG), "gameAutobalanceMsg");
-    private final EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
-    private final BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
-    private final List<MinigamePlayer> players = new ArrayList<>();
-    private final Minigame mgm;
-    private final String scoreboardName;
-    private String displayName;
+    private final @NotNull IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
+    private final @NotNull List<Location> startLocations = new ArrayList<>();
+    private final @NotNull StringFlag playerAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
+    private final @NotNull StringFlag joinAnnounceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE), "gameAssignMsg");
+    private final @NotNull StringFlag playerAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG), "autobalanceMsg");
+    private final @NotNull StringFlag gameAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG), "gameAutobalanceMsg");
+    private final @NotNull EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
+    private final @NotNull BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
+    private final @NotNull List<@NotNull MinigamePlayer> players = new ArrayList<>();
+    private final @NotNull Minigame mgm;
+    private final @NotNull String scoreboardName;
+    private @NotNull String displayName;
     private @NotNull TeamColor color;
     private int score = 0;
 
@@ -53,7 +54,7 @@ public class Team implements ScriptObject {
      * @param color    - The unique team color to identify the team by.
      * @param minigame - The Minigame this team is assigned to.
      */
-    public Team(TeamColor color, Minigame minigame) {
+    public Team(@NotNull TeamColor color, @NotNull Minigame minigame) {
         this.color = color;
         displayName = WordUtils.capitalizeFully(color.getUserFriendlyName()) + " Team";
         scoreboardName = color.getUserFriendlyName().toLowerCase();
@@ -65,7 +66,7 @@ public class Team implements ScriptObject {
      *
      * @return The Minigame this team is assigned to.
      */
-    public Minigame getMinigame() {
+    public @NotNull Minigame getMinigame() {
         return mgm;
     }
 
@@ -75,7 +76,7 @@ public class Team implements ScriptObject {
      * @param color - The color to change this team to.
      * @return true if the Minigame doesn't have the team color already available, fails if it already has that team.
      */
-    public boolean setColor(TeamColor color) {
+    public boolean setColor(@NotNull TeamColor color) {
         if (!TeamsModule.getMinigameModule(mgm).hasTeam(color)) {
             if (displayName.toLowerCase().equals(this.color.getUserFriendlyName().toLowerCase() + " team"))
                 displayName = WordUtils.capitalizeFully(color.getUserFriendlyName()) + " Team";
@@ -111,7 +112,7 @@ public class Team implements ScriptObject {
      *
      * @return The display name or the teams color followed by "Team"
      */
-    public String getDisplayName() {
+    public @NotNull String getDisplayName() {
         return displayName;
     }
 
@@ -121,7 +122,7 @@ public class Team implements ScriptObject {
      *
      * @param name - The name to change the team to.
      */
-    public void setDisplayName(String name) {
+    public void setDisplayName(@NotNull String name) {
         if (name.length() > 32)
             name = name.substring(0, 31);
         displayName = name;
@@ -133,7 +134,7 @@ public class Team implements ScriptObject {
      *
      * @return The colored display name or the team color followed by "Team"
      */
-    public Component getColoredDisplayName() {
+    public @NotNull Component getColoredDisplayName() {
         return Component.text(getDisplayName(), getTextColor());
     }
 
@@ -207,7 +208,7 @@ public class Team implements ScriptObject {
      *
      * @return A list of all players assigned to the team.
      */
-    public List<MinigamePlayer> getPlayers() {
+    public @NotNull List<@NotNull MinigamePlayer> getPlayers() {
         return players;
     }
 
@@ -216,7 +217,7 @@ public class Team implements ScriptObject {
      *
      * @param player - The player to add.
      */
-    public void addPlayer(MinigamePlayer player) {
+    public void addPlayer(@NotNull MinigamePlayer player) {
         players.add(player);
         player.setTeam(this);
         player.getPlayer().setScoreboard(mgm.getScoreboard());
@@ -231,7 +232,7 @@ public class Team implements ScriptObject {
      *
      * @param player - The player to remove.
      */
-    public void removePlayer(MinigamePlayer player) {
+    public void removePlayer(@NotNull MinigamePlayer player) {
         players.remove(player);
         Scoreboard board = mgm.getScoreboard();
         org.bukkit.scoreboard.Team team = board.getTeam(scoreboardName);
@@ -269,7 +270,7 @@ public class Team implements ScriptObject {
      *
      * @return The teams starting locations.
      */
-    public List<Location> getStartLocations() {
+    public @NotNull List<@NotNull Location> getStartLocations() {
         return startLocations;
     }
 
@@ -300,47 +301,47 @@ public class Team implements ScriptObject {
         return playerAssignMsg.getFlag();
     }
 
-    public StringFlag getPlayerAssignMessageFlag() {
+    public @NotNull StringFlag getPlayerAssignMessageFlag() {
         return playerAssignMsg;
     }
 
-    public void setPlayerAssignMsg(String msg) {
+    public void setPlayerAssignMsg(@NotNull String msg) {
         playerAssignMsg.setFlag(msg);
     }
 
-    public String getJoinAnnounceMessage() {
+    public @NotNull String getJoinAnnounceMessage() {
         return joinAnnounceMsg.getFlag();
     }
 
-    public void setGameAssignMessage(String msg) {
+    public void setGameAssignMessage(@NotNull String msg) {
         joinAnnounceMsg.setFlag(msg);
     }
 
-    public String getAutobalanceMessage() {
+    public @NotNull String getAutobalanceMessage() {
         return playerAutobalanceMsg.getFlag();
     }
 
-    public void setAutobalanceMessage(String msg) {
+    public void setAutobalanceMessage(@NotNull String msg) {
         playerAutobalanceMsg.setFlag(msg);
     }
 
-    public String getGameAutobalanceMessage() {
+    public @NotNull String getGameAutobalanceMessage() {
         return gameAutobalanceMsg.getFlag();
     }
 
-    public void setGameAutobalanceMessage(String msg) {
+    public void setGameAutobalanceMessage(@NotNull String msg) {
         gameAutobalanceMsg.setFlag(msg);
     }
 
-    public StringFlag getAutoBalanceMsgFlag() {
+    public @NotNull StringFlag getAutoBalanceMsgFlag() {
         return playerAutobalanceMsg;
     }
 
-    public StringFlag getGameAutoBalanceMsgFlag() {
+    public @NotNull StringFlag getGameAutoBalanceMsgFlag() {
         return gameAutobalanceMsg;
     }
 
-    public OptionStatus getNameTagVisibility() {
+    public @NotNull OptionStatus getNameTagVisibility() {
         return nametagVisibility.getFlag();
     }
 
@@ -354,24 +355,26 @@ public class Team implements ScriptObject {
         }
     }
 
-    public Callback<VisibilityMapper> getNameTagVisibilityCallback() {
+    public @NotNull Callback<@NotNull VisibilityMapper> getNameTagVisibilityCallback() {
         return new Callback<>() {
 
             @Override
-            public VisibilityMapper getValue() {
+            public @NotNull VisibilityMapper getValue() {
                 return VisibilityMapper.getMapping(getNameTagVisibility());
             }
 
             @Override
-            public void setValue(VisibilityMapper value) {
+            public void setValue(@NotNull VisibilityMapper value) {
                 setNameTagVisibility(value.getStatus());
             }
         };
     }
 
+    @NotNull
     public Callback<Boolean> getAutoBalanceCallBack() {
         return new Callback<>() {
 
+            @NotNull
             @Override
             public Boolean getValue() {
                 return getAutoBalanceTeam();
@@ -393,7 +396,7 @@ public class Team implements ScriptObject {
     }
 
     @Override
-    public ScriptReference get(String name) {
+    public @Nullable ScriptReference get(@NotNull String name) {
         if (name.equalsIgnoreCase("colorname")) {
             return ScriptValue.of(getColor().name());
         } else if (name.equalsIgnoreCase("color")) {
@@ -412,12 +415,12 @@ public class Team implements ScriptObject {
     }
 
     @Override
-    public Set<String> getKeys() {
+    public @NotNull Set<@NotNull String> getKeys() {
         return Set.of("colorname", "color", "name", "score", "players", "minigame");
     }
 
     @Override
-    public String getAsString() {
+    public @NotNull String getAsString() {
         return getColor().name();
     }
 

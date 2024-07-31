@@ -55,12 +55,12 @@ public class PlayerCountRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
+    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         return region.getPlayers().size() >= min.getFlag() && region.getPlayers().size() <= max.getFlag();
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
+    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
         return false;
     }
 
@@ -79,7 +79,7 @@ public class PlayerCountRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu menu = new Menu(3, getDisplayName(), player);
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
         menu.addItem(min.getMenuItem(Material.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 1, null));

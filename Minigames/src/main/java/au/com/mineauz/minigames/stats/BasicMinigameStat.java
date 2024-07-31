@@ -10,21 +10,20 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 
 class BasicMinigameStat extends MinigameStat {
-    BasicMinigameStat(@NotNull String name, @NotNull MinigameLangKey displayName, @NotNull StatFormat format) {
+    protected BasicMinigameStat(@NotNull String name, @NotNull MinigameLangKey displayName, @NotNull StatFormat format) {
         super(name, MinigameMessageManager.getMgMessage(displayName), format);
     }
 
-    BasicMinigameStat(@NotNull String name, @Nullable Component displayName, @NotNull StatFormat format) {
+    protected BasicMinigameStat(@NotNull String name, @Nullable Component displayName, @NotNull StatFormat format) {
         super(name, displayName, format);
     }
 
     /**
      * @param value    The value in milliseconds to display
      * @param settings The settings of this stat
-     * @return
      */
     @Override
-    public Component displayValue(long value, @NotNull StatSettings settings) {
+    public @NotNull Component displayValue(long value, @NotNull StatSettings settings) {
         if (this == MinigameStatistics.CompletionTime) {
             return MinigameUtils.convertTime(Duration.ofMillis(value), false);
         } else {
@@ -37,7 +36,7 @@ class BasicMinigameStat extends MinigameStat {
      * @param settings The settings of this stat
      */
     @Override
-    public Component displayValueSign(long value, @NotNull StatSettings settings) {
+    public @NotNull Component displayValueSign(long value, @NotNull StatSettings settings) {
         if (this == MinigameStatistics.CompletionTime) {
             return MinigameUtils.convertTime(Duration.ofMillis(value), true);
         } else {

@@ -13,6 +13,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,9 +21,9 @@ import java.sql.Statement;
 import java.util.*;
 
 public class MySQLBackend extends Backend {
-    private final ComponentLogger logger;
-    private final MySQLStatLoader loader;
-    private final MySQLStatSaver saver;
+    private final @NotNull ComponentLogger logger;
+    private final @NotNull MySQLStatLoader loader;
+    private final @NotNull MySQLStatSaver saver;
     private ConnectionPool pool;
     private String database;
     private StatementKey insertMinigame;
@@ -30,14 +31,14 @@ public class MySQLBackend extends Backend {
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
 
-    public MySQLBackend(ComponentLogger logger) {
+    public MySQLBackend(@NotNull ComponentLogger logger) {
         this.logger = logger;
 
         loader = new MySQLStatLoader(this, logger);
         saver = new MySQLStatSaver(this, logger);
     }
 
-    public boolean initialize(ConfigurationSection config) {
+    public boolean initialize(@NotNull ConfigurationSection config) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
 
@@ -82,7 +83,7 @@ public class MySQLBackend extends Backend {
         pool.closeConnections();
     }
 
-    private void ensureTables(ConnectionHandler connection) throws SQLException {
+    private void ensureTables(@NotNull ConnectionHandler connection) throws SQLException {
         try (Statement statement = connection.getConnection().createStatement()) {
             // Check the players table
             try {
@@ -157,26 +158,26 @@ public class MySQLBackend extends Backend {
     }
 
     @Override
-    public void saveGameStatus(StoredGameStats stats) {
+    public void saveGameStatus(@NotNull StoredGameStats stats) {
         saver.saveData(stats);
     }
 
     @Override
-    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order) {
+    public @NotNull List<StoredStat> loadStats(@NotNull Minigame minigame, @NotNull MinigameStat stat, @NotNull StatisticValueField field, @NotNull ScoreboardOrder order) {
         return loadStats(minigame, stat, field, order, 0, Integer.MAX_VALUE);
     }
 
     @Override
-    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order, int offset, int length) {
+    public @NotNull List<@NotNull StoredStat> loadStats(@NotNull Minigame minigame, @NotNull MinigameStat stat, @NotNull StatisticValueField field, @NotNull ScoreboardOrder order, int offset, int length) {
         return loader.loadStatValues(minigame, stat, field, order, offset, length);
     }
 
     @Override
-    public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatisticValueField field) {
+    public long getStat(@NotNull Minigame minigame, @NotNull UUID playerId, @NotNull MinigameStat stat, @NotNull StatisticValueField field) {
         return loader.loadSingleValue(minigame, stat, field, playerId);
     }
 
-    public int getMinigameId(ConnectionHandler handler, Minigame minigame) throws SQLException {
+    public int getMinigameId(@NotNull ConnectionHandler handler, @NotNull Minigame minigame) throws SQLException {
 
         try (ResultSet rs = handler.executeUpdateWithResults(insertMinigame, minigame.getName())) {
             if (rs.next()) {
@@ -188,12 +189,12 @@ public class MySQLBackend extends Backend {
         }
     }
 
-    public void updatePlayer(ConnectionHandler handler, MinigamePlayer player) throws SQLException {
+    public void updatePlayer(@NotNull ConnectionHandler handler, @NotNull MinigamePlayer player) throws SQLException {
         handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
     }
 
     @Override
-    public Map<MinigameStat, StatSettings> loadStatSettings(Minigame minigame) {
+    public @NotNull Map<@NotNull MinigameStat, @NotNull StatSettings> loadStatSettings(@NotNull Minigame minigame) {
         ConnectionHandler handler = null;
         try {
             handler = pool.getConnection();
@@ -244,7 +245,7 @@ public class MySQLBackend extends Backend {
     }
 
     @Override
-    public void saveStatSettings(Minigame minigame, Collection<StatSettings> settings) {
+    public void saveStatSettings(@NotNull Minigame minigame, @NotNull Collection<@NotNull StatSettings> settings) {
         ConnectionHandler handler = null;
         try {
             handler = pool.getConnection();
@@ -273,19 +274,19 @@ public class MySQLBackend extends Backend {
     }
 
     @Override
-    protected BackendImportCallback getImportCallback() {
+    protected @NotNull BackendImportCallback getImportCallback() {
         return new SQLImport(pool);
     }
 
     @Override
-    public void exportTo(Backend other, Notifier notifier) {
+    public void exportTo(@NotNull Backend other, @NotNull Notifier notifier) {
         BackendImportCallback callback = getImportCallback(other);
         SQLExport exporter = new SQLExport(pool, callback, notifier);
         exporter.beginExport();
     }
 
     @Override
-    public boolean doConversion(Notifier notifier) {
+    public boolean doConversion(@NotNull Notifier notifier) {
         BackendImportCallback callback = getImportCallback();
         LegacyExporter exporter = new LegacyExporter(pool, database, callback, notifier);
         return exporter.doExport();

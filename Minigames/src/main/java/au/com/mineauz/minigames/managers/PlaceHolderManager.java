@@ -15,8 +15,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate into new minimessage lang system
+    @NotNull
     private final Minigames plugin;
+    @NotNull
     private final List<ModulePlaceHolderProvider> providers;
+    @NotNull
     private final Map<String, String> identifiers;
 
     public PlaceHolderManager(@NotNull Minigames plugin) {
@@ -28,6 +31,7 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
         identifiers.put("totalPlaying", "CORE");
     }
 
+    @NotNull
     public Set<String> getRegisteredPlaceHolders() {
         return identifiers.keySet();
     }
@@ -63,7 +67,7 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
     }
 
     @Override
-    public @Nullable String onPlaceholderRequest(Player player, @NotNull String identifier) {
+    public @Nullable String onPlaceholderRequest(@Nullable Player player, @NotNull String identifier) {
         if (player == null) {
             return "";
         }

@@ -19,8 +19,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class ResourcePackManager { //todo work with multiple ressource packs
-    final static Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
-    private final Map<String, ResourcePack> resources = new HashMap<>();
+    final static @NotNull Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
+    private final @NotNull Map<@NotNull String, @NotNull ResourcePack> resources = new HashMap<>();
     private boolean enabled = true;
     private MinigameSave config;
 
@@ -49,7 +49,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
             }
     }
 
-    public static Path getResourceDir() {
+    public static @NotNull Path getResourceDir() {
         return resourceDir;
     }
 
@@ -81,13 +81,13 @@ public class ResourcePackManager { //todo work with multiple ressource packs
         return resources.put(pack.getName(), pack);
     }
 
-    public void removeResourcePack(ResourcePack pack) {
+    public void removeResourcePack(@NotNull ResourcePack pack) {
         if (!enabled) return;
         resources.remove(pack.getName());
         saveResources();
     }
 
-    public boolean initialize(final MinigameSave c) {
+    public boolean initialize(final @NotNull MinigameSave c) {
         this.config = c;
         boolean emptyPresent = false;
         final List<ResourcePack> resources = new ArrayList<>();
@@ -123,11 +123,11 @@ public class ResourcePackManager { //todo work with multiple ressource packs
         config.saveConfig();
     }
 
-    public Set<ResourcePack> getResourcePacks() {
+    public @NotNull Set<@NotNull ResourcePack> getResourcePacks() {
         return new HashSet<>(resources.values());
     }
 
-    public Set<String> getResourceNames() {
+    public @NotNull Set<@NotNull String> getResourceNames() {
         return resources.keySet();
     }
 }

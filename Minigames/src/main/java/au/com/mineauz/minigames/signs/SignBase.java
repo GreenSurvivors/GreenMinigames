@@ -88,7 +88,7 @@ public class SignBase implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    private void signPlace(SignChangeEvent event) {
+    private void signPlace(@NotNull SignChangeEvent event) {
         if (isMinigameSign(event.line(0))) {
             if (event.getSide() == Side.FRONT) {
                 AMinigameSign mgSign = getMgSign(event.line(1));
@@ -122,7 +122,7 @@ public class SignBase implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    private void signUse(PlayerInteractEvent event) {
+    private void signUse(@NotNull PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block cblock = event.getClickedBlock();
             if (cblock != null && cblock.getState() instanceof Sign sign) {

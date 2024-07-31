@@ -79,7 +79,7 @@ public class MinigameUtils {
      * @param small    - If the time should be shortened to: hh:mm:ss
      * @return A message with a neat time
      */
-    public static Component convertTime(Duration duration, boolean small) { //todo make reverse methode
+    public static @NotNull Component convertTime(@NotNull Duration duration, boolean small) { //todo make reverse methode
         long weeks = duration.toDaysPart() / 7L;
         long days = duration.toDaysPart() % 7L;
         int hours = duration.toHoursPart();
@@ -152,7 +152,7 @@ public class MinigameUtils {
      * @param duration - The time to be converted
      * @return A message with a neat time
      */
-    public static Component convertTime(Duration duration) {
+    public static @NotNull Component convertTime(@NotNull Duration duration) {
         return convertTime(duration, false);
     }
 
@@ -162,7 +162,7 @@ public class MinigameUtils {
      * @param location - The location to give an ID to.
      * @return The ID
      */
-    public static String createLocationID(Location location) {
+    public static @NotNull String createLocationID(@NotNull Location location) {
         return location.getBlockX() + ":" + location.getBlockY() + ":" + location.getBlockZ() + ":" + location.getWorld().getName();
     }
 
@@ -172,7 +172,7 @@ public class MinigameUtils {
      * @param section The section that contains the fields
      * @return A location with the contents of that section, or null if the world is invalid
      */
-    public static Location loadShortLocation(ConfigurationSection section) {
+    public static @Nullable Location loadShortLocation(@NotNull ConfigurationSection section) {
         double x = section.getDouble("x");
         double y = section.getDouble("y");
         double z = section.getDouble("z");
@@ -209,7 +209,7 @@ public class MinigameUtils {
      * @param maxLength The maximum number of characters to allow
      * @return The Component, where it's plain text part is never longer than maxLength
      */
-    public static Component limitIgnoreFormat(Component component, int maxLength) {
+    public static @NotNull Component limitIgnoreFormat(@NotNull Component component, int maxLength) {
         String formatted = MiniMessage.miniMessage().serialize(component);
         String unformatted = MiniMessage.miniMessage().stripTags(formatted);
 
@@ -238,7 +238,8 @@ public class MinigameUtils {
         return MiniMessage.miniMessage().deserialize(result.toString());
     }
 
-    public static String sanitizeYamlString(String input) {
+    @Nullable
+    public static String sanitizeYamlString(@NotNull String input) {
         final Pattern pattern = Pattern.compile("^[a-zA-Z\\d_]+$");
         if (!pattern.matcher(input).matches()) {
             return null;

@@ -13,9 +13,7 @@ import java.util.List;
 public class StringFlag extends AFlag<String> {
 
     public StringFlag(String value, @NotNull String name) {
-        setFlag(value);
-        setDefaultFlag(value);
-        setName(name);
+        super(name, value, value);
     }
 
     @Override
@@ -37,7 +35,7 @@ public class StringFlag extends AFlag<String> {
     }
 
     @Override
-    public MenuItemString getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItemString getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                       @Nullable List<@NotNull Component> description) {
         return new MenuItemString(displayMat, name, description, new Callback<>() {
 

@@ -28,17 +28,17 @@ import java.time.Duration;
 import java.util.*;
 
 public class TreasureHuntModule extends MinigameModule {
-    private final StringFlag location = new StringFlag(null, "location");
-    private final IntegerFlag maxRadius = new IntegerFlag(1000, "maxradius");
-    private final IntegerFlag maxHeight = new IntegerFlag(20, "maxheight");
-    private final IntegerFlag minTreasure = new IntegerFlag(0, "mintreasure");
-    private final IntegerFlag maxTreasure = new IntegerFlag(8, "maxtreasure");
-    private final TimeFlag treasureWaitTime = new TimeFlag(Minigames.getPlugin().getConfig().getLong("treasurehunt.waittime"), "treasurehuntwait");
-    private final TimeFlag hintWaitTime = new TimeFlag(500L, "hintWaitTime");
-    private final ArrayList<Component> curHints = new ArrayList<>();
-    private final Map<UUID, Long> hintUse = new HashMap<>();
+    private final @NotNull StringFlag location = new StringFlag(null, "location");
+    private final @NotNull IntegerFlag maxRadius = new IntegerFlag(1000, "maxradius");
+    private final @NotNull IntegerFlag maxHeight = new IntegerFlag(20, "maxheight");
+    private final @NotNull IntegerFlag minTreasure = new IntegerFlag(0, "mintreasure");
+    private final @NotNull IntegerFlag maxTreasure = new IntegerFlag(8, "maxtreasure");
+    private final @NotNull TimeFlag treasureWaitTime = new TimeFlag(Minigames.getPlugin().getConfig().getLong("treasurehunt.waittime"), "treasurehuntwait");
+    private final @NotNull TimeFlag hintWaitTime = new TimeFlag(500L, "hintWaitTime");
+    private final @NotNull ArrayList<@NotNull Component> curHints = new ArrayList<>();
+    private final @NotNull Map<@NotNull UUID, @NotNull Long> hintUse = new HashMap<>();
     //Unsaved Data
-    private Location treasureLocation = null;
+    private @Nullable Location treasureLocation = null;
     private boolean treasureFound = false;
 
     public TreasureHuntModule(@NotNull Minigame mgm, @NotNull String name) {
@@ -161,11 +161,11 @@ public class TreasureHuntModule extends MinigameModule {
         treasureFound = bool;
     }
 
-    public List<Component> getCurrentHints() {
+    public @NotNull List<@NotNull Component> getCurrentHints() {
         return curHints;
     }
 
-    public void addHint(Component hint) {
+    public void addHint(@NotNull Component hint) {
         curHints.add(hint.color(NamedTextColor.GRAY));
     }
 
@@ -181,13 +181,13 @@ public class TreasureHuntModule extends MinigameModule {
         treasureWaitTime.setFlag(time);
     }
 
-    public long getLastHintUse(MinigamePlayer player) {
+    public long getLastHintUse(@NotNull MinigamePlayer player) {
         if (!hintUse.containsKey(player.getUUID()))
             return -1L;
         return hintUse.get(player.getUUID());
     }
 
-    public boolean canUseHint(MinigamePlayer player) {
+    public boolean canUseHint(@NotNull MinigamePlayer player) {
         if (hintUse.containsKey(player.getUUID())) {
             long curtime = System.currentTimeMillis();
             long lastuse = curtime - hintUse.get(player.getUUID());
@@ -196,7 +196,7 @@ public class TreasureHuntModule extends MinigameModule {
         return true;
     }
 
-    public void addHintUse(MinigamePlayer player) {
+    public void addHintUse(@NotNull MinigamePlayer player) {
         hintUse.put(player.getUUID(), System.currentTimeMillis());
     }
 
@@ -204,7 +204,7 @@ public class TreasureHuntModule extends MinigameModule {
         hintUse.clear();
     }
 
-    public void getHints(MinigamePlayer mgPlayer) {
+    public void getHints(@NotNull MinigamePlayer mgPlayer) {
         if (!hasTreasureLocation()) return;
         Location block = getTreasureLocation();
         if (mgPlayer.getPlayer().getWorld().getName().equals(getTreasureLocation().getWorld().getName())) {

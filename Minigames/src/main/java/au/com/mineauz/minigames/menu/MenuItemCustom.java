@@ -12,12 +12,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MenuItemCustom extends MenuItem {
-    private Supplier<@Nullable ItemStack> click = null;
-    private Function<ItemStack, @Nullable ItemStack> clickItem = null;
-    private Supplier<@Nullable ItemStack> rightClick = null;
-    private Supplier<@Nullable ItemStack> shiftClick = null;
-    private Supplier<@Nullable ItemStack> shiftRightClick = null;
-    private Supplier<@Nullable ItemStack> doubleClick = null;
+    private @Nullable Supplier<@Nullable ItemStack> click = null;
+    private @Nullable Function<ItemStack, @Nullable ItemStack> clickItem = null;
+    private @Nullable Supplier<@Nullable ItemStack> rightClick = null;
+    private @Nullable Supplier<@Nullable ItemStack> shiftClick = null;
+    private @Nullable Supplier<@Nullable ItemStack> shiftRightClick = null;
+    private @Nullable Supplier<@Nullable ItemStack> doubleClick = null;
 
     public MenuItemCustom(@Nullable Material displayMat, @Nullable Component name) {
         super(displayMat, name);

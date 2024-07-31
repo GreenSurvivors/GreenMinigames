@@ -17,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemRewardAdd extends MenuItem {
-    private Rewards rewards = null;
-    private RewardGroup group = null;
+    private @Nullable Rewards rewards = null;
+    private @Nullable RewardGroup group = null;
 
     public MenuItemRewardAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Rewards rewards) {
         super(displayMat, langKey);
@@ -54,7 +54,7 @@ public class MenuItemRewardAdd extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         Menu m = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SELECTTYPE_NAME), getContainer().getViewer());
         final Menu orig = getContainer();
         for (RewardTypes.RewardTypeFactory factory : RewardTypes.getRewardTypeFactories()) {

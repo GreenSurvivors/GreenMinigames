@@ -68,7 +68,7 @@ public class HelpCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_USAGE);
     }
 
@@ -77,7 +77,7 @@ public class HelpCommand extends ACommand {
         return "minigame.help";
     }
 
-    private Component makePage(@NotNull Permissible permissible, int pageNumber) {
+    private @NotNull Component makePage(@NotNull Permissible permissible, int pageNumber) {
         List<ICommandInfo> allCommands = new ArrayList<>(CommandDispatcher.getCommands());
         allCommands.addAll(SetCommand.getSetCommands());
         // filter per permission

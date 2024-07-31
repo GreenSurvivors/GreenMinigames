@@ -19,15 +19,16 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.*;
 import java.util.regex.Pattern;
 
 public class PlayerLoadout {
-    private final static Pattern NUMBER = Pattern.compile("[+-]?[0-9]+");
+    private final static @NotNull Pattern NUMBER = Pattern.compile("[+-]?[0-9]+");
 
-    private final Map<Integer, ItemStack> itemSlots = new HashMap<>();
-    private final List<PotionEffect> effects = new ArrayList<>();
+    private final @NotNull Map<@NotNull Integer, @NotNull ItemStack> itemSlots = new HashMap<>();
+    private final @NotNull List<@NotNull PotionEffect> effects = new ArrayList<>();
     private final @NotNull Map<@NotNull String, @NotNull ALoadoutAddon> addons = new HashMap<>();
     private final @NotNull String loadoutName;
     private boolean usePermission = false;
@@ -47,7 +48,7 @@ public class PlayerLoadout {
         team = TeamColor.matchColor(name);
     }
 
-    public Callback<Component> getDisplayNameCallback() {
+    public @NotNull Callback<Component> getDisplayNameCallback() {
         return new Callback<>() {
 
             @Override
@@ -78,22 +79,22 @@ public class PlayerLoadout {
         usePermission = bool;
     }
 
-    public Callback<Boolean> getUsePermissionsCallback() {
+    public @NotNull Callback<Boolean> getUsePermissionsCallback() {
         return new Callback<>() {
 
             @Override
-            public Boolean getValue() {
+            public @NotNull Boolean getValue() {
                 return usePermission;
             }
 
             @Override
-            public void setValue(Boolean value) {
+            public void setValue(@NotNull Boolean value) {
                 usePermission = value;
             }
         };
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return loadoutName;
     }
 
@@ -124,7 +125,7 @@ public class PlayerLoadout {
         }
     }
 
-    public List<PotionEffect> getAllPotionEffects() {
+    public @NotNull List<@NotNull PotionEffect> getAllPotionEffects() {
         return effects;
     }
 
@@ -174,7 +175,7 @@ public class PlayerLoadout {
         }
     }
 
-    public Set<Integer> getItemSlots() {
+    public @NotNull Set<@NotNull Integer> getItemSlots() {
         return itemSlots.keySet();
     }
 
@@ -194,16 +195,16 @@ public class PlayerLoadout {
         fallDamage = bool;
     }
 
-    public Callback<Boolean> getFallDamageCallback() {
+    public @NotNull Callback<@NotNull Boolean> getFallDamageCallback() {
         return new Callback<>() {
 
             @Override
-            public Boolean getValue() {
+            public @NotNull Boolean getValue() {
                 return fallDamage;
             }
 
             @Override
-            public void setValue(Boolean value) {
+            public void setValue(@NotNull Boolean value) {
                 fallDamage = value;
             }
         };
@@ -217,16 +218,16 @@ public class PlayerLoadout {
         hunger = bool;
     }
 
-    public Callback<Boolean> getHungerCallback() {
+    public @NotNull Callback<@NotNull Boolean> getHungerCallback() {
         return new Callback<>() {
 
             @Override
-            public Boolean getValue() {
+            public @NotNull Boolean getValue() {
                 return hunger;
             }
 
             @Override
-            public void setValue(Boolean value) {
+            public void setValue(@NotNull Boolean value) {
                 hunger = value;
             }
         };
@@ -240,18 +241,19 @@ public class PlayerLoadout {
         this.level = level;
     }
 
-    public Callback<Integer> getLevelCallback() {
+    public @NotNull Callback<@NotNull Integer> getLevelCallback() {
         return new Callback<>() {
 
             @Override
-            public Integer getValue() {
+            public @NotNull Integer getValue() {
                 return level;
             }
 
             @Override
-            public void setValue(Integer value) {
-                if (level >= -1)
+            public void setValue(@NotNull @Range(from = 0, to = Integer.MAX_VALUE) Integer value) {
+                if (level >= -1) {
                     level = value;
+                }
             }
         };
     }
@@ -272,16 +274,16 @@ public class PlayerLoadout {
         lockInventory = locked;
     }
 
-    public Callback<Boolean> getInventoryLockedCallback() {
+    public @NotNull Callback<@NotNull Boolean> getInventoryLockedCallback() {
         return new Callback<>() {
 
             @Override
-            public Boolean getValue() {
+            public @NotNull Boolean getValue() {
                 return isInventoryLocked();
             }
 
             @Override
-            public void setValue(Boolean value) {
+            public void setValue(@NotNull Boolean value) {
                 setInventoryLocked(value);
             }
         };
@@ -295,16 +297,16 @@ public class PlayerLoadout {
         lockArmour = locked;
     }
 
-    public Callback<Boolean> getArmourLockedCallback() {
+    public @NotNull Callback<@NotNull Boolean> getArmourLockedCallback() {
         return new Callback<>() {
 
             @Override
-            public Boolean getValue() {
+            public @NotNull Boolean getValue() {
                 return isArmourLocked();
             }
 
             @Override
-            public void setValue(Boolean value) {
+            public void setValue(@NotNull Boolean value) {
                 setArmourLocked(value);
             }
         };
@@ -314,15 +316,15 @@ public class PlayerLoadout {
         return allowOffHand;
     }
 
-    public Callback<Boolean> getAllowOffHandCallback() {
+    public @NotNull Callback<@NotNull Boolean> getAllowOffHandCallback() {
         return new Callback<>() {
             @Override
-            public Boolean getValue() {
+            public @NotNull Boolean getValue() {
                 return allowOffHand;
             }
 
             @Override
-            public void setValue(Boolean value) {
+            public void setValue(@NotNull Boolean value) {
                 allowOffHand = value;
             }
         };
@@ -362,16 +364,16 @@ public class PlayerLoadout {
         return displayInMenu;
     }
 
-    public @NotNull Callback<Boolean> getDisplayInMenuCallback() {
+    public @NotNull Callback<@NotNull Boolean> getDisplayInMenuCallback() {
         return new Callback<>() {
 
             @Override
-            public Boolean getValue() {
+            public @NotNull Boolean getValue() {
                 return isDisplayedInMenu();
             }
 
             @Override
-            public void setValue(Boolean value) {
+            public void setValue(@NotNull Boolean value) {
                 setDisplayInMenu(value);
             }
         };

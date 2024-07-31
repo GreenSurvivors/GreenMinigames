@@ -16,6 +16,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class MenuItemNodeExecutor extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         final MinigamePlayer fviewer = getContainer().getViewer();
         final Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_NAME), fviewer);
 
@@ -77,7 +78,7 @@ public class MenuItemNodeExecutor extends MenuItem {
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @Nullable ItemStack onRightClick() {
         node.removeExecutor(ex);
         getContainer().removeItem(getSlot());
         return null;

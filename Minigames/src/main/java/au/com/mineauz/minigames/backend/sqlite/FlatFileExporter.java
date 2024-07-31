@@ -10,17 +10,18 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public class FlatFileExporter {
-    private final File file;
-    private final FileConfiguration config;
-    private final Notifier notifier;
-    private final BackendImportCallback callback;
-    private final Map<String, Integer> minigameIds;
+    private final @NotNull File file;
+    private final @NotNull FileConfiguration config;
+    private final @NotNull Notifier notifier;
+    private final @NotNull BackendImportCallback callback;
+    private final @NotNull Map<@NotNull String, @NotNull Integer> minigameIds;
     private SetMultimap<String, UUID> completions;
     private int nextMinigameId;
 
@@ -28,7 +29,7 @@ public class FlatFileExporter {
     private int notifyCount;
     private long notifyTime;
 
-    public FlatFileExporter(File file, BackendImportCallback callback, Notifier notifier) {
+    public FlatFileExporter(@NotNull File file, @NotNull BackendImportCallback callback, @NotNull Notifier notifier) {
         this.file = file;
         this.callback = callback;
         this.notifier = notifier;
@@ -129,7 +130,7 @@ public class FlatFileExporter {
         }
     }
 
-    private void notifyNext(String state) {
+    private void notifyNext(@NotNull String state) {
         if (notifyCount != 0) {
             notifier.onProgress(notifyState, notifyCount);
         }

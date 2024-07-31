@@ -31,22 +31,22 @@ public class RegenAreaMode implements ToolMode {
     private final HashMap<UUID, IDisplayObject> displayedRegions = new HashMap<>();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "REGEN_AREA";
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_TOOL_REGENAREA_NAME);
     }
 
     @Override
-    public List<Component> getDescription() {
+    public @NotNull List<@NotNull Component> getDescription() {
         return MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_REGENAREA_DESCRIPTION);
     }
 
     @Override
-    public Material getIcon() {
+    public @NotNull Material getIcon() {
         return Material.OAK_SAPLING;
     }
 
@@ -62,12 +62,12 @@ public class RegenAreaMode implements ToolMode {
         menu.addItem(new MenuItemString(Material.PAPER, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONNAME_NAME, new Callback<>() {
 
             @Override
-            public String getValue() {
+            public @NotNull String getValue() {
                 return tool.getSetting(SETTING_KEY);
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(@NotNull String value) {
                 tool.setSetting(SETTING_KEY, value);
             }
         }));

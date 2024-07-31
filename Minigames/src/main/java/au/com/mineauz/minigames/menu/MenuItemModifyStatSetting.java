@@ -48,7 +48,7 @@ public class MenuItemModifyStatSetting extends MenuItem {
         if (stat != MinigameStatistics.Losses) {
             subMenu.addItem(new MenuItemList<>(Material.ENDER_CHEST, MgMenuLangKey.MENU_STAT_STORAGEFORMAT, new Callback<>() {
                 @Override
-                public StatFormat getValue() {
+                public @NotNull StatFormat getValue() {
                     return minigame.getSettings(stat).getFormat();
                 }
 

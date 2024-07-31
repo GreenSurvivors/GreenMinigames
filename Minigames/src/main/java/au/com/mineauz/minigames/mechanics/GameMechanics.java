@@ -55,7 +55,7 @@ public class GameMechanics {
      *
      * @return a Set containing the game mechanics
      */
-    public static Set<GameMechanicBase> getGameMechanics() {
+    public static @NotNull Set<@NotNull GameMechanicBase> getGameMechanics() {
         return new HashSet<>(gameMechanics.values());
     }
 
@@ -88,7 +88,7 @@ public class GameMechanics {
         }
 
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return mechanic.getMechanicName();
         }
     }

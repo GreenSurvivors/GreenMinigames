@@ -15,14 +15,15 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemAddTeam extends MenuItem {
-    private final TeamsModule tm;
+    private final @NotNull TeamsModule tm;
 
-    public MenuItemAddTeam(Component name, @NotNull TeamsModule tm) {
+    public MenuItemAddTeam(@NotNull Component name, @NotNull TeamsModule tm) {
         super(MenuUtility.getCreateMaterial(), name);
         this.tm = tm;
     }
@@ -33,7 +34,7 @@ public class MenuItemAddTeam extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
@@ -48,7 +49,7 @@ public class MenuItemAddTeam extends MenuItem {
 
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         TeamColor col = TeamColor.matchColor(entry.toUpperCase().replace(" ", "_"));
         if (col != null) {
             if (!tm.hasTeam(col)) {

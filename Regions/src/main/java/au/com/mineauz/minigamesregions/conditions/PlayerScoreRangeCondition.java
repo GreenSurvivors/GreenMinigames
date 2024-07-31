@@ -55,15 +55,15 @@ public class PlayerScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
-        if (player == null || !player.isInMinigame()) return false;
-        return player.getScore() >= min.getFlag() && player.getScore() <= max.getFlag();
+    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
+        return mgPlayer.getScore() >= min.getFlag() && mgPlayer.getScore() <= max.getFlag();
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
-        if (player == null || !player.isInMinigame()) return false;
-        return player.getScore() >= min.getFlag() && player.getScore() <= max.getFlag();
+    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
+        return mgPlayer.getScore() >= min.getFlag() && mgPlayer.getScore() <= max.getFlag();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class PlayerScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(min.getMenuItem(Material.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0, null));
         m.addItem(max.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 0, null));

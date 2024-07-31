@@ -22,7 +22,7 @@ import java.util.Objects;
 
 public class MenuItemLong extends MenuItem {
     private final static String DESCRIPTION_TOKEN = "Long_description";
-    protected final Callback<Long> value;
+    protected final @NotNull Callback<Long> value;
     protected final @Nullable Long min;
     protected final @Nullable Long max;
 
@@ -67,7 +67,7 @@ public class MenuItemLong extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         try {
             value.setValue(Math.addExact(value.getValue(), 10));
             if (max != null && value.getValue() < max) {
@@ -82,7 +82,7 @@ public class MenuItemLong extends MenuItem {
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @NotNull ItemStack onRightClick() {
         try {
             value.setValue(Math.subtractExact(value.getValue(), 1));
             if (min != null && value.getValue() < min) {
@@ -97,7 +97,7 @@ public class MenuItemLong extends MenuItem {
     }
 
     @Override
-    public ItemStack onShiftClick() {
+    public @NotNull ItemStack onShiftClick() {
         try {
             value.setValue(Math.addExact(value.getValue(), 10L));
             if (max != null && value.getValue() < max) {
@@ -112,7 +112,7 @@ public class MenuItemLong extends MenuItem {
     }
 
     @Override
-    public ItemStack onShiftRightClick() {
+    public @NotNull ItemStack onShiftRightClick() {
         try {
             value.setValue(Math.subtractExact(value.getValue(), 10));
             if (min != null && value.getValue() < min) {
@@ -127,7 +127,7 @@ public class MenuItemLong extends MenuItem {
     }
 
     @Override
-    public ItemStack onDoubleClick() {
+    public @Nullable ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
@@ -143,7 +143,7 @@ public class MenuItemLong extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         if (entry.matches("-?[0-9]+")) {
             long entryValue = Long.parseLong(entry);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {

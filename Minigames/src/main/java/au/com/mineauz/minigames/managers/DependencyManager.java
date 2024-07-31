@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 
 
 public class DependencyManager {
-    private static Plugin worldEditPlugin = null; // cached for test if still enabled
-    private static Boolean worldEditEnabled = null; // this flags if we ever (successfully) testet on WorldEdit
+    private static @Nullable Plugin worldEditPlugin = null; // cached for test if still enabled
+    private static @Nullable Boolean worldEditEnabled = null; // this flags if we ever (successfully) testet on WorldEdit
 
     public static boolean isWorldEditEnabled() {
         if (worldEditEnabled == null) {
@@ -116,7 +116,7 @@ public class DependencyManager {
         cuboidRegionSelector.explainRegionAdjust(actor, session);
     }
 
-    public static void clearSelection(Player player) {
+    public static void clearSelection(@NotNull Player player) {
         Actor actor = BukkitAdapter.adapt(player);
         LocalSession session = WorldEdit.getInstance().getSessionManager().get(actor);
         RegionSelector regionSelector = session.getRegionSelector(BukkitAdapter.adapt(player.getWorld()));

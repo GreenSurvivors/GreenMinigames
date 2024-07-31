@@ -71,20 +71,20 @@ public class BroadcastAction extends AAction {
     }
 
     @Override //todo datafixerupper
-    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
+    public void executeRegionAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Region region) {
         ScriptObject base = new ScriptObject() {
             @Override
-            public Set<String> getKeys() {
+            public @NotNull Set<String> getKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
             @Override
-            public String getAsString() {
+            public String getAsString() { // todo
                 return "";
             }
 
             @Override
-            public ScriptReference get(String name) {
+            public @Nullable ScriptReference get(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -106,17 +106,17 @@ public class BroadcastAction extends AAction {
     public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         ScriptObject base = new ScriptObject() {
             @Override
-            public Set<String> getKeys() {
+            public @NotNull Set<String> getKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
             @Override
-            public String getAsString() {
+            public String getAsString() { // todo
                 return "";
             }
 
             @Override
-            public ScriptReference get(String name) {
+            public @Nullable ScriptReference get(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -134,7 +134,7 @@ public class BroadcastAction extends AAction {
         execute(mgPlayer, base);
     }
 
-    private void execute(@Nullable MinigamePlayer mgPlayer, @NotNull ScriptObject base) {
+    private void execute(final @Nullable MinigamePlayer mgPlayer, @NotNull ScriptObject base) {
         MinigamePlayer exclude = null;
         if (excludeExecutor.getFlag()) {
             exclude = mgPlayer;
@@ -179,7 +179,7 @@ public class BroadcastAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 

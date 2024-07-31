@@ -40,7 +40,7 @@ public class ListPlaceholder extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_LISTPLACEHOLDERS_USAGE);
     }
 
@@ -49,7 +49,7 @@ public class ListPlaceholder extends ACommand {
         return "minigame.placeholders";
     }
 
-    private Component makePage(int pageNumber) {
+    private @NotNull Component makePage(int pageNumber) {
         List<String> placeholders = new ArrayList<>(PLUGIN.getPlaceHolderManager().getRegisteredPlaceHolders());
 
         final int numPages = (int) Math.ceil((float) placeholders.size() / PLACEHOLDERS_PER_SITE);

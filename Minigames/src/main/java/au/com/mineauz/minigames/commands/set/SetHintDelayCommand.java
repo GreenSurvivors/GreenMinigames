@@ -36,7 +36,7 @@ public class SetHintDelayCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_HINTDELAY_USAGE);
     }
 

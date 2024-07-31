@@ -25,7 +25,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     }
 
     @Override
-    public String getMechanicName() {
+    public @NotNull String getMechanicName() {
         return "kills";
     }
 
@@ -40,7 +40,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     }
 
     @Override
-    public MinigameModule displaySettings(@NotNull Minigame minigame) {
+    public @Nullable MinigameModule displaySettings(@NotNull Minigame minigame) {
         return null;
     }
 
@@ -127,7 +127,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     }
 
     @EventHandler
-    private void playerSuicide(PlayerDeathEvent event) {
+    private void playerSuicide(@NotNull PlayerDeathEvent event) {
         MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity());
         if (mgPlayer.isInMinigame() &&
                 (mgPlayer.getPlayer().getKiller() == null || mgPlayer.getPlayer().getKiller() == mgPlayer.getPlayer()) &&
@@ -143,7 +143,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     }
 
     @EventHandler
-    public void playerAutoBalance(PlayerDeathEvent event) {
+    public void playerAutoBalance(@NotNull PlayerDeathEvent event) {
         MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity());
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isTeamGame()) {
             Minigame mgm = mgPlayer.getMinigame();

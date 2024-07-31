@@ -28,7 +28,7 @@ public class MenuItemActionAdd extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() { // miau
+    public @Nullable ItemStack onClick() { // miau
         Menu m = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), getContainer().getViewer());
         m.setPreviousPage(getContainer());
         Map<IActionCategory, Menu> cats = new HashMap<>();

@@ -33,7 +33,7 @@ public class MenuItemTrigger extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         if (region != null) {
             RegionExecutor exec = new RegionExecutor(trigger);
             region.addExecutor(exec);

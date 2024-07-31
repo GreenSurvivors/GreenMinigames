@@ -11,6 +11,7 @@ import au.com.mineauz.minigamesregions.menu.MenuItemAction;
 import au.com.mineauz.minigamesregions.menu.MenuItemActionAdd;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,38 +27,39 @@ public class ActionRegistry {
         }
     }
 
-    public static void addAction(ActionFactory factory) {
+    public static void addAction(@NotNull ActionFactory factory) {
         actions.put(factory.getName(), factory);
     }
 
-    public static ActionInterface getActionByName(String name) {
+    @Nullable
+    public static ActionInterface getActionByName(@NotNull String name) {
         if (actions.containsKey(name.toUpperCase())) {
             return actions.get(name.toUpperCase()).makeNewAction();
         }
         return null;
     }
 
-    public static Set<ActionFactory> getAllActionFactorys() {
+    public static @NotNull Set<@NotNull ActionFactory> getAllActionFactorys() {
         return new HashSet<>(actions.values());
     }
 
-    public static Set<String> getAllActionNames() {
+    public static @NotNull Set<@NotNull String> getAllActionNames() {
         return actions.keySet();
     }
 
-    public static boolean hasAction(String name) {
+    public static boolean hasAction(@NotNull String name) {
         return actions.containsKey(name.toUpperCase());
     }
 
-    public static void displayMenu(MinigamePlayer player, BaseExecutor exec, Menu prev) {
-        Menu m = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), player);
-        m.setPreviousPage(prev);
+    public static void displayMenu(@NotNull MinigamePlayer player, @NotNull BaseExecutor exec, @NotNull Menu prev) {
+        Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), player);
+        menu.setPreviousPage(prev);
         for (ActionInterface act : exec.getActions()) {
-            m.addItem(new MenuItemAction(Material.PAPER, act.getDisplayname(), exec, act));
+            menu.addItem(new MenuItemAction(Material.PAPER, act.getDisplayname(), exec, act));
         }
-        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(new MenuItemActionAdd(MenuUtility.getCreateMaterial(),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_ADD_NAME), exec), m.getSize() - 1);
-        m.displayMenu(player);
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.addItem(new MenuItemActionAdd(MenuUtility.getCreateMaterial(),
+                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_ADD_NAME), exec), menu.getSize() - 1);
+        menu.displayMenu(player);
     }
 }

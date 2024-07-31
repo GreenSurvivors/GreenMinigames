@@ -89,7 +89,7 @@ public class TriggerNodeAction extends AAction { // todo merge with TriggerRegio
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(node.getMenuItem(Material.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME)));

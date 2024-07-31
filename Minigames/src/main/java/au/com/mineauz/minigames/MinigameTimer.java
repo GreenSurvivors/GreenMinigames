@@ -14,6 +14,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class MinigameTimer {
     private long timeLeft = 0;
     private int taskID = -1;
     private boolean broadcastTime = true;
-    private BossBar bossBar = null;
+    private @Nullable BossBar bossBar = null;
 
     public MinigameTimer(Minigame minigame, long timeLength) {
         this.timeLength = timeLength;

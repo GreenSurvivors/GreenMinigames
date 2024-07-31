@@ -36,7 +36,7 @@ public class MenuItemRegionExecutorAdd extends MenuItem { // todo merge with Men
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONEXECUTOR_ADD_TRIGGER_NAME), getContainer().getViewer());
 
         for (Trigger trig : TriggerRegistry.getAllRegionTriggers()) {

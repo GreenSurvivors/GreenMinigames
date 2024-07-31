@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * or commands.
  */
 public abstract class ALoadoutAddon {
-    protected final String name;
+    protected final @NotNull String name;
     protected final PlayerLoadout loadout;
 
     public ALoadoutAddon(@NotNull String name, PlayerLoadout loadout) {

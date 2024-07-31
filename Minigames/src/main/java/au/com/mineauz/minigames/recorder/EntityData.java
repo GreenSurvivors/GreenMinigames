@@ -16,11 +16,11 @@ import java.util.UUID;
  */
 public class EntityData {
     //uuid of the entity
-    private final UUID uuid;
+    private final @NotNull UUID uuid;
     //type of entity
-    private final EntityType entType;
+    private final @NotNull EntityType entType;
     //location the entity had when it was changed
-    private final Location entLocation;
+    private final @NotNull Location entLocation;
     // the player who has changed the entity. If null, the entity doesn't get reset if the player left the minigame
     private final @Nullable MinigamePlayer player;
     // was this entity created and needs to removed or was it changed / killed?

@@ -16,6 +16,8 @@ import java.util.List;
  * sure, one could easily work with left / right click but there is no guarantee overstacking works and clicking 300 times isn't fun.
  * for now I will add a Integer menu item besides this one. Maybe someone will have a bright idea in future
  * Amounts are not supported here.
+ *
+ * Also now the max stack size depends on the vanilla data component
  */
 public class MenuItemItemNbt extends MenuItem {
     private final static String DESCRIPTION_TOKEN = "Nbt_description";
@@ -50,7 +52,7 @@ public class MenuItemItemNbt extends MenuItem {
     }
 
     @Override
-    public ItemStack onClickWithItem(ItemStack item) {
+    public ItemStack onClickWithItem(@NotNull ItemStack item) {
         // better make a copy, we don't know what happens with the item later
         itemCallback.setValue(item.clone());
 
@@ -89,12 +91,12 @@ public class MenuItemItemNbt extends MenuItem {
         setDescriptionPart(DESCRIPTION_TOKEN, createDescription(oldData.getType(), oldData.displayName(), newLore));
     }
 
-    private List<Component> createDescription(@NotNull ItemStack itemStack) {
+    private @NotNull List<@NotNull Component> createDescription(@NotNull ItemStack itemStack) {
         ItemMeta meta = itemStack.getItemMeta();
         return createDescription(itemStack.getType(), meta.displayName(), meta.lore());
     }
 
-    private List<Component> createDescription(@NotNull Material type, @Nullable Component displayName, @Nullable List<@NotNull Component> lore) {
+    private @NotNull List<@NotNull Component> createDescription(@NotNull Material type, @Nullable Component displayName, @Nullable List<@NotNull Component> lore) {
         List<Component> result = new ArrayList<>();
         if (displayName != null) {
             result.add(Component.text("Name: ").append(displayName));

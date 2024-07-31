@@ -92,7 +92,7 @@ public class FlightAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(setFly.getMenuItem(Material.FEATHER, MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_NAME));

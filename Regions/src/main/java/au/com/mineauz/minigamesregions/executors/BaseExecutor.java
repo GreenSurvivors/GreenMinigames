@@ -14,9 +14,9 @@ import java.util.Map;
 
 public class BaseExecutor {
     private final @NotNull Trigger trigger;
-    private final List<ACondition> conditions = new ArrayList<>();
-    private final List<ActionInterface> actions = new ArrayList<>();
-    private final Map<String, Integer> triggers = new HashMap<>();
+    private final @NotNull List<@NotNull ACondition> conditions = new ArrayList<>();
+    private final @NotNull List<@NotNull ActionInterface> actions = new ArrayList<>();
+    private final @NotNull Map<@NotNull String, @NotNull Integer> triggers = new HashMap<>();
     private boolean triggerPerPlayer = false;
     private int triggerCount = 0;
 
@@ -28,11 +28,11 @@ public class BaseExecutor {
         return trigger;
     }
 
-    public List<ACondition> getConditions() {
+    public @NotNull List<@NotNull ACondition> getConditions() {
         return conditions;
     }
 
-    public void addCondition(ACondition condition) {
+    public void addCondition(@NotNull ACondition condition) {
         conditions.add(condition);
     }
 
@@ -40,11 +40,11 @@ public class BaseExecutor {
         conditions.remove(condition);
     }
 
-    public List<ActionInterface> getActions() {
+    public @NotNull List<@NotNull ActionInterface> getActions() {
         return actions;
     }
 
-    public void addAction(ActionInterface action) {
+    public void addAction(@NotNull ActionInterface action) {
         actions.add(action);
     }
 
@@ -60,16 +60,16 @@ public class BaseExecutor {
         triggerCount = count;
     }
 
-    public Callback<Integer> getTriggerCountCallback() {
+    public @NotNull Callback<@NotNull Integer> getTriggerCountCallback() {
         return new Callback<>() {
 
             @Override
-            public Integer getValue() {
+            public @NotNull Integer getValue() {
                 return getTriggerCount();
             }
 
             @Override
-            public void setValue(Integer value) {
+            public void setValue(@NotNull Integer value) {
                 setTriggerCount(value);
             }
         };
@@ -83,16 +83,16 @@ public class BaseExecutor {
         triggerPerPlayer = perPlayer;
     }
 
-    public Callback<Boolean> getIsTriggerPerPlayerCallback() {
+    public @NotNull Callback<Boolean> getIsTriggerPerPlayerCallback() {
         return new Callback<>() {
 
             @Override
-            public Boolean getValue() {
+            public @NotNull Boolean getValue() {
                 return isTriggerPerPlayer();
             }
 
             @Override
-            public void setValue(Boolean value) {
+            public void setValue(@NotNull Boolean value) {
                 setTriggerPerPlayer(value);
             }
         };
@@ -104,14 +104,14 @@ public class BaseExecutor {
         triggers.put("public", triggers.get("public") + 1);
     }
 
-    public void addPlayerTrigger(MinigamePlayer player) {
+    public void addPlayerTrigger(@NotNull MinigamePlayer player) {
         String uuid = player.getUUID().toString();
         if (!triggers.containsKey(uuid))
             triggers.put(uuid, 0);
         triggers.put(uuid, triggers.get(uuid) + 1);
     }
 
-    public boolean canBeTriggered(MinigamePlayer player) {
+    public boolean canBeTriggered(@NotNull MinigamePlayer player) {
         if (triggerCount != 0) {
             if (!triggerPerPlayer) {
                 return triggers.get("public") == null ||
@@ -128,7 +128,7 @@ public class BaseExecutor {
         triggers.clear();
     }
 
-    public void removeTrigger(MinigamePlayer player) {
+    public void removeTrigger(@NotNull MinigamePlayer player) {
         triggers.remove(player.getUUID().toString());
     }
 }

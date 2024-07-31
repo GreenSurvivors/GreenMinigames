@@ -17,7 +17,7 @@ public class CTFModule extends MinigameModule {
         super(mgm, name);
     }
 
-    public static CTFModule getMinigameModule(Minigame mgm) {
+    public static CTFModule getMinigameModule(@NotNull Minigame mgm) {
         return ((CTFModule) mgm.getModule(MgModules.INFECTION.getName()));
     }
 

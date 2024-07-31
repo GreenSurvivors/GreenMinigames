@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -15,9 +16,7 @@ import java.util.List;
 public class TimeFlag extends AFlag<Long> {
 
     public TimeFlag(Long value, @NotNull String name) {
-        setFlag(value);
-        setDefaultFlag(value);
-        setName(name);
+        super(name, value, value);
     }
 
     @Override
@@ -36,12 +35,12 @@ public class TimeFlag extends AFlag<Long> {
 
     @Deprecated
     @Override
-    public MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
         return getMenuItem(displayMat, name, null);
     }
 
-    public MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                    @Nullable Long min, @Nullable Long max) {
+    public @NotNull MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                             @Nullable Long min, @Nullable Long max) {
         return getMenuItem(displayMat, name, null, min, max);
     }
 
@@ -52,17 +51,17 @@ public class TimeFlag extends AFlag<Long> {
 
     @Deprecated
     @Override
-    public MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                    @Nullable List<@NotNull Component> description) {
+    public @NotNull MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                             @Nullable List<@NotNull Component> description) {
         return getMenuItem(displayMat, name, description, 0L, null);
     }
 
-    public MenuItemTime getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
-                                    @Nullable List<@NotNull Component> description, @Nullable Long min, @Nullable Long max) {
+    public @NotNull MenuItemTime getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
+                                             @Nullable List<@NotNull Component> description, @Nullable Long min, @Nullable Long max) {
         return getMenuItem(displayMat, MinigameMessageManager.getMgMessage(langKey), description, min, max);
     }
 
-    public MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                     @Nullable List<@NotNull Component> description, @Nullable Long min, @Nullable Long max) {
         return new MenuItemTime(displayMat, name, description, new Callback<>() {
 

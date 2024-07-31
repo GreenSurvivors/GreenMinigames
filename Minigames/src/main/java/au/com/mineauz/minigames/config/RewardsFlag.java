@@ -12,10 +12,8 @@ import java.util.List;
 
 public class RewardsFlag extends AFlag<Rewards> {
 
-    public RewardsFlag(Rewards value, String name) {
-        setFlag(value);
-        setDefaultFlag(value);
-        setName(name);
+    public RewardsFlag(Rewards value, @NotNull String name) {
+        super(name, value, value);
     }
 
     @Override
@@ -33,7 +31,7 @@ public class RewardsFlag extends AFlag<Rewards> {
     }
 
     @Override
-    public MenuItemDisplayRewards getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItemDisplayRewards getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                               @Nullable List<@NotNull Component> description) {
         return new MenuItemDisplayRewards(displayMat, name, description, getFlag());
     }

@@ -55,14 +55,14 @@ public class MatchTeamCondition extends ACondition {
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
-        return player.getTeam() != null && player.getTeam().getColor() == teamColor.getFlag();
+    public boolean checkNodeCondition(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+        return mgPlayer.getTeam() != null && mgPlayer.getTeam().getColor() == teamColor.getFlag();
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
-        if (player == null || !player.isInMinigame()) return false;
-        return player.getTeam() != null && player.getTeam().getColor() == teamColor.getFlag();
+    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
+        return mgPlayer.getTeam() != null && mgPlayer.getTeam().getColor() == teamColor.getFlag();
     }
 
     @Override
@@ -79,7 +79,7 @@ public class MatchTeamCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
 
@@ -108,7 +108,7 @@ public class MatchTeamCondition extends ACondition {
         return true;
     }
 
-    private Material getTeamMaterial() {
+    private @NotNull Material getTeamMaterial() {
         return teamColor.getFlagOrDefault().getDisplaMaterial();
     }
 

@@ -25,7 +25,7 @@ public interface ActionInterface {
 
     boolean useInNodes();
 
-    void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region);
+    void executeRegionAction(MinigamePlayer mgPlayer, @NotNull Region region);
 
     void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node);
 
@@ -33,7 +33,7 @@ public interface ActionInterface {
 
     void loadArguments(@NotNull FileConfiguration config, @NotNull String path);
 
-    boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @Nullable Menu previous);
+    boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous);
 
     void debug(MinigamePlayer mgPlayer, ScriptObject scriptObject);
 }

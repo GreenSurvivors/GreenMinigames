@@ -47,14 +47,14 @@ public class ContainsOneTeamCondition extends ACondition {
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
+    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
         return false;
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
+    public boolean checkRegionCondition(@NotNull MinigamePlayer mgPlayer, @NotNull Region region) {
         boolean ret = true;
-        Team last = player.getTeam();
+        Team last = mgPlayer.getTeam();
         if (last == null) return true;
         for (MinigamePlayer p : region.getPlayers()) {
             if (last != p.getTeam()) {
@@ -76,7 +76,7 @@ public class ContainsOneTeamCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu menu = new Menu(3, getDisplayName(), player);
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);

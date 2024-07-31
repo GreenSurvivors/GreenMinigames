@@ -54,16 +54,16 @@ public class BlockOnAndHeldCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
+    public boolean checkRegionCondition(MinigamePlayer mgPlayer, @NotNull Region region) {
         return false;
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
-        return check(player);
+    public boolean checkNodeCondition(MinigamePlayer mgPlayer, @NotNull Node node) {
+        return check(mgPlayer);
     }
 
-    private boolean check(MinigamePlayer player) {
+    private boolean check(@Nullable MinigamePlayer player) {
         if (player == null) {
             return false;
         }
@@ -96,7 +96,7 @@ public class BlockOnAndHeldCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         addInvertMenuItem(m);

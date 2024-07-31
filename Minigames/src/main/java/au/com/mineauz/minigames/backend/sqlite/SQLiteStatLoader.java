@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredStat;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,14 +20,14 @@ import java.util.List;
 import java.util.UUID;
 
 class SQLiteStatLoader {
-    private final SQLiteBackend backend;
-    private final ComponentLogger logger;
+    private final @NotNull SQLiteBackend backend;
+    private final @NotNull ComponentLogger logger;
 
-    private final StatementKey getSingleAsc;
-    private final StatementKey getSingleDesc;
-    private final StatementKey getSingle;
+    private final @NotNull StatementKey getSingleAsc;
+    private final @NotNull StatementKey getSingleDesc;
+    private final @NotNull StatementKey getSingle;
 
-    public SQLiteStatLoader(SQLiteBackend backend, ComponentLogger logger) {
+    public SQLiteStatLoader(@NotNull SQLiteBackend backend, @NotNull ComponentLogger logger) {
         this.backend = backend;
         this.logger = logger;
 
@@ -36,7 +37,7 @@ class SQLiteStatLoader {
         getSingle = new StatementKey("SELECT `value` FROM `PlayerStats` WHERE `minigame_id`=? AND `player_id`=? AND `stat`=?;");
     }
 
-    public List<StoredStat> loadStatValues(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order, int offset, int length) {
+    public @NotNull List<@NotNull StoredStat> loadStatValues(@NotNull Minigame minigame, @NotNull MinigameStat stat, @NotNull StatisticValueField field, @NotNull ScoreboardOrder order, int offset, int length) {
         MinigameMessageManager.debugMessage("SQLite beginning stat load for " + minigame.getName() + ", " + stat + ", " + field);
         ConnectionHandler handler = null;
         try {
@@ -55,7 +56,7 @@ class SQLiteStatLoader {
         }
     }
 
-    public long loadSingleValue(Minigame minigame, MinigameStat stat, StatisticValueField field, UUID playerId) {
+    public long loadSingleValue(@NotNull Minigame minigame, @NotNull MinigameStat stat, @NotNull StatisticValueField field, @NotNull UUID playerId) {
         ConnectionHandler handler = null;
         try {
             handler = backend.getPool().getConnection();
@@ -82,7 +83,9 @@ class SQLiteStatLoader {
     }
 
     // Loads from the stats table
-    private List<StoredStat> loadStats(ConnectionHandler handler, int minigameId, MinigameStat stat, StatisticValueField field, ScoreboardOrder order, int offset, int length) throws SQLException {
+    private @NotNull List<@NotNull StoredStat> loadStats(@NotNull ConnectionHandler handler, int minigameId,
+                                                         @NotNull MinigameStat stat, @NotNull StatisticValueField field,
+                                                         @NotNull ScoreboardOrder order, int offset, int length) throws SQLException {
         String statName = stat.getName() + field.getSuffix();
 
         StatementKey statement = switch (order) {
@@ -100,7 +103,8 @@ class SQLiteStatLoader {
         }
     }
 
-    private StoredStat loadStat(ResultSet rs) throws SQLException {
+    @NotNull
+    private StoredStat loadStat(@NotNull ResultSet rs) throws SQLException {
         UUID playerId = UUID.fromString(rs.getString("player_id"));
         String name = rs.getString("name");
         String displayName = rs.getString("displayname");

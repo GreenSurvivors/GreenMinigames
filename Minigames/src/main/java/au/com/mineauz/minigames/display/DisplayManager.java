@@ -12,23 +12,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class DisplayManager {
-    private final Map<INonPersistentDisplay, Integer> nextTickDelay = new IdentityHashMap<>();
-    private final SetMultimap<Player, AbstractDisplayObject> playerDisplays;
-    private final SetMultimap<World, AbstractDisplayObject> worldDisplays;
-    private BukkitTask refreshTask;
+    private final @NotNull Map<@NotNull INonPersistentDisplay, @NotNull Integer> nextTickDelay = new IdentityHashMap<>();
+    private final @NotNull SetMultimap<@NotNull Player, @NotNull AbstractDisplayObject> playerDisplays;
+    private final @NotNull SetMultimap<@NotNull World, @NotNull AbstractDisplayObject> worldDisplays;
+    private @Nullable BukkitTask refreshTask;
 
     public DisplayManager() {
         playerDisplays = HashMultimap.create();
         worldDisplays = HashMultimap.create();
     }
 
-    public DisplayCuboid displayCuboid(Player player, Location corner1, Location corner2) {
+    public @NotNull DisplayCuboid displayCuboid(@NotNull Player player, @NotNull Location corner1, @NotNull Location corner2) {
         Validate.isTrue(corner1.getWorld() == corner2.getWorld(), "Both corners must be in the same world");
 
         double minX = Math.min(corner1.getX(), corner2.getX());
@@ -41,7 +42,7 @@ public class DisplayManager {
         return displayCuboid(player, minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public DisplayCuboid displayCuboid(Location corner1, Location corner2) {
+    public @NotNull DisplayCuboid displayCuboid(@NotNull Location corner1, @NotNull Location corner2) {
         Validate.isTrue(corner1.getWorld() == corner2.getWorld(), "Both corners must be in the same world");
 
         double minX = Math.min(corner1.getX(), corner2.getX());
@@ -54,45 +55,45 @@ public class DisplayManager {
         return displayCuboid(corner1.getWorld(), minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public DisplayCuboid displayCuboid(Player player, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    public @NotNull DisplayCuboid displayCuboid(@NotNull Player player, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         return new DisplayCuboid(this, player, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
     }
 
-    public DisplayCuboid displayCuboid(Player player, MgRegion region) {
+    public @NotNull DisplayCuboid displayCuboid(@NotNull Player player, @NotNull MgRegion region) {
         return new DisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
     }
 
-    public DisplayCuboid displayCuboid(World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    public @NotNull DisplayCuboid displayCuboid(@NotNull World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         return new DisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
     }
 
-    public DisplayCuboid displayCuboid(World world, MgRegion region) {
+    public @NotNull DisplayCuboid displayCuboid(@NotNull World world, @NotNull MgRegion region) {
         return new DisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
     }
 
-    public DisplayPoint displayPoint(Player player, Location location, boolean showDirection) {
+    public @NotNull DisplayPoint displayPoint(@NotNull Player player, @NotNull Location location, boolean showDirection) {
         return displayPoint(player, location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), showDirection);
     }
 
-    public DisplayPoint displayPoint(Location location, boolean showDirection) {
+    public @NotNull DisplayPoint displayPoint(@NotNull Location location, boolean showDirection) {
         return displayPoint(location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), showDirection);
     }
 
-    public DisplayPoint displayPoint(Player player, double x, double y, double z, float yaw, float pitch, boolean showDirection) {
+    public @NotNull DisplayPoint displayPoint(@NotNull Player player, double x, double y, double z, float yaw, float pitch, boolean showDirection) {
         return new DisplayPoint(this, player, new Vector(x, y, z), yaw, pitch, showDirection);
     }
 
-    public DisplayPoint displayPoint(World world, double x, double y, double z, float yaw, float pitch, boolean showDirection) {
+    public @NotNull DisplayPoint displayPoint(@NotNull World world, double x, double y, double z, float yaw, float pitch, boolean showDirection) {
         return new DisplayPoint(this, world, new Vector(x, y, z), yaw, pitch, showDirection);
     }
 
-    public void removeAll(Player player) {
+    public void removeAll(@NotNull Player player) {
         for (IDisplayObject display : playerDisplays.removeAll(player)) {
             display.hide();
         }
     }
 
-    public void removeAll(World world) {
+    public void removeAll(@NotNull World world) {
         for (IDisplayObject display : worldDisplays.removeAll(world)) {
             display.hide();
         }
@@ -111,7 +112,7 @@ public class DisplayManager {
         worldDisplays.clear();
     }
 
-    protected void onShow(IDisplayObject object) {
+    protected void onShow(@NotNull IDisplayObject object) {
         if (object instanceof INonPersistentDisplay display) {
             nextTickDelay.put(display, display.getRefreshInterval());
 
@@ -119,7 +120,7 @@ public class DisplayManager {
         }
     }
 
-    protected void onHide(IDisplayObject object) {
+    protected void onHide(@NotNull IDisplayObject object) {
         if (object instanceof INonPersistentDisplay display) {
             nextTickDelay.remove(display);
 

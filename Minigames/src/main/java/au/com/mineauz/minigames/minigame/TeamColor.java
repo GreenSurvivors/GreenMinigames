@@ -33,10 +33,10 @@ public enum TeamColor {
 
     NONE(NamedTextColor.DARK_RED, Material.BARRIER);
 
-    private final NamedTextColor color;
-    private final Material displaMaterial;
+    private final @NotNull NamedTextColor color;
+    private final @NotNull Material displaMaterial;
 
-    TeamColor(NamedTextColor color, Material displaMaterial) {
+    TeamColor(@NotNull NamedTextColor color, @NotNull Material displaMaterial) {
         this.color = color;
         this.displaMaterial = displaMaterial;
     }
@@ -50,16 +50,16 @@ public enum TeamColor {
         return null;
     }
 
-    public static Set<TeamColor> validColors() {
+    public static @NotNull Set<@NotNull TeamColor> validColors() {
         return Arrays.stream(TeamColor.values()).filter(tc -> tc != NONE).collect(Collectors.toSet());
     }
 
-    public static Component validColorNamesComp() {
+    public static @NotNull Component validColorNamesComp() {
         return Component.join(JoinConfiguration.separator(MiniMessage.miniMessage().deserialize("<gray>, </gray>")),
                 validColors().stream().map(TeamColor::getCompName).collect(Collectors.toSet()));
     }
 
-    public Component getCompName() {
+    public @NotNull Component getCompName() {
         return Component.text(this.getUserFriendlyName(), this.getColor());
     }
 
@@ -71,11 +71,11 @@ public enum TeamColor {
         return WordUtils.capitalizeFully(super.toString().replaceAll("_", " "));
     }
 
-    public NamedTextColor getColor() {
+    public @NotNull NamedTextColor getColor() {
         return color;
     }
 
-    public Material getDisplaMaterial() {
+    public @NotNull Material getDisplaMaterial() {
         return displaMaterial;
     }
 }

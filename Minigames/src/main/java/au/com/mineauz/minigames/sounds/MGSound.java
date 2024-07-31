@@ -1,32 +1,33 @@
 package au.com.mineauz.minigames.sounds;
 
 import org.bukkit.Sound;
+import org.jetbrains.annotations.NotNull;
 
 public class MGSound {
-    private final Sound sound;
+    private final @NotNull Sound sound;
     private float volume = 10f;
     private float pitch = 1f;
     private int count = 1;
     private long delay = 20L;
     private int timesPlayed = 0;
 
-    public MGSound(Sound sound) {
+    public MGSound(@NotNull Sound sound) {
         this.sound = sound;
     }
 
-    public MGSound(Sound sound, float volume, float pitch) {
+    public MGSound(@NotNull Sound sound, float volume, float pitch) {
         this.sound = sound;
         this.pitch = pitch;
         this.volume = volume;
     }
 
-    public MGSound(Sound sound, int count, long delay) {
+    public MGSound(@NotNull Sound sound, int count, long delay) {
         this.sound = sound;
         this.count = count;
         this.delay = delay;
     }
 
-    public MGSound(Sound sound, float volume, float pitch, int count, long delay) {
+    public MGSound(@NotNull Sound sound, float volume, float pitch, int count, long delay) {
         this.sound = sound;
         this.pitch = pitch;
         this.volume = volume;
@@ -34,7 +35,7 @@ public class MGSound {
         this.delay = delay;
     }
 
-    public Sound getSound() {
+    public @NotNull Sound getSound() {
         return sound;
     }
 
@@ -63,7 +64,7 @@ public class MGSound {
     }
 
     @Override
-    public MGSound clone() {
+    public @NotNull MGSound clone() {
         MGSound s = new MGSound(sound, volume, pitch, count, delay);
         s.setTimesPlayed(getTimesPlayed());
         return s;

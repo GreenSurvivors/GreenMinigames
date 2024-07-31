@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ScoreboardCommand extends ACommand {
-    private final Minigames plugin = Minigames.getPlugin();
+    private final @NotNull Minigames plugin = Minigames.getPlugin();
 
     @Override
     public @NotNull String getName() {
@@ -40,7 +40,7 @@ public class ScoreboardCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SCOREBOARD_USAGE);
     }
 

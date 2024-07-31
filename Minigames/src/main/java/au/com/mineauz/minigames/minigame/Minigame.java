@@ -122,8 +122,11 @@ public class Minigame implements ScriptObject {
     private FloorDegenerator sFloorDegen;
     private final @NotNull Scoreboard scoreboard = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
     //Multiplayer
+    @Nullable
     private MultiplayerTimer mpTimer = null;
+    @Nullable
     private MinigameTimer miniTimer = null;
+    @Nullable
     private MultiplayerBets mpBets = null;
     private boolean playersAtStart = false;
 
@@ -230,7 +233,7 @@ public class Minigame implements ScriptObject {
         this.state = state;
     }
 
-    private void addConfigFlag(AFlag<?> flag) {
+    private void addConfigFlag(@NotNull AFlag<?> flag) {
         configFlags.put(flag.getName(), flag);
     }
 
@@ -252,6 +255,7 @@ public class Minigame implements ScriptObject {
         modules.remove(moduleName);
     }
 
+    @NotNull
     public List<MinigameModule> getModules() {
         return new ArrayList<>(modules.values());
     }
@@ -506,7 +510,7 @@ public class Minigame implements ScriptObject {
         this.type.setFlag(type);
     }
 
-    public MultiplayerTimer getMpTimer() {
+    public @Nullable MultiplayerTimer getMpTimer() {
         return mpTimer;
     }
 
@@ -527,7 +531,7 @@ public class Minigame implements ScriptObject {
         return getState() == MinigameState.STARTED || getState() == MinigameState.OCCUPIED;
     }
 
-    public MinigameTimer getMinigameTimer() {
+    public @Nullable MinigameTimer getMinigameTimer() {
         return miniTimer;
     }
 
@@ -535,7 +539,7 @@ public class Minigame implements ScriptObject {
         this.miniTimer = mgTimer;
     }
 
-    public MultiplayerBets getMpBets() {
+    public @Nullable MultiplayerBets getMpBets() {
         return mpBets;
     }
 
@@ -551,6 +555,7 @@ public class Minigame implements ScriptObject {
         this.usePermissions.setFlag(usePermissions);
     }
 
+    @NotNull
     public List<MinigamePlayer> getPlayers() {
         return players;
     }
@@ -571,6 +576,7 @@ public class Minigame implements ScriptObject {
         return !spectators.isEmpty();
     }
 
+    @NotNull
     public List<MinigamePlayer> getSpectators() {
         return spectators;
     }
@@ -729,6 +735,7 @@ public class Minigame implements ScriptObject {
         return mechanic.getFlag();
     }
 
+    @Nullable
     public GameMechanicBase getMechanic() {
         return GameMechanics.getGameMechanic(mechanic.getFlag());
     }
@@ -882,6 +889,7 @@ public class Minigame implements ScriptObject {
         this.activatePlayerRecorder.setFlag(activatePlayerRecorder);
     }
 
+    @NotNull
     public Collection<MgRegion> getRegenRegions() {
         return regenRegions.getFlag().values();
     }
@@ -890,6 +898,7 @@ public class Minigame implements ScriptObject {
         return regenRegions.getFlag().get(name);
     }
 
+    @NotNull
     public RegenRegionChangeResult removeRegenRegion(String name) {
         boolean removed = regenRegions.getFlag().remove(name) != null;
 
@@ -911,7 +920,8 @@ public class Minigame implements ScriptObject {
      * @return a record containing whenever this was a success or not
      * and the total number of all blocks in regen regions after the setting would happen
      */
-    public RegenRegionChangeResult setRegenRegion(MgRegion newRegenRegion) {
+    @NotNull
+    public RegenRegionChangeResult setRegenRegion(@NotNull MgRegion newRegenRegion) {
         long numOfBlocksTotal = (long) Math.ceil(newRegenRegion.getVolume());
 
         for (MgRegion region : regenRegions.getFlag().values()) {
@@ -934,7 +944,7 @@ public class Minigame implements ScriptObject {
         return !regenRegions.getFlag().isEmpty();
     }
 
-    public boolean isInRegenArea(Location location) {
+    public boolean isInRegenArea(@NotNull Location location) {
         for (MgRegion region : regenRegions.getFlag().values()) {
             if (region.isInRegen(location)) {
                 return true;
@@ -1047,11 +1057,13 @@ public class Minigame implements ScriptObject {
         showCompletionTime.setFlag(bool);
     }
 
+    @NotNull
     public StatSettings getSettings(MinigameStat stat) {
         return statSettings.computeIfAbsent(stat, StatSettings::new);
     }
 
-    public Map<MinigameStat, StatSettings> getStatSettings(StoredGameStats stats) {
+    @NotNull
+    public Map<MinigameStat, StatSettings> getStatSettings(@NotNull StoredGameStats stats) {
         Map<MinigameStat, StatSettings> settings = new HashMap<>();
 
         for (MinigameStat stat : stats.getStats().keySet()) {
@@ -1061,7 +1073,7 @@ public class Minigame implements ScriptObject {
         return settings;
     }
 
-    public void displayMenu(MinigamePlayer player) {
+    public void displayMenu(@NotNull MinigamePlayer player) {
         Menu mainMenu = new Menu(6, getDisplayName(), player);
         Menu playerMenu = new Menu(6, getDisplayName(), player);
         Menu loadouts = new Menu(6, getDisplayName(), player);
@@ -1106,7 +1118,7 @@ public class Minigame implements ScriptObject {
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(@NotNull String value) {
                 mechanic.setFlag(value.toLowerCase());
             }
         }, scoreTypes);
@@ -1540,8 +1552,9 @@ public class Minigame implements ScriptObject {
         return getName();
     }
 
+    @Nullable
     @Override
-    public ScriptReference get(String name) {
+    public ScriptReference get(@NotNull String name) {
         if (name.equalsIgnoreCase("players")) {
             return ScriptCollection.of(players);
         } else if (name.equalsIgnoreCase("teams")) {
@@ -1558,6 +1571,7 @@ public class Minigame implements ScriptObject {
         return null;
     }
 
+    @NotNull
     @Override
     public Set<String> getKeys() {
         return Set.of("players", "teams", "name", "displayname");

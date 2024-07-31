@@ -23,7 +23,7 @@ import java.util.UUID;
  * Created by benjamincharlton on 23/12/2018.
  */
 public class TestPlayer extends PlayerMock {
-    private final List<PotionEffect> effects = new ArrayList<>();
+    private final @NotNull List<@NotNull PotionEffect> effects = new ArrayList<>();
     private Long playerTime;
     private Long playerTimeoffset;
     private int foodLevel = 10;
@@ -36,10 +36,10 @@ public class TestPlayer extends PlayerMock {
     private float walkSpeed;
     private float flyspeed;
     private int noDamageTicks;
-    private WeatherType playerWeather = WeatherType.CLEAR;
-    private Scoreboard scoreboard = new ScoreboardMock();
+    private @NotNull WeatherType playerWeather = WeatherType.CLEAR;
+    private @NotNull Scoreboard scoreboard = new ScoreboardMock();
 
-    public TestPlayer(ServerMock server, String name, UUID uuid) {
+    public TestPlayer(@NotNull ServerMock server, @NotNull String name, @NotNull UUID uuid) {
         super(server, name, uuid);
     }
 
@@ -74,7 +74,7 @@ public class TestPlayer extends PlayerMock {
     }
 
     @Override
-    public WeatherType getPlayerWeather() {
+    public @NotNull WeatherType getPlayerWeather() {
         return playerWeather;
     }
 
@@ -114,7 +114,7 @@ public class TestPlayer extends PlayerMock {
     }
 
     @Override
-    public void playSound(@NotNull Location location, Sound sound, @Nullable SoundCategory category, float volume, float pitch) {
+    public void playSound(@NotNull Location location, @NotNull Sound sound, @Nullable SoundCategory category, float volume, float pitch) {
         this.playSound(location, sound.name(), category, volume, pitch);
     }
 
@@ -227,7 +227,7 @@ public class TestPlayer extends PlayerMock {
     }
 
     @Override
-    public boolean teleport(Location location) {
+    public boolean teleport(@NotNull Location location) {
         MinigameMessageManager.debugMessage("Called Teleport on " + this.getName() + " to " + location.toString());
         return super.teleport(location);
     }

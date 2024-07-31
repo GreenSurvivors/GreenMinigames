@@ -40,7 +40,7 @@ public class DisableAllCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DISABLEALL_USAGE);
     }
 

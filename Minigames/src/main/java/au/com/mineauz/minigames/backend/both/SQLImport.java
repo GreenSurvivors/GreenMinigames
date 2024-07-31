@@ -6,22 +6,23 @@ import au.com.mineauz.minigames.backend.ConnectionPool;
 import au.com.mineauz.minigames.backend.StatementKey;
 import au.com.mineauz.minigames.stats.StatFormat;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.UUID;
 
 public class SQLImport implements BackendImportCallback {
-    private final ConnectionPool pool;
+    private final @NotNull ConnectionPool pool;
 
-    private final StatementKey clearPlayers;
-    private final StatementKey clearMinigames;
-    private final StatementKey clearStats;
-    private final StatementKey clearMetadata;
+    private final @NotNull StatementKey clearPlayers;
+    private final @NotNull StatementKey clearMinigames;
+    private final @NotNull StatementKey clearStats;
+    private final @NotNull StatementKey clearMetadata;
 
-    private final StatementKey insertPlayer;
-    private final StatementKey insertMinigame;
-    private final StatementKey insertStat;
-    private final StatementKey insertMetadata;
+    private final @NotNull StatementKey insertPlayer;
+    private final @NotNull StatementKey insertMinigame;
+    private final @NotNull StatementKey insertStat;
+    private final @NotNull StatementKey insertMetadata;
 
     private ConnectionHandler handler;
     private int playerBatchCount;
@@ -29,7 +30,7 @@ public class SQLImport implements BackendImportCallback {
     private int statBatchCount;
     private int metadataBatchCount;
 
-    public SQLImport(ConnectionPool pool) {
+    public SQLImport(@NotNull ConnectionPool pool) {
         this.pool = pool;
 
         // Prepare queries
@@ -69,7 +70,7 @@ public class SQLImport implements BackendImportCallback {
     }
 
     @Override
-    public void acceptPlayer(UUID playerId, String name, Component displayName) {
+    public void acceptPlayer(@NotNull UUID playerId, @NotNull String name, @NotNull Component displayName) {
         try {
             handler.batchUpdate(insertPlayer, playerId.toString(), name, displayName);
             ++playerBatchCount;
@@ -86,7 +87,7 @@ public class SQLImport implements BackendImportCallback {
     }
 
     @Override
-    public void acceptMinigame(int id, String name) {
+    public void acceptMinigame(int id, @NotNull String name) {
         try {
             // Handle any remaining players
             if (playerBatchCount >= 0) {
@@ -110,7 +111,7 @@ public class SQLImport implements BackendImportCallback {
     }
 
     @Override
-    public void acceptStat(UUID playerId, int minigameId, String stat, long value) {
+    public void acceptStat(@NotNull UUID playerId, int minigameId, @NotNull String stat, long value) {
         try {
             // Handle any remaining minigames
             if (minigameBatchCount > 0) {
@@ -134,7 +135,7 @@ public class SQLImport implements BackendImportCallback {
     }
 
     @Override
-    public void acceptStatMetadata(int minigameId, String stat, String displayName, StatFormat format) {
+    public void acceptStatMetadata(int minigameId, @NotNull String stat, @NotNull String displayName, @NotNull StatFormat format) {
         try {
             // Handle remaining stats
             if (statBatchCount > 0) {
@@ -173,5 +174,4 @@ public class SQLImport implements BackendImportCallback {
             throw new IllegalStateException(e);
         }
     }
-
 }

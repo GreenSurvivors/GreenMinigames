@@ -20,10 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ResourcePackModule extends MinigameModule { //todo rework to work with multiple ressource packs
-    private final BooleanFlag enabled = new BooleanFlag(false, "resourcePackEnabled");
-    private final ComponentFlag resourcePackDisplayName = new ComponentFlag(Component.empty(), "resourcePackName");
-    private final BooleanFlag forced = new BooleanFlag(false, "forceResourcePack");
-    private String resourcePackName = PlainTextComponentSerializer.plainText().serialize(resourcePackDisplayName.getFlag());
+    private final @NotNull BooleanFlag enabled = new BooleanFlag(false, "resourcePackEnabled");
+    private final @NotNull ComponentFlag resourcePackDisplayName = new ComponentFlag(Component.empty(), "resourcePackName");
+    private final @NotNull BooleanFlag forced = new BooleanFlag(false, "forceResourcePack");
+    private @NotNull String resourcePackName = PlainTextComponentSerializer.plainText().serialize(resourcePackDisplayName.getFlag());
 
     public ResourcePackModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
@@ -84,18 +84,18 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
         MenuItemComponent item = new MenuItemComponent(Material.PAPER, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_DISPLAYNAME_NAME,
                 new Callback<>() {
                     @Override
-                    public Component getValue() {
+                    public @NotNull Component getValue() {
                         return resourcePackDisplayName.getFlag();
                     }
 
                     @Override
-                    public void setValue(Component value) {
+                    public void setValue(@NotNull Component value) {
                         resourcePackDisplayName.setFlag(value);
                         resourcePackName = PlainTextComponentSerializer.plainText().serialize(value);
                     }
                 }) {
             @Override
-            public void checkValidEntry(String entry) {
+            public void checkValidEntry(@NotNull String entry) {
                 if (entry.isEmpty()) {
                     super.checkValidEntry(entry);
                     return;

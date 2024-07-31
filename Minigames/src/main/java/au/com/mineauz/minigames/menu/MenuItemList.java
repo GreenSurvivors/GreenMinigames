@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemList<T> extends MenuItem { //todo add constructor with map T -> Component for display
-    private final static String DESCRIPTION_TOKEN = "List_description";
-    private final Callback<T> value;
-    private final List<T> options;
+    private final static @NotNull String DESCRIPTION_TOKEN = "List_description";
+    private final @NotNull Callback<T> value;
+    private final @NotNull List<T> options;
 
     public MenuItemList(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<@NotNull T> value,
                         @NotNull List<@NotNull T> options) {
@@ -86,7 +86,7 @@ public class MenuItemList<T> extends MenuItem { //todo add constructor with map 
     }
 
     @Override
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         int ind = options.lastIndexOf(value.getValue());
         ind++;
         if (ind == options.size()) {
@@ -100,7 +100,7 @@ public class MenuItemList<T> extends MenuItem { //todo add constructor with map 
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @NotNull ItemStack onRightClick() {
         int ind = options.lastIndexOf(value.getValue());
         ind--;
         if (ind == -1) {
@@ -114,7 +114,7 @@ public class MenuItemList<T> extends MenuItem { //todo add constructor with map 
     }
 
     @Override
-    public ItemStack onDoubleClick() {
+    public @Nullable ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
 
         mgPlayer.setNoClose(true);

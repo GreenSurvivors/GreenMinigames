@@ -62,7 +62,7 @@ public class RewardGroup {
         items.remove(item);
     }
 
-    public List<ARewardType> getItems() {
+    public @NotNull List<@NotNull ARewardType> getItems() {
         return items;
     }
 

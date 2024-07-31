@@ -13,9 +13,7 @@ import java.util.List;
 public class LoadoutFlag extends AFlag<PlayerLoadout> {
 
     public LoadoutFlag(PlayerLoadout value, @NotNull String name) {
-        setFlag(value);
-        setDefaultFlag(null);
-        setName(name);
+        super(name, null, value); // todo why force null default?
     }
 
     @Override
@@ -38,14 +36,14 @@ public class LoadoutFlag extends AFlag<PlayerLoadout> {
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
-        return getMenuItem(displayMat, name, null); //TODO: Menu item easy access for loadouts.
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, null);
     }
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                          @Nullable List<@NotNull Component> description) {
-        return null;
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                         @Nullable List<@NotNull Component> description) {
+        return null; //TODO: Menu item easy access for loadouts.
     }
 }

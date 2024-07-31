@@ -95,7 +95,7 @@ public class Events implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    private void onPlayerDeath(PlayerDeathEvent event) {
+    private void onPlayerDeath(@NotNull PlayerDeathEvent event) {
         final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity().getPlayer());
         if (mgPlayer.isInMinigame()) {
             Minigame mgm = mgPlayer.getMinigame();

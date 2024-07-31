@@ -44,7 +44,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
     }
 
     @Override
-    public void addMenuItems(final Menu menu) {
+    public void addMenuItems(final @NotNull Menu menu) {
         menu.addItem(new MenuItemEnum<>(Material.COMPARATOR, MgMenuLangKey.MENU_REWARD_SCHEME_HIERARCHY_COMPARISON_NAME,
                 getConfigurationTypeCallback(), Comparison.class));
         menu.addItem(enableRewardsOnLoss.getMenuItem(Material.LEVER, MgMenuLangKey.MENU_REWARD_SCHEME_HIERARCHY_LOSS_AWARD_NAME,
@@ -69,7 +69,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
         menu.addItem(secondary);
     }
 
-    private void showRewardsMenu(TreeMap<T, Rewards> rewards, MinigamePlayer player, Menu parent) {
+    private void showRewardsMenu(@NotNull TreeMap<T, Rewards> rewards, @NotNull MinigamePlayer player, @NotNull Menu parent) {
         Menu submenu = new Menu(6, MgMenuLangKey.MENU_REWARD_NAME, player);
 
         for (T key : rewards.keySet()) {
@@ -87,7 +87,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
     protected abstract T getValue(MinigamePlayer player, StoredGameStats data, Minigame minigame);
 
     @Override
-    public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
+    public void awardPlayer(@NotNull MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
         T value = getValue(player, data, minigame);
         Rewards reward;
 
@@ -127,7 +127,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
     }
 
     @Override
-    public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
+    public void awardPlayerOnLoss(@NotNull MinigamePlayer player, StoredGameStats data, Minigame minigame) {
         if (enableRewardsOnLoss.getFlag())
             awardPlayer(player, data, minigame, lossUsesSecondary.getFlag());
     }
@@ -180,23 +180,23 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
         }
     }
 
-    private Callback<Comparison> getConfigurationTypeCallback() {
+    private @NotNull Callback<@NotNull Comparison> getConfigurationTypeCallback() {
         return new Callback<>() {
             @Override
-            public Comparison getValue() {
+            public @NotNull Comparison getValue() {
                 return comparisonType.getFlag();
             }
 
             @Override
-            public void setValue(Comparison value) {
+            public void setValue(@NotNull Comparison value) {
                 comparisonType.setFlag(value);
             }
         };
     }
 
-    protected abstract Component getMenuItemName(T value);
+    protected abstract @NotNull Component getMenuItemName(T value);
 
-    protected abstract Component getMenuItemDescName(T value);
+    protected abstract @NotNull Component getMenuItemDescName(T value);
 
     protected abstract T increment(T value);
 
@@ -245,7 +245,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
             setDisplayItem(item);
         }
 
-        private void updateValue(T newValue) {
+        private void updateValue(@NotNull T newValue) {
             map.remove(value);
             value = newValue;
             map.put(value, reward);
@@ -253,7 +253,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
 
         @Override
         // Increase score
-        public ItemStack onClick() {
+        public @NotNull ItemStack onClick() {
             T nextValue = increment(value);
             while (map.containsKey(nextValue)) {
                 nextValue = increment(nextValue);
@@ -267,7 +267,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
 
         @Override
         // Decrease score
-        public ItemStack onRightClick() {
+        public @NotNull ItemStack onRightClick() {
             T nextValue = decrement(value);
             while (map.containsKey(nextValue)) {
                 nextValue = decrement(nextValue);
@@ -281,7 +281,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
 
         @Override
         // Open editor
-        public ItemStack onDoubleClick() {
+        public @Nullable ItemStack onDoubleClick() {
             MinigamePlayer mgPlayer = getContainer().getViewer();
             mgPlayer.setNoClose(true);
             mgPlayer.getPlayer().closeInventory();
@@ -314,7 +314,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
 
         @Override
         // Open rewards
-        public ItemStack onShiftClick() {
+        public @Nullable ItemStack onShiftClick() {
             Menu rewardMenu = reward.createMenu(getName(), getContainer().getViewer(), getContainer());
 
             rewardMenu.displayMenu(getContainer().getViewer());
@@ -323,7 +323,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
 
         @Override
         // Remove
-        public ItemStack onShiftRightClick() {
+        public @NotNull ItemStack onShiftRightClick() {
             getContainer().removeItem(getSlot());
             map.remove(value);
 
@@ -349,7 +349,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
         }
 
         @Override
-        public ItemStack onClick() {
+        public @Nullable ItemStack onClick() {
             MinigamePlayer mgPlayer = getContainer().getViewer();
             mgPlayer.setNoClose(true);
             mgPlayer.getPlayer().closeInventory();

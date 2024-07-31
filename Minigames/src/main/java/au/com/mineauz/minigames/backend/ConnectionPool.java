@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.backend;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -7,12 +9,12 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class ConnectionPool {
-    private final List<ConnectionHandler> connections;
-    private final String connectionString;
+    private final @NotNull List<@NotNull ConnectionHandler> connections;
+    private final @NotNull String connectionString;
     private final Properties props;
     private long maxIdleTime;
 
-    public ConnectionPool(String connectionString, Properties properties) {
+    public ConnectionPool(@NotNull String connectionString, Properties properties) {
         this.connectionString = connectionString;
         props = properties;
         connections = Collections.synchronizedList(new ArrayList<>());
@@ -52,7 +54,7 @@ public class ConnectionPool {
     /**
      * @return Returns a free connection from the pool of connections. Creates a new connection if there are none available
      */
-    public ConnectionHandler getConnection() throws SQLException {
+    public @NotNull ConnectionHandler getConnection() throws SQLException {
         synchronized (connections) {
             for (int i = 0; i < connections.size(); ++i) {
                 ConnectionHandler con = connections.get(i);
@@ -85,7 +87,7 @@ public class ConnectionPool {
         return createConnection();
     }
 
-    private ConnectionHandler createConnection() throws SQLException {
+    private @NotNull ConnectionHandler createConnection() throws SQLException {
         Connection connection = DriverManager.getConnection(connectionString, props);
         ConnectionHandler handler = new ConnectionHandler(connection);
         connections.add(handler);

@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * These are the components of {@link StatFormat} indicating what
@@ -23,7 +24,7 @@ public enum StatisticValueField {
         this.titleLangKey = titleLangKey;
     }
 
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return MinigameMessageManager.getMgMessage(titleLangKey);
     }
 

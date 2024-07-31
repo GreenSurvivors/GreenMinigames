@@ -29,22 +29,22 @@ import java.util.List;
 public class NodeToolMode implements ToolMode {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "NODE";
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME);
     }
 
     @Override
-    public List<Component> getDescription() {
+    public @NotNull List<@NotNull Component> getDescription() {
         return RegionMessageManager.getMessageList(RegionLangKey.MENU_TOOL_NODE_DESCRIPTION);
     }
 
     @Override
-    public Material getIcon() {
+    public @NotNull Material getIcon() {
         return Material.STONE_BUTTON;
     }
 
@@ -58,12 +58,12 @@ public class NodeToolMode implements ToolMode {
 
         menu.addItem(new MenuItemString(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME), new Callback<>() {
             @Override
-            public String getValue() {
+            public @NotNull String getValue() {
                 return tool.getSetting("Node");
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(@NotNull String value) {
                 tool.setSetting("Node", value);
             }
         }));
@@ -98,7 +98,7 @@ public class NodeToolMode implements ToolMode {
     }
 
     @Override
-    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
+    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool) {
         tool.removeSetting("Node");
     }
 

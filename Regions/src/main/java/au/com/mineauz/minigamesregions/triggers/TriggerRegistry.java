@@ -45,11 +45,11 @@ public class TriggerRegistry {
         return null;
     }
 
-    public static List<Trigger> getAllNodeTriggers() {
+    public static @NotNull List<@NotNull Trigger> getAllNodeTriggers() {
         return triggers.stream().filter(Trigger::useInNodes).toList();
     }
 
-    public static List<Trigger> getAllRegionTriggers() {
+    public static @NotNull List<@NotNull Trigger> getAllRegionTriggers() {
         return triggers.stream().filter(Trigger::useInRegions).toList();
     }
 }

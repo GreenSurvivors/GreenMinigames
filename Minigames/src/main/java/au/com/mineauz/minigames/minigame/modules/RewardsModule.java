@@ -15,9 +15,10 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RewardsModule extends MinigameModule {
-    private ARewardScheme scheme;
+    private @NotNull ARewardScheme scheme;
 
     public RewardsModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
@@ -26,25 +27,25 @@ public class RewardsModule extends MinigameModule {
         scheme = MgRewardSchemes.STANDARD.makeScheme();
     }
 
-    public static RewardsModule getModule(Minigame minigame) {
+    public static @Nullable RewardsModule getModule(@NotNull Minigame minigame) {
         return (RewardsModule) minigame.getModule(MgModules.REWARDS.getName());
     }
 
 
-    public ARewardScheme getScheme() {
+    public @NotNull ARewardScheme getScheme() {
         return scheme;
     }
 
     @SuppressWarnings("unused")
-    public void setRewardScheme(ARewardScheme scheme) {
+    public void setRewardScheme(@NotNull ARewardScheme scheme) {
         this.scheme = scheme;
     }
 
-    public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
+    public void awardPlayer(@NotNull MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
         scheme.awardPlayer(player, data, minigame, firstCompletion);
     }
 
-    public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
+    public void awardPlayerOnLoss(@NotNull MinigamePlayer player, StoredGameStats data, Minigame minigame) {
         scheme.awardPlayerOnLoss(player, data, minigame);
     }
 
@@ -84,7 +85,7 @@ public class RewardsModule extends MinigameModule {
         menu.addItem(launcher);
     }
 
-    private Menu createSubMenu(final Menu parent) {
+    private @NotNull Menu createSubMenu(final @NotNull Menu parent) {
         final Menu submenu = new Menu(6,
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME), parent.getViewer());
         scheme.addMenuItems(submenu);
@@ -92,12 +93,12 @@ public class RewardsModule extends MinigameModule {
         submenu.addItem(RewardSchemeRegistry.newMenuItem(Material.PAPER,
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SCHEME_NAME), new Callback<>() {
                     @Override
-                    public String getValue() {
+                    public @NotNull String getValue() {
                         return scheme.getName();
                     }
 
                     @Override
-                    public void setValue(String value) {
+                    public void setValue(@NotNull String value) {
                         scheme = RewardSchemeRegistry.createScheme(value);
                         // Update the menu
                         Menu menu = createSubMenu(parent);

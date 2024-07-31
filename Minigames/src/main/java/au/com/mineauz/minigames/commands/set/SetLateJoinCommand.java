@@ -33,7 +33,7 @@ public class SetLateJoinCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LATEJOIN_USAGE);
     }
 

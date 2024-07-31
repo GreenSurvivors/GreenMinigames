@@ -19,15 +19,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public abstract class ACondition {
-    private final BooleanFlag invert = new BooleanFlag(false, "invert");
+    private final @NotNull BooleanFlag invert = new BooleanFlag(false, "invert");
     protected final @NotNull String name;
 
     protected ACondition(@NotNull String name) {
         this.name = name;
     }
 
-    protected void addInvertMenuItem(Menu m) {
-        m.addItem(invert.getMenuItem(Material.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_INVERT_NAME)), m.getSize() - 1);
+    protected void addInvertMenuItem(@NotNull Menu menu) {
+        menu.addItem(invert.getMenuItem(Material.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_INVERT_NAME)), menu.getSize() - 1);
     }
 
     protected void saveInvert(@NotNull FileConfiguration config, @NotNull String path) {
@@ -54,15 +54,15 @@ public abstract class ACondition {
 
     public abstract boolean useInNodes();
 
-    public abstract boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region);
+    public abstract boolean checkRegionCondition(MinigamePlayer mgPlayer, @NotNull Region region);
 
-    public abstract boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node);
+    public abstract boolean checkNodeCondition(MinigamePlayer mgPlayer, @NotNull Node node);
 
     public abstract void saveArguments(@NotNull FileConfiguration config, @NotNull String path);
 
     public abstract void loadArguments(@NotNull FileConfiguration config, @NotNull String path);
 
-    public abstract boolean displayMenu(MinigamePlayer player, Menu prev);
+    public abstract boolean displayMenu(@NotNull MinigamePlayer player, Menu prev);
 
     /**
      * Returns if the condition needs a player who caused the check to happen.

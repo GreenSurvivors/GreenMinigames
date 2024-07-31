@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.events;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.event.Cancellable;
+import org.jetbrains.annotations.NotNull;
 
 public class AbstractCancellableMinigameEvent extends AbstractMinigameEvent implements Cancellable {
     private boolean cancelled = false;
@@ -11,7 +12,7 @@ public class AbstractCancellableMinigameEvent extends AbstractMinigameEvent impl
      *
      * @param game the mgm
      */
-    public AbstractCancellableMinigameEvent(final Minigame game) {
+    public AbstractCancellableMinigameEvent(final @NotNull Minigame game) {
         super(game);
     }
 

@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.events;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -15,21 +16,21 @@ import java.util.List;
  * if you need an event for cleanup use {@link EndedMinigameEvent}
  */
 public class EndPhaseMinigameEvent extends AbstractCancellableMinigameEvent {
-    private final List<MinigamePlayer> winners;
-    private final List<MinigamePlayer> losers;
+    private final @NotNull List<@NotNull MinigamePlayer> winners;
+    private final @NotNull List<@NotNull MinigamePlayer> losers;
 
 
-    public EndPhaseMinigameEvent(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame minigame) {
+    public EndPhaseMinigameEvent(@NotNull List<@NotNull MinigamePlayer> winners, @NotNull List<@NotNull MinigamePlayer> losers, @NotNull Minigame minigame) {
         super(minigame);
         this.winners = winners;
         this.losers = losers;
     }
 
-    public List<MinigamePlayer> getWinners() {
+    public @NotNull List<MinigamePlayer> getWinners() {
         return winners;
     }
 
-    public List<MinigamePlayer> getLosers() {
+    public @NotNull List<MinigamePlayer> getLosers() {
         return losers;
     }
 }

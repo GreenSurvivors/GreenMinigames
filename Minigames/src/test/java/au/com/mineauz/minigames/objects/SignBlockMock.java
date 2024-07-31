@@ -18,7 +18,7 @@ public class SignBlockMock extends BlockMock {
      * @param material The material of the block.
      * @param location The location of the block. Can be {@code null} if not needed.
      */
-    public SignBlockMock(Material material, Location location, BlockStateMock state, BlockData data) {
+    public SignBlockMock(@NotNull Material material, Location location, BlockStateMock state, BlockData data) {
         super(material, location);
         this.state = state;
         this.data = data;

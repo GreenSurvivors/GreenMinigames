@@ -11,13 +11,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class EnumFlag<T extends Enum<T>> extends AFlag<T> {
-    private final Class<T> enumClass;
+    private final @NotNull Class<T> enumClass;
 
     @SuppressWarnings("unchecked")
-    public EnumFlag(T value, @NotNull String name) {
-        setFlag(value);
-        setDefaultFlag(value);
-        setName(name);
+    public EnumFlag(@NotNull T value, @NotNull String name) {
+        super(name, value, value);
         enumClass = (Class<T>) value.getClass();
     }
 
@@ -53,7 +51,7 @@ public class EnumFlag<T extends Enum<T>> extends AFlag<T> {
      * @param description will get ignored
      */
     @Override
-    public MenuItemEnum<T> getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItemEnum<T> getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                        @Nullable List<@NotNull Component> description) {
         return new MenuItemEnum<>(displayMat, name, new Callback<>() {
 

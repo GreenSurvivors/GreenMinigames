@@ -35,7 +35,7 @@ public class EditCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_EDIT_USAGE);
     }
 

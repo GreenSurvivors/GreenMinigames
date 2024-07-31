@@ -15,9 +15,7 @@ import java.util.Set;
 public class MaterialListFlag extends AFlag<List<Material>> { // todo replace with GENERIC<T> list flag AFlag<List<AFlag<T>>>
 
     public MaterialListFlag(List<Material> value, @NotNull String name) {
-        setFlag(value);
-        setDefaultFlag(new ArrayList<>()); //saving tests if the flag is equal to their default
-        setName(name);
+        super(name, new ArrayList<>(), value); // default value - saving tests if the flag is equal to their default
     }
 
     @Override
@@ -56,9 +54,8 @@ public class MaterialListFlag extends AFlag<List<Material>> { // todo replace wi
     }
 
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                @Nullable List<@NotNull Component> description) {
-        return null;
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                         @Nullable List<@NotNull Component> description) {
+        return null; // todo
     }
-
 }

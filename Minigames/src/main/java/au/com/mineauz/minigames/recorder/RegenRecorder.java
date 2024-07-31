@@ -22,6 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +31,17 @@ import java.util.List;
  * advanced recorder if a minigame has a regen area
  */
 public class RegenRecorder implements Listener {
-    private final Minigame minigame;
-    private final RecorderData recorderData;
+    private final @NotNull Minigame minigame;
+    private final @NotNull RecorderData recorderData;
 
-    public RegenRecorder(Minigame minigame) {
+    public RegenRecorder(@NotNull Minigame minigame) {
         this.minigame = minigame;
         this.recorderData = minigame.getRecorderData();
     }
 
     //kill placed vehicles like minecarts
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void vehicleCreate(VehicleCreateEvent event) {
+    private void vehicleCreate(@NotNull VehicleCreateEvent event) {
         if (minigame.hasPlayers() && minigame.isInRegenArea(event.getVehicle().getLocation())) {
             recorderData.addEntity(event.getVehicle(), null, true);
         }
@@ -48,7 +49,7 @@ public class RegenRecorder implements Listener {
 
     //revive killed vehicles like minecarts
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void vehicleDestroy(VehicleDestroyEvent event) {
+    private void vehicleDestroy(@NotNull VehicleDestroyEvent event) {
         if (event.getAttacker() == null) {
             if (minigame.hasPlayers() && minigame.isInRegenArea(event.getVehicle().getLocation())) {
                 recorderData.addEntity(event.getVehicle(), null, false);
@@ -58,7 +59,7 @@ public class RegenRecorder implements Listener {
 
     //give a hurt animal it's health back
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void animalDeath(EntityDamageByEntityEvent event) {
+    private void animalDeath(@NotNull EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Animals animal) {
             if (minigame.hasPlayers() && !(event.getDamager() instanceof Player)) {
                 Location entityLoc = event.getEntity().getLocation();
@@ -74,7 +75,7 @@ public class RegenRecorder implements Listener {
 
     //kill spawned creatures (living entities)
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void mobSpawnEvent(CreatureSpawnEvent event) {
+    private void mobSpawnEvent(@NotNull CreatureSpawnEvent event) {
         if (minigame.hasPlayers() && minigame.isInRegenArea(event.getLocation())) {
             recorderData.addEntity(event.getEntity(), null, true);
         }
@@ -82,7 +83,7 @@ public class RegenRecorder implements Listener {
 
     //regen exploded blocks (and don't allow block removal of not white or blacklisted blocks) <-- todo move this mode testing into a better fitting class
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    private void entityExplode(EntityExplodeEvent event) {
+    private void entityExplode(@NotNull EntityExplodeEvent event) {
         if (minigame.hasPlayers()) {
             Location block = event.getLocation().getBlock().getLocation();
             if (minigame.isInRegenArea(block)) {
@@ -106,7 +107,7 @@ public class RegenRecorder implements Listener {
 
     // remove dropped items
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void itemDrop(ItemSpawnEvent event) {
+    private void itemDrop(@NotNull ItemSpawnEvent event) {
         if (minigame.hasPlayers()) {
             Location ent = event.getLocation();
             if (minigame.isInRegenArea(ent)) {
@@ -117,7 +118,7 @@ public class RegenRecorder implements Listener {
 
     // reset block changes like gravity blocks falling
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    private void physicalBlock(EntityChangeBlockEvent event) {
+    private void physicalBlock(@NotNull EntityChangeBlockEvent event) {
         if (minigame.isInRegenArea(event.getBlock().getLocation())) {
             if (minigame.isRegenerating()) {
                 event.setCancelled(true);
@@ -136,7 +137,7 @@ public class RegenRecorder implements Listener {
 
     // reset inventories of hopper minecarts picking up items from the world
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void cartHopperPickup(InventoryPickupItemEvent event) {
+    private void cartHopperPickup(@NotNull InventoryPickupItemEvent event) {
         if (minigame.hasPlayers() && event.getInventory().getHolder() instanceof HopperMinecart) {
             Location loc = ((HopperMinecart) event.getInventory().getHolder()).getLocation();
             if (minigame.isInRegenArea(loc)) {
@@ -147,7 +148,7 @@ public class RegenRecorder implements Listener {
 
     // reset inventorys changed by hopper minecarts
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void cartMoveItem(InventoryMoveItemEvent event) {
+    private void cartMoveItem(@NotNull InventoryMoveItemEvent event) {
         if (!minigame.hasPlayers()) return;
 
         Location loc;
@@ -166,7 +167,7 @@ public class RegenRecorder implements Listener {
 
     // don't allow block physics (like gravity blocks falling) to happen while the minigame is regenerating
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    private void physEvent(BlockPhysicsEvent event) {
+    private void physEvent(@NotNull BlockPhysicsEvent event) {
         if (minigame.isRegenerating() && minigame.isInRegenArea(event.getBlock().getLocation())) {
             event.setCancelled(true);
         }
@@ -174,21 +175,21 @@ public class RegenRecorder implements Listener {
 
     // don't allow water / lava to flow while the minigame is regenerating
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    private void liquidFlow(BlockFromToEvent event) {
+    private void liquidFlow(@NotNull BlockFromToEvent event) {
         if (minigame.isRegenerating() && minigame.isInRegenArea(event.getBlock().getLocation()))
             event.setCancelled(true);
     }
 
     // don't allow fire to spread while the minigame is regenerating
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    private void fireSpread(BlockSpreadEvent event) {
+    private void fireSpread(@NotNull BlockSpreadEvent event) {
         if (minigame.isRegenerating() && minigame.isInRegenArea(event.getBlock().getLocation()))
             event.setCancelled(true);
     }
 
     // don't allow interacting with inventories while the minigame is regenerating
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    private void interact(PlayerInteractEvent event) {
+    private void interact(@NotNull PlayerInteractEvent event) {
         if (minigame.isRegenerating() && minigame.isInRegenArea(event.getClickedBlock().getLocation())) {
             event.setCancelled(true);
         }

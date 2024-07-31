@@ -29,9 +29,10 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
+@SuppressWarnings("UnstableApiUsage") // Position
 public class RecorderData implements Listener {
     // list of blocks that need another block to not break
-    private static final ArrayList<Material> supportedMats = new ArrayList<>();
+    private static final @NotNull ArrayList<@NotNull Material> supportedMats = new ArrayList<>();
     // this plugin
     private static Minigames plugin;
 
@@ -79,19 +80,19 @@ public class RecorderData implements Listener {
     }
 
     // the minigame this data belongs to
-    private final Minigame minigame;
+    private final @NotNull Minigame minigame;
     // data of entities that will be regenerated
-    private final Map<UUID, EntityData> entityData = new HashMap<>();
+    private final @NotNull Map<@NotNull UUID, @NotNull EntityData> entityData = new HashMap<>();
     // white/blacklisted blocks that can (not) be broken by a player in the minigame
     // and therefore is not required to regenerated
-    private final List<Material> wbBlocks = new ArrayList<>();
+    private final @NotNull List<@NotNull Material> wbBlocks = new ArrayList<>();
     // is it a white or a blacklist?
     private boolean whitelistMode = false;
     private boolean hasCreatedRegenBlocks = false;
     //data of blocks that will be regenerated
-    private Map<Position, MgBlockData> blockdata = new HashMap<>();
+    private @NotNull Map<@NotNull Position,@NotNull  MgBlockData> blockdata = new HashMap<>();
 
-    public RecorderData(Minigame minigame) {
+    public RecorderData(@NotNull Minigame minigame) {
         plugin = Minigames.getPlugin();
 
         this.minigame = minigame;
@@ -105,16 +106,16 @@ public class RecorderData implements Listener {
         whitelistMode = bool;
     }
 
-    public Callback<Boolean> getWhitelistModeCallback() {
+    public @NotNull Callback<@NotNull Boolean> getWhitelistModeCallback() {
         return new Callback<>() {
 
             @Override
-            public Boolean getValue() {
+            public @NotNull Boolean getValue() {
                 return whitelistMode;
             }
 
             @Override
-            public void setValue(Boolean value) {
+            public void setValue(@NotNull Boolean value) {
                 whitelistMode = value;
             }
         };
@@ -124,11 +125,11 @@ public class RecorderData implements Listener {
         wbBlocks.add(mat);
     }
 
-    public List<Material> getWBBlocks() {
+    public @NotNull List<@NotNull Material> getWBBlocks() {
         return wbBlocks;
     }
 
-    public boolean removeWBBlock(Material mat) {
+    public boolean removeWBBlock(@NotNull Material mat) {
         return wbBlocks.remove(mat);
     }
 
@@ -140,15 +141,15 @@ public class RecorderData implements Listener {
         hasCreatedRegenBlocks = bool;
     }
 
-    public Minigame getMinigame() {
+    public @NotNull Minigame getMinigame() {
         return minigame;
     }
 
-    public MgBlockData addBlock(@NotNull Block block, @Nullable MinigamePlayer modifier) {
+    public @NotNull MgBlockData addBlock(@NotNull Block block, @Nullable MinigamePlayer modifier) {
         return addBlock(block.getState(true), modifier);
     }
 
-    public MgBlockData addBlock(@NotNull BlockState blockstate, @Nullable MinigamePlayer modifier) {
+    public @NotNull MgBlockData addBlock(@NotNull BlockState blockstate, @Nullable MinigamePlayer modifier) {
         MgBlockData bdata = new MgBlockData(blockstate, modifier);
         Position pos = Position.block(blockstate.getLocation());
 
@@ -195,7 +196,7 @@ public class RecorderData implements Listener {
         }
     }
 
-    public void addInventory(MgBlockData bdata, InventoryHolder ih) {
+    public void addInventory(@NotNull MgBlockData bdata, @NotNull InventoryHolder ih) {
         ItemStack[] inventory = Arrays.stream(ih.getInventory().getContents()).
                 map(itemStack -> itemStack == null ? null : itemStack.clone()).toArray(ItemStack[]::new);
 
@@ -216,11 +217,11 @@ public class RecorderData implements Listener {
         entityData.put(ent.getUniqueId(), new EntityData(ent, player, created));
     }
 
-    public boolean hasBlock(Block block) {
+    public boolean hasBlock(@NotNull Block block) {
         return blockdata.containsKey(Position.block(block.getLocation()));
     }
 
-    public void restoreAll(MinigamePlayer modifier) {
+    public void restoreAll(final @Nullable MinigamePlayer modifier) {
         if (!blockdata.isEmpty()) {
             restoreBlocks(modifier);
         }
@@ -292,7 +293,7 @@ public class RecorderData implements Listener {
         });
     }
 
-    private void customBlockComparator(List<MgBlockData> baseBlocks) {
+    private void customBlockComparator(@NotNull List<@NotNull MgBlockData> baseBlocks) {
         baseBlocks.sort(
                 Comparator.comparingInt(
                         (MgBlockData o) -> o.getBlockState().getChunk().getX()
@@ -304,7 +305,7 @@ public class RecorderData implements Listener {
         );
     }
 
-    public void restoreEntities(MinigamePlayer player) {
+    public void restoreEntities(@Nullable MinigamePlayer player) {
         Iterator<EntityData> it = entityData.values().iterator();
         while (it.hasNext()) {
             EntityData nextEntityData = it.next();
@@ -337,7 +338,7 @@ public class RecorderData implements Listener {
         return !(blockdata.isEmpty() && entityData.isEmpty());
     }
 
-    public boolean checkBlockSides(Location location) {
+    public boolean checkBlockSides(@NotNull Location location) {
         Location temp = location.clone();
         temp.setX(temp.getX() - 1);
         temp.setY(temp.getY() - 1);

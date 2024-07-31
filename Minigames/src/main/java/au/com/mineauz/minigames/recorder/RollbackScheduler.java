@@ -8,18 +8,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.List;
 
 public class RollbackScheduler implements Runnable {
+    private final @NotNull Iterator<@NotNull MgBlockData> iterator;
+    private final @NotNull BukkitTask task;
+    private final @NotNull Minigame minigame;
+    private final @Nullable MinigamePlayer modifier;
 
-    private final Iterator<MgBlockData> iterator;
-    private final BukkitTask task;
-    private final Minigame minigame;
-    private final MinigamePlayer modifier;
-
-    public RollbackScheduler(List<MgBlockData> blocks, Minigame minigame, MinigamePlayer modifier) {
+    public RollbackScheduler(@NotNull List<@NotNull MgBlockData> blocks, @NotNull Minigame minigame, @Nullable MinigamePlayer modifier) {
         iterator = blocks.iterator();
         this.minigame = minigame;
         this.modifier = modifier;

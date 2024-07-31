@@ -52,7 +52,7 @@ import java.util.*;
  **/
 public class MinigamePlayerManager {
     private static final @NotNull Minigames plugin = Minigames.getPlugin();
-    private final @NotNull Map<@NotNull String, @NotNull MinigamePlayer> minigamePlayers = new HashMap<>();
+    private final @NotNull Map<@NotNull UUID, @NotNull MinigamePlayer> minigamePlayers = new HashMap<>();
     private final @NotNull List<@NotNull MinigamePlayer> applyingPack = new ArrayList<>();
     private final @NotNull MinigameManager mgManager = plugin.getMinigameManager();
     private boolean partyMode = false;
@@ -373,7 +373,7 @@ public class MinigamePlayerManager {
         minigame.setPlayersAtStart(true);
     }
 
-    public ResourcePack getResourcePack(@NotNull Minigame game) {
+    public @Nullable ResourcePack getResourcePack(@NotNull Minigame game) {
         ResourcePackModule module = ResourcePackModule.getMinigameModule(game);
         if (module != null && module.isEnabled()) {
             ResourcePack pack = plugin.getResourceManager().getResourcePack(module.getName());
@@ -732,11 +732,11 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void endMinigame(@NotNull MinigamePlayer player) {
-        if (player.isInMinigame()) {
-            List<MinigamePlayer> winner = List.of(player);
+    public void endMinigame(@NotNull MinigamePlayer mgPlayer) {
+        if (mgPlayer.isInMinigame()) {
+            List<MinigamePlayer> winner = List.of(mgPlayer);
             List<MinigamePlayer> losers = new ArrayList<>();
-            endMinigame(player.getMinigame(), winner, losers);
+            endMinigame(mgPlayer.getMinigame(), winner, losers);
         }
     }
 
@@ -754,7 +754,7 @@ public class MinigamePlayerManager {
 
             //Prepare split bet rewards
             double bets = 0;
-            HashSet<ItemStack> betItems = new HashSet<>();
+            Set<ItemStack> betItems = new HashSet<>();
             if (minigame.getMpBets() != null && !winners.isEmpty()) {
                 if (minigame.getMpBets().hasMoneyBets()) {
                     bets = Math.round(minigame.getMpBets().claimMoneyBets() / (double) winners.size());
@@ -971,12 +971,12 @@ public class MinigamePlayerManager {
     }
 
     @Deprecated
-    public boolean playerInMinigame(Player player) {
-        return minigamePlayers.get(player.getName()).isInMinigame();
+    public boolean playerInMinigame(@NotNull Player player) {
+        return minigamePlayers.get(player.getUniqueId()).isInMinigame();
     }
 
     @Deprecated
-    public List<Player> playersInMinigame() {
+    public @NotNull List<@NotNull Player> playersInMinigame() {
         List<Player> players = new ArrayList<>();
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             if (hasMinigamePlayer(player.getUniqueId())) {
@@ -986,61 +986,67 @@ public class MinigamePlayerManager {
         return players;
     }
 
-    public void addMinigamePlayer(Player player) {
-        minigamePlayers.put(player.getName(), new MinigamePlayer(player));
+    public void addMinigamePlayer(@NotNull Player player) {
+        minigamePlayers.put(player.getUniqueId(), new MinigamePlayer(player));
     }
 
-    public void removeMinigamePlayer(Player player) {
-        minigamePlayers.remove(player.getName());
+    public void removeMinigamePlayer(@NotNull Player player) {
+        minigamePlayers.remove(player.getUniqueId());
     }
 
     /**
      * @return null, if the given player was null, the respecting MinigamePlayer object otherwise
      */
     @Contract("null -> null; !null -> !null")
-    public @Nullable MinigamePlayer getMinigamePlayer(Player player) {
+    public @Nullable MinigamePlayer getMinigamePlayer(@Nullable Player player) {
         if (player == null) {
             return null;
         }
 
-        if (!minigamePlayers.containsKey(player.getName())) {
+        if (!minigamePlayers.containsKey(player.getUniqueId())) {
             addMinigamePlayer(player);
         }
 
-        return minigamePlayers.get(player.getName());
+        return minigamePlayers.get(player.getUniqueId());
     }
 
-    public @Nullable MinigamePlayer getMinigamePlayer(UUID uuid) {
-        for (MinigamePlayer p : minigamePlayers.values()) {
-            if (p.getUUID() == uuid) {
-                return p;
-            }
+    public @Nullable MinigamePlayer getMinigamePlayer(@NotNull UUID uuid) {
+        MinigamePlayer mgPlayer = minigamePlayers.get(uuid);
+        
+        if (mgPlayer != null) {
+            return mgPlayer;
         }
 
         return getMinigamePlayer(Bukkit.getPlayer(uuid));
     }
 
-    public @Nullable MinigamePlayer getMinigamePlayer(String player) {
-        return minigamePlayers.get(player);
+    /**
+     * @see #getMinigamePlayer(UUID) 
+     */
+    public @Nullable MinigamePlayer getMinigamePlayer(@NotNull String playerName) {
+        return getMinigamePlayer(plugin.getServer().getPlayer(playerName));
     }
 
-    public Collection<MinigamePlayer> getAllMinigamePlayers() {
+    public @NotNull Collection<MinigamePlayer> getAllMinigamePlayers() {
         return minigamePlayers.values();
     }
 
-    public boolean hasMinigamePlayer(String name) {
-        return minigamePlayers.containsKey(name);
-    }
-
-    public boolean hasMinigamePlayer(UUID uuid) {
-        for (MinigamePlayer p : minigamePlayers.values()) {
-            if (p.getUUID() == uuid)
+    /**
+     * @see #hasMinigamePlayer(UUID)
+     */
+    public boolean hasMinigamePlayer(@NotNull String name) {
+        for (MinigamePlayer mgPlayer : minigamePlayers.values()) {
+            if (name.equals(mgPlayer.getName()))
                 return true;
         }
         return false;
     }
 
-    public List<String> checkRequiredFlags(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame) {
+    public boolean hasMinigamePlayer(@NotNull UUID uuid) {
+        return minigamePlayers.containsKey(uuid);
+    }
+
+    public @NotNull List<@NotNull String> checkRequiredFlags(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame) {
         List<String> checkpoints = new ArrayList<>(minigame.getSinglePlayerFlags());
         List<String> pchecks = mgPlayer.getSinglePlayerFlags();
 
@@ -1059,7 +1065,7 @@ public class MinigamePlayerManager {
         partyMode = mode;
     }
 
-    public void partyMode(MinigamePlayer player) {
+    public void partyMode(@NotNull MinigamePlayer player) {
         if (onPartyMode()) {
             Location loc = player.getPlayer().getLocation();
             Firework firework = (Firework) player.getPlayer().getWorld().spawnEntity(loc, EntityType.FIREWORK_ROCKET);

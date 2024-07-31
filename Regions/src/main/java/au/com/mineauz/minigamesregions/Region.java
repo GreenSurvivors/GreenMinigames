@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Set;
 
 public class Region extends MgRegion implements BaseExecutorHolder<RegionExecutor> {
-    private final List<RegionExecutor> executors = new ArrayList<>();
-    private final List<MinigamePlayer> players = new ArrayList<>();
+    private final @NotNull List<@NotNull RegionExecutor> executors = new ArrayList<>();
+    private final @NotNull List<@NotNull MinigamePlayer> players = new ArrayList<>();
     private final int gameTickDelay = 1;
     private final @NotNull Minigame minigame;
     private long taskDelay = 20; //todo make ingame configurable
@@ -50,40 +50,40 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
         this.minigame = minigame;
     }
 
-    public boolean playerInRegion(MinigamePlayer player) {
-        return super.isInRegen(player.getLocation());
+    public boolean playerInRegion(@NotNull MinigamePlayer mgPlayer) {
+        return super.isInRegen(mgPlayer.getLocation());
     }
 
-    public boolean locationInRegion(Location loc) {
+    public boolean locationInRegion(@NotNull Location loc) {
         return super.isInRegen(loc);
     }
 
-    public Location getFirstPoint() {
+    public @NotNull Location getFirstPoint() {
         return super.getLocation1();
     }
 
-    public Location getSecondPoint() {
+    public @NotNull Location getSecondPoint() {
         return super.getLocation2();
     }
 
-    public void updateRegion(Location point1, Location point2) {
+    public void updateRegion(@NotNull Location point1, @NotNull Location point2) {
         super.updateRegion(point1, point2);
         super.sortPositions();
     }
 
-    public boolean hasPlayer(MinigamePlayer player) {
+    public boolean hasPlayer(@NotNull MinigamePlayer player) {
         return players.contains(player);
     }
 
-    public void addPlayer(MinigamePlayer player) {
+    public void addPlayer(@NotNull MinigamePlayer player) {
         players.add(player);
     }
 
-    public void removePlayer(MinigamePlayer player) {
+    public void removePlayer(@NotNull MinigamePlayer player) {
         players.remove(player);
     }
 
-    public List<MinigamePlayer> getPlayers() {
+    public @NotNull List<@NotNull MinigamePlayer> getPlayers() {
         return players;
     }
 
@@ -98,7 +98,7 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
         return executors.size();
     }
 
-    public List<RegionExecutor> getExecutors() {
+    public @NotNull List<@NotNull RegionExecutor> getExecutors() {
         return executors;
     }
 
@@ -234,7 +234,7 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
     }
 
     @Override
-    public ScriptReference get(String name) {
+    public @Nullable ScriptReference get(@NotNull String name) {
         if (name.equalsIgnoreCase("name")) {
             return ScriptValue.of(name);
         } else if (name.equalsIgnoreCase("players")) {
@@ -249,12 +249,12 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
     }
 
     @Override
-    public String getAsString() {
+    public @NotNull String getAsString() {
         return super.getName();
     }
 
     @Override
-    public Set<String> getKeys() {
+    public @NotNull Set<@NotNull String> getKeys() {
         return Set.of("name", "players", "min", "max");
     }
 

@@ -31,7 +31,7 @@ public class SetMinPlayersCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_MINPLAYERS_USAGE);
     }
 

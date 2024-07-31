@@ -14,8 +14,19 @@ import java.util.List;
 
 public abstract class AFlag<T> {
     private T value;
-    private String name;
+    private @NotNull String name;
     private T defaultVal;
+
+    protected AFlag(@NotNull String name, T defaultVal) {
+        this.name = name;
+        this.defaultVal = defaultVal;
+    }
+
+    protected AFlag(@NotNull String name, T defaultVal, T value) {
+        this.name = name;
+        this.defaultVal = defaultVal;
+        this.value = value;
+    }
 
     public T getFlag() {
         return value;
@@ -49,7 +60,7 @@ public abstract class AFlag<T> {
         }
     }
 
-    public Callback<T> getCallback() {
+    public @NotNull Callback<T> getCallback() {
         return new Callback<>() {
 
             @Override
@@ -68,20 +79,20 @@ public abstract class AFlag<T> {
 
     public abstract void loadValue(@NotNull Configuration config, @NotNull String path);
 
-    public MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
         return getMenuItem(displayMaterial, MinigameMessageManager.getMgMessage(langKey));
     }
 
-    public MenuItem getMenuItem(@Nullable Material displayMaterial, @Nullable Component name) {
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMaterial, @Nullable Component name) {
         return getMenuItem(displayMaterial, name, null);
     }
 
-    public MenuItem getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey nameLangKey,
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey nameLangKey,
                                 @NotNull MinigameLangKey descriptionLangKey) {
         return getMenuItem(displayMat, MinigameMessageManager.getMgMessage(nameLangKey),
                 MinigameMessageManager.getMgMessageList(descriptionLangKey));
     }
 
-    public abstract MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public abstract @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                          @Nullable List<@NotNull Component> description);
 }

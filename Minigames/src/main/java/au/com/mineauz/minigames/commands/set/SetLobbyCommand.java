@@ -38,7 +38,7 @@ public class SetLobbyCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LOBBY_USAGE);
     }
 
@@ -49,7 +49,7 @@ public class SetLobbyCommand extends ASetCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+                             @Nullable String @Nullable [] args) {
         if (args == null) {
             if (sender instanceof Entity entity) {
                 minigame.setLobbyLocation(entity.getLocation());

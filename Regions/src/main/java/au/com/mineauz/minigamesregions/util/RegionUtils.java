@@ -1,9 +1,11 @@
 package au.com.mineauz.minigamesregions.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.regex.Pattern;
 
 public class RegionUtils {
-    public static void createWildcardPattern(String value, StringBuffer buffer) {
+    public static void createWildcardPattern(@NotNull String value, @NotNull StringBuffer buffer) {
         int start = 0;
         int index;
         while (true) {

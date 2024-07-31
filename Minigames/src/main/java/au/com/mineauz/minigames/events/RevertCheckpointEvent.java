@@ -2,12 +2,13 @@ package au.com.mineauz.minigames.events;
 
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class RevertCheckpointEvent extends AbstractCancellableMinigameEvent {
-    private final MinigamePlayer player;
+    private final @NotNull MinigamePlayer player;
 
-    public RevertCheckpointEvent(MinigamePlayer player) {
-        super(null);
+    public RevertCheckpointEvent(@NotNull MinigamePlayer player) {
+        super(player.getMinigame());
         this.player = player;
     }
 
@@ -15,8 +16,7 @@ public class RevertCheckpointEvent extends AbstractCancellableMinigameEvent {
         return player;
     }
 
-    public Player getPlayer() {
+    public @NotNull Player getPlayer() {
         return player.getPlayer();
     }
-
 }

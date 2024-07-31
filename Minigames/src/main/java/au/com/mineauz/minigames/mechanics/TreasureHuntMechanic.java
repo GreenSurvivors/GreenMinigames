@@ -43,7 +43,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
     protected TreasureHuntMechanic() {
     }
 
-    public static void removeTreasure(Minigame minigame) {
+    public static void removeTreasure(@NotNull Minigame minigame) {
         TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
         thm.clearHints();
         if (thm.hasTreasureLocation()) {
@@ -68,7 +68,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         }
     }
 
-    public static void spawnTreasure(final Minigame mgm) {
+    public static void spawnTreasure(final @NotNull Minigame mgm) {
         final TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
 
         if (thm.hasTreasureLocation())
@@ -155,7 +155,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
     }
 
     @Override
-    public String getMechanicName() {
+    public @NotNull String getMechanicName() {
         return "treasure_hunt";
     }
 
@@ -170,7 +170,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
     }
 
     @Override
-    public MinigameModule displaySettings(@NotNull Minigame minigame) {
+    public @Nullable MinigameModule displaySettings(@NotNull Minigame minigame) {
         return minigame.getModule(MgModules.TREASURE_HUNT.getName());
     }
 

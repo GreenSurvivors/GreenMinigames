@@ -5,20 +5,22 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.Configuration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
 
 public class StoredPlayerCheckpoints {
-    private final String uuid;
-    private final Map<String, Location> checkpoints;
-    private final Map<String, List<String>> singlePlayerFlags;
-    private final Map<String, Long> storedTime;
-    private final Map<String, Integer> storedDeaths;
-    private final Map<String, Integer> storedReverts;
-    private Location globalCheckpoint;
+    private final @NotNull String uuid;
+    private final @NotNull Map<@NotNull String, @NotNull Location> checkpoints;
+    private final @NotNull Map<@NotNull String, @NotNull List<@NotNull String>> singlePlayerFlags;
+    private final @NotNull Map<@NotNull String, @NotNull Long> storedTime;
+    private final @NotNull Map<@NotNull String, @NotNull Integer> storedDeaths;
+    private final @NotNull Map<@NotNull String, @NotNull Integer> storedReverts;
+    private @Nullable Location globalCheckpoint;
 
-    public StoredPlayerCheckpoints(String uuid) {
+    public StoredPlayerCheckpoints(@NotNull String uuid) {
         this.uuid = uuid;
         checkpoints = new HashMap<>();
         singlePlayerFlags = new HashMap<>();
@@ -27,19 +29,19 @@ public class StoredPlayerCheckpoints {
         storedReverts = new HashMap<>();
     }
 
-    public void addCheckpoint(String minigame, Location checkpoint) {
+    public void addCheckpoint(@NotNull String minigame, @NotNull Location checkpoint) {
         checkpoints.put(minigame, checkpoint);
     }
 
-    public void removeCheckpoint(String minigame) {
+    public void removeCheckpoint(@NotNull String minigame) {
         checkpoints.remove(minigame);
     }
 
-    public boolean hasCheckpoint(String minigame) {
+    public boolean hasCheckpoint(@NotNull String minigame) {
         return checkpoints.containsKey(minigame);
     }
 
-    public Location getCheckpoint(String minigame) {
+    public Location getCheckpoint(@NotNull String minigame) {
         return checkpoints.get(minigame);
     }
 
@@ -47,7 +49,7 @@ public class StoredPlayerCheckpoints {
         return globalCheckpoint != null;
     }
 
-    public Location getGlobalCheckpoint() {
+    public @Nullable Location getGlobalCheckpoint() {
         return globalCheckpoint;
     }
 
@@ -59,67 +61,67 @@ public class StoredPlayerCheckpoints {
         return checkpoints.isEmpty();
     }
 
-    public boolean hasSinglePlayerFlags(String minigame) {
+    public boolean hasSinglePlayerFlags(@NotNull String minigame) {
         return singlePlayerFlags.containsKey(minigame);
     }
 
-    public void addSinglePlayerFlags(String minigame, List<String> flagList) {
+    public void addSinglePlayerFlags(@NotNull String minigame, @NotNull List<String> flagList) {
         singlePlayerFlags.put(minigame, new ArrayList<>(flagList));
     }
 
-    public List<String> getSinglePlayerFlags(String minigame) {
+    public @NotNull List<@NotNull String> getSinglePlayerFlags(@NotNull String minigame) {
         return singlePlayerFlags.get(minigame);
     }
 
-    public void removeSinglePlayerFlags(String minigame) {
+    public void removeSinglePlayerFlags(@NotNull String minigame) {
         singlePlayerFlags.remove(minigame);
     }
 
-    public void addTime(String minigame, long time) {
+    public void addTime(@NotNull String minigame, long time) {
         storedTime.put(minigame, time);
     }
 
-    public Long getTime(String minigame) {
+    public Long getTime(@NotNull String minigame) {
         return storedTime.get(minigame);
     }
 
-    public boolean hasTime(String minigame) {
+    public boolean hasTime(@NotNull String minigame) {
         return storedTime.containsKey(minigame);
     }
 
-    public void removeTime(String minigame) {
+    public void removeTime(@NotNull String minigame) {
         storedTime.remove(minigame);
     }
 
-    public void addDeaths(String minigame, int deaths) {
+    public void addDeaths(@NotNull String minigame, int deaths) {
         storedDeaths.put(minigame, deaths);
     }
 
-    public Integer getDeaths(String minigame) {
+    public Integer getDeaths(@NotNull String minigame) {
         return storedDeaths.get(minigame);
     }
 
-    public boolean hasDeaths(String minigame) {
+    public boolean hasDeaths(@NotNull String minigame) {
         return storedDeaths.containsKey(minigame);
     }
 
-    public void removeDeaths(String minigame) {
+    public void removeDeaths(@NotNull String minigame) {
         storedDeaths.remove(minigame);
     }
 
-    public void addReverts(String minigame, int reverts) {
+    public void addReverts(@NotNull String minigame, int reverts) {
         storedReverts.put(minigame, reverts);
     }
 
-    public Integer getReverts(String minigame) {
+    public Integer getReverts(@NotNull String minigame) {
         return storedReverts.get(minigame);
     }
 
-    public boolean hasReverts(String minigame) {
+    public boolean hasReverts(@NotNull String minigame) {
         return storedReverts.containsKey(minigame);
     }
 
-    public void removeReverts(String minigame) {
+    public void removeReverts(@NotNull String minigame) {
         storedReverts.remove(minigame);
     }
 

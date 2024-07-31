@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -21,7 +22,7 @@ public class TestBackEnd extends Backend {
      * @return Returns true if the initialization succeeded
      */
     @Override
-    public boolean initialize(ConfigurationSection config) {
+    public boolean initialize(@NotNull ConfigurationSection config) {
         return true;
     }
 
@@ -47,7 +48,7 @@ public class TestBackEnd extends Backend {
      * @param stats The game stats to store
      */
     @Override
-    public void saveGameStatus(StoredGameStats stats) {
+    public void saveGameStatus(@NotNull StoredGameStats stats) {
         playerGameStats.add(stats);
     }
 
@@ -61,7 +62,7 @@ public class TestBackEnd extends Backend {
      * @return A list of stats matching the requirements
      */
     @Override
-    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order) {
+    public @NotNull List<@NotNull StoredStat> loadStats(@NotNull Minigame minigame, @NotNull MinigameStat stat, @NotNull StatisticValueField field, @NotNull ScoreboardOrder order) {
         List<StoredStat> result = new ArrayList<>();
         for (StoredGameStats store : playerGameStats) {
             if (store.hasStat(stat) && store.getMinigame().getName().equals(minigame.getName())) {
@@ -89,7 +90,7 @@ public class TestBackEnd extends Backend {
      * @return A list of stats matching the requirements
      */
     @Override
-    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order, int offset, int length) {
+    public @NotNull List<@NotNull StoredStat> loadStats(@NotNull Minigame minigame, @NotNull MinigameStat stat, @NotNull StatisticValueField field, @NotNull ScoreboardOrder order, int offset, int length) {
         List<StoredStat> result = loadStats(minigame, stat, field, order);
         int i = offset;
         List<StoredStat> newR = new ArrayList<>();
@@ -110,7 +111,7 @@ public class TestBackEnd extends Backend {
      * @return The value of the stat
      */
     @Override
-    public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatisticValueField field) {
+    public long getStat(@NotNull Minigame minigame, @NotNull UUID playerId, @NotNull MinigameStat stat, @NotNull StatisticValueField field) {
         List<StoredStat> set = loadStats(minigame, stat, field, ScoreboardOrder.ASCENDING);
         for (StoredStat s : set) {
             if (s.getPlayerId().equals(playerId)) {
@@ -127,7 +128,7 @@ public class TestBackEnd extends Backend {
      * @return A map of stats to their settings
      */
     @Override
-    public Map<MinigameStat, StatSettings> loadStatSettings(Minigame minigame) {
+    public @NotNull Map<@NotNull MinigameStat, @NotNull StatSettings> loadStatSettings(@NotNull Minigame minigame) {
         Collection<StatSettings> statSettings = gameSettings.get(minigame);
         Map<MinigameStat, StatSettings> result = new HashMap<>();
         for (StatSettings s : statSettings) {
@@ -143,7 +144,7 @@ public class TestBackEnd extends Backend {
      * @param settings The settings to save
      */
     @Override
-    public void saveStatSettings(Minigame minigame, Collection<StatSettings> settings) {
+    public void saveStatSettings(@NotNull Minigame minigame, @NotNull Collection<@NotNull StatSettings> settings) {
         gameSettings.put(minigame, settings);
     }
 
@@ -154,7 +155,7 @@ public class TestBackEnd extends Backend {
      * @param notifier A callback to receive progress updates
      */
     @Override
-    public void exportTo(Backend other, Notifier notifier) {
+    public void exportTo(@NotNull Backend other, @NotNull Notifier notifier) {
 
     }
 
@@ -170,8 +171,7 @@ public class TestBackEnd extends Backend {
      * @return True if the conversion succeeded
      */
     @Override
-    public boolean doConversion(Notifier notifier) {
+    public boolean doConversion(@NotNull Notifier notifier) {
         return true;
     }
-
 }

@@ -56,7 +56,7 @@ public class EndAction extends AAction {
         execute(mgPlayer);
     }
 
-    private void execute(MinigamePlayer player) {
+    private void execute(@Nullable MinigamePlayer player) {
         if (player == null || !player.isInMinigame()) return;
         setWinnersLosers(player);
     }

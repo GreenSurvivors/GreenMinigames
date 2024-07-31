@@ -3,24 +3,25 @@ package au.com.mineauz.minigames.events;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class QuitMinigameEvent extends AbstractCancellableMinigameEvent {
-    private final MinigamePlayer player;
+    private final @NotNull MinigamePlayer player;
     private final boolean isForced;
     private final boolean isWinner;
 
-    public QuitMinigameEvent(MinigamePlayer player, Minigame minigame, boolean forced, boolean isWinner) {
+    public QuitMinigameEvent(@NotNull MinigamePlayer player, @NotNull Minigame minigame, boolean forced, boolean isWinner) {
         super(minigame);
         this.player = player;
         isForced = forced;
         this.isWinner = isWinner;
     }
 
-    public MinigamePlayer getMinigamePlayer() {
+    public @NotNull MinigamePlayer getMinigamePlayer() {
         return player;
     }
 
-    public Player getPlayer() {
+    public @NotNull Player getPlayer() {
         return player.getPlayer();
     }
 
@@ -32,5 +33,4 @@ public class QuitMinigameEvent extends AbstractCancellableMinigameEvent {
     public boolean isWinner() {
         return isWinner;
     }
-
 }

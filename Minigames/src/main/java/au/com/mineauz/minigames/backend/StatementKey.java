@@ -1,26 +1,28 @@
 package au.com.mineauz.minigames.backend;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class StatementKey {
-    private final String sql;
+    private final @NotNull String sql;
     private final boolean returnGeneratedKeys;
     private boolean valid;
 
-    public StatementKey(String sql) {
+    public StatementKey(@NotNull String sql) {
         this(sql, false);
     }
 
-    public StatementKey(String sql, boolean returnGeneratedKeys) {
+    public StatementKey(@NotNull String sql, boolean returnGeneratedKeys) {
         this.sql = sql;
         this.returnGeneratedKeys = returnGeneratedKeys;
         this.valid = true;
     }
 
-    public String getSQL() {
+    public @NotNull String getSQL() {
         return sql;
     }
 
@@ -32,12 +34,12 @@ public class StatementKey {
         return valid;
     }
 
-    PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+    protected @NotNull PreparedStatement createPreparedStatement(@NotNull Connection connection) throws SQLException {
         try {
             return connection.prepareStatement(sql, (returnGeneratedKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS));
         } catch (SQLException e) {
             valid = false;
-            throw e;
+            throw new SQLException(e);
         }
     }
 }

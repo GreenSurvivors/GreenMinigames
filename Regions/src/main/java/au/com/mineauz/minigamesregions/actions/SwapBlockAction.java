@@ -123,7 +123,7 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(new MenuItemBlockData(matchType.getFlag().getMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), new Callback<>() {

@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This class records all relevant changes the player does in the world while in a minigame
@@ -50,7 +51,7 @@ public class BasicRecorder implements Listener {
      * @param mgPlayer the minigame representation of a player who broke the block
      * @return true if the BlockBreakEvent should be canceled - aka if a minigame sign would get broken or if block drops are not allowed
      */
-    private boolean handleBlockBreak(BlockBreakEvent event, MinigamePlayer mgPlayer) {
+    private boolean handleBlockBreak(@NotNull BlockBreakEvent event, @NotNull MinigamePlayer mgPlayer) {
         Block eBlock = event.getBlock();
         Minigame mgm = mgPlayer.getMinigame();
         RecorderData recData = mgm.getRecorderData();
@@ -86,7 +87,7 @@ public class BasicRecorder implements Listener {
      * record blocks broken by players (and stop breaking of blocks the player is not allowed to)
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    private void blockBreak(BlockBreakEvent event) {
+    private void blockBreak(@NotNull BlockBreakEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
 
         if (mgPlayer.isInMinigame()) {
@@ -127,7 +128,7 @@ public class BasicRecorder implements Listener {
      * record placed blocks (and stop placing ones the players are not allowed to)
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    private void blockPlace(BlockPlaceEvent event) {
+    private void blockPlace(@NotNull BlockPlaceEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
 
         if (mgPlayer.isInMinigame()) {
@@ -166,7 +167,7 @@ public class BasicRecorder implements Listener {
      * record inventories changed by players
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    private void changeAnotherInventory(PlayerInteractEvent event) {
+    private void changeAnotherInventory(@NotNull PlayerInteractEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
 
         if (mgPlayer.isInMinigame() && event.getAction() == Action.RIGHT_CLICK_BLOCK
@@ -185,7 +186,7 @@ public class BasicRecorder implements Listener {
      * record fire lighted by players
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void igniteBlock(BlockIgniteEvent event) {
+    public void igniteBlock(@NotNull BlockIgniteEvent event) {
         if (event.getPlayer() != null) {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
 
@@ -217,7 +218,7 @@ public class BasicRecorder implements Listener {
      * record hanging entities like item frames placed by players
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    private void hangingPlace(HangingPlaceEvent event) {
+    private void hangingPlace(@NotNull HangingPlaceEvent event) {
         if (event.getPlayer() != null) {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
             if (mgPlayer.isInMinigame()) {
@@ -259,7 +260,7 @@ public class BasicRecorder implements Listener {
      * Note: entities like monsters or armor stands getting recorded only if regen regions are getting used
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void animalHurt(EntityDamageByEntityEvent event) {
+    private void animalHurt(@NotNull EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Animals animal) {
             //did the player kill the animal?
             if (animal.getHealth() <= event.getDamage()) {
@@ -286,7 +287,7 @@ public class BasicRecorder implements Listener {
      * record hanging entities getting removed by a player
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void hangingBreak(HangingBreakByEntityEvent event) {
+    private void hangingBreak(@NotNull HangingBreakByEntityEvent event) {
         MinigamePlayer mgPlayer = null;
 
         if (event.getRemover() instanceof Player player) {
@@ -307,7 +308,7 @@ public class BasicRecorder implements Listener {
      * record arrows shot by players
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void arrowShoot(EntityShootBowEvent event) {
+    private void arrowShoot(@NotNull EntityShootBowEvent event) {
         if (event.getEntity() instanceof Player player) {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
 
@@ -321,7 +322,7 @@ public class BasicRecorder implements Listener {
      * record ender perl entities (important if somewhere caught in bubble columns)
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void throwEnderPearl(ProjectileLaunchEvent event) {
+    private void throwEnderPearl(@NotNull ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player player) {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
 
@@ -335,7 +336,7 @@ public class BasicRecorder implements Listener {
      * record liquid drained by players via bucket fill
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    private void bucketFill(PlayerBucketFillEvent event) {
+    private void bucketFill(@NotNull PlayerBucketFillEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
 
         if (mgPlayer.isInMinigame()) {
@@ -363,7 +364,7 @@ public class BasicRecorder implements Listener {
      * record liquid placed by players via bukkit empty
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    private void bucketEmpty(PlayerBucketEmptyEvent event) {
+    private void bucketEmpty(@NotNull PlayerBucketEmptyEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
 
         if (mgPlayer.isInMinigame()) {
@@ -399,7 +400,7 @@ public class BasicRecorder implements Listener {
      * record vehicles broken by players
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void vehicleDestroy(VehicleDestroyEvent event) {
+    private void vehicleDestroy(@NotNull VehicleDestroyEvent event) {
         if (event.getAttacker() != null) {
             if (event.getAttacker() instanceof Player player) {
                 MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);

@@ -114,7 +114,7 @@ public class TimedTriggerAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(toTrigger.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME)));

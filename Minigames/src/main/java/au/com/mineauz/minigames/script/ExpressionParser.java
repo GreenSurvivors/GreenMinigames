@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.script;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,8 +19,12 @@ public class ExpressionParser {
      * @throws IllegalArgumentException Thrown if there is a syntax error in the path
      * @throws NoSuchElementException   Thrown if the objects referenced in the path cannot be resolved
      */
-    public static ScriptReference resolveObject(String pathString, ScriptObject root) throws IllegalArgumentException, NoSuchElementException {
+    public static @NotNull ScriptReference resolveObject(@NotNull String pathString, @NotNull ScriptObject root) throws IllegalArgumentException, NoSuchElementException {
         String[] segments = pathString.split("\\.");
+
+        if (segments.length == 0) {
+            segments = new String[] {pathString};
+        }
 
         ScriptReference lastRef = null;
         ScriptObject current = root;
@@ -93,7 +99,8 @@ public class ExpressionParser {
      * @throws NoSuchElementException   Thrown if an object in a path cannot be resolved.
      * @throws IllegalArgumentException Thrown if there is a syntax error in a path.
      */
-    public static String stringResolve(String input, ScriptObject object) throws IllegalArgumentException, NoSuchElementException {
+    @NotNull
+    public static String stringResolve(@NotNull String input, @NotNull ScriptObject object) throws IllegalArgumentException, NoSuchElementException {
         return stringResolve(input, object, false, false);
     }
 
@@ -120,7 +127,8 @@ public class ExpressionParser {
      * @throws NoSuchElementException   Thrown if an object in a path cannot be resolved. Only thrown if ignoreResolutionErrors is false
      * @throws IllegalArgumentException Thrown if there is a syntax error in a path. Only thrown if ignoreSyntaxErrors is false
      */
-    public static String stringResolve(String input, ScriptObject object, boolean ignoreSyntaxErrors,
+    @NotNull
+    public static String stringResolve(@NotNull String input, @NotNull ScriptObject object, boolean ignoreSyntaxErrors,
                                        boolean ignoreResolutionErrors) throws IllegalArgumentException, NoSuchElementException { //todo maybe a resolve component with minimessage?
         StringBuilder buffer = new StringBuilder(input);
         int start = 0;
@@ -202,9 +210,8 @@ public class ExpressionParser {
         return buffer.toString();
     }
 
-    private static String asString(ScriptReference ref) {
+    private static @NotNull String asString(@NotNull ScriptReference ref) {
         return switch (ref) {
-            case null -> "";
             case ScriptValue<?> ignored -> ref.toString();
             case ScriptObject scriptObject -> scriptObject.getAsString();
             default -> String.valueOf(ref);

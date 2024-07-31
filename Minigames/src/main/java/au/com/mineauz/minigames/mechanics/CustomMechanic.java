@@ -15,7 +15,7 @@ import java.util.List;
 public class CustomMechanic extends GameMechanicBase {
 
     @Override
-    public String getMechanicName() {
+    public @NotNull String getMechanicName() {
         return "custom";
     }
 
@@ -52,7 +52,7 @@ public class CustomMechanic extends GameMechanicBase {
     }
 
     @EventHandler
-    public void playerAutoBalance(PlayerDeathEvent event) {
+    public void playerAutoBalance(@NotNull PlayerDeathEvent event) {
         MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity());
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isTeamGame()) {
             Minigame mgm = mgPlayer.getMinigame();
@@ -64,7 +64,7 @@ public class CustomMechanic extends GameMechanicBase {
     }
 
     @Override
-    public MinigameModule displaySettings(@NotNull Minigame minigame) {
+    public @Nullable MinigameModule displaySettings(@NotNull Minigame minigame) {
         return null;
     }
 }

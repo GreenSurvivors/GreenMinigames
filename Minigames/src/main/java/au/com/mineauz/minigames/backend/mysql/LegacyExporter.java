@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.backend.mysql;
 
 import au.com.mineauz.minigames.backend.*;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,19 +10,19 @@ import java.sql.Statement;
 import java.util.UUID;
 
 public class LegacyExporter {
-    private final ConnectionPool pool;
-    private final String database;
-    private final BackendImportCallback callback;
-    private final Notifier notifier;
-    private final StatementKey selectTables;
-    private final StatementKey selectPlayers;
-    private final StatementKey selectStats;
+    private final @NotNull ConnectionPool pool;
+    private final @NotNull String database;
+    private final @NotNull BackendImportCallback callback;
+    private final @NotNull Notifier notifier;
+    private final @NotNull StatementKey selectTables;
+    private final @NotNull StatementKey selectPlayers;
+    private final @NotNull StatementKey selectStats;
     private ConnectionHandler handler;
     private String notifyState;
     private int notifyCount;
     private long notifyTime;
 
-    public LegacyExporter(ConnectionPool pool, String database, BackendImportCallback callback, Notifier notifier) {
+    public LegacyExporter(@NotNull ConnectionPool pool, @NotNull String database, @NotNull BackendImportCallback callback, @NotNull Notifier notifier) {
         this.pool = pool;
         this.database = database;
         this.callback = callback;
@@ -181,7 +182,7 @@ public class LegacyExporter {
         }
     }
 
-    private void notifyNext(String state) {
+    private void notifyNext(@NotNull String state) {
         if (notifyCount != 0) {
             notifier.onProgress(notifyState, notifyCount);
         }

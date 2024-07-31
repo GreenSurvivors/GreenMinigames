@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 public class Node implements BaseExecutorHolder<NodeExecutor> {
-    private final String name;
-    private final Minigame minigame;
+    private final @NotNull String name;
+    private final @NotNull Minigame minigame;
     private final List<NodeExecutor> executors = new ArrayList<>();
     private Location loc;
     private boolean enabled = true;
@@ -30,15 +30,15 @@ public class Node implements BaseExecutorHolder<NodeExecutor> {
         this.loc = loc;
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
-    public Location getLocation() {
+    public @NotNull Location getLocation() {
         return loc.clone();
     }
 
-    public void setLocation(Location loc) {
+    public void setLocation(@NotNull Location loc) {
         this.loc = loc.clone();
     }
 
@@ -55,7 +55,7 @@ public class Node implements BaseExecutorHolder<NodeExecutor> {
     }
 
     @Override
-    public List<NodeExecutor> getExecutors() {
+    public @NotNull List<@NotNull NodeExecutor> getExecutors() {
         return executors;
     }
 
@@ -126,7 +126,7 @@ public class Node implements BaseExecutorHolder<NodeExecutor> {
     }
 
     @Override
-    public ScriptReference get(String name) {
+    public @Nullable ScriptReference get(@NotNull String name) {
         if (name.equalsIgnoreCase("name")) {
             return ScriptValue.of(name);
         } else if (name.equalsIgnoreCase("pos")) {
@@ -139,12 +139,12 @@ public class Node implements BaseExecutorHolder<NodeExecutor> {
     }
 
     @Override
-    public Set<String> getKeys() {
+    public @NotNull Set<@NotNull String> getKeys() {
         return Set.of("name", "pos", "block");
     }
 
     @Override
-    public String getAsString() {
+    public @NotNull String getAsString() {
         return name;
     }
 

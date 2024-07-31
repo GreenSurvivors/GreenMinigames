@@ -28,7 +28,7 @@ public class SetLocationHintCommand extends ASetCommand { //todo i feel like thi
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"lh", "locHint"};
     }
 
@@ -38,7 +38,7 @@ public class SetLocationHintCommand extends ASetCommand { //todo i feel like thi
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LOCATION_USAGE);
     }
 

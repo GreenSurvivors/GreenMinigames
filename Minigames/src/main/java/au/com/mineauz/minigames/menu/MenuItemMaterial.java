@@ -34,7 +34,7 @@ public class MenuItemMaterial extends MenuItem {
     }
 
     @Override
-    public ItemStack onClickWithItem(ItemStack item) {
+    public ItemStack onClickWithItem(@NotNull ItemStack item) {
         materialCallback.setValue(item.getType());
         updateDescription();
         return super.onClickWithItem(item);

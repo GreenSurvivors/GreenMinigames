@@ -13,6 +13,7 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class StandardRewardScheme extends ARewardScheme {
     }
 
     @Override
-    public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
+    public void awardPlayer(@NotNull MinigamePlayer player, @Nullable StoredGameStats data, @Nullable Minigame minigame, boolean firstCompletion) {
         List<ARewardType> rewards = primaryRewardFlag.getFlag().getReward();
 
         if (firstCompletion && rewards != null) {
@@ -56,11 +57,11 @@ public class StandardRewardScheme extends ARewardScheme {
     }
 
     @Override
-    public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
+    public void awardPlayerOnLoss(@Nullable MinigamePlayer player, @Nullable StoredGameStats data, @Nullable Minigame minigame) {
         // No lose awards
     }
 
-    private void giveRewards(List<ARewardType> rewards, MinigamePlayer player) {
+    private void giveRewards(@NotNull List<@Nullable ARewardType> rewards, @NotNull MinigamePlayer player) {
         for (ARewardType reward : rewards) {
             if (reward != null) {
                 MinigameMessageManager.debugMessage("Giving " + player.getName() + " " + reward.getName() + " reward type.");
@@ -82,7 +83,7 @@ public class StandardRewardScheme extends ARewardScheme {
     }
 
     @Override
-    public void addMenuItems(Menu menu) {
+    public void addMenuItems(@NotNull Menu menu) {
         menu.addItem(new MenuItemDisplayRewards(Material.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME, primaryRewardFlag.getFlag()));
         menu.addItem(new MenuItemDisplayRewards(Material.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME, secondaryRewardFlag.getFlag()));
     }

@@ -20,7 +20,7 @@ public enum MgSignLangKey implements MinigameLangKey {
     TYPE_SPECTATE("sign.type.spectate"),
     TYPE_TEAM("sign.type.team");
 
-    private final String path;
+    private final @NotNull String path;
 
     MgSignLangKey(@NotNull String path) {
         this.path = path;

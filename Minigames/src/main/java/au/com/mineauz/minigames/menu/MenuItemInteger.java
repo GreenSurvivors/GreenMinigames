@@ -22,9 +22,9 @@ import java.util.Objects;
 
 public class MenuItemInteger extends MenuItem {
     private final static String DESCRIPTION_TOKEN = "Integer_description";
-    private final Callback<Integer> value;
-    private final Integer min; // inclusive
-    private final Integer max; // inclusive
+    private final @NotNull Callback<Integer> value;
+    private final @Nullable Integer min; // inclusive
+    private final @Nullable Integer max; // inclusive
 
     public MenuItemInteger(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<Integer> value,
                            @Nullable Integer min, @Nullable Integer max) {
@@ -67,7 +67,7 @@ public class MenuItemInteger extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         try {
             value.setValue(Math.addExact(value.getValue(), 1));
             if (max != null && value.getValue() < max) {
@@ -82,7 +82,7 @@ public class MenuItemInteger extends MenuItem {
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @NotNull ItemStack onRightClick() {
         try {
             value.setValue(Math.subtractExact(value.getValue(), 1));
             if (min != null && value.getValue() < min) {
@@ -97,7 +97,7 @@ public class MenuItemInteger extends MenuItem {
     }
 
     @Override
-    public ItemStack onShiftClick() {
+    public @NotNull ItemStack onShiftClick() {
         try {
             value.setValue(Math.addExact(value.getValue(), 10));
             if (max != null && value.getValue() < max) {
@@ -112,7 +112,7 @@ public class MenuItemInteger extends MenuItem {
     }
 
     @Override
-    public ItemStack onShiftRightClick() {
+    public @NotNull ItemStack onShiftRightClick() {
         try {
             value.setValue(Math.subtractExact(value.getValue(), 10));
             if (min != null && value.getValue() < min) {
@@ -127,7 +127,7 @@ public class MenuItemInteger extends MenuItem {
     }
 
     @Override
-    public ItemStack onDoubleClick() {
+    public @Nullable ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
@@ -146,7 +146,7 @@ public class MenuItemInteger extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         if (entry.matches("-?[0-9]+")) {
             int entryValue = Integer.parseInt(entry);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {

@@ -15,6 +15,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class MultiplayerTimer {
     private static final Minigames plugin = Minigames.getPlugin();
     private final long oLobbyWaitTime; // in seconds
     private final long oStartWaitTime; // in seconds
-    private final Minigame minigame;
+    private final @NotNull Minigame minigame;
     private final MinigamePlayerManager playerManager = plugin.getPlayerManager();
     private final List<Long> timeMsg = new ArrayList<>(); // in seconds
     private long currentLobbyWaitTime;
@@ -32,7 +33,7 @@ public class MultiplayerTimer {
     private boolean paused = false;
     private int taskID = -1;
 
-    public MultiplayerTimer(Minigame mg) {
+    public MultiplayerTimer(@NotNull Minigame mg) {
         minigame = mg;
 
         currentLobbyWaitTime = LobbySettingsModule.getMinigameModule(mg).getPlayerWaitTime();
@@ -148,7 +149,7 @@ public class MultiplayerTimer {
         }
     }
 
-    private void reclearInventories(Minigame minigame) {
+    private void reclearInventories(@NotNull Minigame minigame) {
         for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
             mgPlayer.getPlayer().getInventory().clear();
         }
@@ -195,7 +196,7 @@ public class MultiplayerTimer {
         pauseTimer(Component.empty());
     }
 
-    public void pauseTimer(Component reason) {
+    public void pauseTimer(@NotNull Component reason) {
         paused = true;
         MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_STARTUP_PAUSED,
                 Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), reason)), MinigameMessageType.INFO);

@@ -1,17 +1,17 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.ComparableVersion;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.bstats.charts.CustomChart;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class MinigameModule {
-    private static ComparableVersion minRequired = null;
+    private static @Nullable ComparableVersion minRequired = null;
     protected final @NotNull String name;
     private final @NotNull Minigame mgm;
 
@@ -38,7 +38,7 @@ public abstract class MinigameModule {
         Minigames.getPlugin().addMetric(chart);
     }
 
-    public static ComparableVersion getMinRequired() {
+    public static @Nullable ComparableVersion getMinRequired() {
         return minRequired;
     }
 

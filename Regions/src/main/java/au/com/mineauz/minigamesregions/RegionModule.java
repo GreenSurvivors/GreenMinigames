@@ -41,7 +41,7 @@ public class RegionModule extends MinigameModule {
         private final String name = "Regions";
 
         @Override
-        public @NotNull MinigameModule makeNewModule(Minigame minigame) {
+        public @NotNull MinigameModule makeNewModule(@NotNull Minigame minigame) {
             return new RegionModule(minigame, name);
         }
 
@@ -295,12 +295,12 @@ public class RegionModule extends MinigameModule {
         return true;
     }
 
-    public void addRegion(String name, Region region) {
+    public void addRegion(@NotNull String name, Region region) {
         if (!hasRegion(name))
             regions.put(name, region);
     }
 
-    public Region getRegion(String name) {
+    public @Nullable Region getRegion(@NotNull String name) {
         if (!hasRegion(name)) {
             for (String n : regions.keySet()) {
                 if (n.equalsIgnoreCase(name))
@@ -311,11 +311,11 @@ public class RegionModule extends MinigameModule {
         return regions.get(name);
     }
 
-    public List<Region> getRegions() {
+    public @NotNull List<@NotNull Region> getRegions() {
         return new ArrayList<>(regions.values());
     }
 
-    public void removeRegion(String name) {
+    public void removeRegion(@NotNull String name) {
         if (hasRegion(name)) {
             regions.get(name).removeTickTask();
             regions.get(name).removeGameTickTask();
@@ -332,7 +332,7 @@ public class RegionModule extends MinigameModule {
         }
     }
 
-    public boolean hasNode(String name) {
+    public boolean hasNode(@NotNull String name) {
         if (!nodes.containsKey(name)) {
             for (String n : nodes.keySet()) {
                 if (n.equalsIgnoreCase(name))
@@ -343,12 +343,13 @@ public class RegionModule extends MinigameModule {
         return true;
     }
 
-    public void addNode(String name, Node node) {
-        if (!hasNode(name))
+    public void addNode(@NotNull String name, @NotNull Node node) {
+        if (!hasNode(name)) {
             nodes.put(name, node);
+        }
     }
 
-    public Node getNode(String name) {
+    public @Nullable Node getNode(@NotNull String name) {
         if (!hasNode(name)) {
             for (String n : nodes.keySet()) {
                 if (n.equalsIgnoreCase(name))
@@ -359,11 +360,11 @@ public class RegionModule extends MinigameModule {
         return nodes.get(name);
     }
 
-    public List<Node> getNodes() {
+    public @NotNull List<@NotNull Node> getNodes() {
         return new ArrayList<>(nodes.values());
     }
 
-    public void removeNode(String name) {
+    public void removeNode(@NotNull String name) {
         if (hasNode(name)) {
             nodes.remove(name);
         } else {
@@ -376,7 +377,7 @@ public class RegionModule extends MinigameModule {
         }
     }
 
-    public void displayMenu(MinigamePlayer viewer, Menu previous) {
+    public void displayMenu(@NotNull MinigamePlayer viewer, @Nullable Menu previous) {
         Menu rm = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME), viewer);
         List<MenuItem> items = new ArrayList<>(regions.size());
         for (Region region : regions.values()) {

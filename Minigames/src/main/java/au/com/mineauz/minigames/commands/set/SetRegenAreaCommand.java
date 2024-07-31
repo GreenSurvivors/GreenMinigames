@@ -44,7 +44,7 @@ public class SetRegenAreaCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REGENAREA_USAGE);
     }
 
@@ -60,7 +60,7 @@ public class SetRegenAreaCommand extends ASetCommand {
      * @param page     the given page
      * @return returns a component containing max 5 regen regions with their coordinates and volume
      */
-    private Component makeList(Minigame minigame, int page) {
+    private @NotNull Component makeList(@NotNull Minigame minigame, int page) {
         //get all currently active regions
         List<MgRegion> regions = new ArrayList<>(minigame.getRegenRegions());
         //how many regions are known. Needed to calculate how many pages there are and

@@ -12,7 +12,7 @@ public class MockSign extends SignMock implements Sign {
     private final LinkedList<String> lines = new LinkedList<>();
     private boolean edittable;
 
-    public MockSign(Material material, boolean edittable) {
+    public MockSign(@NotNull Material material, boolean edittable) {
         super(material);
 
         this.edittable = edittable;

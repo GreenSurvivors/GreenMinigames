@@ -38,7 +38,7 @@ public class SetUsePermissionsCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_USEPERMISSIONS_USAGE);
     }
 

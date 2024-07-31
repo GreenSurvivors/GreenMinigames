@@ -36,7 +36,7 @@ public class MenuItemNodeExecutorAdd extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_ADD_NAME), getContainer().getViewer());
 
         for (Trigger trig : TriggerRegistry.getAllNodeTriggers()) {

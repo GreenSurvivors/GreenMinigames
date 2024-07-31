@@ -35,7 +35,7 @@ public class MenuItemPage extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         menu.setPreviousPage(getContainer());
         menu.displayMenu(getContainer().getViewer());
         return null;

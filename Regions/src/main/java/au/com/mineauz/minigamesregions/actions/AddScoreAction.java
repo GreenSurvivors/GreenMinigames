@@ -85,7 +85,7 @@ public class AddScoreAction extends AScoreAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemInteger(Material.ENDER_PEARL,
                 MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), new Callback<>() {

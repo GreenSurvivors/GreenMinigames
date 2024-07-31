@@ -53,7 +53,7 @@ public class InfectionModule extends MinigameModule {
         survivorTeam.loadValue(config, path);
     }
 
-    public Callback<TeamColor> getInfectedTeamCallback() {
+    public @NotNull Callback<TeamColor> getInfectedTeamCallback() {
         return new Callback<>() {
             @Override
             public TeamColor getValue() {
@@ -85,6 +85,7 @@ public class InfectionModule extends MinigameModule {
         };
     }
 
+    @NotNull
     public Callback<TeamColor> getSurvivorTeamCallback() {
         return new Callback<>() {
             @Override

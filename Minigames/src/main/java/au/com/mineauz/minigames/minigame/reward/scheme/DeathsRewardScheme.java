@@ -18,33 +18,33 @@ public class DeathsRewardScheme extends HierarchyRewardScheme<Integer> {
     }
 
     @Override
-    protected Integer decrement(Integer value) {
+    protected @NotNull Integer decrement(Integer value) {
         return value - 1;
     }
 
     @Override
-    protected Integer increment(Integer value) {
+    protected @NotNull Integer increment(Integer value) {
         return value + 1;
     }
 
     @Override
-    protected Integer loadKey(String key) {
+    protected @NotNull Integer loadKey(@NotNull String key) {
         return Integer.valueOf(key);
     }
 
     @Override
-    protected Component getMenuItemDescName(Integer value) {
+    protected @NotNull Component getMenuItemDescName(Integer value) {
         return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_DEATHS_DESCRIPTION,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(value)));
     }
 
     @Override
-    protected Integer getValue(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
+    protected @NotNull Integer getValue(MinigamePlayer player, @NotNull StoredGameStats data, Minigame minigame) {
         return (int) data.getStat(MinigameStatistics.Deaths);
     }
 
     @Override
-    protected Component getMenuItemName(Integer value) {
+    protected @NotNull Component getMenuItemName(@NotNull Integer value) {
         return Component.text(value.toString());
     }
 }

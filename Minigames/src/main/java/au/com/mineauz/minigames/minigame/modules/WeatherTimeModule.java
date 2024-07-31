@@ -27,7 +27,7 @@ public class WeatherTimeModule extends MinigameModule {
         super(mgm, name);
     }
 
-    public static WeatherTimeModule getMinigameModule(Minigame minigame) {
+    public static WeatherTimeModule getMinigameModule(@NotNull Minigame minigame) {
         return (WeatherTimeModule) minigame.getModule(MgModules.WEATHER_TIME.getName());
     }
 
@@ -86,7 +86,7 @@ public class WeatherTimeModule extends MinigameModule {
         useCustomTime.setFlag(bool);
     }
 
-    public void applyCustomTime(MinigamePlayer player) {
+    public void applyCustomTime(@NotNull MinigamePlayer player) {
         if (isUsingCustomTime()) {
             player.getPlayer().setPlayerTime(time.getFlag(), false);
         }
@@ -108,7 +108,7 @@ public class WeatherTimeModule extends MinigameModule {
         weather.setFlag(type);
     }
 
-    public void applyCustomWeather(MinigamePlayer player) {
+    public void applyCustomWeather(@NotNull MinigamePlayer player) {
         if (isUsingCustomWeather())
             player.getPlayer().setPlayerWeather(weather.getFlag());
     }

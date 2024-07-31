@@ -32,7 +32,7 @@ public class SetQuitLocationCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_QUIT_USAGE);
     }
 

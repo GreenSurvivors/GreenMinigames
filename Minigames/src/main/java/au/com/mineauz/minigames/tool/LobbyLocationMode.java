@@ -18,22 +18,22 @@ import java.util.List;
 public class LobbyLocationMode implements ToolMode {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "LOBBY";
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_TOOL_LOCATION_LOBBY_NAME);
     }
 
     @Override
-    public List<Component> getDescription() {
+    public @NotNull List<@NotNull Component> getDescription() {
         return MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_LOCATION_LOBBY_DESCRIPTION);
     }
 
     @Override
-    public Material getIcon() {
+    public @NotNull Material getIcon() {
         return Material.OAK_TRAPDOOR;
     }
 
@@ -76,6 +76,6 @@ public class LobbyLocationMode implements ToolMode {
     }
 
     @Override
-    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
+    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool) {
     }
 }

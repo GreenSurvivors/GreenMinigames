@@ -3,23 +3,24 @@ package au.com.mineauz.minigames.events;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.jetbrains.annotations.NotNull;
 
 public class DropFlagEvent extends AbstractCancellableMinigameEvent {
-    private final CTFFlag flag;
-    private final MinigamePlayer player;
-    private boolean displayMessage = true;
+    private final @NotNull CTFFlag flag;
+    private final @NotNull MinigamePlayer player;
+    private boolean displayMessage = true;// todo
 
-    public DropFlagEvent(Minigame mgm, CTFFlag flag, MinigamePlayer player) {
+    public DropFlagEvent(@NotNull Minigame mgm, @NotNull CTFFlag flag, @NotNull MinigamePlayer player) {
         super(mgm);
         this.flag = flag;
         this.player = player;
     }
 
-    public MinigamePlayer getPlayer() {
+    public @NotNull MinigamePlayer getPlayer() {
         return player;
     }
 
-    public CTFFlag getFlag() {
+    public @NotNull CTFFlag getFlag() {
         return flag;
     }
 

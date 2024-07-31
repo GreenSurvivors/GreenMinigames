@@ -38,7 +38,7 @@ public class SetGameOverCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_GAMEOVER_USAGE);
     }
 

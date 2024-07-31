@@ -23,7 +23,7 @@ public class LivesMechanic extends GameMechanicBase {
     }
 
     @Override
-    public String getMechanicName() {
+    public @NotNull String getMechanicName() {
         return "lives";
     }
 
@@ -47,7 +47,7 @@ public class LivesMechanic extends GameMechanicBase {
     }
 
     @Override
-    public MinigameModule displaySettings(@NotNull Minigame minigame) {
+    public @Nullable MinigameModule displaySettings(@NotNull Minigame minigame) {
         return null;
     }
 
@@ -74,7 +74,7 @@ public class LivesMechanic extends GameMechanicBase {
     }
 
     @EventHandler
-    private void minigameStart(StartMinigameEvent event) {
+    private void minigameStart(@NotNull StartMinigameEvent event) {
         if (event.getMinigame().getMechanicName().equals(getMechanicName())) {
             final List<MinigamePlayer> players = event.getPlayers();
             final Minigame minigame = event.getMinigame();
@@ -92,7 +92,7 @@ public class LivesMechanic extends GameMechanicBase {
     }
 
     @EventHandler
-    private void playerDeath(PlayerDeathEvent event) {
+    private void playerDeath(@NotNull PlayerDeathEvent event) {
         MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getEntity());
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getMechanicName().equals(getMechanicName())) {
             mgPlayer.addScore(-1);

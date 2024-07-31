@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemSaveLoadoutPage extends MenuItemPage {
-    private final PlayerLoadout loadout;
+    private final @NotNull PlayerLoadout loadout;
 
     public MenuItemSaveLoadoutPage(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
                                    @NotNull PlayerLoadout loadout, @NotNull Menu menu) {

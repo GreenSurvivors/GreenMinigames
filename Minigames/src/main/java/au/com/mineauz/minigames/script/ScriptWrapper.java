@@ -3,19 +3,21 @@ package au.com.mineauz.minigames.script;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
 public class ScriptWrapper {
-    public static ScriptObject wrap(final Location object) {
+    public static @NotNull ScriptObject wrap(final @NotNull Location object) {
         return new ScriptObject() {
             @Override
-            public Set<String> getKeys() {
+            public @NotNull Set<@NotNull String> getKeys() {
                 return Set.of("x", "y", "z", "bx", "by", "bz", "world", "yaw", "pitch", "block");
             }
 
             @Override
-            public ScriptReference get(String name) {
+            public @Nullable ScriptReference get(@NotNull String name) {
                 if (name.equalsIgnoreCase("x")) {
                     return ScriptValue.of(object.getX());
                 } else if (name.equalsIgnoreCase("y")) {
@@ -41,21 +43,21 @@ public class ScriptWrapper {
             }
 
             @Override
-            public String getAsString() {
+            public @NotNull String getAsString() {
                 return String.format("%.1f,%.1f,%.1f,%s", object.getX(), object.getY(), object.getZ(), object.getWorld().getName());
             }
         };
     }
 
-    public static ScriptObject wrap(final Block object) {
+    public static @NotNull ScriptObject wrap(final @NotNull Block object) {
         return new ScriptObject() {
             @Override
-            public Set<String> getKeys() {
+            public @NotNull Set<@NotNull String> getKeys() {
                 return Set.of("pos", "type", "data", "temperature", "light", "blocklight", "skylight", "redstone");
             }
 
             @Override
-            public ScriptReference get(String name) {
+            public @Nullable ScriptReference get(@NotNull String name) {
                 if (name.equalsIgnoreCase("pos")) {
                     return wrap(object.getLocation());
                 } else if (name.equalsIgnoreCase("type")) {
@@ -78,21 +80,21 @@ public class ScriptWrapper {
             }
 
             @Override
-            public String getAsString() {
+            public @NotNull String getAsString() {
                 return String.format("%d,%d,%d,%s %s:%s", object.getX(), object.getY(), object.getZ(), object.getWorld().getName(), object.getType(), object.getBlockData().getAsString());
             }
         };
     }
 
-    public static ScriptObject wrap(final World object) {
+    public static @NotNull ScriptObject wrap(final @NotNull World object) {
         return new ScriptObject() {
             @Override
-            public Set<String> getKeys() {
+            public @NotNull Set<@NotNull String> getKeys() {
                 return Set.of("name", "time");
             }
 
             @Override
-            public ScriptReference get(String name) {
+            public @Nullable ScriptReference get(@NotNull String name) {
                 if (name.equalsIgnoreCase("name")) {
                     return ScriptValue.of(object.getName());
                 } else if (name.equalsIgnoreCase("time")) {
@@ -103,7 +105,7 @@ public class ScriptWrapper {
             }
 
             @Override
-            public String getAsString() {
+            public @NotNull String getAsString() {
                 return object.getName();
             }
         };

@@ -16,6 +16,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -25,11 +26,11 @@ public class CommandReward extends ARewardType {
     private final static String DESCRIPTION_TOKEN = "CommandReward_description";
     private String command = "say Hello World!";
 
-    public CommandReward(Rewards rewards) {
+    public CommandReward(@NotNull Rewards rewards) {
         super(rewards);
     }
 
-    public static CommandReward getMinigameReward(@NotNull Rewards rewards) {
+    public static @Nullable CommandReward getMinigameReward(@NotNull Rewards rewards) {
         return (CommandReward) RewardTypes.getRewardType(RewardTypes.MgRewardType.COMMAND.getName(), rewards);
     }
 
@@ -75,7 +76,7 @@ public class CommandReward extends ARewardType {
             updateDescription();
         }
 
-        public void updateName(String newName) {
+        public void updateName(@NotNull String newName) {
             ItemMeta meta = getDisplayItem().getItemMeta();
             if (newName.length() > 16) {
                 newName = newName.substring(0, 15);
@@ -107,7 +108,7 @@ public class CommandReward extends ARewardType {
         }
 
         @Override
-        public ItemStack onClick() {
+        public @NotNull ItemStack onClick() {
             int ind = options.lastIndexOf(getRarity());
             ind++;
             if (ind == options.size()) {
@@ -121,7 +122,7 @@ public class CommandReward extends ARewardType {
         }
 
         @Override
-        public ItemStack onRightClick() {
+        public @NotNull ItemStack onRightClick() {
             int ind = options.lastIndexOf(getRarity());
             ind--;
             if (ind == -1) {
@@ -135,14 +136,14 @@ public class CommandReward extends ARewardType {
         }
 
         @Override
-        public ItemStack onShiftRightClick() {
+        public @Nullable ItemStack onShiftRightClick() {
             getRewards().removeReward(reward);
             getContainer().removeItem(getSlot());
             return null;
         }
 
         @Override
-        public ItemStack onShiftClick() {
+        public @Nullable ItemStack onShiftClick() {
             MinigamePlayer mgPlayer = getContainer().getViewer();
             mgPlayer.setNoClose(true);
             mgPlayer.getPlayer().closeInventory();
@@ -158,7 +159,7 @@ public class CommandReward extends ARewardType {
         }
 
         @Override
-        public void checkValidEntry(String entry) {
+        public void checkValidEntry(@NotNull String entry) {
             if (entry.startsWith("./")) {
                 entry = entry.replace("./", "/");
             }

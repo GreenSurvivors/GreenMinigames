@@ -19,7 +19,7 @@ import java.io.File;
 
 public class PresetLoader {
 
-    public static void loadPreset(@NotNull String preset, @NotNull Minigame minigame, Audience audience) {
+    public static void loadPreset(@NotNull String preset, @NotNull Minigame minigame, @NotNull Audience audience) {
         preset = preset.toLowerCase();
         File file = new File(Minigames.getPlugin().getDataFolder() + File.separator + "presets" + File.separator + preset + ".yml");
         if (file.exists()) {

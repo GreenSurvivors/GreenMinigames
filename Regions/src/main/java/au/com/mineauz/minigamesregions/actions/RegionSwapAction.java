@@ -165,7 +165,7 @@ public class RegionSwapAction extends AAction {
 
     }
 
-    private void fillRegionBlockList(Region targetRegion, ArrayList<BlockState> targetRegionBlocks) {
+    private void fillRegionBlockList(@NotNull Region targetRegion, @NotNull ArrayList<BlockState> targetRegionBlocks) {
         for (int y = targetRegion.getFirstPoint().getBlockY(); y <= targetRegion.getSecondPoint().getBlockY(); y++) {
             for (int x = targetRegion.getFirstPoint().getBlockX(); x <= targetRegion.getSecondPoint().getBlockX(); x++) {
                 for (int z = targetRegion.getFirstPoint().getBlockZ(); z <= targetRegion.getSecondPoint().getBlockZ(); z++) {
@@ -191,7 +191,7 @@ public class RegionSwapAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(fromRegion.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_FROM_NAME)));

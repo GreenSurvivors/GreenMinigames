@@ -43,7 +43,7 @@ public class SetRegionCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return RegionMessageManager.getMessage(RegionLangKey.COMMAND_REGION_USAGE);
     }
 

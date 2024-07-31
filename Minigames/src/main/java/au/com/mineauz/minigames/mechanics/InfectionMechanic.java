@@ -33,7 +33,7 @@ public class InfectionMechanic extends GameMechanicBase {
     }
 
     @Override
-    public String getMechanicName() {
+    public @NotNull String getMechanicName() {
         return "infection";
     }
 
@@ -110,6 +110,7 @@ public class InfectionMechanic extends GameMechanicBase {
         return result;
     }
 
+    @Nullable
     @Override
     public MinigameModule displaySettings(@NotNull Minigame minigame) {
         return minigame.getModule(MgModules.INFECTION.getName());

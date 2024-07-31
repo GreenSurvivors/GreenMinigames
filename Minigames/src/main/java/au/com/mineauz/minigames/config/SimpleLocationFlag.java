@@ -18,10 +18,8 @@ import java.util.List;
  */
 public class SimpleLocationFlag extends AFlag<Location> {
 
-    public SimpleLocationFlag(Location value, String name) {
-        setFlag(value);
-        setDefaultFlag(value);
-        setName(name);
+    public SimpleLocationFlag(Location value, @NotNull String name) {
+        super(name, value, value);
     }
 
     @Override
@@ -69,14 +67,14 @@ public class SimpleLocationFlag extends AFlag<Location> {
 
     @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
         return getMenuItem(displayMat, name, null);
     }
 
     @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                @Nullable List<@NotNull Component> description) {
-        return null;
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                         @Nullable List<@NotNull Component> description) {
+        return null; // todo
     }
 }

@@ -47,12 +47,12 @@ public class ContainsEntireTeamCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
-        return new HashSet<>(region.getPlayers()).containsAll(player.getTeam().getPlayers());
+    public boolean checkRegionCondition(@NotNull MinigamePlayer mgPlayer, @NotNull Region region) {
+        return new HashSet<>(region.getPlayers()).containsAll(mgPlayer.getTeam().getPlayers());
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
+    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @Nullable Node node) {
         return false;
     }
 
@@ -68,7 +68,7 @@ public class ContainsEntireTeamCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu menu = new Menu(3, getDisplayName(), player);
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);

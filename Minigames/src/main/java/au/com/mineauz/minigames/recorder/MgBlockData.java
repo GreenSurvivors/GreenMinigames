@@ -31,7 +31,7 @@ public class MgBlockData {
     /**
      * data the block had
      */
-    private final String blockData;
+    private final @NotNull String blockData;
     /**
      * the uuid of the player who changed this block.
      * If null, the block doesn't get reset if the player left the minigame
@@ -40,7 +40,7 @@ public class MgBlockData {
     /**
      * inventory of the block
      */
-    private @Nullable ItemStack[] inventoryContents = null;
+    private @Nullable ItemStack @Nullable [] inventoryContents = null;
     /**
      * holds if the inventory was randomized ones
      */
@@ -170,7 +170,7 @@ public class MgBlockData {
      */
     @Override
     @Deprecated
-    public String toString() {
+    public @NotNull String toString() {
         StringBuilder ret = new StringBuilder("{");
         ret.append("mat:").append(state.getType()).append(";");
         ret.append("data:").append(blockData).append(";");

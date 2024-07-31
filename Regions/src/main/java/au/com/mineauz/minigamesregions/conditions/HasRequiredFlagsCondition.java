@@ -47,15 +47,15 @@ public class HasRequiredFlagsCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
-        if (player == null || !player.isInMinigame()) return false;
-        return Minigames.getPlugin().getPlayerManager().checkRequiredFlags(player, player.getMinigame()).isEmpty();
+    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
+        return Minigames.getPlugin().getPlayerManager().checkRequiredFlags(mgPlayer, mgPlayer.getMinigame()).isEmpty();
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
-        if (player == null || !player.isInMinigame()) return false;
-        return Minigames.getPlugin().getPlayerManager().checkRequiredFlags(player, player.getMinigame()).isEmpty();
+    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
+        return Minigames.getPlugin().getPlayerManager().checkRequiredFlags(mgPlayer, mgPlayer.getMinigame()).isEmpty();
     }
 
     @Override
@@ -69,7 +69,7 @@ public class HasRequiredFlagsCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
         addInvertMenuItem(m);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);

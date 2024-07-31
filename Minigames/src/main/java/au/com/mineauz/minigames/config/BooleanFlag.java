@@ -14,9 +14,7 @@ import java.util.List;
 public class BooleanFlag extends AFlag<Boolean> {
 
     public BooleanFlag(boolean value, @NotNull String name) {
-        setFlag(value);
-        setName(name);
-        setDefaultFlag(value);
+        super(name, value, value);
     }
 
     @Override
@@ -38,7 +36,7 @@ public class BooleanFlag extends AFlag<Boolean> {
     }
 
     @Override
-    public MenuItemBoolean getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
+    public @NotNull MenuItemBoolean getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
         return new MenuItemBoolean(displayMaterial, langKey, new Callback<>() {
 
             @Override
@@ -54,7 +52,7 @@ public class BooleanFlag extends AFlag<Boolean> {
     }
 
     @Override
-    public MenuItemBoolean getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItemBoolean getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                        @Nullable List<@NotNull Component> description) {
         return new MenuItemBoolean(displayMat, name, description, new Callback<>() {
 

@@ -59,16 +59,16 @@ public class MinigameTimeRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
+    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         return check(region.getMinigame());
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
+    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
         return check(node.getMinigame());
     }
 
-    private boolean check(Minigame mg) {
+    private boolean check(@NotNull Minigame mg) {
         MinigameTimer timer = mg.getMinigameTimer();
 
         if (timer == null) {
@@ -97,7 +97,7 @@ public class MinigameTimeRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
 
         m.addItem(minTime.getMenuItem(Material.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0L, null));

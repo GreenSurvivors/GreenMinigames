@@ -74,9 +74,9 @@ public class VelocityAction extends AAction {
         execute(mgPlayer);
     }
 
-    private void execute(final MinigamePlayer player) {
-        if (player == null) return;
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> player.getPlayer().setVelocity(new Vector(x.getFlag(), y.getFlag(), z.getFlag())));
+    private void execute(final @Nullable MinigamePlayer mgPlayer) {
+        if (mgPlayer == null) return;
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> mgPlayer.getPlayer().setVelocity(new Vector(x.getFlag(), y.getFlag(), z.getFlag())));
     }
 
     @Override
@@ -94,7 +94,7 @@ public class VelocityAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(x.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_X_NAME), 0.5d, 1d, null, null));

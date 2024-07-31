@@ -48,7 +48,7 @@ public class EndCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_END_USAGE);
     }
 
@@ -202,7 +202,7 @@ public class EndCommand extends ACommand {
                 Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamToWin.getColor().getCompName()));
     }
 
-    private void forceEndForGlobal(@NotNull CommandSender sender, Minigame minigame) {
+    private void forceEndForGlobal(@NotNull CommandSender sender, @NotNull Minigame minigame) {
         if (sender.hasPermission("minigame.stop")) {
             if (minigame.isEnabled()) {
                 PLUGIN.getMinigameManager().stopGlobalMinigame(minigame, sender);

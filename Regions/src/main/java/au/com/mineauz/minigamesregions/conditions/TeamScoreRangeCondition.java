@@ -66,16 +66,16 @@ public class TeamScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
-        return checkCondition(player);
+    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        return checkCondition(mgPlayer);
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
-        return checkCondition(player);
+    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        return checkCondition(mgPlayer);
     }
 
-    private boolean checkCondition(MinigamePlayer player) {
+    private boolean checkCondition(@Nullable MinigamePlayer player) {
         if (player == null || !player.isInMinigame()) {
             return false;
         }
@@ -114,7 +114,7 @@ public class TeamScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(min.getMenuItem(Material.STONE_SLAB,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0, null));
@@ -139,7 +139,7 @@ public class TeamScoreRangeCondition extends ACondition {
         return true;
     }
 
-    private Material getTeamMaterial() {
+    private @NotNull Material getTeamMaterial() {
         return teamColor.getFlag().getDisplaMaterial();
     }
 

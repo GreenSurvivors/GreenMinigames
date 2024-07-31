@@ -23,8 +23,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class LoadoutModule extends MinigameModule {
-    private static final Map<String, LoadoutAddonFactory> registeredAddons = new HashMap<>();
-    private final Map<String, PlayerLoadout> loadouts = new HashMap<>();
+    private static final @NotNull Map<@NotNull String, @NotNull LoadoutAddonFactory> registeredAddons = new HashMap<>();
+    private final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts = new HashMap<>();
 
     public LoadoutModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
@@ -119,7 +119,7 @@ public class LoadoutModule extends MinigameModule {
         }
     }
 
-    public void addLoadout(String name) {
+    public void addLoadout(@NotNull String name) {
         loadouts.put(name, new PlayerLoadout(name));
     }
 
@@ -127,15 +127,15 @@ public class LoadoutModule extends MinigameModule {
         loadouts.remove(name);
     }
 
-    public Set<String> getLoadoutNames() {
+    public @NotNull Set<@NotNull String> getLoadoutNames() {
         return loadouts.keySet();
     }
 
-    public Set<PlayerLoadout> getLoadouts() {
+    public @NotNull Set<@NotNull PlayerLoadout> getLoadouts() {
         return new HashSet<>(loadouts.values());
     }
 
-    public Map<String, PlayerLoadout> getLoadoutMap() {
+    public @NotNull Map<@NotNull String, @NotNull PlayerLoadout> getLoadoutMap() {
         return loadouts;
     }
 
@@ -156,7 +156,7 @@ public class LoadoutModule extends MinigameModule {
         return !loadouts.isEmpty();
     }
 
-    public boolean hasLoadout(String name) {
+    public boolean hasLoadout(@NotNull String name) {
         if (!name.equalsIgnoreCase("default")) {
             if (loadouts.containsKey(name)) {
                 return loadouts.containsKey(name);
@@ -173,7 +173,7 @@ public class LoadoutModule extends MinigameModule {
         }
     }
 
-    public void displaySelectionMenu(final MinigamePlayer mgPlayer, final boolean equip) {
+    public void displaySelectionMenu(final @NotNull MinigamePlayer mgPlayer, final boolean equip) {
         Menu m = new Menu(6, MgMenuLangKey.MENU_LOADOUT_SELECT_NAME, mgPlayer);
 
         for (final PlayerLoadout loadout : loadouts.values()) {

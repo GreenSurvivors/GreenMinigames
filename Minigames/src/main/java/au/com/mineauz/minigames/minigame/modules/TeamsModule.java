@@ -19,8 +19,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TeamsModule extends MinigameModule {
-    private final Map<TeamColor, TeamFlag> teams = new HashMap<>();
-    private EnumFlag<TeamColor> defaultWinner = new EnumFlag<>(TeamColor.NONE, "defaultwinner");
+    private final @NotNull  Map<@NotNull TeamColor, @NotNull TeamFlag> teams = new HashMap<>();
+    private final @NotNull EnumFlag<@NotNull TeamColor> defaultWinner = new EnumFlag<>(TeamColor.NONE, "defaultwinner");
 
     public TeamsModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
@@ -190,30 +190,27 @@ public class TeamsModule extends MinigameModule {
         return true;
     }
 
-    public Callback<TeamColor> getDefaultWinnerCallback() {
+    public @NotNull Callback<TeamColor> getDefaultWinnerCallback() {
         return new Callback<>() {
 
             @Override
-            public TeamColor getValue() {
-                if (defaultWinner.getFlag() != null) {
-                    if (!teams.containsKey(defaultWinner.getFlag())) {
-                        return TeamColor.NONE;
-                    }
-
-                    return defaultWinner.getFlag();
+            public @NotNull TeamColor getValue() {
+                if (!teams.containsKey(defaultWinner.getFlag())) {
+                    return TeamColor.NONE;
                 }
-                return TeamColor.NONE;
+
+                return defaultWinner.getFlag();
             }
 
             @Override
-            public void setValue(TeamColor value) {
+            public void setValue(@NotNull TeamColor value) {
                 defaultWinner.setFlag(value);
             }
         };
     }
 
     public @Nullable TeamColor getDefaultWinner() {
-        if (defaultWinner.getFlag() != null) {
+        if (defaultWinner.getFlag() != TeamColor.NONE) {
             TeamColor team = defaultWinner.getFlag();
             if (!teams.containsKey(team)) {
                 return null;
@@ -230,7 +227,7 @@ public class TeamsModule extends MinigameModule {
 
     public void clearTeams() {
         teams.clear();
-        defaultWinner = null;
+        defaultWinner.setFlag(TeamColor.NONE);
     }
 
     @Override

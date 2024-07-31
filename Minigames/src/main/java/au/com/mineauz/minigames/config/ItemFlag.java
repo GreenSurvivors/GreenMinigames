@@ -17,9 +17,7 @@ import java.util.Map;
 public class ItemFlag extends AFlag<ItemStack> {
 
     public ItemFlag(@NotNull ItemStack itemStack, @NotNull String name) {
-        setFlag(itemStack);
-        setDefaultFlag(itemStack);
-        setName(name);
+        super(name, itemStack, itemStack);
     }
 
     @Override
@@ -54,7 +52,6 @@ public class ItemFlag extends AFlag<ItemStack> {
             setFlag(getDefaultFlag());
         }
     }
-
 
     public @NotNull MenuItemItemNbt getMenuItem(@NotNull Component name) {
         return new MenuItemItemNbt(getFlagOrDefault(), name, new Callback<>() {

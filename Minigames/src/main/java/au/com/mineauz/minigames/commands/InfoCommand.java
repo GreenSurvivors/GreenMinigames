@@ -43,7 +43,7 @@ public class InfoCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_INFO_USAGE);
     }
 

@@ -106,7 +106,7 @@ public class SetTeamScoreAction extends AScoreAction { // todo merge with setSco
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(score.getMenuItem(Material.STONE, MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME),

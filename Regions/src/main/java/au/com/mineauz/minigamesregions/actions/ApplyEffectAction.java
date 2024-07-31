@@ -27,9 +27,9 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ApplyEffectAction extends AAction {
-    private final StringFlag typeNameSpacedKey = new StringFlag(PotionEffectType.SPEED.getKey().toString(), "type");
-    private final TimeFlag dur = new TimeFlag(60L, "duration");
-    private final IntegerFlag amp = new IntegerFlag(1, "amplifier");
+    private final @NotNull StringFlag typeNameSpacedKey = new StringFlag(PotionEffectType.SPEED.getKey().toString(), "type");
+    private final @NotNull TimeFlag dur = new TimeFlag(60L, "duration");
+    private final @NotNull IntegerFlag amp = new IntegerFlag(1, "amplifier");
     private @Nullable PotionEffectType type = null;
 
     protected ApplyEffectAction(@NotNull String name) {
@@ -75,7 +75,7 @@ public class ApplyEffectAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
+    public void executeRegionAction(@NotNull MinigamePlayer mgPlayer,
                                     @NotNull Region region) {
         debug(mgPlayer, region);
         execute(mgPlayer);
@@ -88,7 +88,7 @@ public class ApplyEffectAction extends AAction {
         execute(mgPlayer);
     }
 
-    private void execute(MinigamePlayer player) {
+    private void execute(@NotNull MinigamePlayer player) {
         if (type != null) {
             PotionEffect effect = new PotionEffect(type, dur.getFlag().intValue() * 20, amp.getFlag() - 1);
             player.getPlayer().addPotionEffect(effect);
@@ -139,7 +139,7 @@ public class ApplyEffectAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
@@ -148,12 +148,12 @@ public class ApplyEffectAction extends AAction {
 
         m.addItem(new MenuItemList<>(Material.POTION, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_EFFECT_NAME), new Callback<>() {
             @Override
-            public PotionEffectType getValue() {
+            public @Nullable PotionEffectType getValue() {
                 return type;
             }
 
             @Override
-            public void setValue(PotionEffectType value) {
+            public void setValue(@NotNull PotionEffectType value) {
                 typeNameSpacedKey.setFlag(value.getKey().asString());
                 type = value;
             }

@@ -209,7 +209,7 @@ public class SpawnEntityAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         List<EntityType> options = new ArrayList<>();

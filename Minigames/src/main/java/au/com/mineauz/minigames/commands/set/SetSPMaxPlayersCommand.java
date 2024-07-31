@@ -33,7 +33,7 @@ public class SetSPMaxPlayersCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_SPMAXPLAYERS_USAGE);
     }
 

@@ -32,7 +32,7 @@ public class CTFFlag {
     private final @Nullable Location attachedToLocation;
     private final @Nullable Team team;
     private @Nullable Location currentLocation = null;
-    private BlockState originalBlock = null;
+    private @Nullable BlockState originalBlock = null;
     private boolean atHome = true;
     private int respawnTime = 60;
     private int taskID = -1;
@@ -85,7 +85,7 @@ public class CTFFlag {
         return team;
     }
 
-    public Location spawnFlag(Location location) {
+    public @Nullable Location spawnFlag(@NotNull Location location) {
         Location blockBelow = location.clone();
         blockBelow.setY(blockBelow.getBlockY() - 1);
 
@@ -209,7 +209,7 @@ public class CTFFlag {
         }, respawnTime * 20L);
     }
 
-    public void startCarrierParticleEffect(final Player player) {
+    public void startCarrierParticleEffect(final @NotNull Player player) {
         cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 0), 15L, 15L);
     }
 

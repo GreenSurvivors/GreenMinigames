@@ -1,20 +1,22 @@
 package au.com.mineauz.minigames.script;
 
 import com.google.common.collect.Iterables;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 
 class ScriptCollectionImpl<E extends ScriptReference> extends ScriptCollection {
-    private final Collection<E> collection;
+    private final @NotNull Collection<E> collection;
 
-    public ScriptCollectionImpl(Collection<E> collection) {
+    public ScriptCollectionImpl(@NotNull Collection<@NotNull E> collection) {
         this.collection = collection;
     }
 
     @Override
-    public ScriptReference getValue(String key) throws IllegalArgumentException, NoSuchElementException {
+    public @Nullable ScriptReference getValue(@NotNull String key) throws IllegalArgumentException, NoSuchElementException {
         int index = Integer.parseInt(key);
 
         if (index < 0 || index >= collection.size()) {
@@ -25,7 +27,7 @@ class ScriptCollectionImpl<E extends ScriptReference> extends ScriptCollection {
     }
 
     @Override
-    public Collection<String> getKeys() {
+    public @NotNull Collection<@NotNull String> getKeys() {
         return Collections.emptyList();
     }
 }

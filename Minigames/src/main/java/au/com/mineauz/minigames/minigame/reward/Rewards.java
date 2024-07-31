@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,14 +20,14 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Rewards {
-    private final List<ARewardType> items = new ArrayList<>();
-    private final List<RewardGroup> groups = new ArrayList<>();
+    private final @NotNull List<@NotNull ARewardType> items = new ArrayList<>();
+    private final @NotNull List<@NotNull RewardGroup> groups = new ArrayList<>();
 
     public boolean isEmpty() {
         return items.isEmpty() && groups.isEmpty();
     }
 
-    public List<ARewardType> getReward() {
+    public @Nullable List<@NotNull ARewardType> getReward() {
         double rand = ThreadLocalRandom.current().nextDouble();
         RewardRarity rarity;
         List<Object> itemsCopyList = new ArrayList<>();
@@ -100,25 +101,25 @@ public class Rewards {
         items.remove(item);
     }
 
-    public List<ARewardType> getRewards() {
+    public @NotNull List<@NotNull ARewardType> getRewards() {
         return items;
     }
 
-    public RewardGroup addGroup(String groupName, RewardRarity rarity) {
+    public @NotNull RewardGroup addGroup(String groupName, RewardRarity rarity) {
         RewardGroup group = new RewardGroup(groupName, rarity);
         groups.add(group);
         return group;
     }
 
-    public void removeGroup(RewardGroup group) {
+    public void removeGroup(@NotNull RewardGroup group) {
         groups.remove(group);
     }
 
-    public List<RewardGroup> getGroups() {
+    public @NotNull List<@NotNull RewardGroup> getGroups() {
         return groups;
     }
 
-    public Menu createMenu(Component name, MinigamePlayer player, Menu parent) {
+    public @NotNull Menu createMenu(@NotNull Component name, @NotNull MinigamePlayer player, @NotNull Menu parent) {
         Menu rewardMenu = new Menu(5, name, player);
 
         rewardMenu.setPreviousPage(parent);

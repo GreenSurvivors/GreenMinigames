@@ -12,11 +12,12 @@ import be.seeseemelk.mockbukkit.block.data.BlockDataMock;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public class TestHelper {
-    public static Minigame createMinigame(Minigames plugin, WorldMock world, MinigameType type, GameMechanicBase mechanic) {
+    public static @NotNull  Minigame createMinigame(@NotNull Minigames plugin, WorldMock world, @NotNull MinigameType type, @NotNull GameMechanicBase mechanic) {
         Location start = new Location(world, 0, 21, 0);
         Minigame game = new Minigame("TestGame", MinigameType.MULTIPLAYER, start);
         game.setType(type);
@@ -37,7 +38,7 @@ public class TestHelper {
         return game;
     }
 
-    public static BlockMock createSignBlock(Map<Integer, String> lines, WorldMock world) {
+    public static @NotNull BlockMock createSignBlock(@NotNull Map<@NotNull Integer, @NotNull String> lines, @NotNull WorldMock world) {
         MockSign sign = new MockSign(Material.CRIMSON_SIGN, true);
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             sign.setLine(e.getKey(), e.getValue());

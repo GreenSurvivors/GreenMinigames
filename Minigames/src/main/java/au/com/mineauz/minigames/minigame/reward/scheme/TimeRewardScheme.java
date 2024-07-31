@@ -22,17 +22,17 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
     }
 
     @Override
-    protected Integer decrement(Integer value) {
+    protected @NotNull Integer decrement(Integer value) {
         return value - 1;
     }
 
     @Override
-    protected Integer increment(Integer value) {
+    protected @NotNull Integer increment(Integer value) {
         return value + 1;
     }
 
     @Override
-    protected Integer loadKey(String key) {
+    protected @NotNull Integer loadKey(@NotNull String key) {
         int value = Integer.parseInt(key);
         if (value <= 0) {
             throw new IllegalArgumentException();
@@ -45,7 +45,7 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
      * in seconds
      */
     @Override
-    protected Component getMenuItemDescName(@NotNull Integer value) {
+    protected @NotNull Component getMenuItemDescName(@NotNull Integer value) {
         return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_TIME_DESCRIPTION,
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(value), true)));
     }
@@ -54,7 +54,7 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
      * in seconds
      */
     @Override
-    protected Integer getValue(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
+    protected @NotNull Integer getValue(MinigamePlayer player, @NotNull StoredGameStats data, Minigame minigame) {
         return (int) TimeUnit.MILLISECONDS.toSeconds(data.getStat(MinigameStatistics.CompletionTime));
     }
 
@@ -62,7 +62,7 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
      * in seconds
      */
     @Override
-    protected Component getMenuItemName(@NotNull Integer value) {
+    protected @NotNull Component getMenuItemName(@NotNull Integer value) {
         return MinigameUtils.convertTime(Duration.ofSeconds(value), true);
     }
 }

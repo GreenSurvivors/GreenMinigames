@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class RewardTypes {
-    private static final Map<String, RewardTypeFactory> types = new HashMap<>();
+    private static final @NotNull Map<@NotNull String, @NotNull RewardTypeFactory> types = new HashMap<>();
 
     static {
         for (MgRewardType factory : MgRewardType.values()) {
@@ -18,7 +18,7 @@ public class RewardTypes {
         }
     }
 
-    public static void addRewardType(RewardTypeFactory factory) {
+    public static void addRewardType(@NotNull RewardTypeFactory factory) {
         if (types.containsKey(factory.getName())) {
             throw new InvalidRewardTypeException("A reward type already exists by that name");
         } else {
@@ -33,7 +33,7 @@ public class RewardTypes {
         return null;
     }
 
-    public static List<RewardTypeFactory> getRewardTypeFactories() {
+    public static @NotNull List<@NotNull RewardTypeFactory> getRewardTypeFactories() {
         return new ArrayList<>(types.values());
     }
 

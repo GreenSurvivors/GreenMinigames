@@ -24,7 +24,7 @@ public final class RewardSchemeRegistry {
         definedSchemes.put(factory.getSchemeName().toLowerCase(), factory);
     }
 
-    public static @Nullable ARewardScheme createScheme(String name) {
+    public static @Nullable ARewardScheme createScheme(@NotNull String name) {
         RewardSchemeFactory factory = definedSchemes.get(name);
 
         if (factory != null) {
@@ -34,7 +34,7 @@ public final class RewardSchemeRegistry {
         }
     }
 
-    public static MenuItem newMenuItem(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<String> callback) {
+    public static @NotNull MenuItem newMenuItem(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<String> callback) {
         return new MenuItemList<>(displayMat, name, callback, new ArrayList<>(definedSchemes.keySet()));
     }
 }

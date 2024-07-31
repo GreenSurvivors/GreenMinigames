@@ -18,10 +18,8 @@ import java.util.List;
 
 public class BlockDataFlag extends AFlag<BlockData> {
 
-    public BlockDataFlag(BlockData value, @NotNull String name) {
-        setDefaultFlag(value);
-        setFlag(value);
-        setName(name);
+    public BlockDataFlag(@NotNull BlockData value, @NotNull String name) {
+        super(name, value, value);
     }
 
     @Override
@@ -51,16 +49,15 @@ public class BlockDataFlag extends AFlag<BlockData> {
     }
 
     /**
-     *
      * @deprecated use {@link #getMenuItem(MinigameLangKey)}
      */
     @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
         return getMenuItem(MinigameMessageManager.getMgMessage(langKey));
     }
 
-    public MenuItem getMenuItem(@NotNull MinigameLangKey langKey) {
+    public @NotNull MenuItem getMenuItem(@NotNull MinigameLangKey langKey) {
         return getMenuItem(MinigameMessageManager.getMgMessage(langKey));
     }
 
@@ -69,7 +66,7 @@ public class BlockDataFlag extends AFlag<BlockData> {
      */
     @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMaterial, @Nullable Component name) {
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMaterial, @Nullable Component name) {
         return getMenuItem(name);
     }
 
@@ -78,7 +75,7 @@ public class BlockDataFlag extends AFlag<BlockData> {
      */
     @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description) {
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description) {
         return getMenuItem(name);
     }
 
@@ -87,12 +84,12 @@ public class BlockDataFlag extends AFlag<BlockData> {
      */
     @Deprecated
     @Override
-    public MenuItem getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey nameLangKey,
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey nameLangKey,
                                 @NotNull MinigameLangKey descriptionLangKey) {
         return getMenuItem(MinigameMessageManager.getMgMessage(nameLangKey));
     }
 
-    public MenuItem getMenuItem(@Nullable Component name) {
+    public @NotNull MenuItem getMenuItem(@Nullable Component name) {
         return new MenuItemBlockData(getFlag().getMaterial(), name, new Callback<>() {
             @Override
             public BlockData getValue() {

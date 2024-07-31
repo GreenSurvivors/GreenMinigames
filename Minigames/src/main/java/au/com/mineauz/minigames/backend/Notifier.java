@@ -1,9 +1,12 @@
 package au.com.mineauz.minigames.backend;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface Notifier {
-    void onProgress(String state, int count);
+
+    void onProgress(@NotNull String state, int count);
 
     void onComplete();
 
-    void onError(Exception e, String state, int count);
+    void onError(@NotNull Exception e, @NotNull String state, int count);
 }

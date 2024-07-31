@@ -13,25 +13,27 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.List;
 
 public class MenuItemAddWhitelistBlock extends MenuItem {
-    protected final List<Material> whitelist;
+    protected final @NotNull List<@NotNull Material> whitelist;
 
-    public MenuItemAddWhitelistBlock(MinigameLangKey langKey, List<Material> whitelist) {
+    public MenuItemAddWhitelistBlock(@NotNull MinigameLangKey langKey, @NotNull List<@NotNull Material> whitelist) {
         this(MinigameMessageManager.getMgMessage(langKey), whitelist);
     }
 
-    public MenuItemAddWhitelistBlock(Component name, List<Material> whitelist) {
+    public MenuItemAddWhitelistBlock(@NotNull Component name, @NotNull List<@NotNull Material> whitelist) {
         super(MenuUtility.getCreateMaterial(), name,
                 MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_WHITELIST_INTERACT));
         this.whitelist = whitelist;
     }
 
     @Override
-    public ItemStack onClickWithItem(ItemStack item) {
+    public @NotNull ItemStack onClickWithItem(@NotNull ItemStack item) {
         if (!whitelist.contains(item.getType())) {
             whitelist.add(item.getType());
             getContainer().addItem(new MenuItemWhitelistBlock(item.getType(), whitelist));
@@ -42,7 +44,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
@@ -56,7 +58,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         // try a direct match in case of a chat input
         Material mat = Material.matchMaterial(entry);
 

@@ -32,12 +32,12 @@ public class MenuItemRegenRegion extends MenuItem {
 
     //there is nothing in need of configuration
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         return null;
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @Nullable ItemStack onRightClick() {
         rmod.getMinigame().removeRegenRegion(region.getName());
         getContainer().removeItem(getSlot());
         return null;

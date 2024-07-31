@@ -27,13 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameOverModule extends MinigameModule {
-    private final TimeFlag timer = new TimeFlag(0L, "gameOver.timer"); // in seconds
-    private final BooleanFlag invincible = new BooleanFlag(false, "gameOver.invincible");
-    private final BooleanFlag humiliation = new BooleanFlag(false, "gameOver.humiliation");
-    private final BooleanFlag interact = new BooleanFlag(false, "gameOver.interact");
+    private final @NotNull TimeFlag timer = new TimeFlag(0L, "gameOver.timer"); // in seconds
+    private final @NotNull BooleanFlag invincible = new BooleanFlag(false, "gameOver.invincible");
+    private final @NotNull BooleanFlag humiliation = new BooleanFlag(false, "gameOver.humiliation");
+    private final @NotNull BooleanFlag interact = new BooleanFlag(false, "gameOver.interact");
 
-    private final List<MinigamePlayer> winners = new ArrayList<>();
-    private final List<MinigamePlayer> losers = new ArrayList<>();
+    private final @NotNull List<@NotNull MinigamePlayer> winners = new ArrayList<>();
+    private final @NotNull List<@NotNull MinigamePlayer> losers = new ArrayList<>();
     private int task = -1;
 
     public GameOverModule(@NotNull Minigame mgm, @NotNull String name) {
@@ -145,11 +145,11 @@ public class GameOverModule extends MinigameModule {
         winners.clear();
     }
 
-    public List<MinigamePlayer> getWinners() {
+    public @NotNull List<@NotNull MinigamePlayer> getWinners() {
         return winners;
     }
 
-    public void setWinners(List<MinigamePlayer> winners) {
+    public void setWinners(@NotNull List<MinigamePlayer> winners) {
         this.winners.addAll(winners);
     }
 
@@ -157,11 +157,11 @@ public class GameOverModule extends MinigameModule {
         losers.clear();
     }
 
-    public List<MinigamePlayer> getLosers() {
+    public @NotNull List<@NotNull MinigamePlayer> getLosers() {
         return losers;
     }
 
-    public void setLosers(List<MinigamePlayer> losers) {
+    public void setLosers(@NotNull List<@NotNull MinigamePlayer> losers) {
         this.losers.addAll(losers);
     }
 
@@ -196,5 +196,4 @@ public class GameOverModule extends MinigameModule {
     public void setInteractAllowed(boolean bool) {
         interact.setFlag(bool);
     }
-
 }

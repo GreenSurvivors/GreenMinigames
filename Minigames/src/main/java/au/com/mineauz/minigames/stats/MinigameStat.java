@@ -40,7 +40,7 @@ public abstract class MinigameStat {
      * @return Returns the current name for display purposes.
      * This will be the display name if set, otherwise it will be the actual name
      */
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return Objects.requireNonNullElseGet(displayName, () -> Component.text(name));
     }
 

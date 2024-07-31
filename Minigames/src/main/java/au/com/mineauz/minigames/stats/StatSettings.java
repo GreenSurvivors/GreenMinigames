@@ -20,7 +20,7 @@ public class StatSettings {
         this.displayName = displayName;
     }
 
-    public StatSettings(MinigameStat stat) {
+    public StatSettings(@NotNull MinigameStat stat) {
         this(stat, null, null);
     }
 
@@ -34,6 +34,7 @@ public class StatSettings {
     /**
      * @return Returns the current format of this stat for this minigame
      */
+    @NotNull
     public StatFormat getFormat() {
         return Objects.requireNonNullElseGet(format, stat::getFormat);
     }
@@ -50,7 +51,7 @@ public class StatSettings {
     /**
      * @return Returns the current display name of this stat
      */
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return Objects.requireNonNullElseGet(displayName, stat::getDisplayName);
     }
 

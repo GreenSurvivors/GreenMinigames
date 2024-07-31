@@ -82,7 +82,7 @@ public class MenuItemDecimal extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         if (max == null || value.getValue() < max) {
             value.setValue(value.getValue() + lowerInc);
         }
@@ -94,7 +94,7 @@ public class MenuItemDecimal extends MenuItem {
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @NotNull ItemStack onRightClick() {
         if (min == null || value.getValue() > min) {
             value.setValue(value.getValue() - lowerInc);
         }
@@ -106,7 +106,7 @@ public class MenuItemDecimal extends MenuItem {
     }
 
     @Override
-    public ItemStack onShiftClick() {
+    public @NotNull ItemStack onShiftClick() {
         if (max == null || value.getValue() < max)
             value.setValue(value.getValue() + upperInc);
         if (max != null && value.getValue() > max)
@@ -116,7 +116,7 @@ public class MenuItemDecimal extends MenuItem {
     }
 
     @Override
-    public ItemStack onShiftRightClick() {
+    public @NotNull ItemStack onShiftRightClick() {
         if (min == null || value.getValue() > min)
             value.setValue(value.getValue() - upperInc);
         if (min != null && value.getValue() < min)
@@ -126,7 +126,7 @@ public class MenuItemDecimal extends MenuItem {
     }
 
     @Override
-    public ItemStack onDoubleClick() {
+    public @Nullable ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();

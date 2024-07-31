@@ -33,7 +33,7 @@ public class BackendCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_BACKEND_USAGE);
     }
 
@@ -108,7 +108,7 @@ public class BackendCommand extends ACommand {
         }
 
         @Override
-        public void onProgress(String state, int count) {
+        public void onProgress(@NotNull String state, int count) {
             Minigames.getCmpnntLogger().info("Exporting backend... " + state + ": " + count);
         }
 
@@ -119,7 +119,7 @@ public class BackendCommand extends ACommand {
         }
 
         @Override
-        public void onError(Exception e, String state, int count) {
+        public void onError(@NotNull Exception e, @NotNull String state, int count) {
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
             Minigames.getCmpnntLogger().error("Exporting error at " + state + ": " + count, e);

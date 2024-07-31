@@ -55,17 +55,17 @@ public class PlayerHealthRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
-        if (player == null || !player.isInMinigame()) return false;
-        return player.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
-                player.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue();
+    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
+        return mgPlayer.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
+                mgPlayer.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue();
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
-        if (player == null || !player.isInMinigame()) return false;
-        return player.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
-                player.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue();
+    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
+        return mgPlayer.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
+                mgPlayer.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue();
     }
 
     @Override
@@ -84,7 +84,7 @@ public class PlayerHealthRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(minHealth.getMenuItem(Material.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0, 20));
         m.addItem(maxHealth.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 0, 20));

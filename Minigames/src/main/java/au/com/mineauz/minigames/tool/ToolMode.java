@@ -13,21 +13,21 @@ import java.util.List;
 
 public interface ToolMode {
 
-    String getName();
+    @NotNull String getName();
 
-    Component getDisplayName();
+    @NotNull Component getDisplayName();
 
     /**
      * Returns the description of the tool mode with lines separated into list elements,
      * so it is compatible with lore of a (menu) item
      */
-    List<Component> getDescription();
+    @NotNull List<@NotNull Component> getDescription();
 
-    Material getIcon();
+    @NotNull Material getIcon();
 
     void onSetMode(@NotNull MinigamePlayer player, @NotNull MinigameTool tool);
 
-    void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool);
+    void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool);
 
     void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event);
 

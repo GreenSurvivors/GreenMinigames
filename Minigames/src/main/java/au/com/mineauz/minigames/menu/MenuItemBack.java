@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.menu;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MenuItemBack extends MenuItem {
     private final @NotNull Menu prev;
@@ -13,7 +14,7 @@ public class MenuItemBack extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         prev.displayMenu(prev.getViewer());
         return null;
     }

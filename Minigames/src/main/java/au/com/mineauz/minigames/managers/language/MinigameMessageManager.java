@@ -67,7 +67,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         registerCoreLanguage(file, locale);
     }
 
-    private static String saveConvert(String theString, boolean escapeSpace) {
+    private static @NotNull String saveConvert(@NotNull String theString, boolean escapeSpace) {
         int len = theString.length();
         int bufLen = len * 2;
         if (bufLen < 0) {
@@ -226,7 +226,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @param bundle     the ResourceBundle
      * @return true on success.
      */
-    public static boolean registerMessageFile(String identifier, ResourceBundle bundle) {
+    public static boolean registerMessageFile(@NotNull String identifier, @NotNull ResourceBundle bundle) {
         if (propertiesHashMap.containsKey(identifier)) {
             return false;
         } else {
@@ -240,15 +240,15 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         }
     }
 
-    public static boolean deRegisterMessageFile(String identifier) {
+    public static boolean deRegisterMessageFile(@NotNull String identifier) {
         return (propertiesHashMap.remove(identifier) != null);
     }
 
-    public static Component formatBlockLocation(@NotNull Location location) {
+    public static @NotNull Component formatBlockLocation(@NotNull Location location) {
         return Component.text(location.blockX() + ", " + location.blockY() + " ," + location.blockZ());
     }
 
-    public static Component getMgMessage(@NotNull MinigameLangKey key, TagResolver... resolvers) {
+    public static @NotNull Component getMgMessage(@NotNull MinigameLangKey key, TagResolver... resolvers) {
         return getMessage(null, key, resolvers);
     }
 
@@ -260,13 +260,13 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @param resolvers  resolver of placeholders
      * @return Formatted String.
      */
-    public static Component getMessage(@Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
+    public static @NotNull Component getMessage(@Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
         String unformatted = getUnformattedMessage(identifier, key);
 
         return MiniMessage.miniMessage().deserialize(unformatted, resolvers);
     }
 
-    public static String getStrippedMgMessage(@NotNull MinigameLangKey key, TagResolver... resolvers) {
+    public static @NotNull String getStrippedMgMessage(@NotNull MinigameLangKey key, TagResolver... resolvers) {
         return getStrippedMessage(null, key, resolvers);
     }
 
@@ -278,11 +278,11 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @param resolvers  resolver of placeholders
      * @return String stripped of format.
      */
-    public static String getStrippedMessage(@Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
+    public static @NotNull String getStrippedMessage(@Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
         return PlainTextComponentSerializer.plainText().serialize(MiniMessage.miniMessage().deserialize(getUnformattedMessage(identifier, key), resolvers));
     }
 
-    public static String getUnformattedMgMessage(@NotNull MinigameLangKey key) throws MissingResourceException {
+    public static @NotNull String getUnformattedMgMessage(@NotNull MinigameLangKey key) throws MissingResourceException {
         return getUnformattedMessage(null, key);
     }
 
@@ -313,7 +313,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @return Unformatted (raw) String.
      * @throws MissingResourceException If bundle not found.
      */
-    public static String getUnformattedMessage(@Nullable String identifier, @NotNull LangKey key) throws MissingResourceException { //todo don't crash if bundle is missing or can't get string. simply return key
+    public static @NotNull String getUnformattedMessage(@Nullable String identifier, @NotNull LangKey key) throws MissingResourceException { //todo don't crash if bundle is missing or can't get string. simply return key
         ResourceBundle bundle = propertiesHashMap.get(Objects.requireNonNullElse(identifier, BUNDLE_KEY));
         if (bundle == null) {
             String err = (identifier == null) ? "NULL" : identifier;
@@ -335,12 +335,12 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         target.sendMessage(init.append(message));
     }
 
-    public static void sendMessage(MinigamePlayer mgPlayer, MinigameMessageType type, @Nullable String identifier,
+    public static void sendMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type, @Nullable String identifier,
                                    @NotNull LangKey key, TagResolver... resolvers) {
         sendMessage(mgPlayer.getPlayer(), type, identifier, key, resolvers);
     }
 
-    public static void sendMessage(@NotNull Audience target, MinigameMessageType type, @Nullable String identifier, LangKey key,
+    public static void sendMessage(@NotNull Audience target, @NotNull MinigameMessageType type, @Nullable String identifier, @NotNull LangKey key,
                                    TagResolver... resolvers) {
         Component init = getPluginPrefix(type);
         Component message = getMessage(identifier, key, resolvers);
@@ -351,7 +351,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         target.sendMessage(init.append(message));
     }
 
-    private static Component getPluginPrefix(MinigameMessageType type) {
+    private static @NotNull Component getPluginPrefix(@NotNull MinigameMessageType type) {
         Component init = getMessage(BUNDLE_KEY, MgMiscLangKey.PLUGIN_PREFIX).appendSpace();
         return switch (type) {
             case ERROR, TIE -> init.color(NamedTextColor.RED);

@@ -30,22 +30,22 @@ import java.util.List;
 public class RegionToolMode implements ToolMode {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "REGION";
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_NAME);
     }
 
     @Override
-    public List<Component> getDescription() {
+    public @NotNull List<@NotNull Component> getDescription() {
         return RegionMessageManager.getMessageList(RegionLangKey.MENU_TOOL_REGION_DESCRIPTION);
     }
 
     @Override
-    public Material getIcon() {
+    public @NotNull Material getIcon() {
         return Material.DIAMOND_BLOCK;
     }
 
@@ -60,12 +60,12 @@ public class RegionToolMode implements ToolMode {
         m.addItem(new MenuItemString(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_NAME_NAME), new Callback<>() {
 
             @Override
-            public String getValue() {
+            public @NotNull String getValue() {
                 return ftool.getSetting("Region");
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(@NotNull String value) {
                 ftool.setSetting("Region", value);
             }
         }));
@@ -101,7 +101,7 @@ public class RegionToolMode implements ToolMode {
     }
 
     @Override
-    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
+    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool) {
         tool.removeSetting("Region");
     }
 

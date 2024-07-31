@@ -45,7 +45,7 @@ public class MinigameManager {
     private final Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<>();
     private final Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<>();
     private final Map<String, ModuleFactory> modules = new HashMap<>();
-    private MinigameSave rewardSignsSave;
+    private @Nullable MinigameSave rewardSignsSave;
 
     public MinigameManager() {
         for (ModuleFactory moduleFactory : MgModules.values()) {
@@ -53,7 +53,7 @@ public class MinigameManager {
         }
     }
 
-    public Collection<ModuleFactory> getModules() {
+    public @NotNull Collection<@NotNull ModuleFactory> getModules() {
         return this.modules.values();
     }
 
@@ -109,7 +109,7 @@ public class MinigameManager {
         }
     }
 
-    public void stopGlobalMinigame(final Minigame minigame, final Audience caller) {
+    public void stopGlobalMinigame(final @NotNull Minigame minigame, final Audience caller) {
         if (minigame.getType() == MinigameType.GLOBAL) {
             final StopGlobalMinigameEvent ev = new StopGlobalMinigameEvent(minigame, caller);
             Bukkit.getPluginManager().callEvent(ev);
@@ -132,7 +132,7 @@ public class MinigameManager {
         }
     }
 
-    public void addMinigame(final Minigame game) {
+    public void addMinigame(final @NotNull Minigame game) {
         this.minigames.put(game.getName(), game);
         if (Minigames.getPlugin().includesPapi()) {
             Minigames.getPlugin().getPlaceHolderManager().addGameIdentifiers(game);
@@ -153,11 +153,11 @@ public class MinigameManager {
         return null;
     }
 
-    public Map<String, Minigame> getAllMinigames() {
+    public @NotNull Map<@NotNull String, @NotNull Minigame> getAllMinigames() {
         return this.minigames;
     }
 
-    public boolean hasMinigame(final String minigame) {
+    public boolean hasMinigame(final @NotNull String minigame) {
         boolean hasmg = this.minigames.containsKey(minigame);
         if (!hasmg) {
             for (final String mg : this.minigames.keySet()) {
@@ -178,7 +178,7 @@ public class MinigameManager {
         this.configs.put(filename, config);
     }
 
-    public Configuration getConfigurationFile(final @NotNull String filename) {
+    public @Nullable Configuration getConfigurationFile(final @NotNull String filename) {
         if (this.configs.containsKey(filename)) {
             return this.configs.get(filename);
         }
@@ -218,14 +218,14 @@ public class MinigameManager {
         MinigameMessageManager.debugMessage("Loaded " + minigameType.getType().getName() + " minigame type."); //DEBUG
     }
 
-    public MinigameTypeBase minigameType(final @NotNull MinigameType name) {
+    public @Nullable MinigameTypeBase minigameType(final @NotNull MinigameType name) {
         if (this.minigameTypes.containsKey(name)) {
             return this.minigameTypes.get(name);
         }
         return null;
     }
 
-    public Set<MinigameType> getMinigameTypes() {
+    public @NotNull Set<@NotNull MinigameType> getMinigameTypes() {
         return this.minigameTypes.keySet();
     }
 
@@ -329,7 +329,7 @@ public class MinigameManager {
         }
     }
 
-    public boolean hasClaimedScore(final @NotNull Minigame mg, final Location loc, final int team) {
+    public boolean hasClaimedScore(final @NotNull Minigame mg, final @NotNull Location loc, final int team) {
         final String id = MinigameUtils.createLocationID(loc);
         if (team == 0) {
             return this.claimedScoreSignsRed.containsKey(mg) && this.claimedScoreSignsRed.get(mg).contains(id);
@@ -338,7 +338,7 @@ public class MinigameManager {
         }
     }
 
-    public void addClaimedScore(final Minigame mg, final Location loc, final int team) {
+    public void addClaimedScore(final @NotNull Minigame mg, final @NotNull Location loc, final int team) {
         final String id = MinigameUtils.createLocationID(loc);
         if (team == 0) {
             if (!this.claimedScoreSignsRed.containsKey(mg)) {
@@ -353,7 +353,7 @@ public class MinigameManager {
         }
     }
 
-    public void clearClaimedScore(final Minigame mg) {
+    public void clearClaimedScore(final @NotNull Minigame mg) {
         this.claimedScoreSignsRed.remove(mg);
         this.claimedScoreSignsBlue.remove(mg);
     }
@@ -380,7 +380,7 @@ public class MinigameManager {
         return true;
     }
 
-    public boolean minigameStartSetupCheck(final Minigame minigame, final MinigamePlayer mgPlayer) {
+    public boolean minigameStartSetupCheck(final @NotNull Minigame minigame, final @NotNull MinigamePlayer mgPlayer) {
         if (minigame.getEndLocation() == null) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOEND);
             return false;
@@ -407,5 +407,4 @@ public class MinigameManager {
         }
         return this.minigameType(minigame.getType()).teleportOnJoin(mgPlayer, minigame);
     }
-
 }

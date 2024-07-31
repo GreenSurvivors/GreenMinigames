@@ -26,7 +26,7 @@ public class NullCommandSender implements ConsoleCommandSender {
     }
 
     @Override
-    public void sendMessage(String[] messages) {
+    public void sendMessage(@NotNull String @NotNull [] messages) {
         if (Minigames.getPlugin().isDebugging()) {
             for (String message : messages) {
                 MinigameMessageManager.debugMessage("[Suppressed] " + message);

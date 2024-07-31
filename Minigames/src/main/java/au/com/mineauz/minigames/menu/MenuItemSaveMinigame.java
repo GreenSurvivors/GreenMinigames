@@ -29,7 +29,7 @@ public class MenuItemSaveMinigame extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         mgm.saveMinigame();
         MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.SUCCESS,
                 MgMiscLangKey.MINIGAME_SAVED,

@@ -42,7 +42,7 @@ public class GlobalLoadoutCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_GLOBALLOADOUT_USAGE);
     }
 

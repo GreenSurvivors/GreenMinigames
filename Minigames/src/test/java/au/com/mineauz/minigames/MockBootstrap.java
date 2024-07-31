@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.util.Enumeration;
 
 public class MockBootstrap {
-    public static @NotNull Minigames createPluginWithTestContext(ServerMock server) {
+    public static @NotNull Minigames createPluginWithTestContext(@NotNull ServerMock server) {
         return new MinigameBootstrap().createPlugin(new BootstrapContext() { //todo
             @Override
             public @NotNull PluginMeta getPluginMeta() {

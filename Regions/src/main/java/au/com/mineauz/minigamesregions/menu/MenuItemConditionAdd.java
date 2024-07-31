@@ -29,7 +29,7 @@ public class MenuItemConditionAdd extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), getContainer().getViewer());
         menu.setPreviousPage(getContainer());
         Map<IConditionCategory, Menu> cats = new HashMap<>();

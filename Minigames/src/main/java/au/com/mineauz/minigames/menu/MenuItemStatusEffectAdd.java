@@ -45,7 +45,7 @@ public class MenuItemStatusEffectAdd extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
@@ -61,7 +61,7 @@ public class MenuItemStatusEffectAdd extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         String[] split = entry.split(", ");
         if (split.length == 3) {
             String effect = split[0].toUpperCase();

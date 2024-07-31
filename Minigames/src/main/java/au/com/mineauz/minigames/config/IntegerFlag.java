@@ -14,10 +14,8 @@ import java.util.List;
 
 public class IntegerFlag extends AFlag<Integer> {
 
-    public IntegerFlag(Integer value, @NotNull String name) {
-        setFlag(value);
-        setDefaultFlag(value);
-        setName(name);
+    public IntegerFlag(int value, @NotNull String name) {
+        super(name, value, value);
     }
 
     @Override
@@ -36,16 +34,16 @@ public class IntegerFlag extends AFlag<Integer> {
 
     @Deprecated
     @Override
-    public MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+    public @NotNull MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
         return getMenuItem(displayMat, name, 0, null);
     }
 
-    public MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                       @Nullable Integer min, @Nullable Integer max) {
+    public @NotNull MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                                @Nullable Integer min, @Nullable Integer max) {
         return getMenuItem(displayMat, name, null, min, max);
     }
 
-    public MenuItemInteger getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
+    public @NotNull MenuItemInteger getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
                                        @Nullable Integer min, @Nullable Integer max) {
         return new MenuItemInteger(displayMat, langKey, null, new Callback<>() {
 
@@ -64,12 +62,12 @@ public class IntegerFlag extends AFlag<Integer> {
 
     @Deprecated
     @Override
-    public MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                       @Nullable List<@NotNull Component> description) {
+    public @NotNull MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                                @Nullable List<@NotNull Component> description) {
         return getMenuItem(displayMat, name, description, 0, null);
     }
 
-    public MenuItemInteger getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey nameLangKey,
+    public @NotNull MenuItemInteger getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey nameLangKey,
                                        @NotNull MinigameLangKey descriptionLangkey, @Nullable Integer min, @Nullable Integer max) {
         return new MenuItemInteger(displayMat, nameLangKey, MinigameMessageManager.getMgMessageList(descriptionLangkey), new Callback<>() {
 
@@ -86,7 +84,7 @@ public class IntegerFlag extends AFlag<Integer> {
         }, min, max);
     }
 
-    public MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItemInteger getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                        @Nullable List<@NotNull Component> description, @Nullable Integer min, @Nullable Integer max) {
         return new MenuItemInteger(displayMat, name, description, new Callback<>() {
 

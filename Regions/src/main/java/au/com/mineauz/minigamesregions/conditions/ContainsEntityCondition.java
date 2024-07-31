@@ -29,7 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ContainsEntityCondition extends ACondition { // todo same entity settings as SpawnEntity Action also amount and make entityType also optional
-    private final EnumFlag<EntityType> entityType = new EnumFlag<>(EntityType.PLAYER, "entity");
+    private final @NotNull EnumFlag<@NotNull EntityType> entityType = new EnumFlag<>(EntityType.PLAYER, "entity");
 
     private final BooleanFlag matchName = new BooleanFlag(false, "matchName");
     private final StringFlag customName = new StringFlag(null, "name");
@@ -59,7 +59,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
+    public boolean checkRegionCondition(MinigamePlayer mgPlayer, @NotNull Region region) {
         Collection<Entity> entities = region.getFirstPoint().getWorld().getNearbyEntities(region.getBoundingBox());
 
         Pattern namePattern = null;
@@ -83,7 +83,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
         return false;
     }
 
-    private Pattern createNamePattern() {
+    private @NotNull Pattern createNamePattern() {
         String name = customName.getFlag();
         if (name == null) {
             return Pattern.compile(".*");
@@ -97,7 +97,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
+    public boolean checkNodeCondition(MinigamePlayer mgPlayer, @NotNull Node node) {
         return false;
     }
 
@@ -118,7 +118,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu menu = new Menu(3, getDisplayName(), player);
 
         menu.addItem(entityType.getMenuItem(Material.CHICKEN_SPAWN_EGG,

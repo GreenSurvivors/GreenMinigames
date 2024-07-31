@@ -32,7 +32,7 @@ public class SetGametypeNameCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_GAMETYPENAME_USAGE);
     }
 

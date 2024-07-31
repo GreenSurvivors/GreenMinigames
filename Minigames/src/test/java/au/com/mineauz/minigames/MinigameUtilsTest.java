@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
@@ -14,7 +16,7 @@ public class MinigameUtilsTest {
         Assertions.assertEquals("asdasgfar231123asd__", this.sanitize("asdasgfar231123asd__"));
     }
 
-    private String sanitize(String input) {
+    private @Nullable String sanitize(@NotNull String input) {
         final Pattern pattern = Pattern.compile("^[a-zA-Z\\d_]+$");
         return !pattern.matcher(input).matches() ? null : input;
     }

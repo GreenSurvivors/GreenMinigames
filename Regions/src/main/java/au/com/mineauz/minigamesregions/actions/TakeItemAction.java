@@ -181,7 +181,7 @@ public class TakeItemAction extends AAction { // todo make material match option
     }
 
     @Override
-    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, Menu previous) { // todo hide turned of matches
+    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) { // todo hide turned of matches
         final Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
@@ -197,7 +197,7 @@ public class TakeItemAction extends AAction { // todo make material match option
             }
 
             @Override
-            public void setValue(ItemStack value) {
+            public void setValue(@NotNull ItemStack value) {
                 itemToSearchFor.setFlag(value);
 
                 ItemMeta meta = value.getItemMeta();
@@ -232,7 +232,7 @@ public class TakeItemAction extends AAction { // todo make material match option
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(@NotNull String value) {
                 localCache = value;
                 itemMenuItem.processNewName(MiniMessage.miniMessage().deserialize(value));
             }
@@ -246,15 +246,15 @@ public class TakeItemAction extends AAction { // todo make material match option
         final MenuItemString loreMenuItem = new MenuItemString(Material.BOOK,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TAKEITEM_LORE_DESCRIPTION), new Callback<>() {
-            private String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
+            private @Nullable String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
 
             @Override
-            public String getValue() {
+            public @Nullable String getValue() {
                 return localCache;
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(@NotNull String value) {
                 MiniMessage miniMessage = MiniMessage.miniMessage();
 
                 String[] loreArray = value.split(";");

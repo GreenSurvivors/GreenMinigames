@@ -27,6 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.milkbowl.vault.economy.Economy;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.CustomChart;
 import org.bstats.charts.MultiLineChart;
@@ -44,6 +45,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -62,7 +64,7 @@ public class Minigames extends JavaPlugin {
     private static SignBase minigameSigns;
     private static ComparableVersion VERSION;
     private static ComparableVersion PAPER_VERSION;
-    private final StartUpLogHandler startUpHandler;
+    private final @NotNull StartUpLogHandler startUpHandler;
     public DisplayManager display;
     private ResourcePackManager resourceManager;
     private MinigamePlayerManager playerManager;
@@ -88,7 +90,7 @@ public class Minigames extends JavaPlugin {
         return plugin;
     }
 
-    public static ComponentLogger getCmpnntLogger() {
+    public static @NotNull ComponentLogger getCmpnntLogger() {
         if (Minigames.componentLogger == null) {
             Minigames.componentLogger = Minigames.getPlugin().getComponentLogger();
         }
@@ -96,11 +98,11 @@ public class Minigames extends JavaPlugin {
         return Minigames.componentLogger;
     }
 
-    public String getStartupLog() {
+    public @NotNull String getStartupLog() {
         return startUpHandler.getNormalLog();
     }
 
-    public String getStartupExceptionLog() {
+    public @NotNull String getStartupExceptionLog() {
         return startUpHandler.getExceptionLog();
     }
 
@@ -492,7 +494,7 @@ public class Minigames extends JavaPlugin {
         this.metrics.addCustomChart(chart);
     }
 
-    public void queueStatSave(final StoredGameStats saveData, final boolean winner) {
+    public void queueStatSave(final @NotNull StoredGameStats saveData, final boolean winner) {
         MinigameMessageManager.debugMessage("Scheduling SQL data save for " + saveData);
 
         final CompletableFuture<Long> winCountFuture = this.backend.loadSingleStat(saveData.getMinigame(), MinigameStatistics.Wins, StatisticValueField.Total, saveData.getPlayer().getUUID());

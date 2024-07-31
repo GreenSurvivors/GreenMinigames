@@ -8,23 +8,24 @@ import au.com.mineauz.minigames.stats.StatFormat;
 import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 class SQLiteStatSaver {
-    private final SQLiteBackend backend;
-    private final ComponentLogger logger;
+    private final @NotNull SQLiteBackend backend;
+    private final @NotNull ComponentLogger logger;
 
-    private final StatementKey insertStat;
-    private final StatementKey insertStatTotal;
-    private final StatementKey insertStatMin;
-    private final StatementKey insertStatMax;
+    private final @NotNull StatementKey insertStat;
+    private final @NotNull StatementKey insertStatTotal;
+    private final @NotNull StatementKey insertStatMin;
+    private final @NotNull StatementKey insertStatMax;
 
     private final StatementKey[] insertStatements = new StatementKey[4];
 
-    public SQLiteStatSaver(SQLiteBackend backend, ComponentLogger logger) {
+    public SQLiteStatSaver(@NotNull SQLiteBackend backend, @NotNull ComponentLogger logger) {
         this.backend = backend;
         this.logger = logger;
 
@@ -46,7 +47,7 @@ class SQLiteStatSaver {
         insertStatements[StatisticValueField.Total.ordinal()] = insertStatTotal;
     }
 
-    public void saveData(StoredGameStats data) {
+    public void saveData(@NotNull StoredGameStats data) {
         MinigameMessageManager.debugMessage("SQLite beginning save of " + data);
 
         ConnectionHandler handler = null;
@@ -79,8 +80,8 @@ class SQLiteStatSaver {
         }
     }
 
-    private void saveStats(ConnectionHandler handler, StoredGameStats data, UUID player, int minigameId) throws SQLException {
-
+    private void saveStats(@NotNull ConnectionHandler handler, @NotNull StoredGameStats data,
+                           @NotNull UUID player, int minigameId) throws SQLException {
         MinigameMessageManager.debugMessage("SQLite saving stats for " + player + ", game " + minigameId);
 
         // Prepare all updates
@@ -101,7 +102,7 @@ class SQLiteStatSaver {
         MinigameMessageManager.debugMessage("SQLite completed save for " + player + ", game " + minigameId);
     }
 
-    private void queueStat(ConnectionHandler handler, MinigameStat stat, long value, StatFormat format, UUID player, int minigameId) throws SQLException {
+    private void queueStat(@NotNull ConnectionHandler handler, @NotNull MinigameStat stat, long value, @NotNull StatFormat format, @NotNull UUID player, int minigameId) throws SQLException {
         for (StatisticValueField field : format.getFields()) {
             String statName = stat.getName() + field.getSuffix();
 

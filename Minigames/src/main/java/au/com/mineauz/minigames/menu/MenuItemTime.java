@@ -41,7 +41,7 @@ public class MenuItemTime extends MenuItemLong {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         MinigameUtils.parsePeriod(entry);
 
         if (entry.matches("-?[0-9]+")) {

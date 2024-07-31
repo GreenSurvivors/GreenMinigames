@@ -54,12 +54,12 @@ public class RandomChanceCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
+    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @Nullable Region region) {
         return check();
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
+    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @Nullable Node node) {
         return check();
     }
 
@@ -82,7 +82,7 @@ public class RandomChanceCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         m.addItem(chance.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_RNDCHANCE_SETPERCENT_NAME), 1, 99));

@@ -2,23 +2,25 @@ package au.com.mineauz.minigames.events;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class StartGlobalMinigameEvent extends AbstractCancellableMinigameEvent {
 
-    private final String mechanic;
-    private final MinigamePlayer caller;
+    private final @NotNull String mechanic;
+    private final @Nullable MinigamePlayer caller;
 
-    public StartGlobalMinigameEvent(Minigame mgm, MinigamePlayer caller) {
+    public StartGlobalMinigameEvent(@NotNull Minigame mgm, @Nullable MinigamePlayer caller) {
         super(mgm);
         mechanic = mgm.getMechanicName();
         this.caller = caller;
     }
 
-    public String getMechanic() {
+    public @NotNull String getMechanic() {
         return mechanic;
     }
 
-    public MinigamePlayer getCaller() {
+    public @Nullable MinigamePlayer getCaller() {
         return caller;
     }
 

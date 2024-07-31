@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 public class PlaySoundAction extends AAction {
-    private final StringFlag soundName = new StringFlag(Sound.ENTITY_PLAYER_LEVELUP.name(), "sound");
-    private final BooleanFlag privatePlayBack = new BooleanFlag(true, "private");
-    private final FloatFlag volume = new FloatFlag(1f, "volume");
-    private final FloatFlag pitch = new FloatFlag(1f, "pitch");
+    private final @NotNull StringFlag soundName = new StringFlag(Sound.ENTITY_PLAYER_LEVELUP.name(), "sound");
+    private final @NotNull BooleanFlag privatePlayBack = new BooleanFlag(true, "private");
+    private final @NotNull FloatFlag volume = new FloatFlag(1f, "volume");
+    private final @NotNull FloatFlag pitch = new FloatFlag(1f, "pitch");
 
     protected PlaySoundAction(@NotNull String name) {
         super(name);
@@ -115,7 +115,7 @@ public class PlaySoundAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, MgMenuLangKey.MENU_PLAYSOUND_MENU_NAME, mgPlayer);
 
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
@@ -123,7 +123,7 @@ public class PlaySoundAction extends AAction {
         m.addItem(new MenuItemList<>(Material.NOTE_BLOCK, MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME, new Callback<>() {
 
             @Override
-            public Sound getValue() {
+            public @NotNull Sound getValue() {
                 Sound s = getSound();              //ENSURE CONFIG doesn't contain old enums replace if they do.
                 if (!s.name().equals(soundName.getFlag())) {
                     soundName.setFlag(s.toString());
@@ -132,7 +132,7 @@ public class PlaySoundAction extends AAction {
             }
 
             @Override
-            public void setValue(Sound value) {
+            public void setValue(@NotNull Sound value) {
                 soundName.setFlag(value.toString().toUpperCase().replace(" ", "_"));
             }
         }, sounds));
@@ -141,12 +141,12 @@ public class PlaySoundAction extends AAction {
         m.addItem(new MenuItemDecimal(Material.JUKEBOX, MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME, new Callback<>() {
 
             @Override
-            public Double getValue() {
+            public @NotNull Double getValue() {
                 return volume.getFlag().doubleValue();
             }
 
             @Override
-            public void setValue(Double value) {
+            public void setValue(@NotNull Double value) {
                 volume.setFlag(value.floatValue());
             }
         }, 0.1, 1d, 0.5, null));
@@ -154,12 +154,12 @@ public class PlaySoundAction extends AAction {
         m.addItem(new MenuItemDecimal(Material.ENDER_EYE, MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME, new Callback<>() {
 
             @Override
-            public Double getValue() {
+            public @NotNull Double getValue() {
                 return pitch.getFlag().doubleValue();
             }
 
             @Override
-            public void setValue(Double value) {
+            public void setValue(@NotNull Double value) {
                 pitch.setFlag(value.floatValue());
             }
 
@@ -169,7 +169,7 @@ public class PlaySoundAction extends AAction {
         return true;
     }
 
-    private Sound getSound() {
+    private @NotNull Sound getSound() {
         Sound result;
         try {
             result = Sound.valueOf(soundName.getFlag());

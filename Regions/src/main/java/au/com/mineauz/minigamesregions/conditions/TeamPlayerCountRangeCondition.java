@@ -56,10 +56,10 @@ public class TeamPlayerCountRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
-        if (player.getTeam() != null) {
+    public boolean checkRegionCondition(@NotNull MinigamePlayer mgPlayer, @NotNull Region region) {
+        if (mgPlayer.getTeam() != null) {
             int count = 0;
-            Team t = player.getTeam();
+            Team t = mgPlayer.getTeam();
             for (MinigamePlayer user : region.getPlayers()) {
                 if (user.getTeam().equals(t)) {
                     count++;
@@ -72,7 +72,7 @@ public class TeamPlayerCountRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
+    public boolean checkNodeCondition(MinigamePlayer mgPlayer, @NotNull Node node) {
         return false;
     }
 
@@ -91,7 +91,7 @@ public class TeamPlayerCountRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         m.addItem(min.getMenuItem(Material.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 1, null));

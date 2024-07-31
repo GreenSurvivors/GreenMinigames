@@ -138,7 +138,7 @@ public class TriggerRandomAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(timesTriggered.getMenuItem(Material.COMMAND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_TIMES_NAME), 1, null));

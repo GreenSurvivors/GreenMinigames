@@ -60,7 +60,7 @@ public class RegionMessageManager {
         }
     }
 
-    public static Component getMessage(RegionLangKey key, TagResolver... resolvers) {
+    public static @NotNull Component getMessage(@NotNull RegionLangKey key, TagResolver... resolvers) {
         return MinigameMessageManager.getMessage(BUNDLE_KEY, key, resolvers);
     }
 
@@ -68,7 +68,7 @@ public class RegionMessageManager {
         return MinigameMessageManager.getMessageList(BUNDLE_KEY, key, resolvers);
     }
 
-    public static String getBundleKey() {
+    public static @NotNull String getBundleKey() {
         return BUNDLE_KEY;
     }
 

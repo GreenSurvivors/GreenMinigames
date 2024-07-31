@@ -63,7 +63,7 @@ public class HealAction extends AAction {
         execute(mgPlayer);
     }
 
-    private void execute(MinigamePlayer player) {
+    private void execute(@Nullable MinigamePlayer player) {
         if (player == null || !player.isInMinigame()) return;
         if (heal.getFlag() > 0) {
             if (player.getPlayer().getHealth() != 20) {
@@ -96,7 +96,7 @@ public class HealAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(heal.getMenuItem(Material.GOLDEN_APPLE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_HEAL_AMOUNT_NAME), null, null));

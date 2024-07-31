@@ -37,22 +37,22 @@ import java.util.*;
 
 public class MinigamePlayer implements ScriptObject {
     private final Player player;
-    private final List<@NotNull String> singlePlayerFlags = new ArrayList<>();
-    private final List<String> tempClaimedRewards = new ArrayList<>();
-    private final List<ItemStack> tempRewardItems = new ArrayList<>();
-    private final List<ItemStack> rewardItems = new ArrayList<>();
-    private final List<String> claimedScoreSigns = new ArrayList<>();
-    private final StoredPlayerCheckpoints spc;
+    private final @NotNull List<@NotNull String> singlePlayerFlags = new ArrayList<>();
+    private final @NotNull List<@NotNull String> tempClaimedRewards = new ArrayList<>();
+    private final @NotNull List<@NotNull ItemStack> tempRewardItems = new ArrayList<>();
+    private final @NotNull List<@NotNull ItemStack> rewardItems = new ArrayList<>();
+    private final @NotNull List<@NotNull String> claimedScoreSigns = new ArrayList<>();
+    private final @NotNull StoredPlayerCheckpoints spc;
     private boolean allowTP;
     private boolean allowGMChange;
     private boolean canFly;
     private Scoreboard lastScoreboard;
-    private Minigame minigame;
-    private PlayerLoadout loadout;
+    private @Nullable Minigame minigame;
+    private @Nullable PlayerLoadout loadout;
     private boolean requiredQuit;
-    private Location startPos;
-    private Location quitPos;
-    private Location checkpoint;
+    private @Nullable Location startPos;
+    private @Nullable Location quitPos;
+    private @Nullable Location checkpoint;
     private int kills;
     private int deaths;
     private int score;
@@ -66,15 +66,15 @@ public class MinigamePlayer implements ScriptObject {
     private boolean canPvP = true;
     private boolean isInvincible;
     private boolean canInteract = true;
-    private Team team;
-    private Menu menu;
+    private @Nullable Team team;
+    private @Nullable Menu menu;
     private boolean noClose;
-    private MenuItem manualEntry;
-    private Location selection1;
-    private Location selection2;
-    private DisplayCuboid selectionDisplay;
+    private @Nullable MenuItem manualEntry;
+    private @Nullable Location selection1;
+    private @Nullable Location selection2;
+    private @Nullable DisplayCuboid selectionDisplay;
     private OfflineMinigamePlayer offlineMinigamePlayer;
-    private List<String> claimedRewards = new ArrayList<>();
+    private @NotNull List<String> claimedRewards = new ArrayList<>();
     private int lateJoinTimer = -1;
 
     public MinigamePlayer(final Player player) {
@@ -88,7 +88,7 @@ public class MinigamePlayer implements ScriptObject {
         }
     }
 
-    public Location getStartPos() {
+    public @Nullable Location getStartPos() {
         return this.startPos;
     }
 
@@ -100,8 +100,8 @@ public class MinigamePlayer implements ScriptObject {
         return this.player;
     }
 
-    public String getName() {
-        return ChatColor.stripColor(this.player.getName());
+    public @NotNull String getName() {
+        return ChatColor.stripColor(this.player.getName()); // todo
     }
 
     /**
@@ -113,7 +113,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     @Deprecated
-    public String getDisplayName(final Boolean displayName) {
+    public String getDisplayName(final @NotNull Boolean displayName) {
         if (displayName) {
             return ChatColor.stripColor(this.player.getDisplayName());
         } else {
@@ -121,15 +121,15 @@ public class MinigamePlayer implements ScriptObject {
         }
     }
 
-    public Component displayName() {
+    public @NotNull Component displayName() {
         return this.player.displayName();
     }
 
-    public UUID getUUID() {
+    public @NotNull UUID getUUID() {
         return this.player.getUniqueId();
     }
 
-    public Location getLocation() {
+    public @NotNull Location getLocation() {
         return this.player.getLocation();
     }
 
@@ -219,7 +219,7 @@ public class MinigamePlayer implements ScriptObject {
         return this.minigame;
     }
 
-    public void setMinigame(final Minigame minigame) {
+    public void setMinigame(final @NotNull Minigame minigame) {
         this.minigame = minigame;
     }
 
@@ -239,15 +239,15 @@ public class MinigamePlayer implements ScriptObject {
         this.requiredQuit = requiredQuit;
     }
 
-    public Location getQuitPos() {
+    public @Nullable Location getQuitPos() {
         return this.quitPos;
     }
 
-    public void setQuitPos(final Location quitPos) {
+    public void setQuitPos(final @Nullable Location quitPos) {
         this.quitPos = quitPos;
     }
 
-    public PlayerLoadout getLoadout() {
+    public @Nullable PlayerLoadout getLoadout() {
         LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
 
         if (this.loadout != null) {
@@ -266,7 +266,7 @@ public class MinigamePlayer implements ScriptObject {
         return loadoutModule.getLoadout("default");
     }
 
-    public boolean setLoadout(final PlayerLoadout loadout) {
+    public boolean setLoadout(final @Nullable PlayerLoadout loadout) {
         if (this.getMinigame() == null) return false;
         if (loadout == null || !this.getMinigame().isTeamGame() || loadout.getTeamColor() == null || this.getTeam().getColor() == loadout.getTeamColor()) {
             this.loadout = loadout;
@@ -275,15 +275,15 @@ public class MinigamePlayer implements ScriptObject {
         return false;
     }
 
-    public List<String> getSinglePlayerFlags() {
+    public @NotNull List<@NotNull String> getSinglePlayerFlags() {
         return this.singlePlayerFlags;
     }
 
-    public void setSinglePlayerFlags(final List<String> singlePlayerFlags) {
+    public void setSinglePlayerFlags(final @NotNull List<@NotNull String> singlePlayerFlags) {
         this.singlePlayerFlags.addAll(singlePlayerFlags);
     }
 
-    public boolean addFlag(final String flag) {
+    public boolean addFlag(final @NotNull String flag) {
         if (!this.singlePlayerFlags.contains(flag)) {
             this.singlePlayerFlags.add(flag);
             return true;
@@ -299,11 +299,11 @@ public class MinigamePlayer implements ScriptObject {
         this.singlePlayerFlags.clear();
     }
 
-    public Location getCheckpoint() {
+    public @Nullable Location getCheckpoint() {
         return this.checkpoint;
     }
 
-    public void setCheckpoint(final Location checkpoint) {
+    public void setCheckpoint(final @NotNull Location checkpoint) {
         this.checkpoint = checkpoint;
     }
 
@@ -508,7 +508,7 @@ public class MinigamePlayer implements ScriptObject {
         this.isLatejoining = isLatejoining;
     }
 
-    public Menu getMenu() {
+    public @Nullable Menu getMenu() {
         return this.menu;
     }
 
@@ -528,15 +528,15 @@ public class MinigamePlayer implements ScriptObject {
         this.noClose = value;
     }
 
-    public MenuItem getManualEntry() {
+    public @Nullable MenuItem getManualEntry() {
         return this.manualEntry;
     }
 
-    public void setManualEntry(final MenuItem item) {
+    public void setManualEntry(final @Nullable MenuItem item) {
         this.manualEntry = item;
     }
 
-    public void addSelectionPoint(final Location loc) {
+    public void addSelectionPoint(final @NotNull Location loc) {
         if (DependencyManager.isWorldEditEnabled()) {
             if (DependencyManager.getLocation1(player) != null) {
                 if (DependencyManager.getLocation2(player) != null) {
@@ -605,7 +605,7 @@ public class MinigamePlayer implements ScriptObject {
         }
     }
 
-    public void setSelection1(final Location point1) {
+    public void setSelection1(final @NotNull Location point1) {
         if (DependencyManager.isWorldEditEnabled()) {
             DependencyManager.setPos1(this.player, point1);
         } else {
@@ -614,7 +614,7 @@ public class MinigamePlayer implements ScriptObject {
         }
     }
 
-    public void setSelection2(final Location point2) {
+    public void setSelection2(final @NotNull Location point2) {
         if (DependencyManager.isWorldEditEnabled()) {
             DependencyManager.setPos2(this.player, point2);
         } else {
@@ -623,7 +623,7 @@ public class MinigamePlayer implements ScriptObject {
         }
     }
 
-    public void setSelection(final MgRegion region) {
+    public void setSelection(final @NotNull MgRegion region) {
         if (DependencyManager.isWorldEditEnabled()) {
             DependencyManager.setPos2(this.player, region.getLocation1());
             DependencyManager.setPos2(this.player, region.getLocation2());
@@ -659,15 +659,15 @@ public class MinigamePlayer implements ScriptObject {
         return this.offlineMinigamePlayer;
     }
 
-    public void setOfflineMinigamePlayer(final OfflineMinigamePlayer oply) {
+    public void setOfflineMinigamePlayer(final @NotNull OfflineMinigamePlayer oply) {
         this.offlineMinigamePlayer = oply;
     }
 
-    public StoredPlayerCheckpoints getStoredPlayerCheckpoints() {
+    public @NotNull StoredPlayerCheckpoints getStoredPlayerCheckpoints() {
         return this.spc;
     }
 
-    public void setGamemode(final GameMode gamemode) {
+    public void setGamemode(final @NotNull GameMode gamemode) {
         this.setAllowGamemodeChange(true);
         this.player.setGameMode(gamemode);
         this.setAllowGamemodeChange(false);
@@ -689,11 +689,11 @@ public class MinigamePlayer implements ScriptObject {
         return !this.player.isDead();
     }
 
-    public Team getTeam() {
+    public @Nullable Team getTeam() {
         return this.team;
     }
 
-    public void setTeam(final Team team) {
+    public void setTeam(final @Nullable Team team) {
         this.team = team;
     }
 
@@ -704,19 +704,19 @@ public class MinigamePlayer implements ScriptObject {
         }
     }
 
-    public boolean hasClaimedReward(final String reward) {
+    public boolean hasClaimedReward(final @NotNull String reward) {
         return this.claimedRewards.contains(reward);
     }
 
-    public boolean hasTempClaimedReward(final String reward) {
+    public boolean hasTempClaimedReward(final @NotNull String reward) {
         return this.tempClaimedRewards.contains(reward);
     }
 
-    public void addTempClaimedReward(final String reward) {
+    public void addTempClaimedReward(final @NotNull String reward) {
         this.tempClaimedRewards.add(reward);
     }
 
-    public void addClaimedReward(final String reward) {
+    public void addClaimedReward(final @NotNull String reward) {
         this.claimedRewards.add(reward);
     }
 
@@ -742,7 +742,7 @@ public class MinigamePlayer implements ScriptObject {
         this.tempRewardItems.add(item);
     }
 
-    public List<ItemStack> getTempRewardItems() {
+    public @NotNull List<@NotNull ItemStack> getTempRewardItems() {
         return this.tempRewardItems;
     }
 
@@ -750,16 +750,16 @@ public class MinigamePlayer implements ScriptObject {
         this.rewardItems.add(item);
     }
 
-    public List<ItemStack> getRewardItems() {
+    public @NotNull List<@NotNull ItemStack> getRewardItems() {
         return this.rewardItems;
     }
 
-    public boolean hasClaimedScore(final Location loc) {
+    public boolean hasClaimedScore(final @NotNull Location loc) {
         final String id = MinigameUtils.createLocationID(loc);
         return this.claimedScoreSigns.contains(id);
     }
 
-    public boolean applyResourcePack(final ResourcePack pack) {
+    public boolean applyResourcePack(final @NotNull ResourcePack pack) {
         try {
             this.player.getPlayer().setResourcePack(pack.getUrl().toString(), pack.getSH1Hash());
             return true;
@@ -769,7 +769,7 @@ public class MinigamePlayer implements ScriptObject {
         return false;
     }
 
-    public void addClaimedScore(final Location loc) {
+    public void addClaimedScore(final @NotNull Location loc) {
         final String id = MinigameUtils.createLocationID(loc);
         this.claimedScoreSigns.add(id);
     }
@@ -812,8 +812,9 @@ public class MinigamePlayer implements ScriptObject {
         this.lateJoinTimer = taskID;
     }
 
+    @Nullable
     @Override
-    public ScriptReference get(final String name) {
+    public ScriptReference get(final @NotNull String name) {
         return switch (name.toLowerCase()) {
             case "name" -> ScriptValue.of(this.player.getName());
             case "displayname" -> ScriptValue.of(this.player.getDisplayName());
@@ -828,6 +829,7 @@ public class MinigamePlayer implements ScriptObject {
         };
     }
 
+    @NotNull
     @Override
     public Set<String> getKeys() {
         return Set.of("name", "displayname", "score", "kills", "deaths", "health", "team", "pos", "minigame");

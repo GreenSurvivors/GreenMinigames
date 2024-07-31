@@ -69,7 +69,7 @@ public class AddTeamScoreAction extends AScoreAction { // todo merge with addSco
         executeAction(mgPlayer);
     }
 
-    private void executeAction(MinigamePlayer player) {
+    private void executeAction(@Nullable MinigamePlayer player) {
         if (player != null && player.isInMinigame()) {
             if (team.getFlag() == TeamColor.NONE) {
                 if (player.getTeam() != null) {
@@ -101,7 +101,7 @@ public class AddTeamScoreAction extends AScoreAction { // todo merge with addSco
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SCORE_TEAMADD_NAME), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(new MenuItemInteger(Material.STONE,

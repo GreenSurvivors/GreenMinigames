@@ -26,9 +26,9 @@ import java.util.EnumSet;
 import java.util.List;
 
 public abstract class GameMechanicBase implements Listener {
-    protected final static Minigames plugin = Minigames.getPlugin();
-    protected final MinigamePlayerManager pdata;
-    protected final MinigameManager mdata;
+    protected final static @NotNull Minigames plugin = Minigames.getPlugin();
+    protected final @NotNull MinigamePlayerManager pdata;
+    protected final @NotNull MinigameManager mdata;
 
     public GameMechanicBase() {
         pdata = plugin.getPlayerManager();
@@ -41,7 +41,7 @@ public abstract class GameMechanicBase implements Listener {
      *
      * @return The name of the Mechanic
      */
-    public abstract String getMechanicName();
+    public abstract @NotNull String getMechanicName();
 
     /**
      * Gives the valid types for this game mechanic

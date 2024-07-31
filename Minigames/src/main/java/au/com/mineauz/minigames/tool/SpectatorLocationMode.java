@@ -18,22 +18,22 @@ import java.util.List;
 public class SpectatorLocationMode implements ToolMode { //todo waring if other world
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "SPECTATOR_START";
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_TOOL_LOCATION_SPECTATORSTART_NAME);
     }
 
     @Override
-    public List<Component> getDescription() {
+    public @NotNull List<@NotNull Component> getDescription() {
         return MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_LOCATION_SPECTATORSTART_DESCRIPTION);
     }
 
     @Override
-    public Material getIcon() {
+    public @NotNull Material getIcon() {
         return Material.SOUL_SAND;
     }
 
@@ -75,6 +75,6 @@ public class SpectatorLocationMode implements ToolMode { //todo waring if other 
     }
 
     @Override
-    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
+    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool) {
     }
 }

@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -12,6 +13,7 @@ import java.util.Objects;
  * This is the base class for all regions in the minigames plugin and its regions & nodes addon.
  * It is a cuboid region defined by 2 Positions, a World and a name
  */
+@SuppressWarnings("UnstableApiUsage") // Position
 public class MgRegion {
     private final @NotNull String name;
     private @NotNull World world;
@@ -78,7 +80,7 @@ public class MgRegion {
         return pos2.toLocation(world);
     }
 
-    public void updateRegion(Location loc1, Location loc2) {
+    public void updateRegion(@NotNull Location loc1, @NotNull Location loc2) {
         this.world = loc1.getWorld();
 
         this.pos1 = Position.block(loc1);
@@ -121,7 +123,7 @@ public class MgRegion {
         return Math.max(pos1.z(), pos2.z());
     }
 
-    public boolean isInRegen(Location location) {
+    public boolean isInRegen(@NotNull Location location) {
         return location.getWorld().getUID() == world.getUID() &&
                 location.getBlockX() >= getMinX() && location.getBlockX() <= getMaxX() &&
                 location.getBlockY() >= getMinY() && location.getBlockY() <= getMaxY() &&
@@ -136,12 +138,12 @@ public class MgRegion {
         return getBaseArea() * (1 + Math.abs(pos1.y() - pos2.y()));
     }
 
-    public BoundingBox getBoundingBox() {
+    public @NotNull BoundingBox getBoundingBox() {
         return new BoundingBox(pos1.x(), pos1.y(), pos1.z(), pos2.x(), pos2.y(), pos2.z());
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (MgRegion) obj;
@@ -158,7 +160,7 @@ public class MgRegion {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "MgRegion[" +
                 "name=" + name + ", " +
                 "world=" + world + ", " +

@@ -74,7 +74,7 @@ public class MenuItemAction extends MenuItem {
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @Nullable ItemStack onRightClick() {
         exec.removeAction(act);
         getContainer().removeItem(getSlot());
         return null;

@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.stats.*;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -28,7 +29,7 @@ public class BackendManager {
         this.debug = false;
     }
 
-    private Backend makeBackend(String type) {
+    private @Nullable Backend makeBackend(@NotNull String type) {
         String serverType = Bukkit.getServer().getName();
         if (serverType.equals("ServerMock"))
             return new TestBackEnd();
@@ -44,7 +45,7 @@ public class BackendManager {
      *
      * @param config The configuration to load settings from
      */
-    public boolean initialize(ConfigurationSection config) {
+    public boolean initialize(@NotNull ConfigurationSection config) {
         ConfigurationSection backendSection = config.getConfigurationSection("backend");
         this.debug = config.getBoolean("debug", false);
         if (config.isSet("use-sql")) {
@@ -89,12 +90,12 @@ public class BackendManager {
         if (backendSection.getBoolean("convert", false)) {
             Notifier convertNotifier = new Notifier() {
                 @Override
-                public void onProgress(String state, int count) {
+                public void onProgress(@NotNull String state, int count) {
                     logger.info("Conversion: " + state + " " + count);
                 }
 
                 @Override
-                public void onError(Exception e, String state, int count) {
+                public void onError(@NotNull Exception e, @NotNull String state, int count) {
                     logger.error("Conversion error: " + state + " " + count, e);
                 }
 
@@ -138,7 +139,12 @@ public class BackendManager {
      * @param length   The number of stats to retrieve
      * @return A CompletableFuture that returns the list of StoredStats loaded
      */
-    public CompletableFuture<List<StoredStat>> loadStats(final Minigame minigame, final MinigameStat stat, final StatisticValueField field, final ScoreboardOrder order, final int offset, final int length) {
+    public @NotNull CompletableFuture<@NotNull List<@NotNull StoredStat>> loadStats(final @NotNull Minigame minigame,
+                                                                                    final @NotNull MinigameStat stat,
+                                                                                    final @NotNull StatisticValueField field,
+                                                                                    final @NotNull ScoreboardOrder order,
+                                                                                    final int offset,
+                                                                                    final int length) {
         return CompletableFuture.supplyAsync(() -> backend.loadStats(minigame, stat, field, order, offset, length));
     }
 
@@ -151,7 +157,10 @@ public class BackendManager {
      * @param playerId The player that owns the stat
      * @return The value of the stat. If it is not set, 0 will be returned
      */
-    public CompletableFuture<Long> loadSingleStat(final Minigame minigame, final MinigameStat stat, final StatisticValueField field, final UUID playerId) {
+    public @NotNull CompletableFuture<@NotNull Long> loadSingleStat(final @NotNull Minigame minigame,
+                                                                    final @NotNull MinigameStat stat,
+                                                                    final @NotNull StatisticValueField field,
+                                                                    final @NotNull UUID playerId) {
         return CompletableFuture.supplyAsync(() -> backend.getStat(minigame, playerId, stat, field));
     }
 
@@ -161,7 +170,7 @@ public class BackendManager {
      * @param stats The stats to be saved
      * @return A CompletableFuture that returns the inputted stats for chaining.
      */
-    public CompletableFuture<StoredGameStats> saveStats(final StoredGameStats stats) {
+    public @NotNull CompletableFuture<@NotNull StoredGameStats> saveStats(final @NotNull StoredGameStats stats) {
         return CompletableFuture.supplyAsync(() -> {
             backend.saveGameStatus(stats);
             return stats;
@@ -174,7 +183,7 @@ public class BackendManager {
      * @param minigame The minigame to load settings for
      * @return A CompletableFuture that returns a map of minigame stats and their settings
      */
-    public CompletableFuture<Map<MinigameStat, StatSettings>> loadStatSettings(final Minigame minigame) {
+    public @NotNull CompletableFuture<@NotNull Map<@NotNull MinigameStat, @NotNull StatSettings>> loadStatSettings(final @NotNull Minigame minigame) {
         return CompletableFuture.supplyAsync(() -> backend.loadStatSettings(minigame));
     }
 
@@ -185,7 +194,7 @@ public class BackendManager {
      * @param settings The collection of settings to save
      * @return A ListenableFuture to get the status of the save
      */
-    public @Nullable CompletableFuture<Void> saveStatSettings(final Minigame minigame, final Collection<StatSettings> settings) {
+    public @Nullable CompletableFuture<Void> saveStatSettings(final @NotNull Minigame minigame, final @NotNull Collection<@NotNull StatSettings> settings) {
         if (backend instanceof TestBackEnd) {
             backend.saveStatSettings(minigame, settings);
             return null;
@@ -206,7 +215,7 @@ public class BackendManager {
      * @return A future to let you know when the process is finished
      * @throws IllegalArgumentException Thrown if the backend chosen cannot be used. Reason given in message
      */
-    public CompletableFuture<Void> exportTo(String type, ConfigurationSection config, final Notifier notifier) throws IllegalArgumentException {
+    public @NotNull CompletableFuture<Void> exportTo(@NotNull String type, @NotNull ConfigurationSection config, final @NotNull Notifier notifier) throws IllegalArgumentException {
         final Backend destination = makeBackend(type);
         if (destination == null) {
             throw new IllegalArgumentException("Invalid backend type");
@@ -232,7 +241,7 @@ public class BackendManager {
      * @param config The config to load settings from
      * @throws IllegalArgumentException Thrown if the backend chosen cannot be used. Reason given in message
      */
-    public CompletableFuture<Void> switchBackend(final String type, ConfigurationSection config) throws IllegalArgumentException {
+    public @NotNull CompletableFuture<Void> switchBackend(final @NotNull String type, @NotNull ConfigurationSection config) throws IllegalArgumentException {
         final Backend newBackend = makeBackend(type);
         if (newBackend == null) {
             throw new IllegalArgumentException("Invalid backend type");

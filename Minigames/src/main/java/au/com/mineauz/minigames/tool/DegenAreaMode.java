@@ -20,22 +20,22 @@ import java.util.List;
 public class DegenAreaMode implements ToolMode {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "DEGEN_AREA";
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_TOOL_DEGENAREA_NAME);
     }
 
     @Override
-    public List<Component> getDescription() {
+    public @NotNull List<@NotNull Component> getDescription() {
         return MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_DEGENAREA_DESCRIPTION);
     }
 
     @Override
-    public Material getIcon() {
+    public @NotNull Material getIcon() {
         return Material.LAVA_BUCKET;
     }
 
@@ -94,7 +94,6 @@ public class DegenAreaMode implements ToolMode {
     }
 
     @Override
-    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
+    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool) {
     }
-
 }

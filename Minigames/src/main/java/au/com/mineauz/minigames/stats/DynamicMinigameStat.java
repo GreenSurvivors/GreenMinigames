@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.stats;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * DynamicMinigameStats allow you to add stats that are always checked on win or loss.
@@ -9,7 +10,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
  * game end.
  */
 public abstract class DynamicMinigameStat extends MinigameStat { // never used as far as I can see
-    DynamicMinigameStat(String name, StatFormat format) {
+
+    DynamicMinigameStat(@NotNull String name, @NotNull StatFormat format) {
         super(name, format);
     }
 
@@ -21,7 +23,7 @@ public abstract class DynamicMinigameStat extends MinigameStat { // never used a
      * @param win      True if the player won the game
      * @return True if this stat applies and should be used
      */
-    public abstract boolean doesApply(Minigame minigame, MinigamePlayer player, boolean win);
+    public abstract boolean doesApply(@NotNull Minigame minigame, MinigamePlayer player, boolean win);
 
     /**
      * Gets the value of this stat, so it can be saved.
@@ -31,5 +33,5 @@ public abstract class DynamicMinigameStat extends MinigameStat { // never used a
      * @param win      True if the player won the game
      * @return The value of this stat
      */
-    public abstract long getValue(Minigame minigame, MinigamePlayer player, boolean win);
+    public abstract long getValue(@NotNull Minigame minigame, MinigamePlayer player, boolean win);
 }

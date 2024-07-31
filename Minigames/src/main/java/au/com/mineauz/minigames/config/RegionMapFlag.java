@@ -20,21 +20,16 @@ public class RegionMapFlag extends AFlag<Map<String, MgRegion>> { // todo move t
     private final @Nullable String legacyFistPointLabel, legacySecondPointLabel;
 
     public RegionMapFlag(@NotNull Map<String, MgRegion> value, @NotNull String name, @Nullable String legacyFirstPoint, @Nullable String legacySecondPoint) {
+        super(name, new HashMap<>(), value); //default value - saving tests if the flag is equal to their default
         this.legacyFistPointLabel = legacyFirstPoint;
         this.legacySecondPointLabel = legacySecondPoint;
-
-        setFlag(value);
-        setDefaultFlag(new HashMap<>()); //saving tests if the flag is equal to their default
-        setName(name);
     }
 
     public RegionMapFlag(@NotNull Map<String, MgRegion> value, @NotNull String name) {
+        super(name, new HashMap<>(), value); //default value - saving tests if the flag is equal to their default
+
         this.legacyFistPointLabel = null;
         this.legacySecondPointLabel = null;
-
-        setFlag(value);
-        setDefaultFlag(new HashMap<>()); //saving tests if the flag is equal to their default
-        setName(name);
     }
 
     @Override
@@ -94,14 +89,14 @@ public class RegionMapFlag extends AFlag<Map<String, MgRegion>> { // todo move t
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
         return getMenuItem(displayMat, name, null);
     }
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                          @Nullable List<@NotNull Component> description) {
-        return null;
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                         @Nullable List<@NotNull Component> description) {
+        return null; // todo
     }
 }

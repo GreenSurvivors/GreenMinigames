@@ -148,7 +148,7 @@ public class GiveItemAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull final MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
 
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
@@ -161,7 +161,7 @@ public class GiveItemAction extends AAction {
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_GIVEITEM_LORE_DESCRIPTION), new Callback<>() {
             @Override
-            public Component getValue() {
+            public @NotNull Component getValue() {
                 ItemMeta meta = item.getFlag().getItemMeta();
 
                 if (meta.hasLore()) {

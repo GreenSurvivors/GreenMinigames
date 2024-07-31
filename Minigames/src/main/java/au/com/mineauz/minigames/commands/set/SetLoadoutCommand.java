@@ -44,7 +44,7 @@ public class SetLoadoutCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LOADOUT_USAGE);
     }
 
@@ -99,5 +99,4 @@ public class SetLoadoutCommand extends ASetCommand {
                                                          @NotNull String @NotNull [] args) {
         return null;
     }
-
 }

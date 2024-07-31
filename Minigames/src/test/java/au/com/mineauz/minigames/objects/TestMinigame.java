@@ -8,13 +8,15 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created for use for the Add5tar MC Minecraft server
  * Created by benjamincharlton on 24/12/2018.
  */
 public class TestMinigame extends Minigame {
-    public TestMinigame(String name, MinigameType type, Location start, World world, MinigameManager manager, Location quit, Location end, Location lobby) {
+    public TestMinigame(@NotNull String name, @NotNull MinigameType type, @NotNull Location start, World world, @NotNull MinigameManager manager, @Nullable Location quit, @NotNull Location end, @Nullable Location lobby) {
         super(name, type, start);
         setType(MinigameType.MULTIPLAYER);
         setMechanic(GameMechanics.MgMechanics.CTF.getMechanic());

@@ -30,7 +30,7 @@ public class MenuItemDisplayRewards extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         Menu rewardMenu = rewards.createMenu(getName(), getContainer().getViewer(), getContainer());
 
         rewardMenu.displayMenu(getContainer().getViewer());

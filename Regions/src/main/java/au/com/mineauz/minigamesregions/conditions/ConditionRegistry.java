@@ -36,7 +36,7 @@ public class ConditionRegistry {
         return factory != null ? factory.makeNewCondition() : null;
     }
 
-    public static Set<ACondition> getAllConditions() {
+    public static @NotNull Set<@NotNull ACondition> getAllConditions() {
         return conditions.values().stream().map(ConditionFactory::makeNewCondition).collect(Collectors.toSet());
     }
 

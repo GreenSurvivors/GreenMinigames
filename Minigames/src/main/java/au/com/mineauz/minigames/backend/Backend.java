@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +18,7 @@ public abstract class Backend {
      * @param config The configuration to load settings from
      * @return Returns true if the initialization succeeded
      */
-    public abstract boolean initialize(ConfigurationSection config);
+    public abstract boolean initialize(@NotNull ConfigurationSection config);
 
     /**
      * Shutdown the backend cleaning up resources
@@ -34,7 +35,7 @@ public abstract class Backend {
      *
      * @param stats The game stats to store
      */
-    public abstract void saveGameStatus(StoredGameStats stats);
+    public abstract void saveGameStatus(@NotNull StoredGameStats stats);
 
     /**
      * Loads all player stats from the backend. This method is blocking.
@@ -45,7 +46,7 @@ public abstract class Backend {
      * @param order    The order to get the stats in
      * @return A list of stats matching the requirements
      */
-    public abstract List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order);
+    public abstract @NotNull List<@NotNull StoredStat> loadStats(@NotNull Minigame minigame, @NotNull MinigameStat stat, @NotNull StatisticValueField field, @NotNull ScoreboardOrder order);
 
     /**
      * Loads player stats from the backend. This method is blocking.
@@ -58,7 +59,7 @@ public abstract class Backend {
      * @param length   the maximum amount of data to return
      * @return A list of stats matching the requirements
      */
-    public abstract List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order, int offset, int length);
+    public abstract @NotNull List<@NotNull StoredStat> loadStats(@NotNull Minigame minigame, @NotNull MinigameStat stat, @NotNull StatisticValueField field, @NotNull ScoreboardOrder order, int offset, int length);
 
     /**
      * Gets the value of a stat for a player. This method is blocking
@@ -69,7 +70,7 @@ public abstract class Backend {
      * @param field    the field of the stat to load
      * @return The value of the stat
      */
-    public abstract long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatisticValueField field);
+    public abstract long getStat(@NotNull Minigame minigame, @NotNull UUID playerId, @NotNull MinigameStat stat, @NotNull StatisticValueField field);
 
     /**
      * Loads stat settings for the minigame
@@ -77,7 +78,7 @@ public abstract class Backend {
      * @param minigame The minigame to load settings from
      * @return A map of stats to their settings
      */
-    public abstract Map<MinigameStat, StatSettings> loadStatSettings(Minigame minigame);
+    public abstract @NotNull Map<@NotNull MinigameStat, @NotNull StatSettings> loadStatSettings(@NotNull Minigame minigame);
 
     /**
      * Saves the stat settings for the minigame
@@ -85,7 +86,7 @@ public abstract class Backend {
      * @param minigame The minigame to save settings for
      * @param settings The settings to save
      */
-    public abstract void saveStatSettings(Minigame minigame, Collection<StatSettings> settings);
+    public abstract void saveStatSettings(@NotNull Minigame minigame, @NotNull Collection<@NotNull StatSettings> settings);
 
     /**
      * Exports this backend to another backend
@@ -93,11 +94,11 @@ public abstract class Backend {
      * @param other    The backend to export to
      * @param notifier A callback to receive progress updates
      */
-    public abstract void exportTo(Backend other, Notifier notifier);
+    public abstract void exportTo(@NotNull Backend other, @NotNull Notifier notifier);
 
-    protected abstract BackendImportCallback getImportCallback();
+    protected abstract @NotNull BackendImportCallback getImportCallback();
 
-    protected final BackendImportCallback getImportCallback(Backend other) {
+    protected final @NotNull BackendImportCallback getImportCallback(@NotNull Backend other) {
         return other.getImportCallback();
     }
 
@@ -107,5 +108,5 @@ public abstract class Backend {
      * @param notifier A notifier for progress updates
      * @return True if the conversion succeeded
      */
-    public abstract boolean doConversion(Notifier notifier);
+    public abstract boolean doConversion(@NotNull Notifier notifier);
 }

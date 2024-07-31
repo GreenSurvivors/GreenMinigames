@@ -39,7 +39,7 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HINT_USAGE);
     }
 

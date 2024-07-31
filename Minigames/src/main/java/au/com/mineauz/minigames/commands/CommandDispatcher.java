@@ -64,7 +64,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         return commands.values();
     }
 
-    public static void registerCommand(ACommand command) {
+    public static void registerCommand(@NotNull ACommand command) {
         commands.put(command.getName(), command);
     }
 
@@ -95,7 +95,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
      * @param match The string used to match
      * @return A list of possible tab completions
      */
-    public static List<String> tabCompleteMatch(List<String> orig, String match) {
+    public static @NotNull List<@NotNull String> tabCompleteMatch(@NotNull List<@NotNull String> orig, @NotNull String match) {
         if (match.isEmpty()) {
             return orig;
         } else {
@@ -103,7 +103,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         }
     }
 
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @Nullable [] args) {
         Player player = null;
         if (sender instanceof Player) {
             player = (Player) sender;
@@ -155,7 +155,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         return false;
     }
 
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String @Nullable [] args) {
         if (args != null && args.length > 0) {
             ACommand comd = getCommand(args[0]);
 

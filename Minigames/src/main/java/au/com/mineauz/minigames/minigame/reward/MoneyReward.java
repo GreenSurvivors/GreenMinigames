@@ -17,6 +17,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,11 +28,11 @@ public class MoneyReward extends ARewardType {
     private final static String DESCRIPTION_TOKEN = "Reward_description";
     private double money = 0d;
 
-    public MoneyReward(Rewards rewards) {
+    public MoneyReward(@NotNull Rewards rewards) {
         super(rewards);
     }
 
-    public static MoneyReward getMinigameReward(@NotNull Rewards rewards) {
+    public static @Nullable MoneyReward getMinigameReward(@NotNull Rewards rewards) {
         return (MoneyReward) RewardTypes.getRewardType(RewardTypes.MgRewardType.MONEY.getName(), rewards);
     }
 
@@ -115,7 +116,7 @@ public class MoneyReward extends ARewardType {
         }
 
         @Override
-        public ItemStack onClick() {
+        public @NotNull ItemStack onClick() {
             int ind = options.lastIndexOf(getRarity());
             ind++;
             if (ind == options.size())
@@ -128,7 +129,7 @@ public class MoneyReward extends ARewardType {
         }
 
         @Override
-        public ItemStack onRightClick() {
+        public @NotNull ItemStack onRightClick() {
             int ind = options.lastIndexOf(getRarity());
             ind--;
             if (ind == -1)
@@ -141,18 +142,18 @@ public class MoneyReward extends ARewardType {
         }
 
         @Override
-        public ItemStack onShiftClick() {
+        public @Nullable ItemStack onShiftClick() {
             Menu m = new Menu(3, MgMenuLangKey.MENU_MONEYREWARD_MENU_NAME, getContainer().getViewer());
             MenuItemDecimal dec = new MenuItemDecimal(Material.PAPER,
                     MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MONEYREWARD_ITEM_NAME),
                     new Callback<>() {
                         @Override
-                        public Double getValue() {
+                        public @NotNull Double getValue() {
                             return reward.money;
                         }
 
                         @Override
-                        public void setValue(Double value) {
+                        public void setValue(@NotNull Double value) {
                             reward.money = value;
 
                             ItemMeta meta = getDisplayItem().getItemMeta();
@@ -173,7 +174,7 @@ public class MoneyReward extends ARewardType {
         }
 
         @Override
-        public ItemStack onShiftRightClick() {
+        public @Nullable ItemStack onShiftRightClick() {
             getRewards().removeReward(reward);
             getContainer().removeItem(getSlot());
             return null;

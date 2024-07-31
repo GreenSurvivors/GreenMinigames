@@ -23,6 +23,7 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,21 +32,21 @@ import java.util.concurrent.CompletableFuture;
 public class ScoreboardDisplay {
     public static final int defaultWidth = 3;
     public static final int defaultHeight = 3;
-    private final Location rootBlock;
-    private final Minigame minigame;
+    private final @NotNull Location rootBlock;
+    private final @NotNull Minigame minigame;
     private final int width;
     private final int height;
-    private final BlockFace facing;
-    private MinigameStat stat;
-    private StatisticValueField field;
-    private ScoreboardOrder order;
+    private final @NotNull BlockFace facing;
+    private @NotNull MinigameStat stat;
+    private @NotNull StatisticValueField field;
+    private @NotNull ScoreboardOrder order;
     private StatSettings settings;
 
-    private List<StoredStat> stats;
+    private @NotNull List<@NotNull StoredStat> stats;
 
     private boolean needsLoad;
 
-    public ScoreboardDisplay(Minigame minigame, int width, int height, Location rootBlock, BlockFace facing) {
+    public ScoreboardDisplay(@NotNull Minigame minigame, int width, int height, @NotNull Location rootBlock, @NotNull BlockFace facing) {
         this.minigame = minigame;
         this.width = width;
         this.height = height;
@@ -61,7 +62,7 @@ public class ScoreboardDisplay {
         needsLoad = true;
     }
 
-    public static ScoreboardDisplay load(@NotNull Minigame minigame, @NotNull Configuration config, @NotNull String path) {
+    public static @Nullable ScoreboardDisplay load(@NotNull Minigame minigame, @NotNull Configuration config, @NotNull String path) {
         char configSeparator = config.options().pathSeparator();
 
         int width = config.getInt(path + configSeparator + "width");
@@ -86,28 +87,28 @@ public class ScoreboardDisplay {
         return display;
     }
 
-    public Location getRoot() {
+    public @NotNull Location getRoot() {
         return rootBlock;
     }
 
-    public MinigameStat getStat() {
+    public @NotNull MinigameStat getStat() {
         return stat;
     }
 
-    public StatisticValueField getField() {
+    public @NotNull StatisticValueField getField() {
         return field;
     }
 
-    public void setStat(MinigameStat stat, StatisticValueField field) {
+    public void setStat(@NotNull MinigameStat stat, @NotNull StatisticValueField field) {
         this.stat = stat;
         this.field = field;
     }
 
-    public ScoreboardOrder getOrder() {
+    public @NotNull ScoreboardOrder getOrder() {
         return order;
     }
 
-    public void setOrder(ScoreboardOrder order) {
+    public void setOrder(@NotNull ScoreboardOrder order) {
         this.order = order;
         stats.clear();
         needsLoad = true;
@@ -121,11 +122,11 @@ public class ScoreboardDisplay {
         return height;
     }
 
-    public Minigame getMinigame() {
+    public @NotNull Minigame getMinigame() {
         return minigame;
     }
 
-    public BlockFace getFacing() {
+    public @NotNull BlockFace getFacing() {
         return facing;
     }
 
@@ -133,7 +134,7 @@ public class ScoreboardDisplay {
         return needsLoad;
     }
 
-    private List<Block> getSignBlocks(boolean onlySigns) {
+    private @NotNull List<@NotNull Block> getSignBlocks(boolean onlySigns) {
         // Find the horizontal direction (going across the signs, left to right)
         BlockFace horizontal = switch (facing) {
             case NORTH -> BlockFace.WEST;
@@ -190,7 +191,7 @@ public class ScoreboardDisplay {
         }
     }
 
-    private void updateSign(Block block, int place, StoredStat... stats) {
+    private void updateSign(@NotNull Block block, int place, @NotNull StoredStat @NotNull ... stats) {
         Preconditions.checkArgument(stats.length >= 1 && stats.length <= 2);
 
         Sign sign = (Sign) block.getState();
@@ -202,14 +203,14 @@ public class ScoreboardDisplay {
             sign.getSide(Side.FRONT).line(2, MinigameUtils.limitIgnoreFormat(Component.text(place + ". ").color(NamedTextColor.GREEN).append(stats[1].getPlayerDisplayName().color(NamedTextColor.BLACK)), 15));
             sign.getSide(Side.FRONT).line(3, MinigameUtils.limitIgnoreFormat(stat.displayValueSign(stats[1].getValue(), settings).color(NamedTextColor.BLUE), 15));
         } else {
-            sign.getSide(Side.FRONT).setLine(2, "");
-            sign.getSide(Side.FRONT).setLine(3, "");
+            sign.getSide(Side.FRONT).line(2, Component.empty());
+            sign.getSide(Side.FRONT).line(3, Component.empty());
         }
 
         sign.update();
     }
 
-    public void displayMenu(MinigamePlayer player) {
+    public void displayMenu(@NotNull MinigamePlayer player) {
         final Menu setupMenu = new Menu(3, MgMenuLangKey.MENU_SCOREBOARD_SETUP_NAME, player);
 
         StatSettings settings = minigame.getSettings(stat);
@@ -227,7 +228,7 @@ public class ScoreboardDisplay {
                 }
 
                 @Override
-                public void setValue(MinigameStat value) {
+                public void setValue(@NotNull MinigameStat value) {
                     stat = value;
                     StatSettings settings12 = minigame.getSettings(stat);
                     statisticChoice.setBaseDescriptionPart(List.of(settings12.getDisplayName().color(NamedTextColor.GREEN)));
@@ -267,7 +268,7 @@ public class ScoreboardDisplay {
                 }
 
                 @Override
-                public void setValue(StatisticValueField value) {
+                public void setValue(@NotNull StatisticValueField value) {
                     field = value;
                     fieldChoice.setBaseDescriptionPart(List.of(value.getTitle().color(NamedTextColor.GREEN)));
                 }
@@ -283,12 +284,12 @@ public class ScoreboardDisplay {
         setupMenu.addItem(new MenuItemEnum<>(Material.ENDER_PEARL, MgMenuLangKey.MENU_SCOREBOARD_ORDER_NAME, new Callback<>() {
 
             @Override
-            public ScoreboardOrder getValue() {
+            public @NotNull ScoreboardOrder getValue() {
                 return order;
             }
 
             @Override
-            public void setValue(ScoreboardOrder value) {
+            public void setValue(@NotNull ScoreboardOrder value) {
                 order = value;
             }
         }, ScoreboardOrder.class));
@@ -298,12 +299,12 @@ public class ScoreboardDisplay {
         setupMenu.displayMenu(player);
     }
 
-    private void clearSign(Block block) {
+    private void clearSign(@NotNull Block block) {
         Sign sign = (Sign) block.getState();
-        sign.getSide(Side.FRONT).setLine(0, "");
-        sign.getSide(Side.FRONT).setLine(1, "");
-        sign.getSide(Side.FRONT).setLine(2, "");
-        sign.getSide(Side.FRONT).setLine(3, "");
+        sign.getSide(Side.FRONT).line(0, Component.empty());
+        sign.getSide(Side.FRONT).line(1, Component.empty());
+        sign.getSide(Side.FRONT).line(2, Component.empty());
+        sign.getSide(Side.FRONT).line(3, Component.empty());
         sign.update();
     }
 
@@ -315,14 +316,18 @@ public class ScoreboardDisplay {
         }
     }
 
-    public void placeSigns(Material material) {
+    public void placeSigns(@NotNull Material material) throws IllegalArgumentException{
+        if (!Tag.WALL_SIGNS.isTagged(material)) {
+            throw new IllegalArgumentException("Wrong material for ScoreboardDisplay! (expected some kind of (wall) sign, got: " + material);
+        }
+
         List<Block> blocks = getSignBlocks(false);
 
         for (Block block : blocks) {
             block.setType(material);
-            Directional d = (Directional) block.getBlockData();
-            d.setFacing(facing);
-            block.setBlockData(d);
+            Directional directional = (Directional) block.getBlockData();
+            directional.setFacing(facing);
+            block.setBlockData(directional);
         }
     }
 

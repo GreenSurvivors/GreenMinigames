@@ -15,9 +15,7 @@ import java.util.Set;
 public class LocationListFlag extends AFlag<List<Location>> {
 
     public LocationListFlag(List<Location> value, @NotNull String name) { // todo replace with GENERIC<T> list flag AFlag<List<AFlag<T>>>
-        setFlag(value);
-        setDefaultFlag(new ArrayList<>()); //saving tests if the flag is equal to their default
-        setName(name);
+        super(name, value, new ArrayList<>()); // default flag - saving tests if the flag is equal to their default
     }
 
     @Override
@@ -53,14 +51,14 @@ public class LocationListFlag extends AFlag<List<Location>> {
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
         return getMenuItem(displayMat, name, null);
     }
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                          @Nullable List<@NotNull Component> description) {
-        return null;
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                         @Nullable List<@NotNull Component> description) {
+        return null; // todo
     }
 }

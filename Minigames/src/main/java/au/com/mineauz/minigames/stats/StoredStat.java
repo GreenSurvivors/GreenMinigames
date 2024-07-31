@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.stats;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -61,7 +62,7 @@ public final class StoredStat {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return String.format("%s: %d", PlainTextComponentSerializer.plainText().serialize(playerDispName), value);
     }
 }

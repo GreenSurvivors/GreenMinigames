@@ -14,26 +14,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@SuppressWarnings("UnstableApiUsage") // Position
 public class RegionFlag extends AFlag<MgRegion> {
     private final @Nullable String legacyFistPointLabel, legacySecondPointLabel;
 
     public RegionFlag(MgRegion value, @NotNull String name,
                       @Nullable String legacyFirstPoint, @Nullable String legacySecondPoint) {
+        super(name, value, value);
         this.legacyFistPointLabel = legacyFirstPoint;
         this.legacySecondPointLabel = legacySecondPoint;
-
-        setFlag(value);
-        setDefaultFlag(value);
-        setName(name);
     }
 
     public RegionFlag(MgRegion value, @NotNull String name) {
+        super(name, value, value);
         this.legacyFistPointLabel = null;
         this.legacySecondPointLabel = null;
-
-        setFlag(value);
-        setDefaultFlag(value);
-        setName(name);
     }
 
     @Override
@@ -99,14 +94,14 @@ public class RegionFlag extends AFlag<MgRegion> {
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
-        return null;
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, null);
     }
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                          @Nullable List<@NotNull Component> description) {
-        return null;
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                         @Nullable List<@NotNull Component> description) {
+        return null; // todo
     }
 }

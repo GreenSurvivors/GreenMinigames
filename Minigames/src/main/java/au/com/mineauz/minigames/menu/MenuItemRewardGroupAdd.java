@@ -21,7 +21,7 @@ import java.time.Duration;
 import java.util.List;
 
 public class MenuItemRewardGroupAdd extends MenuItem {
-    private final Rewards rewards;
+    private final @NotNull Rewards rewards;
 
     public MenuItemRewardGroupAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Rewards rewards) {
         super(displayMat, langKey);
@@ -40,7 +40,7 @@ public class MenuItemRewardGroupAdd extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
@@ -54,7 +54,7 @@ public class MenuItemRewardGroupAdd extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         getContainer().cancelReopenTimer();
 
         entry = entry.replace(" ", "_");

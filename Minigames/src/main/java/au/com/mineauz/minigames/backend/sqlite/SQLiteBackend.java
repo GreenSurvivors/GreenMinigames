@@ -13,6 +13,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.sql.ResultSet;
@@ -22,19 +24,19 @@ import java.util.*;
 
 @SuppressWarnings("SyntaxError")
 public class SQLiteBackend extends Backend {
-    private final ComponentLogger logger;
-    private final SQLiteStatLoader loader;
-    private final SQLiteStatSaver saver;
+    private final @NotNull ComponentLogger logger;
+    private final @NotNull SQLiteStatLoader loader;
+    private final @NotNull SQLiteStatSaver saver;
     private ConnectionPool pool;
     private StatementKey insertMinigame;
     private StatementKey getMinigameId;
     private StatementKey insertPlayer;
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
-    private File database;
+    private @Nullable File database;
 
 
-    public SQLiteBackend(ComponentLogger logger) {
+    public SQLiteBackend(@NotNull ComponentLogger logger) {
         this.logger = logger;
         loader = new SQLiteStatLoader(this, logger);
         saver = new SQLiteStatSaver(this, logger);
@@ -52,7 +54,7 @@ public class SQLiteBackend extends Backend {
 
 
     @Override
-    public boolean initialize(ConfigurationSection config) {
+    public boolean initialize(@NotNull ConfigurationSection config) {
         try {
             Class.forName("org.sqlite.JDBC");
 
@@ -96,7 +98,7 @@ public class SQLiteBackend extends Backend {
         pool.removeExpired();
     }
 
-    private boolean checkForColumn(Statement statement, String columnName) {
+    private boolean checkForColumn(@NotNull Statement statement, String columnName) {
 
         try {
             ResultSet rs = statement.executeQuery("Pragma table_info(`PlayerStats`);");
@@ -104,8 +106,9 @@ public class SQLiteBackend extends Backend {
             int nameColIndex = rs.findColumn("name");
 
             while (rs.next()) {
-                if (rs.getString(nameColIndex).equals(columnName))
+                if (rs.getString(nameColIndex).equals(columnName)) {
                     return true;
+                }
             }
 
             return false;
@@ -116,7 +119,7 @@ public class SQLiteBackend extends Backend {
         }
     }
 
-    private void ensureTables(ConnectionHandler connection) throws SQLException {
+    private void ensureTables(@NotNull ConnectionHandler connection) throws SQLException {
         try (Statement statement = connection.getConnection().createStatement()) {
             // Check the players table
             try {
@@ -187,26 +190,26 @@ public class SQLiteBackend extends Backend {
     }
 
     @Override
-    public void saveGameStatus(StoredGameStats stats) {
+    public void saveGameStatus(@NotNull StoredGameStats stats) {
         saver.saveData(stats);
     }
 
     @Override
-    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order) {
+    public @NotNull List<StoredStat> loadStats(@NotNull Minigame minigame, @NotNull MinigameStat stat, @NotNull StatisticValueField field, @NotNull ScoreboardOrder order) {
         return loadStats(minigame, stat, field, order, 0, Integer.MAX_VALUE);
     }
 
     @Override
-    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatisticValueField field, ScoreboardOrder order, int offset, int length) {
+    public @NotNull List<@NotNull StoredStat> loadStats(@NotNull Minigame minigame, @NotNull MinigameStat stat, @NotNull StatisticValueField field, @NotNull ScoreboardOrder order, int offset, int length) {
         return loader.loadStatValues(minigame, stat, field, order, offset, length);
     }
 
     @Override
-    public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatisticValueField field) {
+    public long getStat(@NotNull Minigame minigame, @NotNull UUID playerId, @NotNull MinigameStat stat, @NotNull StatisticValueField field) {
         return loader.loadSingleValue(minigame, stat, field, playerId);
     }
 
-    public int getMinigameId(ConnectionHandler handler, Minigame minigame) throws SQLException {
+    public int getMinigameId(@NotNull ConnectionHandler handler, @NotNull Minigame minigame) throws SQLException {
         ResultSet rs = handler.executeQuery(getMinigameId, minigame.getName());
         try {
             if (rs.next()) {
@@ -228,12 +231,12 @@ public class SQLiteBackend extends Backend {
         }
     }
 
-    public void updatePlayer(ConnectionHandler handler, MinigamePlayer player) throws SQLException {
+    public void updatePlayer(@NotNull ConnectionHandler handler, @NotNull MinigamePlayer player) throws SQLException {
         handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
     }
 
     @Override
-    public Map<MinigameStat, StatSettings> loadStatSettings(Minigame minigame) {
+    public @NotNull Map<@NotNull MinigameStat, @NotNull StatSettings> loadStatSettings(@NotNull Minigame minigame) {
         ConnectionHandler handler = null;
         try {
             handler = pool.getConnection();
@@ -284,7 +287,7 @@ public class SQLiteBackend extends Backend {
     }
 
     @Override
-    public void saveStatSettings(Minigame minigame, Collection<StatSettings> settings) {
+    public void saveStatSettings(@NotNull Minigame minigame, @NotNull Collection<@NotNull StatSettings> settings) {
         ConnectionHandler handler = null;
         try {
             handler = pool.getConnection();
@@ -313,19 +316,19 @@ public class SQLiteBackend extends Backend {
     }
 
     @Override
-    protected BackendImportCallback getImportCallback() {
+    protected @NotNull BackendImportCallback getImportCallback() {
         return new SQLImport(pool);
     }
 
     @Override
-    public void exportTo(Backend other, Notifier notifier) {
+    public void exportTo(@NotNull Backend other, @NotNull Notifier notifier) {
         BackendImportCallback callback = getImportCallback(other);
         SQLExport exporter = new SQLExport(pool, callback, notifier);
         exporter.beginExport();
     }
 
     @Override
-    public boolean doConversion(Notifier notifier) {
+    public boolean doConversion(@NotNull Notifier notifier) {
         BackendImportCallback callback = getImportCallback();
         FlatFileExporter exporter = new FlatFileExporter(new File(Minigames.getPlugin().getDataFolder(), "completion.yml"), callback, notifier);
         return exporter.doExport();

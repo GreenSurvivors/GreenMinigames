@@ -34,7 +34,7 @@ public class ReloadCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return Component.text("/minigame reload");
     }
 

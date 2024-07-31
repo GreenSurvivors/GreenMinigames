@@ -31,7 +31,7 @@ public class SetPresetCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_PRESET_USAGE);
     }
 

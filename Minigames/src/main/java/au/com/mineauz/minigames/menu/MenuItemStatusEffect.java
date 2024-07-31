@@ -54,13 +54,13 @@ public class MenuItemStatusEffect extends MenuItem {
     }
 
     @Override
-    public ItemStack onShiftRightClick() {
+    public @Nullable ItemStack onShiftRightClick() {
         loadout.removePotionEffect(eff);
         getContainer().removeItem(getSlot());
         return null;
     }
 
-    public PotionEffect getEffect() {
+    public @NotNull PotionEffect getEffect() {
         return eff;
     }
 }

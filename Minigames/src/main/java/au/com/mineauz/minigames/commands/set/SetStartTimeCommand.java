@@ -34,7 +34,7 @@ public class SetStartTimeCommand extends ASetCommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_STARTTIME_USAGE);
     }
 

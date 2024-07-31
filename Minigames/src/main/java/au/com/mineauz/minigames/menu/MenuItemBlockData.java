@@ -40,7 +40,7 @@ public class MenuItemBlockData extends MenuItem {
     /**
      * minecraft:chest[facing=north,type=single,waterlogged=false]{Items:[{Slot:0b,id:"minecraft:grass_block",Count:1b}],Lock:""}
      */
-    private List<Component> createDescription(BlockData data) {
+    private @NotNull List<@NotNull Component> createDescription(@NotNull BlockData data) {
         List<Component> result = new ArrayList<>();
         result.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MATERIAL_DESCRIOPTION,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(data.getMaterial().translationKey()))));
@@ -74,7 +74,7 @@ public class MenuItemBlockData extends MenuItem {
     }
 
     @Override
-    public ItemStack onClickWithItem(@Nullable ItemStack item) {
+    public @NotNull ItemStack onClickWithItem(@Nullable ItemStack item) {
         if (item != null && item.getType().isBlock()) {
             this.dataCallback.setValue(item.getType().createBlockData());
 
@@ -89,7 +89,7 @@ public class MenuItemBlockData extends MenuItem {
     }
 
     @Override
-    public ItemStack onDoubleClick() {
+    public @Nullable ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
@@ -103,7 +103,7 @@ public class MenuItemBlockData extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         try {
             BlockData d = Bukkit.createBlockData(entry);
             dataCallback.setValue(d);

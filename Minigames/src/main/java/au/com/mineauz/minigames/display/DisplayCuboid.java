@@ -6,22 +6,23 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class DisplayCuboid extends AbstractDisplayObject implements INonPersistentDisplay, IDisplayObject {
     private static final Location temp = new Location(null, 0, 0, 0);
 
-    private final Vector minCorner;
-    private final Vector maxCorner;
+    private final @NotNull Vector minCorner;
+    private final @NotNull Vector maxCorner;
 
     private int lastBarrier = 41;
 
-    public DisplayCuboid(DisplayManager manager, World world, Vector minCorner, Vector maxCorner) {
+    public DisplayCuboid(@NotNull DisplayManager manager, @NotNull World world, @NotNull Vector minCorner, @NotNull Vector maxCorner) {
         super(manager, world);
         this.minCorner = minCorner;
         this.maxCorner = maxCorner;
     }
 
-    public DisplayCuboid(DisplayManager manager, Player player, Vector minCorner, Vector maxCorner) {
+    public DisplayCuboid(@NotNull DisplayManager manager, @NotNull Player player, @NotNull Vector minCorner, @NotNull Vector maxCorner) {
         this(manager, player.getWorld(), minCorner, maxCorner);
         this.player = player;
     }

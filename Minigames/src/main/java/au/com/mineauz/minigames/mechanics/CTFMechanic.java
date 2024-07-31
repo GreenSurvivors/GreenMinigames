@@ -58,7 +58,7 @@ public class CTFMechanic extends GameMechanicBase {
     }
 
     @Override
-    public String getMechanicName() {
+    public @NotNull String getMechanicName() {
         return "ctf";
     }
 
@@ -199,8 +199,8 @@ public class CTFMechanic extends GameMechanicBase {
 
                         String clickID = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
 
-                        if (mgm.getCarriedFlag(mgPlayer) != null && (!mgm.hasDroppedFlag(clickID) || mgm.getDroppedFlag(clickID).isAtHome())) {
-                            CTFFlag flag = mgm.getCarriedFlag(mgPlayer);
+                        CTFFlag flag = mgm.getCarriedFlag(mgPlayer);
+                        if (flag != null && (!mgm.hasDroppedFlag(clickID) || mgm.getDroppedFlag(clickID).isAtHome())) {
                             FlagCaptureEvent ev = new FlagCaptureEvent(mgm, mgPlayer, flag);
                             Bukkit.getPluginManager().callEvent(ev);
                             if (!ev.isCancelled()) {
@@ -262,7 +262,7 @@ public class CTFMechanic extends GameMechanicBase {
                                 }
                             }
                         } else if (mgm.getCarriedFlag(mgPlayer) == null && mgm.hasDroppedFlag(clickID) && !mgm.getDroppedFlag(clickID).isAtHome()) {
-                            CTFFlag flag = mgm.getDroppedFlag(sloc);
+                            flag = mgm.getDroppedFlag(sloc);
                             if (mgm.hasDroppedFlag(sloc)) {
                                 mgm.removeDroppedFlag(sloc);
                                 String newID = MinigameUtils.createLocationID(flag.getSpawnLocation());

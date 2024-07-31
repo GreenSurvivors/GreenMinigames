@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.config.MinigameSave;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +20,11 @@ public class ScoreboardData {
         return displays.get(block);
     }
 
-    public void addDisplay(ScoreboardDisplay display) {
+    public void addDisplay(@NotNull ScoreboardDisplay display) {
         displays.put(display.getRoot().getBlock(), display);
     }
 
-    public void removeDisplay(Block block) {
+    public void removeDisplay(@NotNull Block block) {
         ScoreboardDisplay display = displays.remove(block);
         if (display != null) {
             display.deleteSigns();
@@ -58,7 +59,7 @@ public class ScoreboardData {
         }
     }
 
-    public void saveDisplays(MinigameSave save, String name) {
+    public void saveDisplays(@NotNull MinigameSave save, String name) {
         FileConfiguration config = save.getConfig();
 
         int index = 0;
@@ -67,7 +68,7 @@ public class ScoreboardData {
         }
     }
 
-    public void loadDisplays(MinigameSave save, Minigame mgm) {
+    public void loadDisplays(@NotNull MinigameSave save, @NotNull Minigame mgm) {
         FileConfiguration config = save.getConfig();
         ConfigurationSection root = config.getConfigurationSection(mgm.getName() + config.options().pathSeparator() + "scoreboards");
 

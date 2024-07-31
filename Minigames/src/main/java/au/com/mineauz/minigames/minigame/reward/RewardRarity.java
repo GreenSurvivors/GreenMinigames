@@ -16,10 +16,10 @@ public enum RewardRarity {
     VERY_RARE(0, MgMiscLangKey.REWARDRARITY_VERYRARE);
 
     private final double rarity;
-    private final Component displayName;
+    private final @NotNull Component displayName;
 
-    RewardRarity(double r, MinigameLangKey langKey) {
-        rarity = r;
+    RewardRarity(double rarity, @NotNull MinigameLangKey langKey) {
+        this.rarity = rarity;
         displayName = MinigameMessageManager.getMgMessage(langKey);
     }
 
@@ -62,7 +62,7 @@ public enum RewardRarity {
         };
     }
 
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return displayName;
     }
 }

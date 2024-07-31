@@ -91,16 +91,16 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
-        return check(player);
+    public boolean checkRegionCondition(@NotNull MinigamePlayer mgPlayer, @Nullable Region region) {
+        return check(mgPlayer);
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
-        return check(player);
+    public boolean checkNodeCondition(@NotNull MinigamePlayer mgPlayer, @Nullable Node node) {
+        return check(mgPlayer);
     }
 
-    private boolean check(MinigamePlayer player) {
+    private boolean check(@NotNull MinigamePlayer player) {
         PositionType checkType = where.getFlag();
 
         PlayerInventory inventory = player.getPlayer().getInventory();
@@ -209,7 +209,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         return false;
     }
 
-    private Pattern createNamePattern() {
+    private @NotNull Pattern createNamePattern() {
         ItemMeta meta = itemToSearchFor.getFlag().getItemMeta();
 
         if (meta.hasDisplayName()) {
@@ -223,7 +223,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         }
     }
 
-    private Pattern createLorePattern() {
+    private @NotNull Pattern createLorePattern() {
         ItemMeta meta = itemToSearchFor.getFlag().getItemMeta();
         List<String> loreList = meta.getLore();
 
@@ -305,7 +305,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         final Menu menu = new Menu(3, getDisplayName(), player);
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
 
@@ -321,7 +321,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
             }
 
             @Override
-            public void setValue(ItemStack value) {
+            public void setValue(@NotNull ItemStack value) {
                 itemToSearchFor.setFlag(value);
 
                 ItemMeta meta = value.getItemMeta();
@@ -382,7 +382,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
                     }
 
                     @Override
-                    public void setValue(String value) {
+                    public void setValue(@NotNull String value) {
                         localCache = value;
                         itemMenuItem.processNewName(MiniMessage.miniMessage().deserialize(value));
                     }
@@ -398,15 +398,15 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_LORE_DESCRIPTION),
                 new Callback<>() {
-                    private String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
+                    private @Nullable String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
 
                     @Override
-                    public String getValue() {
+                    public @Nullable String getValue() {
                         return localCache;
                     }
 
                     @Override
-                    public void setValue(String value) {
+                    public void setValue(@NotNull String value) {
                         MiniMessage miniMessage = MiniMessage.miniMessage();
 
                         String[] loreArray = value.split(";");
@@ -451,7 +451,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
             this.langKey = langKey;
         }
 
-        public Component getTranslation() {
+        public @NotNull Component getTranslation() {
             return RegionMessageManager.getMessage(langKey);
         }
     }

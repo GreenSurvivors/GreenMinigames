@@ -63,7 +63,7 @@ public class ExecuteCommandAction extends AAction {
         return true;
     }
 
-    private String replacePlayerTags(MinigamePlayer player, String string) { //todo dataFixerUpper
+    private @NotNull String replacePlayerTags(@Nullable MinigamePlayer player, @NotNull String string) { //todo dataFixerUpper
         if (player == null) {
             return string;
         }
@@ -93,18 +93,20 @@ public class ExecuteCommandAction extends AAction {
 
         // New expression system
         ScriptObject base = new ScriptObject() {
+            @NotNull
             @Override
             public Set<String> getKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
+            @NotNull
             @Override
             public String getAsString() {
                 return "";
             }
 
             @Override
-            public ScriptReference get(String name) {
+            public @Nullable ScriptReference get(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -135,18 +137,20 @@ public class ExecuteCommandAction extends AAction {
 
         // New expression system
         ScriptObject base = new ScriptObject() {
+            @NotNull
             @Override
             public Set<String> getKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
+            @NotNull
             @Override
             public String getAsString() {
                 return "";
             }
 
             @Override
-            public ScriptReference get(String name) {
+            public @Nullable ScriptReference get(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -165,7 +169,7 @@ public class ExecuteCommandAction extends AAction {
         dispatch(command);
     }
 
-    private void dispatch(String command) {
+    private void dispatch(@NotNull String command) {
         if (silentExecute.getFlag()) {
             Bukkit.dispatchCommand(new NullCommandSender(), command);
         } else {
@@ -188,7 +192,7 @@ public class ExecuteCommandAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
@@ -201,7 +205,7 @@ public class ExecuteCommandAction extends AAction {
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(@NotNull String value) {
                 if (value.startsWith("./")) {
                     value = value.replaceFirst("./", "/");
                 }

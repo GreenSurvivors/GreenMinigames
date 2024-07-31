@@ -32,7 +32,7 @@ public class MenuItemDisplayWhitelist extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_WHITELIST_BLOCK_NAME, getContainer().getViewer());
         List<MenuItem> items = new ArrayList<>();
         for (Material bl : whitelist) {

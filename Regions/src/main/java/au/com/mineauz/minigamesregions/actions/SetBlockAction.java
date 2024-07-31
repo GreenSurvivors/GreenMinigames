@@ -110,7 +110,7 @@ public class SetBlockAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(blockDataFlag.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME)));

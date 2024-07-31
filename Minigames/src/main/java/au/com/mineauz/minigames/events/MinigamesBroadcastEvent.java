@@ -9,7 +9,7 @@ public class MinigamesBroadcastEvent extends AbstractCancellableMinigameEvent {
     private @NotNull Component message;
     private boolean cancelled = false;
 
-    public MinigamesBroadcastEvent(@NotNull Component prefix, @NotNull Component message, Minigame minigame) {
+    public MinigamesBroadcastEvent(@NotNull Component prefix, @NotNull Component message, @NotNull Minigame minigame) {
         super(minigame);
         this.message = message;
         this.prefix = prefix;
@@ -23,7 +23,7 @@ public class MinigamesBroadcastEvent extends AbstractCancellableMinigameEvent {
         this.message = message;
     }
 
-    public Component getMessageWithPrefix() {
+    public @NotNull Component getMessageWithPrefix() {
         return prefix.append(Component.space()).append(message);
     }
 

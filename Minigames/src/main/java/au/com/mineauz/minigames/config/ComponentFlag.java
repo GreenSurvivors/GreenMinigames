@@ -12,10 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ComponentFlag extends AFlag<Component> {
-    public ComponentFlag(Component value, @NotNull String name) {
-        setFlag(value);
-        setDefaultFlag(value);
-        setName(name);
+    public ComponentFlag(@Nullable Component value, @NotNull String name) {
+        super(name, value, value);
     }
 
     @Override
@@ -38,7 +36,7 @@ public class ComponentFlag extends AFlag<Component> {
     }
 
     @Override
-    public MenuItemComponent getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItemComponent getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                          @Nullable List<@NotNull Component> description) {
         return new MenuItemComponent(displayMat, name, description, new Callback<>() {
 

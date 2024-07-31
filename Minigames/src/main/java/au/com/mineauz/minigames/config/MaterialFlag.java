@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemMaterial;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -11,16 +12,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 15/11/2018.
- */
 public class MaterialFlag extends AFlag<Material> {
 
     public MaterialFlag(Material mat, @NotNull String name) {
-        setFlag(mat);
-        setDefaultFlag(mat);
-        setName(name);
+        super(name, mat, mat);
     }
 
     @Override
@@ -47,23 +42,23 @@ public class MaterialFlag extends AFlag<Material> {
         }
     }
 
-    public MenuItemMaterial getMenuItem(@Nullable Component name) {
+    public @NotNull MenuItemMaterial getMenuItem(@Nullable Component name) {
         return getMenuItem(getFlag(), name, null);
     }
 
-    public MenuItemMaterial getMenuItem(@Nullable Component name, @Nullable List<@NotNull Component> description) {
+    public @NotNull MenuItemMaterial getMenuItem(@Nullable Component name, @Nullable List<@NotNull Component> description) {
         return getMenuItem(getFlag(), name, description);
     }
 
     @Deprecated
     @Override
-    public MenuItemMaterial getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
         return getMenuItem(displayMat, name, null);
     }
 
     @Deprecated
     @Override
-    public MenuItemMaterial getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItemMaterial getMenuItem(@Nullable Material displayMat, @Nullable Component name,
                                         @Nullable List<@NotNull Component> description) {
         return new MenuItemMaterial(displayMat, name, description, new Callback<>() {
             @Override

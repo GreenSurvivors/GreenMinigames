@@ -33,7 +33,7 @@ public class LoadoutCommand extends ACommand {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_LOADOUT_DESCRIPTION);
     }
 
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_LOADOUT_USAGE);
     }
 

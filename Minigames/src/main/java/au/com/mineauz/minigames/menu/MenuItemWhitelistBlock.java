@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class MenuItemWhitelistBlock extends MenuItem {
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @Nullable ItemStack onRightClick() {
         whitelist.remove(getDisplayItem().getType());
         getContainer().removeItem(getSlot());
         return null;

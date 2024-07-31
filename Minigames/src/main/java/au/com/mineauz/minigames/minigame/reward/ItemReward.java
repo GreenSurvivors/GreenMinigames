@@ -15,6 +15,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +24,7 @@ import java.util.List;
 public class ItemReward extends ARewardType {
     private ItemStack item = new ItemStack(Material.DIAMOND);
 
-    public ItemReward(Rewards rewards) {
+    public ItemReward(@NotNull Rewards rewards) {
         super(rewards);
     }
 
@@ -95,7 +96,7 @@ public class ItemReward extends ARewardType {
         }
 
         @Override
-        public ItemStack onClickWithItem(@NotNull ItemStack item) {
+        public @NotNull ItemStack onClickWithItem(@NotNull ItemStack item) {
             setRewardItem(item.clone());
             setDisplayItem(item);
 
@@ -133,7 +134,7 @@ public class ItemReward extends ARewardType {
         }
 
         @Override
-        public ItemStack onClick() {
+        public @NotNull ItemStack onClick() {
             int ind = rarities.lastIndexOf(getRarity());
             ind++;
             if (ind == rarities.size()) {
@@ -147,7 +148,7 @@ public class ItemReward extends ARewardType {
         }
 
         @Override
-        public ItemStack onRightClick() {
+        public @NotNull ItemStack onRightClick() {
             int ind = rarities.lastIndexOf(getRarity());
             ind--;
             if (ind == -1) {
@@ -161,7 +162,7 @@ public class ItemReward extends ARewardType {
         }
 
         @Override
-        public ItemStack onShiftRightClick() {
+        public @Nullable ItemStack onShiftRightClick() {
             getRewards().removeReward(reward);
             getContainer().removeItem(getSlot());
             return null;

@@ -66,7 +66,7 @@ public class MenuItemRewardGroup extends MenuItem {
 
 
     @Override
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         int ind = options.lastIndexOf(group.getRarity());
         ind++;
         if (ind == options.size()) {
@@ -81,7 +81,7 @@ public class MenuItemRewardGroup extends MenuItem {
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @NotNull ItemStack onRightClick() {
         int ind = options.lastIndexOf(group.getRarity());
         ind--;
         if (ind == -1) {
@@ -95,7 +95,7 @@ public class MenuItemRewardGroup extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         getContainer().cancelReopenTimer();
 
         if (entry.equalsIgnoreCase("yes")) { // todo?
@@ -111,7 +111,7 @@ public class MenuItemRewardGroup extends MenuItem {
     }
 
     @Override
-    public ItemStack onShiftRightClick() {
+    public @Nullable ItemStack onShiftRightClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
@@ -127,7 +127,7 @@ public class MenuItemRewardGroup extends MenuItem {
     }
 
     @Override
-    public ItemStack onShiftClick() {
+    public @Nullable ItemStack onShiftClick() {
         Menu rewardMenu = new Menu(5, getName(), getContainer().getViewer());
         rewardMenu.setPreviousPage(getContainer());
 

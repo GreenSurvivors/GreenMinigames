@@ -44,7 +44,7 @@ public class TeleportCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_TELEPORT_USAGE);
     }
 

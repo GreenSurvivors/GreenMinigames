@@ -42,7 +42,7 @@ public class DebugCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return Component.text("/minigame debug");
     }
 
@@ -104,7 +104,7 @@ public class DebugCommand extends ACommand {
         return out;
     }
 
-    private String getFile(Path file) {
+    private @NotNull String getFile(@NotNull Path file) {
         try {
             return Files.readString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
@@ -112,7 +112,7 @@ public class DebugCommand extends ACommand {
         }
     }
 
-    private void generatePaste(CommandSender sender) {
+    private void generatePaste(@NotNull CommandSender sender) {
         StringBuilder mainInfo = new StringBuilder(); //todo
         mainInfo.append(Bukkit.getName()).append(" version: ").append(Bukkit.getServer().getVersion()).append('\n');
         mainInfo.append("Plugin version: ").append(Minigames.getPlugin().getDescription().getVersion()).append('\n');

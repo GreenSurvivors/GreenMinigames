@@ -19,7 +19,7 @@ import java.time.Duration;
 import java.util.List;
 
 public class MenuItemAddFlag extends MenuItem {
-    private final Minigame mgm;
+    private final @NotNull Minigame mgm;
 
     public MenuItemAddFlag(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Minigame mgm) {
         super(displayMat, langKey);
@@ -38,7 +38,7 @@ public class MenuItemAddFlag extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
@@ -54,7 +54,7 @@ public class MenuItemAddFlag extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void checkValidEntry(@NotNull String entry) {
         mgm.addSinglePlayerFlag(entry);
         getContainer().addItem(new MenuItemFlag(Material.OAK_SIGN, entry, mgm.getSinglePlayerFlags()));
 

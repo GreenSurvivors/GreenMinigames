@@ -19,7 +19,7 @@ public interface ICommandInfo {
 
     @NotNull Component getDescription();
 
-    Component getUsage();
+    @NotNull Component getUsage();
 
     /**
      * If this returns null, everyone should be able to use this command!

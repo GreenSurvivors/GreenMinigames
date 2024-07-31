@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class JuggernautModule extends MinigameModule {
-    private MinigamePlayer juggernaut = null;
+    private @Nullable MinigamePlayer juggernaut = null;
 
     public JuggernautModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
@@ -46,7 +46,7 @@ public class JuggernautModule extends MinigameModule {
         return false;
     }
 
-    public MinigamePlayer getJuggernaut() {
+    public @Nullable MinigamePlayer getJuggernaut() {
         return juggernaut;
     }
 
@@ -74,5 +74,4 @@ public class JuggernautModule extends MinigameModule {
             }
         }
     }
-
 }

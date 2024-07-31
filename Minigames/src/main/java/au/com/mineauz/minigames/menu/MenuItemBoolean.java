@@ -50,7 +50,7 @@ public class MenuItemBoolean extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         if (toggle.getValue()) {
             toggle.setValue(false);
         } else {

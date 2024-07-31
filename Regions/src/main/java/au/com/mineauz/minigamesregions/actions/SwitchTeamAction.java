@@ -105,7 +105,7 @@ public class SwitchTeamAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu prev) {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
 
@@ -115,12 +115,12 @@ public class SwitchTeamAction extends AAction {
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_DESCRIPTION), new Callback<>() {
 
             @Override
-            public String getValue() {
+            public @NotNull String getValue() {
                 return WordUtils.capitalizeFully(teamFrom.getFlag()).replaceAll("_", " ");
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(@NotNull String value) {
                 teamFrom.setFlag(value.toUpperCase().replaceAll(" ", "_"));
             }
         }, teams));
@@ -129,12 +129,12 @@ public class SwitchTeamAction extends AAction {
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_DESCRIPTION), new Callback<>() {
 
             @Override
-            public String getValue() {
+            public @Nullable String getValue() {
                 return WordUtils.capitalizeFully(teamTo.getFlag());
             }
 
             @Override
-            public void setValue(String value) {
+            public void setValue(@NotNull String value) {
                 teamTo.setFlag(value.toUpperCase());
             }
         }, teams));

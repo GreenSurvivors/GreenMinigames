@@ -3,20 +3,21 @@ package au.com.mineauz.minigames.backend.both;
 import au.com.mineauz.minigames.backend.*;
 import au.com.mineauz.minigames.stats.StatFormat;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
 public class SQLExport {
-    private final ConnectionPool pool;
-    private final BackendImportCallback callback;
-    private final Notifier notifier;
+    private final @NotNull ConnectionPool pool;
+    private final @NotNull BackendImportCallback callback;
+    private final @NotNull Notifier notifier;
 
-    private final StatementKey getPlayers;
-    private final StatementKey getMinigames;
-    private final StatementKey getStats;
-    private final StatementKey getStatMetadata;
+    private final @NotNull StatementKey getPlayers;
+    private final @NotNull StatementKey getMinigames;
+    private final @NotNull StatementKey getStats;
+    private final @NotNull StatementKey getStatMetadata;
 
     private ConnectionHandler handler;
 
@@ -25,7 +26,7 @@ public class SQLExport {
     private long notifyTime;
 
 
-    public SQLExport(ConnectionPool pool, BackendImportCallback callback, Notifier notifier) {
+    public SQLExport(@NotNull ConnectionPool pool, @NotNull BackendImportCallback callback, @NotNull Notifier notifier) {
         this.pool = pool;
         this.callback = callback;
         this.notifier = notifier;
@@ -123,7 +124,7 @@ public class SQLExport {
         }
     }
 
-    private void notifyNext(String state) {
+    private void notifyNext(@NotNull String state) {
         if (notifyCount != 0) {
             notifier.onProgress(notifyState, notifyCount);
         }

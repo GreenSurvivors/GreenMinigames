@@ -43,7 +43,7 @@ public class SetDisplayScoreboardCommand extends ASetCommand { //todo allow side
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_DISPLAYSCOREBOARD_USAGE);
     }
 

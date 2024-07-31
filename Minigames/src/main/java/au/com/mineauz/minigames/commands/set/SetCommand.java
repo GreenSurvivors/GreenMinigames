@@ -81,7 +81,7 @@ public class SetCommand extends ACommand {
         registerSetCommand(new SetSurvivorTeamCommand());
     }
 
-    public static void registerSetCommand(ASetCommand command) {
+    public static void registerSetCommand(@NotNull ASetCommand command) {
         parameterList.put(command.getName(), command);
     }
 
@@ -125,7 +125,7 @@ public class SetCommand extends ACommand {
     }
 
     @Override
-    public Component getUsage() {
+    public @NotNull Component getUsage() {
         return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_USAGE);
     }
 

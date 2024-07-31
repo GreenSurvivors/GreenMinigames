@@ -18,9 +18,7 @@ public class TeamFlag extends AFlag<Team> {
     private final @NotNull Minigame mgm;
 
     public TeamFlag(Team value, @NotNull String name, @NotNull Minigame mgm) {
-        setFlag(value);
-        setDefaultFlag(value);
-        setName(name);
+        super(name, value, value);
         this.mgm = mgm;
     }
 
@@ -68,14 +66,14 @@ public class TeamFlag extends AFlag<Team> {
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
-        return null; //TODO: Menu Item
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+        return getMenuItem(displayMat, name, null);
     }
 
     @Deprecated
     @Override
-    public @Nullable MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                          @Nullable List<@NotNull Component> description) {
-        return null;
+    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+                                         @Nullable List<@NotNull Component> description) {
+        return null; //TODO: Menu Item
     }
 }

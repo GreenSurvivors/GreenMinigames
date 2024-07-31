@@ -455,7 +455,7 @@ public class MultiplayerType extends MinigameTypeBase {
     /*----------------*/
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    private void playerRespawn(PlayerRespawnEvent event) {
+    private void playerRespawn(@NotNull PlayerRespawnEvent event) {
         final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getType() == MinigameType.MULTIPLAYER) {
             Minigame mg = mgPlayer.getMinigame();
@@ -503,7 +503,7 @@ public class MultiplayerType extends MinigameTypeBase {
     }
 
     @EventHandler
-    private void timerExpire(TimerExpireEvent event) {
+    private void timerExpire(@NotNull TimerExpireEvent event) {
         final Minigame mgm = event.getMinigame();
         if (mgm.getType() == MinigameType.MULTIPLAYER && event.getMinigame().getState() == MinigameState.STARTED) {
             endMinigameFindWinner(mgm);

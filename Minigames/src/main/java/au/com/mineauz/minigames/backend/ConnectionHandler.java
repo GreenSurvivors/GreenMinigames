@@ -2,6 +2,8 @@ package au.com.mineauz.minigames.backend;
 
 import au.com.mineauz.minigames.Minigames;
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,12 +13,12 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class ConnectionHandler {
-    private final Map<StatementKey, PreparedStatement> preparedStatements;
-    private Connection connection;
+    private final @NotNull Map<@NotNull StatementKey, @NotNull PreparedStatement> preparedStatements;
+    private @Nullable Connection connection;
     private boolean inUse;
     private long openTime;
 
-    public ConnectionHandler(Connection connection) {
+    public ConnectionHandler(@NotNull Connection connection) {
         this.connection = connection;
 
         preparedStatements = new IdentityHashMap<>();
@@ -32,11 +34,11 @@ public class ConnectionHandler {
         }
     }
 
-    public Connection getConnection() {
+    public @Nullable Connection getConnection() {
         return connection;
     }
 
-    private PreparedStatement getStatement(StatementKey key) throws SQLException {
+    private @NotNull PreparedStatement getStatement(@NotNull StatementKey key) throws SQLException {
         // Check if its already registered
         PreparedStatement statement = preparedStatements.get(key);
         if (statement == null) {
@@ -48,7 +50,7 @@ public class ConnectionHandler {
         return statement;
     }
 
-    public ResultSet executeQuery(StatementKey key, Object... arguments) throws SQLException {
+    public @NotNull ResultSet executeQuery(@NotNull StatementKey key, @NotNull Object @NotNull ... arguments) throws SQLException {
         PreparedStatement statement = getStatement(key);
         Preconditions.checkNotNull(statement, "Statement was never registered (or failed)");
 
@@ -58,7 +60,7 @@ public class ConnectionHandler {
         return statement.executeQuery();
     }
 
-    public int executeUpdate(StatementKey key, Object... arguments) throws SQLException {
+    public int executeUpdate(@NotNull StatementKey key, @NotNull Object @NotNull ... arguments) throws SQLException {
         PreparedStatement statement = getStatement(key);
         Preconditions.checkNotNull(statement, "Statement was never registered (or failed)");
 
@@ -67,7 +69,7 @@ public class ConnectionHandler {
         return statement.executeUpdate();
     }
 
-    public void batchUpdate(StatementKey key, Object... arguments) throws SQLException {
+    public void batchUpdate(@NotNull StatementKey key, @NotNull Object @NotNull... arguments) throws SQLException {
         PreparedStatement statement = getStatement(key);
         Preconditions.checkNotNull(statement, "Statement was never registered (or failed)");
 
@@ -76,7 +78,7 @@ public class ConnectionHandler {
         statement.addBatch();
     }
 
-    public int[] executeBatch(StatementKey key) throws SQLException {
+    public int @NotNull [] executeBatch(@NotNull StatementKey key) throws SQLException {
         PreparedStatement statement = getStatement(key);
         Preconditions.checkNotNull(statement, "Statement was never registered (or failed)");
 
@@ -84,7 +86,7 @@ public class ConnectionHandler {
         return statement.executeBatch();
     }
 
-    public ResultSet executeUpdateWithResults(StatementKey key, Object... arguments) throws SQLException {
+    public @NotNull ResultSet executeUpdateWithResults(@NotNull StatementKey key, @NotNull Object @NotNull ... arguments) throws SQLException {
         Preconditions.checkArgument(key.returnsGeneratedKeys(), "Statement does not return generated keys");
 
         PreparedStatement statement = getStatement(key);
@@ -96,7 +98,7 @@ public class ConnectionHandler {
         return statement.getGeneratedKeys();
     }
 
-    private void applyArguments(PreparedStatement statement, Object[] arguments) throws SQLException {
+    private void applyArguments(@NotNull PreparedStatement statement, @NotNull Object @NotNull [] arguments) throws SQLException {
         for (int i = 0; i < arguments.length; ++i) {
             statement.setObject(i + 1, arguments[i]);
         }

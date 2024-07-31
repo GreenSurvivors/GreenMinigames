@@ -130,8 +130,7 @@ public class RandomFillingAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, Menu previous) {
-
+    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(4, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 

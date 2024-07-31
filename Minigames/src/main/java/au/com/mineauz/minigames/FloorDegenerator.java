@@ -12,23 +12,23 @@ import java.util.Random;
 
 public class FloorDegenerator {
     private static final Minigames plugin = Minigames.getPlugin();
-    private final Location topCorner;
-    private final Location bottomCorner;
-    private final Location xSideNeg1;
-    private final Location xSidePos1;
-    private final Location zSideNeg1;
-    private final Location zSidePos1;
-    private final Location xSideNeg2;
-    private final Location xSidePos2;
-    private final Location zSideNeg2;
-    private final Location zSidePos2;
-    private final Minigame mgm;
+    private final @NotNull Location topCorner;
+    private final @NotNull Location bottomCorner;
+    private final @NotNull Location xSideNeg1;
+    private final @NotNull Location xSidePos1;
+    private final @NotNull Location zSideNeg1;
+    private final @NotNull Location zSidePos1;
+    private final @NotNull Location xSideNeg2;
+    private final @NotNull Location xSidePos2;
+    private final @NotNull Location zSideNeg2;
+    private final @NotNull Location zSidePos2;
+    private final @NotNull Minigame mgm;
     private long timeDelay;
     private int taskID = -1;
 
     private int radiusModifier = 0;
 
-    public FloorDegenerator(MgRegion region, Minigame mgm) {
+    public FloorDegenerator(@NotNull MgRegion region, @NotNull Minigame mgm) {
         timeDelay = mgm.getFloorDegenTime();
         this.mgm = mgm;
 
@@ -75,7 +75,7 @@ public class FloorDegenerator {
         zSidePos2.setX(zSidePos2.getX() - 1);
     }
 
-    private void degenerateSide(Location loc1, Location loc2) {
+    private void degenerateSide(@NotNull Location loc1, @NotNull Location loc2) {
         Location curblock = loc1.clone();
         int x = curblock.getBlockX();
         int z = curblock.getBlockZ();
@@ -99,7 +99,7 @@ public class FloorDegenerator {
         } while (y <= loc2.getBlockY());
     }
 
-    private void degenerateRandom(Location lowest, Location highest, int chance) {
+    private void degenerateRandom(@NotNull Location lowest, @NotNull Location highest, int chance) {
         Location curblock = lowest.clone();
         int x = curblock.getBlockX();
         int z = curblock.getBlockZ();
@@ -124,7 +124,7 @@ public class FloorDegenerator {
         } while (y <= highest.getBlockY());
     }
 
-    private void degenerateCircle(Location lowest, Location highest) {
+    private void degenerateCircle(@NotNull Location lowest, @NotNull Location highest) {
         int middledist = (int) Math.abs(Math.floor((double) (highest.getBlockX() - lowest.getBlockX()) / 2));
         int radius = middledist - radiusModifier;
         Location centerBlock = lowest.clone();

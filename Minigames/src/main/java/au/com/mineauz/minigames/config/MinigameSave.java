@@ -12,8 +12,8 @@ import java.io.IOException;
 public class MinigameSave {
     private final @NotNull String path;
     private final @Nullable String minigame;
-    private FileConfiguration minigameSave = null;
-    private File minigameSaveFile = null;
+    private @Nullable FileConfiguration minigameSave = null;
+    private @Nullable File minigameSaveFile = null;
 
     public MinigameSave(@NotNull String path) {
         this.path = path;

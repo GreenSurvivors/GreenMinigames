@@ -3,33 +3,31 @@ package au.com.mineauz.minigames;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class MultiplayerBets {
-    private final Map<MinigamePlayer, ItemStack> itemBet = new HashMap<>();
+    private final @NotNull Map<@NotNull MinigamePlayer, @NotNull ItemStack> itemBet = new HashMap<>();
     private final Map<MinigamePlayer, Double> moneyBet = new HashMap<>();
     private double greatestMoneyBet = 0;
-    private ItemStack greatestItemBet = new ItemStack(Material.AIR);
+    private @NotNull ItemStack greatestItemBet = new ItemStack(Material.AIR);
 
     public MultiplayerBets() {
     }
 
-    public void addBet(MinigamePlayer player, ItemStack item) {
+    public void addBet(@NotNull MinigamePlayer player, @NotNull ItemStack item) {
         itemBet.put(player, item);
         greatestItemBet = item.clone();
     }
 
-    public void addBet(MinigamePlayer player, Double money) {
+    public void addBet(@NotNull MinigamePlayer player, @NotNull Double money) {
         greatestMoneyBet = money;
         moneyBet.put(player, money);
     }
 
-    public boolean hasAlreadyBet(MinigamePlayer player) {
+    public boolean hasAlreadyBet(@NotNull MinigamePlayer player) {
         return itemBet.containsKey(player) || moneyBet.containsKey(player);
     }
 
@@ -46,7 +44,7 @@ public class MultiplayerBets {
     /**
      * returns a set of all bettet items, where all amounts of similar items where added together
      */
-    public HashSet<ItemStack> claimItemBets() {
+    public @NotNull Set<@NotNull ItemStack> claimItemBets() {
         HashSet<ItemStack> resultItems = new HashSet<>();
 
         for (ItemStack itemToAdd : itemBet.values()) {
@@ -78,7 +76,7 @@ public class MultiplayerBets {
         return resultItems;
     }
 
-    public Double claimMoneyBets() {
+    public @NotNull Double claimMoneyBets() {
         Double money = 0d;
         for (Double mon : moneyBet.values()) {
             money += mon;
@@ -86,7 +84,7 @@ public class MultiplayerBets {
         return money;
     }
 
-    public int betValueMaterial(Material material) {
+    public int betValueMaterial(@NotNull Material material) {
         return switch (material) {
             case DIAMOND -> 3;
             case GOLD_INGOT -> 2;
@@ -95,18 +93,18 @@ public class MultiplayerBets {
         };
     }
 
-    public int betValueItem(ItemStack item) {
+    public int betValueItem(@NotNull ItemStack item) {
         return betValueMaterial(item.getType()) * item.getAmount();
     }
 
-    public ItemStack getPlayersItemBet(MinigamePlayer player) {
+    public @Nullable ItemStack getPlayersItemBet(MinigamePlayer player) {
         if (itemBet.containsKey(player)) {
             return itemBet.get(player);
         }
         return null;
     }
 
-    public Double getPlayersMoneyBet(MinigamePlayer player) {
+    public @Nullable Double getPlayersMoneyBet(MinigamePlayer player) {
         if (moneyBet.containsKey(player)) {
             return moneyBet.get(player);
         }

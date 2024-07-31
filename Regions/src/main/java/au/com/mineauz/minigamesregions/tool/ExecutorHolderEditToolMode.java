@@ -33,22 +33,22 @@ import java.util.Map.Entry;
 public class ExecutorHolderEditToolMode implements ToolMode {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "REGION_AND_NODE_EDITOR";
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return RegionMessageManager.getMessage(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_NAME);
     }
 
     @Override
-    public List<Component> getDescription() {
+    public @NotNull List<@NotNull Component> getDescription() {
         return RegionMessageManager.getMessageList(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_DESCRIPTION);
     }
 
     @Override
-    public Material getIcon() {
+    public @NotNull Material getIcon() {
         return Material.WRITABLE_BOOK;
     }
 
@@ -61,7 +61,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
     }
 
     @Override
-    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
+    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool) {
         if (tool.getMinigame() != null) {
             Main.getPlugin().getDisplayManager().hideAll(mgPlayer.getPlayer());
         }
@@ -130,6 +130,8 @@ public class ExecutorHolderEditToolMode implements ToolMode {
                     RegionLangKey.TOOL_NODE_EDIT,
                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), node.getName()));
             menu = MenuItemNode.createMenu(mgPlayer, null, node);
+        } else {
+            throw new UnsupportedOperationException("Unknown ExecutableScriptObject  type!");
         }
 
         menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(),

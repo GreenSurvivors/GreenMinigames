@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,15 +30,15 @@ import java.util.Map;
 
 public final class ResourcePack implements ConfigurationSerializable {
     private static final String ext = "resourcepack";
-    private final String name;
-    private final Component displayName;
-    private final URL url;
-    private final File local;
-    private final String description;
+    private final @NotNull String name;
+    private final @NotNull Component displayName;
+    private final @Nullable URL url;
+    private final @Nullable File local;
+    private final @Nullable String description;
     /**
      * Unique SH1 hash
      */
-    private byte[] hash;
+    private byte @Nullable [] hash;
     private boolean valid = false;
 
     /**
@@ -45,7 +46,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      *
      * @param input the input
      */
-    public ResourcePack(final Map<String, Object> input) {
+    public ResourcePack(final @NotNull Map<@NotNull String, @NotNull Object> input) {
         URL url1;
         this.name = MiniMessage.miniMessage().stripTags((String) input.get("name"));
         this.displayName = MiniMessage.miniMessage().deserialize((String) input.get("name"));
@@ -69,7 +70,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @param displayName the name
      * @param url         the url
      */
-    public ResourcePack(final Component displayName, final @NotNull URL url) {
+    public ResourcePack(final @NotNull Component displayName, final @NotNull URL url) {
         this(displayName, url, null);
     }
 
@@ -80,7 +81,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @param url         the url
      * @param file        the file
      */
-    public ResourcePack(final Component displayName, final @NotNull URL url, final File file) {
+    public ResourcePack(final @NotNull Component displayName, final @NotNull URL url, final File file) {
         this(displayName, url, file, null);
     }
 
@@ -92,7 +93,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @param file        the file
      * @param description the description
      */
-    public ResourcePack(final Component displayName, final @NotNull URL url, final File file, final String description) {
+    public ResourcePack(final @NotNull Component displayName, final @NotNull URL url, final @Nullable File file, final @Nullable String description) {
         this.name = PlainTextComponentSerializer.plainText().serialize(displayName);
         this.displayName = displayName;
         final Path path = ResourcePackManager.getResourceDir();
@@ -108,7 +109,8 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @param map A map of values
      * @return ResourcePack resource pack
      */
-    public static ResourcePack valueOf(final Map<String, Object> map) {
+    @NotNull
+    public static ResourcePack valueOf(final @NotNull Map<@NotNull String, @NotNull Object> map) {
         return deserialize(map);
     }
 
@@ -118,7 +120,8 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @param map A map of values
      * @return ResourcePack resource pack
      */
-    public static ResourcePack deserialize(final Map<String, Object> map) {
+    @NotNull
+    public static ResourcePack deserialize(final @NotNull Map<@NotNull String, @NotNull Object> map) {
         return new ResourcePack(map);
     }
 
@@ -177,7 +180,7 @@ public final class ResourcePack implements ConfigurationSerializable {
         }
     }
 
-    private byte[] getSH1Hash(final InputStream fis) {
+    private byte @Nullable [] getSH1Hash(final @NotNull InputStream fis) {
         try {
             final MessageDigest digest = MessageDigest.getInstance("SHA-1");
             try {
@@ -223,7 +226,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      *
      * @param file the file
      */
-    public void download(final File file) {
+    public void download(final @NotNull File file) {
         if (!file.exists()) {
             if (!file.getParentFile().exists()) {
                 if (!file.getParentFile().mkdirs()) {
@@ -245,7 +248,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      *
      * @return the name
      */
-    public String getName() {
+    public @NotNull String getName() {
         return this.name;
     }
 
@@ -254,7 +257,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      *
      * @return the name
      */
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return this.displayName;
     }
 
@@ -272,7 +275,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      *
      * @return the description
      */
-    public String getDescription() {
+    public @Nullable String getDescription() {
         return this.description;
     }
 
@@ -291,12 +294,12 @@ public final class ResourcePack implements ConfigurationSerializable {
      *
      * @return url url
      */
-    public URL getUrl() {
+    public @Nullable URL getUrl() {
         return this.url;
     }
 
     @Override
-    public @NotNull Map<String, Object> serialize() {
+    public @NotNull Map<@NotNull String, @NotNull Object> serialize() {
         final Map<String, Object> result = new HashMap<>();
         result.put("name", MiniMessage.miniMessage().serialize(this.displayName));
         result.put("url", this.url.toString());

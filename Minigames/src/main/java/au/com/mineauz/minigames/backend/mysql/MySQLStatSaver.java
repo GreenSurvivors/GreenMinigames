@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.stats.StatFormat;
 import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.Map.Entry;
@@ -17,10 +18,10 @@ class MySQLStatSaver {
     private final MySQLBackend backend;
     private final ComponentLogger logger;
 
-    private final StatementKey insertStat;
-    private final StatementKey insertStatTotal;
-    private final StatementKey insertStatMin;
-    private final StatementKey insertStatMax;
+    private final @NotNull StatementKey insertStat;
+    private final @NotNull StatementKey insertStatTotal;
+    private final @NotNull StatementKey insertStatMin;
+    private final @NotNull StatementKey insertStatMax;
 
     private final StatementKey[] insertStatements = new StatementKey[4];
 
@@ -41,7 +42,7 @@ class MySQLStatSaver {
         insertStatements[StatisticValueField.Total.ordinal()] = insertStatTotal;
     }
 
-    public void saveData(StoredGameStats data) {
+    public void saveData(@NotNull StoredGameStats data) {
         MinigameMessageManager.debugMessage("MySQL beginning save of " + data);
 
         ConnectionHandler handler = null;
@@ -74,7 +75,7 @@ class MySQLStatSaver {
         }
     }
 
-    private void saveStats(ConnectionHandler handler, StoredGameStats data, UUID player, int minigameId) throws SQLException {
+    private void saveStats(@NotNull ConnectionHandler handler, @NotNull StoredGameStats data, @NotNull UUID player, int minigameId) throws SQLException {
         MinigameMessageManager.debugMessage("MySQL saving stats for " + player + ", game " + minigameId);
 
         // Prepare all updates
@@ -95,7 +96,7 @@ class MySQLStatSaver {
         MinigameMessageManager.debugMessage("MySQL completed save for " + player + ", game " + minigameId);
     }
 
-    private void queueStat(ConnectionHandler handler, MinigameStat stat, long value, StatFormat format, UUID player, int minigameId) throws SQLException {
+    private void queueStat(@NotNull ConnectionHandler handler, @NotNull MinigameStat stat, long value, @NotNull StatFormat format, @NotNull UUID player, int minigameId) throws SQLException {
         for (StatisticValueField field : format.getFields()) {
             handler.batchUpdate(insertStatements[field.ordinal()], player.toString(), minigameId, stat.getName() + field.getSuffix(), value);
         }

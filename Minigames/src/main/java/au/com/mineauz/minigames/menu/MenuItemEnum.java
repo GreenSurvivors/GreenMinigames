@@ -16,7 +16,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
-    private final static String DESCRIPTION_VALUE_TOKEN = "EnumValue_description";
+    private final static @NotNull String DESCRIPTION_VALUE_TOKEN = "EnumValue_description";
     private final @NotNull List<T> enumList;
     private final @NotNull Callback<T> callback;
 
@@ -73,11 +73,11 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
         }
     }
 
-    private String getEnumName(T val) {
+    private String getEnumName(@NotNull T val) {
         return WordUtils.capitalizeFully(val.name().replace('_', ' '));
     }
 
-    public final ItemStack onClick() {
+    public final @NotNull ItemStack onClick() {
         T oldValue = callback.getValue();
         T newValue = increaseValue(oldValue, false);
         callback.setValue(newValue);
@@ -88,7 +88,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
     }
 
     @Override
-    public final ItemStack onShiftClick() {
+    public final @NotNull ItemStack onShiftClick() {
         T oldValue = callback.getValue();
         T newValue = increaseValue(oldValue, true);
         callback.setValue(newValue);
@@ -99,7 +99,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
     }
 
     @Override
-    public final ItemStack onRightClick() {
+    public final @NotNull ItemStack onRightClick() {
         T oldValue = callback.getValue();
         T newValue = decreaseValue(oldValue, false);
         callback.setValue(newValue);
@@ -110,7 +110,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
     }
 
     @Override
-    public final ItemStack onShiftRightClick() {
+    public final @NotNull ItemStack onShiftRightClick() {
         T oldValue = callback.getValue();
         T newValue = decreaseValue(oldValue, true);
         callback.setValue(newValue);
@@ -120,7 +120,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
         return getDisplayItem();
     }
 
-    protected T increaseValue(T current, boolean shift) {
+    protected @Nullable T increaseValue(T current, boolean shift) {
         if (enumList.isEmpty()) {
             return null;
         }
@@ -138,7 +138,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
         return enumList.get(index);
     }
 
-    protected T decreaseValue(T current, boolean shift) {
+    protected @Nullable T decreaseValue(T current, boolean shift) {
         if (enumList.isEmpty()) {
             return null;
         }

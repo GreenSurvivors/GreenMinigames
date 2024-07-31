@@ -7,25 +7,25 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 public class EnterRegionEvent extends Event {
-    private static final HandlerList handlers = new HandlerList();
+    private static final @NotNull HandlerList handlers = new HandlerList();
 
-    private final MinigamePlayer player;
-    private final Region region;
+    private final @NotNull MinigamePlayer player;
+    private final @NotNull Region region;
 
-    public EnterRegionEvent(MinigamePlayer player, Region region) {
+    public EnterRegionEvent(@NotNull MinigamePlayer player, @NotNull Region region) {
         this.player = player;
         this.region = region;
     }
 
-    public static HandlerList getHandlerList() {
+    public static @NotNull HandlerList getHandlerList() {
         return handlers;
     }
 
-    public MinigamePlayer getMinigamePlayer() {
+    public @NotNull MinigamePlayer getMinigamePlayer() {
         return player;
     }
 
-    public Region getRegion() {
+    public @NotNull Region getRegion() {
         return region;
     }
 

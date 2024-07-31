@@ -68,17 +68,17 @@ public class MessageAction extends AAction {
 
         ScriptObject base = new ScriptObject() {
             @Override
-            public Set<String> getKeys() {
+            public @NotNull Set<@NotNull String> getKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
             @Override
             public String getAsString() {
-                return "";
+                return ""; // todo
             }
 
             @Override
-            public ScriptReference get(String name) {
+            public @Nullable ScriptReference get(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -107,17 +107,17 @@ public class MessageAction extends AAction {
 
         ScriptObject base = new ScriptObject() {
             @Override
-            public Set<String> getKeys() {
+            public @NotNull Set<String> getKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
             @Override
             public String getAsString() {
-                return "";
+                return ""; // todo
             }
 
             @Override
-            public ScriptReference get(String name) {
+            public @Nullable ScriptReference get(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -153,7 +153,7 @@ public class MessageAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.setPreviousPage(previous);
         m.addItem(msg.getMenuItem(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME)));

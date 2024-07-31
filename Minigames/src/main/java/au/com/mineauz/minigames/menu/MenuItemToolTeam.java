@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemToolTeam extends MenuItemList<TeamColor> {
-    private final Callback<TeamColor> value;
+    private final @NotNull Callback<TeamColor> value;
 
     public MenuItemToolTeam(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<TeamColor> value,
                             @NotNull List<@NotNull TeamColor> options) {
@@ -21,7 +21,7 @@ public class MenuItemToolTeam extends MenuItemList<TeamColor> {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         super.onClick();
         MinigamePlayer mgPlayer = getContainer().getViewer();
         if (MinigameTool.hasMinigameTool(mgPlayer)) {
@@ -32,7 +32,7 @@ public class MenuItemToolTeam extends MenuItemList<TeamColor> {
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @NotNull ItemStack onRightClick() {
         super.onRightClick();
         MinigamePlayer mgPlayer = getContainer().getViewer();
         if (MinigameTool.hasMinigameTool(mgPlayer)) {

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemToolMode extends MenuItem {
-    private final ToolMode mode;
+    private final @NotNull ToolMode mode;
 
     public MenuItemToolMode(@Nullable Material displayMat, @Nullable Component name, @NotNull ToolMode mode) {
         super(displayMat, name);
@@ -25,7 +25,7 @@ public class MenuItemToolMode extends MenuItem {
         this.mode = mode;
     }
 
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         if (MinigameTool.hasMinigameTool(mgPlayer)) {
             MinigameTool tool = MinigameTool.getMinigameTool(mgPlayer);

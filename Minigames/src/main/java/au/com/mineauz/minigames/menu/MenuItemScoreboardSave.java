@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemScoreboardSave extends MenuItem {
-    private final ScoreboardDisplay disp;
+    private final @NotNull ScoreboardDisplay disp;
 
     public MenuItemScoreboardSave(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull ScoreboardDisplay disp) {
         super(displayMat, langKey);
@@ -30,7 +30,7 @@ public class MenuItemScoreboardSave extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
+    public @Nullable ItemStack onClick() {
         disp.placeRootSign();
         disp.getMinigame().getScoreboardData().reload(disp.getRoot().getBlock());
 

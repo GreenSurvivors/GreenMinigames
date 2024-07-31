@@ -49,16 +49,16 @@ public class HasSinglePlayerFlagCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, @NotNull Region region) {
-        return checkCondition(player);
+    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        return checkCondition(mgPlayer);
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer player, @NotNull Node node) {
-        return checkCondition(player);
+    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        return checkCondition(mgPlayer);
     }
 
-    private boolean checkCondition(MinigamePlayer player) {
+    private boolean checkCondition(@Nullable MinigamePlayer player) {
         if (player == null) {
             return false;
         }
@@ -78,7 +78,7 @@ public class HasSinglePlayerFlagCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
+    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
         m.addItem(flagName.getMenuItem(Material.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME)));
