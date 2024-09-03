@@ -12,8 +12,11 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class JoinSign implements MinigameSign {
+import java.util.HashSet;
+import java.util.UUID;
 
+public class JoinSign implements MinigameSign {
+    private static final HashSet<UUID> shownWarning = new HashSet<>();
     private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
@@ -55,7 +58,12 @@ public class JoinSign implements MinigameSign {
                 }
             } else {
                 event.setLine(3, "");
-                event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.getLang("minigame.error.noVault"));
+
+                if (!shownWarning.contains(event.getPlayer().getUniqueId())) {
+                    event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.getLang("minigame.error.noVault"));
+
+                    shownWarning.add(event.getPlayer().getUniqueId());
+                }
             }
             return true;
         }
