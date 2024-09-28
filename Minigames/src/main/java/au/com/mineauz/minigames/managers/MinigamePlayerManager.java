@@ -251,9 +251,9 @@ public class MinigamePlayerManager {
 
         if (!event.isCancelled()) {
             boolean tpd;
-            if (minigame.getSpectatorLocation() != null)
+            if (minigame.getSpectatorLocation() != null) {
                 tpd = mgPlayer.teleport(minigame.getSpectatorLocation());
-            else {
+            } else {
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOSPECTATELOC);
                 return;
             }
