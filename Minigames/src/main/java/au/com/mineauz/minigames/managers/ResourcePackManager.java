@@ -55,7 +55,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
 
     private boolean loadEmptyPack() {
         try {
-            URL url = new URI("https://github.com/AddstarMC/Minigames/raw/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip").toURL();
+            URL url = new URI("https://github.com/AddstarMC/Minigames/blob/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip").toURL();
             ResourcePack empty = new ResourcePack(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME), url);
             addResourcePack(empty);
             return true;

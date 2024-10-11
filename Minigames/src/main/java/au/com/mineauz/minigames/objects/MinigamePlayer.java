@@ -35,8 +35,12 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.*;
 
+/**
+ * wrapper class to keep track of players with additional information.
+ * A MinigamePlayer does NOT have to be in a Minigame to be valid!
+ */
 public class MinigamePlayer implements ScriptObject {
-    private final Player player;
+    private final @NotNull Player player;
     private final @NotNull List<@NotNull String> singlePlayerFlags = new ArrayList<>();
     private final @NotNull List<@NotNull String> tempClaimedRewards = new ArrayList<>();
     private final @NotNull List<@NotNull ItemStack> tempRewardItems = new ArrayList<>();
@@ -46,7 +50,7 @@ public class MinigamePlayer implements ScriptObject {
     private boolean allowTP;
     private boolean allowGMChange;
     private boolean canFly;
-    private Scoreboard lastScoreboard;
+    private @Nullable Scoreboard lastScoreboard;
     private @Nullable Minigame minigame;
     private @Nullable PlayerLoadout loadout;
     private boolean requiredQuit;
@@ -74,10 +78,10 @@ public class MinigamePlayer implements ScriptObject {
     private @Nullable Location selection2;
     private @Nullable DisplayCuboid selectionDisplay;
     private OfflineMinigamePlayer offlineMinigamePlayer;
-    private @NotNull List<String> claimedRewards = new ArrayList<>();
+    private @NotNull List<@NotNull String> claimedRewards = new ArrayList<>();
     private int lateJoinTimer = -1;
 
-    public MinigamePlayer(final Player player) {
+    public MinigamePlayer(final @NotNull Player player) {
         this.player = player;
         this.spc = new StoredPlayerCheckpoints(this.getUUID().toString());
 
@@ -92,7 +96,7 @@ public class MinigamePlayer implements ScriptObject {
         return this.startPos;
     }
 
-    public void setStartPos(final Location startPos) {
+    public void setStartPos(final @Nullable Location startPos) {
         this.startPos = startPos;
     }
 
@@ -108,12 +112,12 @@ public class MinigamePlayer implements ScriptObject {
      * @deprecated use {@link #displayName()} if possible
      */
     @Deprecated
-    public String getDisplayName() {
+    public @NotNull String getDisplayName() {
         return this.getDisplayName(true);
     }
 
     @Deprecated
-    public String getDisplayName(final @NotNull Boolean displayName) {
+    public @NotNull String getDisplayName(final @NotNull Boolean displayName) {
         if (displayName) {
             return ChatColor.stripColor(this.player.getDisplayName());
         } else {
@@ -168,10 +172,11 @@ public class MinigamePlayer implements ScriptObject {
         this.player.getInventory().setContents(this.offlineMinigamePlayer.getStoredItems());
         this.player.getInventory().setArmorContents(this.offlineMinigamePlayer.getStoredArmour());
         this.player.setFoodLevel(this.offlineMinigamePlayer.getFood());
-        if (this.offlineMinigamePlayer.getHealth() > 20)
+        if (this.offlineMinigamePlayer.getHealth() > 20) { // todo don't hardcode. use attributes!
             this.player.setHealth(20);
-        else
+        } else {
             this.player.setHealth(this.offlineMinigamePlayer.getHealth());
+        }
         this.player.setSaturation(this.offlineMinigamePlayer.getSaturation());
         this.player.setScoreboard(Objects.requireNonNullElseGet(this.lastScoreboard, () -> this.player.getServer().getScoreboardManager().getMainScoreboard()));
 
@@ -247,23 +252,37 @@ public class MinigamePlayer implements ScriptObject {
         this.quitPos = quitPos;
     }
 
+    /**
+     * will return null, if the player is NOT in a Minigame
+     */
     public @Nullable PlayerLoadout getLoadout() {
-        LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
+        if (this.minigame != null) {
+            LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
 
-        if (this.loadout != null) {
-            return this.loadout;
-        } else if (this.team != null && loadoutModule.hasLoadout(this.team.getColor().toString().toLowerCase())) {
-            return loadoutModule.getLoadout(this.team.getColor().toString().toLowerCase());
+            if (this.loadout != null) {
+                return this.loadout;
+            } else if (this.team != null && loadoutModule.hasLoadout(this.team.getColor().toString().toLowerCase())) {
+                return loadoutModule.getLoadout(this.team.getColor().toString().toLowerCase());
+            }
+            return loadoutModule.getLoadout("default");
+        } else {
+            return null;
         }
-        return loadoutModule.getLoadout("default");
     }
 
-    public PlayerLoadout getDefaultLoadout() {
-        LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
-        if (this.team != null && loadoutModule.hasLoadout(this.team.getColor().toString().toLowerCase())) {
-            return loadoutModule.getLoadout(this.team.getColor().toString().toLowerCase());
+    /**
+     * will return null, if the player is NOT in a Minigame
+     */
+    public @Nullable PlayerLoadout getDefaultLoadout() {
+        if (this.minigame != null) {
+            LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
+            if (this.team != null && loadoutModule.hasLoadout(this.team.getColor().toString().toLowerCase())) {
+                return loadoutModule.getLoadout(this.team.getColor().toString().toLowerCase());
+            }
+            return loadoutModule.getLoadout("default");
+        } else {
+            return null;
         }
-        return loadoutModule.getLoadout("default");
     }
 
     public boolean setLoadout(final @Nullable PlayerLoadout loadout) {
@@ -291,7 +310,7 @@ public class MinigamePlayer implements ScriptObject {
         return false;
     }
 
-    public boolean hasFlag(final String flagName) {
+    public boolean hasFlag(final @NotNull String flagName) {
         return this.singlePlayerFlags.contains(flagName);
     }
 
@@ -303,7 +322,7 @@ public class MinigamePlayer implements ScriptObject {
         return this.checkpoint;
     }
 
-    public void setCheckpoint(final @NotNull Location checkpoint) {
+    public void setCheckpoint(final @Nullable Location checkpoint) {
         this.checkpoint = checkpoint;
     }
 
@@ -489,8 +508,9 @@ public class MinigamePlayer implements ScriptObject {
         this.setInvincible(false);
         this.setCanInteract(true);
         this.setLatejoining(false);
-        if (this.player.getGameMode() != GameMode.CREATIVE)
+        if (this.player.getGameMode() != GameMode.CREATIVE) {
             this.setCanFly(false);
+        }
         this.tempClaimedRewards.clear();
         this.tempRewardItems.clear();
         this.claimedScoreSigns.clear();
@@ -512,7 +532,7 @@ public class MinigamePlayer implements ScriptObject {
         return this.menu;
     }
 
-    public void setMenu(final Menu menu) {
+    public void setMenu(final @Nullable Menu menu) {
         this.menu = menu;
     }
 
@@ -655,7 +675,7 @@ public class MinigamePlayer implements ScriptObject {
         }
     }
 
-    public OfflineMinigamePlayer getOfflineMinigamePlayer() {
+    public @Nullable OfflineMinigamePlayer getOfflineMinigamePlayer() {
         return this.offlineMinigamePlayer;
     }
 
@@ -738,7 +758,7 @@ public class MinigamePlayer implements ScriptObject {
         }
     }
 
-    public void addTempRewardItem(final ItemStack item) {
+    public void addTempRewardItem(final @NotNull ItemStack item) {
         this.tempRewardItems.add(item);
     }
 
@@ -746,7 +766,7 @@ public class MinigamePlayer implements ScriptObject {
         return this.tempRewardItems;
     }
 
-    public void addRewardItem(final ItemStack item) {
+    public void addRewardItem(final @NotNull ItemStack item) {
         this.rewardItems.add(item);
     }
 
@@ -812,9 +832,8 @@ public class MinigamePlayer implements ScriptObject {
         this.lateJoinTimer = taskID;
     }
 
-    @Nullable
     @Override
-    public ScriptReference get(final @NotNull String name) {
+    public @Nullable ScriptReference get(final @NotNull String name) {
         return switch (name.toLowerCase()) {
             case "name" -> ScriptValue.of(this.player.getName());
             case "displayname" -> ScriptValue.of(this.player.getDisplayName());
@@ -829,14 +848,13 @@ public class MinigamePlayer implements ScriptObject {
         };
     }
 
-    @NotNull
     @Override
-    public Set<String> getKeys() {
+    public @NotNull Set<String> getKeys() {
         return Set.of("name", "displayname", "score", "kills", "deaths", "health", "team", "pos", "minigame");
     }
 
     @Override
-    public String getAsString() {
+    public @NotNull String getAsString() {
         return this.getName();
     }
 }

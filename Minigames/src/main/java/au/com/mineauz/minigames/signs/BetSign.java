@@ -59,11 +59,11 @@ public class BetSign extends AMinigameSign {
 
     @Override
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        Minigame mgm = getMinigame(sign);
+        Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getSide(Side.FRONT).getLine(2));
         if (mgm != null) {
             boolean invOk = true;
             boolean fullInv;
-            boolean moneyBet = sign.getLine(3).startsWith("$");
+            boolean moneyBet = sign.getSide(Side.FRONT).getLine(3).startsWith("$");
 
             if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
                 fullInv = true;
@@ -97,13 +97,13 @@ public class BetSign extends AMinigameSign {
                         return false;
                     }
 
-                    if (!sign.getLine(3).startsWith("$")) {
-                        plugin.getPlayerManager().joinMinigame(mgPlayer, mgm, true, 0.0);
+                    if (!sign.getSide(Side.FRONT).getLine(3).startsWith("$")) {
+                        plugin.getPlayerManager().joinMinigame(mgm, mgPlayer, true, 0.0);
                     } else {
                         if (plugin.hasEconomy()) {
                             //todo use  plugin.getEconomy().currencyNamePlural()
-                            Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
-                            plugin.getPlayerManager().joinMinigame(mgPlayer, mgm, true, bet);
+                            double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
+                            plugin.getPlayerManager().joinMinigame(mgm, mgPlayer, true, bet);
                             return true;
                         } else if (plugin.getConfig().getBoolean("warnings")) {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_NOVAULT);

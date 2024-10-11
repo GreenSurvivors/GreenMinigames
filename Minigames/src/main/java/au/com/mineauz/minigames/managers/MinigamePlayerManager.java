@@ -69,7 +69,7 @@ public class MinigamePlayerManager {
         applyingPack.add(mgPlayer);
     }
 
-    public void joinMinigame(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, boolean isBetting, @NotNull Double betAmount) {
+    public void joinMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer, boolean isBetting, double betAmount) {
         MinigameType type = minigame.getType();
         JoinMinigameEvent event = new JoinMinigameEvent(mgPlayer, minigame);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -79,7 +79,7 @@ public class MinigamePlayerManager {
         }
         if (!mgManager.minigameStartStateCheck(minigame, mgPlayer)) return;
         //Do betting stuff
-        if (isBetting && !handleBets(minigame, mgPlayer, betAmount)) {
+        if (isBetting && !handleMoneyBet(minigame, mgPlayer, betAmount)) {
             return;
         }
         //Try to apply ressource pack
@@ -178,7 +178,7 @@ public class MinigamePlayerManager {
      * @param betAmount the amount in economy money. might be 0, if the player was betting an item
      * @return true if the player could successfully bet
      */
-    private boolean handleBets(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer, @NotNull Double betAmount) {
+    private boolean handleMoneyBet(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer, double betAmount) {
         if (minigame.getMpBets() == null && (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR || betAmount != 0)) {
             minigame.setMpBets(new MultiplayerBets());
         }
@@ -245,7 +245,7 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void spectateMinigame(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame) {
+    public void spectateMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer) {
         SpectateMinigameEvent event = new SpectateMinigameEvent(mgPlayer, minigame);
         Bukkit.getServer().getPluginManager().callEvent(event);
 
@@ -971,11 +971,6 @@ public class MinigamePlayerManager {
     }
 
     @Deprecated
-    public boolean playerInMinigame(@NotNull Player player) {
-        return minigamePlayers.get(player.getUniqueId()).isInMinigame();
-    }
-
-    @Deprecated
     public @NotNull List<@NotNull Player> playersInMinigame() {
         List<Player> players = new ArrayList<>();
         for (Player player : plugin.getServer().getOnlinePlayers()) {
@@ -1012,7 +1007,7 @@ public class MinigamePlayerManager {
 
     public @Nullable MinigamePlayer getMinigamePlayer(@NotNull UUID uuid) {
         MinigamePlayer mgPlayer = minigamePlayers.get(uuid);
-        
+
         if (mgPlayer != null) {
             return mgPlayer;
         }
@@ -1020,8 +1015,9 @@ public class MinigamePlayerManager {
         return getMinigamePlayer(Bukkit.getPlayer(uuid));
     }
 
+
     /**
-     * @see #getMinigamePlayer(UUID) 
+     * @see #getMinigamePlayer(UUID)
      */
     public @Nullable MinigamePlayer getMinigamePlayer(@NotNull String playerName) {
         return getMinigamePlayer(plugin.getServer().getPlayer(playerName));
@@ -1086,19 +1082,13 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void partyMode(MinigamePlayer player, int amount, long delay) {
-        if (!onPartyMode()) return;
-        final int fcount = amount;
-        final MinigamePlayer fplayer = player;
-        final long fdelay = delay;
-        partyMode(fplayer);
+    public void partyMode(final @NotNull MinigamePlayer player, final int amount, final long delay) {
+        if (!onPartyMode()) {
+            return;
+        }
+        partyMode(player);
         if (amount == 1) return;
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            if (fplayer != null) {
-                partyMode(fplayer, fcount - 1, fdelay);
-            }
-
-        }, delay);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> partyMode(player, amount - 1, delay), delay);
     }
 
     public @NotNull List<@NotNull String> getDeniedCommands() {
@@ -1109,11 +1099,11 @@ public class MinigamePlayerManager {
         this.deniedCommands = deniedCommands;
     }
 
-    public void addDeniedCommand(String command) {
+    public void addDeniedCommand(@NotNull String command) {
         deniedCommands.add(command);
     }
 
-    public void removeDeniedCommand(String command) {
+    public void removeDeniedCommand(@NotNull String command) {
         deniedCommands.remove(command);
     }
 

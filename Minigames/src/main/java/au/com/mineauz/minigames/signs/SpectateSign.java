@@ -59,7 +59,7 @@ public class SpectateSign extends AMinigameSign {
             Minigame mgm = getMinigame(sign);
             if (mgm != null) {
                 if (mgm.isEnabled()) {
-                    plugin.getPlayerManager().spectateMinigame(mgPlayer, mgm);
+                    plugin.getPlayerManager().spectateMinigame(mgm, mgPlayer);
                     return true;
                 } else if (!mgm.isEnabled()) {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTENABLED);

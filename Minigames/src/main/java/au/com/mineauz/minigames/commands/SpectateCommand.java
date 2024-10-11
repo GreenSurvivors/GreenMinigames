@@ -57,7 +57,7 @@ public class SpectateCommand extends ACommand {
                 Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
                 if (mgm != null) {
                     MinigamePlayer mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
-                    PLUGIN.getPlayerManager().spectateMinigame(mgPlayer, mgm);
+                    PLUGIN.getPlayerManager().spectateMinigame(mgm, mgPlayer);
                     return true;
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,

@@ -64,9 +64,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Events implements Listener {
-    private static final Minigames plugin = Minigames.getPlugin();
-    private final MinigamePlayerManager pdata = plugin.getPlayerManager();
-    private final MinigameManager mdata = plugin.getMinigameManager();
+    private static final @NotNull Minigames plugin = Minigames.getPlugin();
+    private final @NotNull MinigamePlayerManager pdata = plugin.getPlayerManager();
+    private final @NotNull MinigameManager mdata = plugin.getMinigameManager();
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerResourcePack(@NotNull PlayerResourcePackStatusEvent event) { //todo 1.20.3 + add ressource pack not set (redo with multible Ressoucepacks in mind.)
@@ -192,7 +192,9 @@ public class Events implements Listener {
         }
     }
 
-    @EventHandler
+    // the priority was changed to lowest, since having it to normal would mean worldguard
+    // would be served first unload the player and didn't allow them to teleport to the quit location inside a region. (pdata.quitMinigame)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDisconnect(@NotNull PlayerQuitEvent event) {
         MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         if (mgPlayer.isInMinigame()) {
@@ -221,7 +223,7 @@ public class Events implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    private void onPlayerConnect(@NotNull PlayerJoinEvent event) {
+    private void onPlayerConnect(final @NotNull PlayerJoinEvent event) {
         pdata.addMinigamePlayer(event.getPlayer());
 
         File pldata = new File(plugin.getDataFolder() + File.separator + "playerdata " + File.separator +
@@ -229,13 +231,13 @@ public class Events implements Listener {
         final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         if (pldata.exists()) {
             mgPlayer.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getUniqueId()));
-            Location floc = mgPlayer.getOfflineMinigamePlayer().getLoginLocation();
+            final Location floc = mgPlayer.getOfflineMinigamePlayer().getLoginLocation();
             mgPlayer.setRequiredQuit(true);
             mgPlayer.setQuitPos(floc);
 
             if (!mgPlayer.getPlayer().isDead() && mgPlayer.isRequiredQuit()) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, mgPlayer::restorePlayerData);
-                mgPlayer.teleport(mgPlayer.getQuitPos());
+                mgPlayer.teleport(floc);
 
                 mgPlayer.setRequiredQuit(false);
                 mgPlayer.setQuitPos(null);

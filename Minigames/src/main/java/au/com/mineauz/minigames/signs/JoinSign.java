@@ -18,7 +18,11 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
+import java.util.UUID;
+
 public class JoinSign extends AMinigameSign {
+    private static final HashSet<UUID> shownWarning = new HashSet<>();
     private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
@@ -56,7 +60,11 @@ public class JoinSign extends AMinigameSign {
                 }
             } else if (plugin.getConfig().getBoolean("warnings")) {
                 event.line(3, Component.empty());
-                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_NOVAULT);
+                if (!shownWarning.contains(event.getPlayer().getUniqueId())) {
+                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_NOVAULT);
+
+                    shownWarning.add(event.getPlayer().getUniqueId());
+                }
             }
             return true;
         }
@@ -108,7 +116,7 @@ public class JoinSign extends AMinigameSign {
                             return false;
                         }
                     }
-                    plugin.getPlayerManager().joinMinigame(mgPlayer, mgm, false, 0.0);
+                    plugin.getPlayerManager().joinMinigame(mgm, mgPlayer, false, 0.0);
                     return true;
                 } else if (!mgm.isEnabled()) {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTENABLED);

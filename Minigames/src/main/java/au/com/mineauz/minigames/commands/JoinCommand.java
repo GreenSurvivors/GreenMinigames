@@ -52,7 +52,7 @@ public class JoinCommand extends ACommand {
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JOIN_JOINING,
                             Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()));
-                    PLUGIN.getPlayerManager().joinMinigame(PLUGIN.getPlayerManager().getMinigamePlayer(player), mgm, false, 0.0);
+                    PLUGIN.getPlayerManager().joinMinigame(mgm, PLUGIN.getPlayerManager().getMinigamePlayer(player), false, 0.0);
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_JOIN_ERROR_ALREADYPLAYING);
                 }
