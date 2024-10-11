@@ -49,11 +49,11 @@ public class ListPlaceholder extends ACommand {
         return "minigame.placeholders";
     }
 
-    private @NotNull Component makePage(int pageNumber) {
+    private @NotNull Component makePage(final int choosenPageNumber) {
         List<String> placeholders = new ArrayList<>(PLUGIN.getPlaceHolderManager().getRegisteredPlaceHolders());
 
         final int numPages = (int) Math.ceil((float) placeholders.size() / PLACEHOLDERS_PER_SITE);
-        pageNumber = Math.max(1, Math.min(pageNumber, numPages)); // stay in range
+        final int pageNumber = Math.max(1, Math.min(choosenPageNumber, numPages)); // stay in range
 
         // get sublist just containing the page
         final List<String> placeholdersOfPage = placeholders.subList(PLACEHOLDERS_PER_SITE * (pageNumber - 1),

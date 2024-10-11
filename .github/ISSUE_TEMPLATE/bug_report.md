@@ -22,7 +22,7 @@ A clear and concise description of what you expected to happen.
 
 **Server (please complete the following information):**
   - Minigames Version: X.X.X
-  - Server Type: [Spigot|Paper|CraftBukkit]
+  - Server Type: [Paper|Purpur|Pufferfish]
   - Server Version: X.X.X
 
 **Additional context**

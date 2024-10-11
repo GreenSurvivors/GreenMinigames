@@ -77,14 +77,14 @@ public class HelpCommand extends ACommand {
         return "minigame.help";
     }
 
-    private @NotNull Component makePage(@NotNull Permissible permissible, int pageNumber) {
+    private @NotNull Component makePage(final @NotNull Permissible permissible, final int chosenPageNumber) {
         List<ICommandInfo> allCommands = new ArrayList<>(CommandDispatcher.getCommands());
         allCommands.addAll(SetCommand.getSetCommands());
         // filter per permission
         allCommands = allCommands.stream().filter(cmd -> cmd.getPermission() == null || permissible.hasPermission(cmd.getPermission())).toList();
 
         final int numPages = (int) Math.ceil((float) allCommands.size() / COMMANDS_PER_SITE);
-        pageNumber = Math.max(1, Math.min(pageNumber, numPages)); // stay in range
+        final int pageNumber = Math.max(1, Math.min(chosenPageNumber, numPages)); // stay in range
 
         final List<ICommandInfo> commandsOfPage = allCommands.subList(COMMANDS_PER_SITE * (pageNumber - 1), Math.min(allCommands.size(), pageNumber * COMMANDS_PER_SITE));
         // command name + description + click event for detailed info

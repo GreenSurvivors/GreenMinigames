@@ -23,6 +23,7 @@ import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.stats.MinigameStatistics;
 import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import io.papermc.paper.ServerBuildInfo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -47,11 +48,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
@@ -65,6 +66,7 @@ public class Minigames extends JavaPlugin {
     private static ComparableVersion VERSION;
     private static ComparableVersion PAPER_VERSION;
     private final @NotNull StartUpLogHandler startUpHandler;
+    private static final MinigameMessageManager minigameMessageManager = new MinigameMessageManager();
     public DisplayManager display;
     private ResourcePackManager resourceManager;
     private MinigamePlayerManager playerManager;
@@ -96,6 +98,11 @@ public class Minigames extends JavaPlugin {
         }
 
         return Minigames.componentLogger;
+    }
+
+    @VisibleForTesting
+    public static MinigameMessageManager getMinigameMessageManager () {
+        return minigameMessageManager;
     }
 
     public @NotNull String getStartupLog() {
@@ -190,14 +197,14 @@ public class Minigames extends JavaPlugin {
                 case -1 -> {
                     logger.warn("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Paper Version: " + PAPER_VERSION.getCanonical());
                     logger.warn("Your version is newer: " + Bukkit.getBukkitVersion());
-                    logger.warn("Please check for an updated");
+                    logger.warn("Please check for an update!");
                 }
                 case 0 -> {
                 }
                 case 1 -> {
                     if (!this.getConfig().getBoolean("forceload", true)) {
                         logger.warn("This version of Minigames (" + VERSION.getCanonical() + ") " +
-                                "is designed for Bukkit Version: " + PAPER_VERSION.getCanonical());
+                                "is designed for Paper Version: " + PAPER_VERSION.getCanonical());
                         logger.warn("Your version is " + Bukkit.getVersion());
                         logger.warn(" Bypass this by setting forceload: true in the config");
 
@@ -216,7 +223,6 @@ public class Minigames extends JavaPlugin {
             final PluginDescriptionFile desc = this.getDescription();
             ConfigurationSerialization.registerClass(ResourcePack.class);
             MinigameMessageManager.registerCoreLanguage();
-            this.checkVersion();
             this.loadPresets();
             this.setupMinigames();
             if (!this.setupEconomy()) {
@@ -236,15 +242,12 @@ public class Minigames extends JavaPlugin {
             this.minigameManager.loadRewardSigns();
 
             disp = new CommandDispatcher();
-            PluginCommand command = this.getCommand("minigame");
-            if (command == null) {
-                throw (new NoSuchElementException("Could not find command `minigame`"));
-            }
-            command.setExecutor(disp);
-            command.setTabCompleter(disp);
+            this.getServer().getCommandMap().register(this.getPluginMeta().getName().toLowerCase(Locale.ENGLISH), disp);
+
             for (final Player player : this.getServer().getOnlinePlayers()) {
                 this.playerManager.addMinigamePlayer(player);
             }
+
             try {
                 this.initMetrics();
             } catch (final IllegalStateException | NoClassDefFoundError | ExceptionInInitializerError e) {
@@ -258,7 +261,7 @@ public class Minigames extends JavaPlugin {
             this.hookPlaceHolderApi();
         } catch (final Exception e) {
             plugin = null;
-            logger.error("Failed to enable Minigames " + this.getDescription().getVersion() + ": ", e);
+            logger.error("Failed to enable Minigames " + this.getPluginMeta().getVersion() + ": ", e);
             Bukkit.getPluginManager().disablePlugin(this);
         }
         this.getLogger().removeHandler(startUpHandler);
@@ -407,21 +410,10 @@ public class Minigames extends JavaPlugin {
     }
 
     private int checkVersion() {
-        final Properties p = new Properties();
-        try (final InputStream stream = this.getResource("minigame.properties")) {
-            p.load(stream);
-        } catch (final NullPointerException | IOException e) {
-            this.getLogger().warning(e.getMessage());
-        }
-
-        if (p.containsKey("version")) {
-            VERSION = new ComparableVersion(p.getProperty("version"));
-            PAPER_VERSION = new ComparableVersion(p.getProperty("paper_version"));
-            final ComparableVersion serverversion = new ComparableVersion(this.getServer().getBukkitVersion());
-            return PAPER_VERSION.compareTo(serverversion);
-        } else {
-            return 1;
-        }
+        VERSION = new ComparableVersion(this.getPluginMeta().getVersion());
+        PAPER_VERSION = new ComparableVersion(this.getPluginMeta().getAPIVersion());
+        final ComparableVersion serverversion = new ComparableVersion(this.getServer().getMinecraftVersion());
+        return PAPER_VERSION.compareTo(serverversion);
     }
 
     /**

@@ -1,23 +1,31 @@
 name: Minigames
+version: ${version}
 main: au.com.mineauz.minigames.Minigames
-version: ${plugin.version}
-api-version: "${paper.api.version}"
-author: _Razz_ Schmoller Addstar Narimm GreenSurvivors
-softdepend:
-  - WorldEdit
-description: ${project.description}
+bootstrapper: au.com.mineauz.minigames.MinigamePluginBootstrap
+loader: au.com.mineauz.minigames.MinigamePluginBootstrap
+# noinspection YAMLSchemaValidation
+api-version: "${mcVersion}"
+description: ${description}
+authors:
+  - _Razz_
+  - Schmoller
+  - Narimm
+  - Addstar
+  - GreenSurvivors
 
-libraries:
-  - org.apache.commons:commons-text:1.10.0
-  - commons-io:commons-io:2.15.1
-
-commands:
-  minigame:
-    description: The Minigame creation command.
-    usage: Invalid command. Type "/minigame help" for help
-    permission: minigame.minigame
-    permission-message: You don't have <permission>
-    aliases: [ mgm, minigm, mgame, mg ]
+dependencies:
+  server:
+    WorldEdit:
+      required: false
+      load: AFTER
+    PlaceholderAPI:
+      # This means that your plugin will not have access to their classpath
+      join-classpath: false
+      required: false
+      load: BEFORE
+    Vault:
+      required: false
+      load: BEFORE
 
 permissions:
   minigame.minigame:
@@ -217,7 +225,7 @@ permissions:
     description: Allows player to change a minigame to use a permission to join
     default: op
   minigame.set.minscore:
-    descripition: Allows a player to set the minimum score for scoring minigames.
+    description: Allows a player to set the minimum score for scoring minigames.
     default: op
   minigame.set.maxscore:
     description: Allows a player to set the maximum score for scoring Minigames.
@@ -482,3 +490,4 @@ permissions:
   minigame.backend:
     description: Allows admins to change and export the backend
     default: op
+

@@ -10,6 +10,11 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kitteh.pastegg.*;
+import org.kitteh.pastegg.client.FormatCodec;
+import org.kitteh.pastegg.reply.IReply;
+import org.kitteh.pastegg.reply.ReplyStatus;
+import org.kitteh.pastegg.reply.SuccessReply;
+import org.kitteh.pastegg.reply.content.PasteResult;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -113,7 +118,7 @@ public class DebugCommand extends ACommand {
     }
 
     private void generatePaste(@NotNull CommandSender sender) {
-        StringBuilder mainInfo = new StringBuilder(); //todo
+        StringBuilder mainInfo = new StringBuilder();
         mainInfo.append(Bukkit.getName()).append(" version: ").append(Bukkit.getServer().getVersion()).append('\n');
         mainInfo.append("Plugin version: ").append(Minigames.getPlugin().getDescription().getVersion()).append('\n');
         mainInfo.append("Java version: ").append(System.getProperty("java.version")).append('\n');
@@ -123,42 +128,50 @@ public class DebugCommand extends ACommand {
             mainInfo.append(' ').append(plugin.getName()).append(" - ").append(plugin.getDescription().getVersion()).append('\n');
             mainInfo.append("  ").append(plugin.getDescription().getAuthors()).append('\n');
         }
+
         Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () -> {
             Path dataPath = Minigames.getPlugin().getDataFolder().toPath();
 
             String apiKey = Minigames.getPlugin().getConfig().getString("pasteApiKey", null);
+
+            PasteFile mainInfoFile = new PasteFile("mainInfo.txt", FormatCodec.TEXT_TO_TEXT.encode(mainInfo.toString()));
+
             PasteFile config = new PasteFile("config.yml",
-                    new PasteContent(PasteContent.ContentType.TEXT,
-                            getFile(dataPath.resolve("config.yml"))));
+                    FormatCodec.TEXT_TO_TEXT.encode(getFile(dataPath.resolve("config.yml"))),
+                    HighlightLanguage.Yaml);
             PasteFile spigot = new PasteFile("spigot.yml",
-                    new PasteContent(PasteContent.ContentType.TEXT,
-                            getFile(Paths.get("spigot.yml"))));
-            PasteFile startupLog = new PasteFile("startup.log", new PasteContent(PasteContent.ContentType.TEXT,
-                    PLUGIN.getStartupLog()));
-            PasteFile startupExceptionsLog = new PasteFile("startupExceptions.log", new PasteContent(PasteContent.ContentType.TEXT,
-                    PLUGIN.getStartupExceptionLog()));
+                    FormatCodec.TEXT_TO_TEXT.encode(getFile(Paths.get("spigot.yml"))),
+                    HighlightLanguage.Yaml);
+            PasteFile startupLog = new PasteFile("startup.log",
+                    FormatCodec.TEXT_TO_TEXT.encode(PLUGIN.getStartupLog()));
+            PasteFile startupExceptionsLog = new PasteFile("startupExceptions.log",
+                    FormatCodec.TEXT_TO_TEXT.encode(PLUGIN.getStartupExceptionLog()));
+
             PasteBuilder builder = new PasteBuilder();
             builder.addFile(startupLog);
             builder.addFile(startupExceptionsLog);
+
             try {
-                PasteBuilder.PasteResult result = builder
+                IReply reply = builder
                         .setApiKey(apiKey)
                         .name("Minigames Debug Outpout")
                         .visibility(Visibility.UNLISTED)
+                        .addFile(mainInfoFile)
                         .addFile(spigot)
                         .addFile(config)
-                        .debug(Minigames.getPlugin().isDebugging())
                         .build();
-                if (result.getPaste().isPresent()) {
-                    Paste paste = result.getPaste().get();
-                    sender.sendMessage("Debug Paste: https://paste.gg/" + paste.getId());
-                    sender.sendMessage("Deletion Key: " + paste.getDeletionKey());
-                    Minigames.getCmpnntLogger().info("Paste:  https://paste.gg/" + paste.getId());
-                    Minigames.getCmpnntLogger().info("Paste:  Deletion Key: " + paste.getDeletionKey());
+
+                if (reply.status() == ReplyStatus.SUCCESS && reply instanceof SuccessReply successReply) {
+                    PasteResult result = successReply.result();
+
+                    sender.sendMessage("Debug Paste: https://paste.gg/" + result.id());
+                    sender.sendMessage("Deletion Key: " + result.deletionKey());
+                    Minigames.getCmpnntLogger().info("Paste:  https://paste.gg/" + result.id());
+                    Minigames.getCmpnntLogger().info("Paste:  Deletion Key: " + result.deletionKey());
                 } else {
                     sender.sendMessage("Paste Failed.");
                 }
-            } catch (InvalidPasteException e) {
+            } catch (InvalidPasteException | IOException e) {
                 sender.sendMessage("Paste Failed" + e.getMessage());
                 Minigames.getCmpnntLogger().warn("", e);
             }

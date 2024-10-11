@@ -72,23 +72,21 @@ public class Events implements Listener {
     public void onPlayerResourcePack(@NotNull PlayerResourcePackStatusEvent event) { //todo 1.20.3 + add ressource pack not set (redo with multible Ressoucepacks in mind.)
         final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         List<MinigamePlayer> required = plugin.getPlayerManager().getApplyingPack();
-        if (mgPlayer.isInMinigame()) {
-            if (required.contains(mgPlayer)) {
-                ResourcePackModule module = ResourcePackModule.getMinigameModule(mgPlayer.getMinigame());
-                if (module == null || !module.isEnabled()) return;
-                if (!module.isForced()) return;
-                switch (event.getStatus()) {
-                    case ACCEPTED, SUCCESSFULLY_LOADED -> required.remove(mgPlayer);
-                    case DECLINED -> {
-                        Minigames.getPlugin().getPlayerManager().quitMinigame(mgPlayer, true);
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_RESOURCEPACK_DECLINED);
-                        required.remove(mgPlayer);
-                    }
-                    case FAILED_DOWNLOAD -> {
-                        Minigames.getPlugin().getPlayerManager().quitMinigame(mgPlayer, true);
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_RESOURCEPACK_FAILED);
-                        required.remove(mgPlayer);
-                    }
+        if (mgPlayer.isInMinigame() && required.contains(mgPlayer)) {
+            ResourcePackModule module = ResourcePackModule.getMinigameModule(mgPlayer.getMinigame());
+            if (module == null || !module.isEnabled()) return;
+            if (!module.isForced()) return;
+            switch (event.getStatus()) {
+                case ACCEPTED, SUCCESSFULLY_LOADED -> required.remove(mgPlayer);
+                case DECLINED -> {
+                    Minigames.getPlugin().getPlayerManager().quitMinigame(mgPlayer, true);
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_RESOURCEPACK_DECLINED);
+                    required.remove(mgPlayer);
+                }
+                case FAILED_DOWNLOAD -> {
+                    Minigames.getPlugin().getPlayerManager().quitMinigame(mgPlayer, true);
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_RESOURCEPACK_FAILED);
+                    required.remove(mgPlayer);
                 }
             }
         }
@@ -250,8 +248,8 @@ public class Events implements Listener {
 
         if (Bukkit.getServer().getOnlinePlayers().size() == 1) {
             for (Minigame mgm : mdata.getAllMinigames().values()) {
-                if (mgm != null && mgm.getType() == MinigameType.GLOBAL) {
-                    if (mgm.getMinigameTimer() != null) mgm.getMinigameTimer().startTimer();
+                if (mgm.getType() == MinigameType.GLOBAL && mgm.getMinigameTimer() != null) {
+                    mgm.getMinigameTimer().startTimer();
                 }
             }
         }

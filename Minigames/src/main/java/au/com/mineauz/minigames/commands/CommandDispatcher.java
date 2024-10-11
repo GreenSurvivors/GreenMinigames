@@ -9,17 +9,15 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.Location;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class CommandDispatcher implements CommandExecutor, TabCompleter {
+public class CommandDispatcher extends Command {
     private static final Map<String, ACommand> commands = new TreeMap<>(); // sort by name for display in help
     private static final Minigames plugin = Minigames.getPlugin();
 
@@ -58,6 +56,11 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         registerCommand(new InfoCommand());
         registerCommand(new ResourcePackCommand());
         registerCommand(new SelectCommand());
+    }
+
+    public CommandDispatcher() {
+        super("minigame", "The Minigame creation command.", "Invalid command. Type \"/minigame help\" for help", List.of("mgm", "minigm", "mgame", "mg"));
+        this.setPermission("minigame.minigame");
     }
 
     public static @NotNull Collection<ACommand> getCommands() {
@@ -103,7 +106,8 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         }
     }
 
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @Nullable [] args) {
+    @Override
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         Player player = null;
         if (sender instanceof Player) {
             player = (Player) sender;
@@ -127,12 +131,12 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                         if (!returnValue) {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_HEADER);
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_DESCRIPTION,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), command.getDescription()));
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), this.getDescription()));
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_USAGE,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), command.getUsage()));
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), this.getUsage()));
                             if (cmd.getAliases() != null) {
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_ALIASES,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", command.getAliases())));
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", this.getAliases())));
                             }
                         }
                     } else {
@@ -155,7 +159,8 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         return false;
     }
 
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String @Nullable [] args) {
+    @Override
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args, @Nullable Location location) {
         if (args != null && args.length > 0) {
             ACommand comd = getCommand(args[0]);
 
@@ -171,6 +176,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                 return tabCompleteMatch(ls, args[0]);
             }
         }
-        return null;
+
+        return List.of();
     }
 }
