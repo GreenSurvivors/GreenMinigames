@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
@@ -20,7 +21,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-public class MenuItemLoadoutAdd extends MenuItem {
+public class MenuItemLoadoutAdd extends MenuItem implements StringConsumer {
     private final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts;
     private @Nullable Minigame minigame = null;
 
@@ -80,13 +81,13 @@ public class MenuItemLoadoutAdd extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(String entry) {
-        entry = entry.replace(" ", "_");
-        if (!loadouts.containsKey(entry)) {
+    public void acceptString(String string) {
+        string = string.replace(" ", "_");
+        if (!loadouts.containsKey(string)) {
             for (int i = 0; i < 45; i++) {
                 if (!getContainer().hasMenuItem(i)) {
-                    PlayerLoadout loadout = new PlayerLoadout(entry);
-                    loadouts.put(entry, loadout);
+                    PlayerLoadout loadout = new PlayerLoadout(string);
+                    loadouts.put(string, loadout);
                     List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
 
                     if (minigame != null) {
@@ -105,7 +106,7 @@ public class MenuItemLoadoutAdd extends MenuItem {
             getContainer().displayMenu(getContainer().getViewer());
 
             MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_LOADOUT_ERROR_ALREADYEXISTS,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), entry));
+                Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), string));
         }
     }
 }

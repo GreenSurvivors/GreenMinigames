@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.List;
 
-public class MenuItemAddFlag extends MenuItem {
+public class MenuItemAddFlag extends MenuItem implements StringConsumer {
     private final @NotNull Minigame mgm;
 
     public MenuItemAddFlag(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Minigame mgm) {
@@ -54,9 +55,9 @@ public class MenuItemAddFlag extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
-        mgm.addSinglePlayerFlag(entry);
-        getContainer().addItem(new MenuItemFlag(Material.OAK_SIGN, entry, mgm.getSinglePlayerFlags()));
+    public void acceptString(@NotNull String string) {
+        mgm.addSinglePlayerFlag(string);
+        getContainer().addItem(new MenuItemFlag(Material.OAK_SIGN, string, mgm.getSinglePlayerFlags()));
 
         getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());

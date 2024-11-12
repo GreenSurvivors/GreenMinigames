@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,7 +22,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class MenuItemDecimal extends MenuItem {
+public class MenuItemDecimal extends MenuItem implements StringConsumer {
     private final static String DESCRIPTION_TOKEN = "Decimal_description";
     private final static Pattern DOUBLE_PATTERN = Pattern.compile("[+-]?[0-9]+(.[0-9]+)?");
 
@@ -144,7 +145,7 @@ public class MenuItemDecimal extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
+    public void acceptString(@NotNull String entry) {
         if (DOUBLE_PATTERN.matcher(entry).matches()) {
             double entryValue = Double.parseDouble(entry);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {

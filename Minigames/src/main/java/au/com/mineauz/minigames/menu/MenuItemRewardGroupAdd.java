@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.List;
 
-public class MenuItemRewardGroupAdd extends MenuItem {
+public class MenuItemRewardGroupAdd extends MenuItem implements StringConsumer {
     private final @NotNull Rewards rewards;
 
     public MenuItemRewardGroupAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Rewards rewards) {
@@ -54,25 +55,25 @@ public class MenuItemRewardGroupAdd extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
+    public void acceptString(@NotNull String string) {
         getContainer().cancelReopenTimer();
 
-        entry = entry.replace(" ", "_");
+        string = string.replace(" ", "_");
         for (RewardGroup group : rewards.getGroups()) {
-            if (group.getName().equals(entry)) {
+            if (group.getName().equals(string)) {
                 MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
                         MgMenuLangKey.MENU_REWARD_ERROR_GROUPEXISTS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
                 getContainer().displayMenu(getContainer().getViewer());
                 return;
             }
         }
 
-        RewardGroup group = rewards.addGroup(entry, RewardRarity.NORMAL);
+        RewardGroup group = rewards.addGroup(string, RewardRarity.NORMAL);
 
         MenuItemRewardGroup mrg = new MenuItemRewardGroup(Material.CHEST,
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry)), group, rewards);
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string)), group, rewards);
         getContainer().addItem(mrg);
 
         getContainer().displayMenu(getContainer().getViewer());

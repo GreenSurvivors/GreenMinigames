@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemMaterial;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -52,7 +51,7 @@ public class MaterialFlag extends AFlag<Material> {
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
+    public @NotNull MenuItemMaterial getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
         return getMenuItem(displayMat, name, null);
     }
 

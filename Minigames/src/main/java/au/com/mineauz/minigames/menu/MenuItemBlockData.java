@@ -5,6 +5,8 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.menu.consumer.BlockDataConsumer;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,7 +23,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemBlockData extends MenuItem {
+public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, StringConsumer {
     private static final @NotNull String DESCRIPTION_TOKEN = "BlockData_description";
     private final @NotNull Callback<BlockData> dataCallback;
 
@@ -103,19 +105,23 @@ public class MenuItemBlockData extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
+    public void acceptString(@NotNull String string) {
         try {
-            BlockData d = Bukkit.createBlockData(entry);
-            dataCallback.setValue(d);
-            setDescriptionPart(DESCRIPTION_TOKEN, createDescription(dataCallback.getValue()));
-
-            // update the display item
-            if (d.getMaterial().isItem()) {
-                ItemStack stackUpdate = getDisplayItem();
-                setDisplayItem(stackUpdate.withType(d.getMaterial()));
-            }
+            acceptBlockData(Bukkit.createBlockData(string));
         } catch (IllegalArgumentException e) {
             MinigameMessageManager.sendMessage(getContainer().getViewer(), MinigameMessageType.ERROR, Component.text(e.getLocalizedMessage()));
+        }
+    }
+
+    @Override
+    public void acceptBlockData(@NotNull BlockData blockData) {
+        dataCallback.setValue(blockData);
+        setDescriptionPart(DESCRIPTION_TOKEN, createDescription(dataCallback.getValue()));
+
+        // update the display item
+        if (blockData.getMaterial().isItem()) {
+            ItemStack stackUpdate = getDisplayItem();
+            setDisplayItem(stackUpdate.withType(blockData.getMaterial()));
         }
 
         getContainer().cancelReopenTimer();

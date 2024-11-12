@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,7 +20,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemList<T> extends MenuItem { //todo add constructor with map T -> Component for display
+public class MenuItemList<T> extends MenuItem implements StringConsumer { //todo add constructor with map T -> Component for display
     private final static @NotNull String DESCRIPTION_TOKEN = "List_description";
     private final @NotNull Callback<T> value;
     private final @NotNull List<T> options;
@@ -139,9 +140,9 @@ public class MenuItemList<T> extends MenuItem { //todo add constructor with map 
     }
 
     @Override
-    public void checkValidEntry(String entry) {
+    public void acceptString(@NotNull String string) {
         for (T opt : options) {
-            if (opt.toString().equalsIgnoreCase(entry)) {
+            if (opt.toString().equalsIgnoreCase(string)) {
                 value.setValue(opt);
                 updateDescription();
 

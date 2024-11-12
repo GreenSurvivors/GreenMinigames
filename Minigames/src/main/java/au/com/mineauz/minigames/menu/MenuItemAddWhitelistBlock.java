@@ -7,11 +7,14 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.consumer.BlockDataConsumer;
+import au.com.mineauz.minigames.menu.consumer.MaterialConsumer;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.List;
 
-public class MenuItemAddWhitelistBlock extends MenuItem {
+public class MenuItemAddWhitelistBlock extends MenuItem implements StringConsumer, BlockDataConsumer, MaterialConsumer {
     protected final @NotNull List<@NotNull Material> whitelist;
 
     public MenuItemAddWhitelistBlock(@NotNull MinigameLangKey langKey, @NotNull List<@NotNull Material> whitelist) {
@@ -58,35 +61,41 @@ public class MenuItemAddWhitelistBlock extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
-        // try a direct match in case of a chat input
-        Material mat = Material.matchMaterial(entry);
+    public void acceptBlockData(@NotNull BlockData data) {
+        acceptMaterial(data.getMaterial());
+    }
 
-        if (mat == null) {
-            // didn't work, now try the input as a block data, as we get when a block was clicked
-            try {
-                mat = Bukkit.createBlockData(entry).getMaterial();
-            } catch (IllegalArgumentException ignored) {
-            }
-        }
+    @Override
+    public void acceptString(@NotNull String string) {
+        final @Nullable Material mat = Material.matchMaterial(string);
 
         if (mat != null) {
-            if (!whitelist.contains(mat)) {
-                // intern
-                whitelist.add(mat);
-
-                // visual
-                getContainer().addItem(new MenuItemWhitelistBlock(mat, whitelist));
-            } else {
-                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
-            }
+            acceptMaterial(mat);
         } else {
-            // still didn't work.
+            // didn't work.
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
 
             MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTMATERIAL,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
+                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
+
+            /* cancel automatic reopening and reopen {@link MenuItemDisplayWhitelist}*/
+            getContainer().cancelReopenTimer();
+            getContainer().displayMenu(getContainer().getViewer());
+        }
+
+    }
+
+    @Override
+    public void acceptMaterial(@NotNull Material mat) {
+        if (!whitelist.contains(mat)) {
+            // intern
+            whitelist.add(mat);
+
+            // visual
+            getContainer().addItem(new MenuItemWhitelistBlock(mat, whitelist));
+        } else {
+            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
         }
 
         /* cancel automatic reopening and reopen {@link MenuItemDisplayWhitelist}*/

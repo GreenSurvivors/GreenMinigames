@@ -270,10 +270,6 @@ public class MenuItem {
         return getDisplayItem();
     }
 
-    public void checkValidEntry(String entry) {
-        //Do Stuff
-    }
-
     public @Nullable Menu getContainer() {
         return container;
     }

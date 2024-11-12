@@ -95,20 +95,20 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
                     }
                 }) {
             @Override
-            public void checkValidEntry(@NotNull String entry) {
-                if (entry.isEmpty()) {
-                    super.checkValidEntry(entry);
+            public void acceptString(@NotNull String string) {
+                if (string.isEmpty()) {
+                    super.acceptString(string);
                     return;
                 }
-                ResourcePack pack = Minigames.getPlugin().getResourceManager().getResourcePack(entry);
+                ResourcePack pack = Minigames.getPlugin().getResourceManager().getResourcePack(string);
                 if (pack == null) {
                     getContainer().cancelReopenTimer();
                     getContainer().displayMenu(getContainer().getViewer());
                     MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
                             MgMiscLangKey.MINIGAME_RESSOURCEPACK_NORESSOURCEPACK,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
                 } else {
-                    super.checkValidEntry(entry);
+                    super.acceptString(string);
                 }
             }
         };

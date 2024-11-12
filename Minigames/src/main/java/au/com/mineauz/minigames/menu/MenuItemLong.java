@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,8 +20,10 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
-public class MenuItemLong extends MenuItem {
+public class MenuItemLong extends MenuItem implements StringConsumer {
+    protected static final @NotNull Pattern LONG_PATTERN = Pattern.compile("-?[0-9]+");
     private final static String DESCRIPTION_TOKEN = "Long_description";
     protected final @NotNull Callback<Long> value;
     protected final @Nullable Long min;
@@ -143,9 +146,9 @@ public class MenuItemLong extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
-        if (entry.matches("-?[0-9]+")) {
-            long entryValue = Long.parseLong(entry);
+    public void acceptString(@NotNull String string) {
+        if (LONG_PATTERN.matcher(string).matches()) {
+            long entryValue = Long.parseLong(string);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {
                 value.setValue(entryValue);
                 updateDescription();
@@ -159,7 +162,7 @@ public class MenuItemLong extends MenuItem {
 
             MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
                     MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
+                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
         }
     }
 }

@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
@@ -23,7 +24,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemDisplayLoadout extends MenuItem {
+public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
     private final @NotNull PlayerLoadout loadout;
     private @Nullable Minigame minigame = null;
     private boolean allowDelete = true;
@@ -179,10 +180,10 @@ public class MenuItemDisplayLoadout extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
+    public void acceptString(@NotNull String string) {
         String loadoutName = loadout.getName();
 
-        if (entry.equalsIgnoreCase("yes")) {
+        if (string.equalsIgnoreCase("yes")) {
             if (minigame != null) {
                 LoadoutModule.getMinigameModule(minigame).deleteLoadout(loadoutName);
             } else {

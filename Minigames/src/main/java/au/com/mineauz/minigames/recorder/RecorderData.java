@@ -14,6 +14,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.data.Hangable;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftEntitySnapshot;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
@@ -204,17 +206,18 @@ public class RecorderData implements Listener {
     }
 
     //add an entity to get reset
-    public void addEntity(@NotNull Entity ent, @Nullable MinigamePlayer player, boolean created) {
+    public void addEntity(@NotNull Entity ent, @Nullable MinigamePlayer player, @NotNull EntityData.ChangeType changeType) {
         EntityData oldData = entityData.get(ent.getUniqueId());
         if (oldData != null) {
-            if (oldData.wasCreated() && !created) {
+            if (oldData.getChangeType() == EntityData.ChangeType.CREATED &&
+                changeType == EntityData.ChangeType.REMOVED) {
                 entityData.remove(ent.getUniqueId());
 
                 return;
             }
         }
 
-        entityData.put(ent.getUniqueId(), new EntityData(ent, player, created));
+        entityData.put(ent.getUniqueId(), new EntityData(ent, player, changeType));
     }
 
     public boolean hasBlock(@NotNull Block block) {
@@ -311,17 +314,38 @@ public class RecorderData implements Listener {
             EntityData nextEntityData = it.next();
 
             if (player == null || player.equals(nextEntityData.getModifier())) {
-                if (nextEntityData.wasCreated()) {
-                    Entity ent = nextEntityData.getEntity();
-                    // Entity needs to be removed
-                    if (ent != null && ent.isValid()) {
-                        ent.remove();
+                switch (nextEntityData.getChangeType()) {
+                    case CREATED -> {
+                        Entity entity = nextEntityData.getEntity();
+                        // Entity needs to be removed
+                        if (entity != null && entity.isValid()) {
+                            entity.remove();
+                        }
                     }
-                } else {
-                    // Entity needs to be spawned
-                    //todo restore metadata like armor
-                    Location location = nextEntityData.getEntityLocation();
-                    location.getWorld().spawnEntity(location, nextEntityData.getEntityType());
+                    case REMOVED -> {
+                        if (nextEntityData.getSnapshot() != null) {
+                            nextEntityData.getSnapshot().createEntity(nextEntityData.getEntityLocation());
+                        } else {
+                            Location location = nextEntityData.getEntityLocation();
+                            location.getWorld().spawnEntity(location, nextEntityData.getEntityType());
+                        }
+                    }
+                    case CHANGED -> {
+                        final Entity entity = nextEntityData.getEntity();
+                        if (entity != null && entity.isValid() && entity.getType() == nextEntityData.getEntityType()) {
+                            if (nextEntityData.getSnapshot() != null) {
+                                ((CraftEntity) entity).getHandle().load(((CraftEntitySnapshot) nextEntityData.getSnapshot()).getData());
+                                entity.teleportAsync(nextEntityData.getEntityLocation());
+                            }
+                        } else {
+                            if (nextEntityData.getSnapshot() != null) {
+                                nextEntityData.getSnapshot().createEntity(nextEntityData.getEntityLocation());
+                            } else {
+                                Location location = nextEntityData.getEntityLocation();
+                                location.getWorld().spawnEntity(location, nextEntityData.getEntityType());
+                            }
+                        }
+                    }
                 }
 
                 it.remove();

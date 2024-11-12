@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -24,8 +25,10 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
-public class MenuItemStatusEffectAdd extends MenuItem {
+public class MenuItemStatusEffectAdd extends MenuItem implements StringConsumer {
+    private final static @NotNull Pattern POSITIV_INT_PATTERN = Pattern.compile("[+]?[0-9]+");
     private final @NotNull PlayerLoadout loadout;
 
     public MenuItemStatusEffectAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull PlayerLoadout loadout) {
@@ -61,13 +64,13 @@ public class MenuItemStatusEffectAdd extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
+    public void acceptString(@NotNull String entry) {
         String[] split = entry.split(", ");
         if (split.length == 3) {
             String effect = split[0].toUpperCase();
             @Nullable PotionEffectType eff = Registry.EFFECT.get(NamespacedKey.fromString(effect));
             if (eff != null) {
-                if (split[1].matches("[+]?[0-9]+") && Integer.parseInt(split[1]) != 0) {
+                if (POSITIV_INT_PATTERN.matcher(split[1]).matches() && Integer.parseInt(split[1]) != 0) {
                     int level = Integer.parseInt(split[1]) - 1;
 
                     Long dur = split[2].equalsIgnoreCase("inf") ? Long.valueOf(-1L) : MinigameUtils.parsePeriod(split[2]);

@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.minigame.reward.ARewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
@@ -22,7 +23,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemRewardGroup extends MenuItem {
+public class MenuItemRewardGroup extends MenuItem implements StringConsumer {
     private final static String DESCRIPTION_TOKEN = "RewardGroup_description";
     private final static @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
     private final @NotNull RewardGroup group;
@@ -95,10 +96,10 @@ public class MenuItemRewardGroup extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
+    public void acceptString(@NotNull String string) {
         getContainer().cancelReopenTimer();
 
-        if (entry.equalsIgnoreCase("yes")) { // todo?
+        if (string.equalsIgnoreCase("yes")) { // todo?
             rewards.removeGroup(group);
             getContainer().removeItem(this.getSlot());
 

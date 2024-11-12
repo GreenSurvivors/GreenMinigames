@@ -241,12 +241,12 @@ public class BasicRecorder implements Listener {
                 if (recData.getWhitelistMode()) {
                     //white list --> blocks that are allowed to be broken
                     if (recData.getWBBlocks().contains(usedMaterial) && mgm.getActivatePlayerRecorder()) {
-                        recData.addEntity(event.getEntity(), mgPlayer, true);
+                        recData.addEntity(event.getEntity(), mgPlayer, EntityData.ChangeType.CREATED);
                         return;
                     }
                     //black list --> blocks that are not allowed to be broken
                 } else if (!recData.getWBBlocks().contains(usedMaterial) && mgm.getActivatePlayerRecorder()) {
-                    recData.addEntity(event.getEntity(), mgPlayer, true);
+                    recData.addEntity(event.getEntity(), mgPlayer, EntityData.ChangeType.CREATED);
                     return;
                 }
 
@@ -276,7 +276,7 @@ public class BasicRecorder implements Listener {
 
                 if (mgPlayer != null) {
                     if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getActivatePlayerRecorder()) {
-                        mgPlayer.getMinigame().getRecorderData().addEntity(animal, mgPlayer, false);
+                        mgPlayer.getMinigame().getRecorderData().addEntity(animal, mgPlayer, EntityData.ChangeType.REMOVED);
                     }
                 }
             }
@@ -299,7 +299,7 @@ public class BasicRecorder implements Listener {
         }
         if (mgPlayer != null) {
             if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getActivatePlayerRecorder()) {
-                mgPlayer.getMinigame().getRecorderData().addEntity(event.getEntity(), mgPlayer, false);
+                mgPlayer.getMinigame().getRecorderData().addEntity(event.getEntity(), mgPlayer, EntityData.ChangeType.REMOVED);
             }
         }
     }
@@ -313,7 +313,7 @@ public class BasicRecorder implements Listener {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
 
             if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getActivatePlayerRecorder()) {
-                mgPlayer.getMinigame().getRecorderData().addEntity(event.getProjectile(), mgPlayer, true);
+                mgPlayer.getMinigame().getRecorderData().addEntity(event.getProjectile(), mgPlayer, EntityData.ChangeType.CREATED);
             }
         }
     }
@@ -327,7 +327,7 @@ public class BasicRecorder implements Listener {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
 
             if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getActivatePlayerRecorder()) {
-                mgPlayer.getMinigame().getRecorderData().addEntity(event.getEntity(), mgPlayer, true);
+                mgPlayer.getMinigame().getRecorderData().addEntity(event.getEntity(), mgPlayer, EntityData.ChangeType.CREATED);
             }
         }
     }
@@ -407,7 +407,7 @@ public class BasicRecorder implements Listener {
                 Minigame mg = mgPlayer.getMinigame();
 
                 if (mgPlayer.isInMinigame() && mg.getActivatePlayerRecorder()) {
-                    mg.getRecorderData().addEntity(event.getVehicle(), mgPlayer, false);
+                    mg.getRecorderData().addEntity(event.getVehicle(), mgPlayer, EntityData.ChangeType.REMOVED);
                 }
             }
         }

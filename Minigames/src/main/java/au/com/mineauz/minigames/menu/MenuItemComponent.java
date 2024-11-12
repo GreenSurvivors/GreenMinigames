@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.List;
 
-public class MenuItemComponent extends MenuItem {
+public class MenuItemComponent extends MenuItem implements StringConsumer {
     private final static String DESCRIPTION_VALUE_TOKEN = "COMPONENT_VALUE_DESCRIPTION";
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private final @NotNull Callback<Component> component;
@@ -80,11 +81,11 @@ public class MenuItemComponent extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
-        if (entry.equals("null") && allowNull) {
+    public void acceptString(@NotNull String string) {
+        if (string.equals("null") && allowNull) {
             component.setValue(null);
         } else {
-            component.setValue(miniMessage.deserialize(entry));
+            component.setValue(miniMessage.deserialize(string));
         }
 
         updateDescription();

@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,9 +20,11 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
-public class MenuItemInteger extends MenuItem {
+public class MenuItemInteger extends MenuItem implements StringConsumer {
     private final static String DESCRIPTION_TOKEN = "Integer_description";
+    protected final static @NotNull Pattern INT_PATTERN = Pattern.compile("-?[0-9]+");
     private final @NotNull Callback<Integer> value;
     private final @Nullable Integer min; // inclusive
     private final @Nullable Integer max; // inclusive
@@ -146,9 +149,9 @@ public class MenuItemInteger extends MenuItem {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
-        if (entry.matches("-?[0-9]+")) {
-            int entryValue = Integer.parseInt(entry);
+    public void acceptString(@NotNull String string) {
+        if (INT_PATTERN.matcher(string).matches()) {
+            int entryValue = Integer.parseInt(string);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {
                 value.setValue(entryValue);
                 updateDescription();
@@ -162,7 +165,7 @@ public class MenuItemInteger extends MenuItem {
         } else {
             MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
                     MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
+                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
         }
 
         getContainer().cancelReopenTimer();

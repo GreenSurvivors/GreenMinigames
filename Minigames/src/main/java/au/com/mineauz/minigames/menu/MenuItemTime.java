@@ -41,11 +41,11 @@ public class MenuItemTime extends MenuItemLong {
     }
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
-        MinigameUtils.parsePeriod(entry);
+    public void acceptString(@NotNull String string) {
+        MinigameUtils.parsePeriod(string);
 
-        if (entry.matches("-?[0-9]+")) {
-            long entryValue = Long.parseLong(entry);
+        if (LONG_PATTERN.matcher(string).matches()) {
+            long entryValue = Long.parseLong(string);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {
                 value.setValue(entryValue);
                 updateDescription();
@@ -59,7 +59,7 @@ public class MenuItemTime extends MenuItemLong {
 
             MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
                     MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
+                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
         }
     }
 }

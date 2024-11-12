@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemAddTeam extends MenuItem {
+public class MenuItemAddTeam extends MenuItem implements StringConsumer {
     private final @NotNull TeamsModule tm;
 
     public MenuItemAddTeam(@NotNull Component name, @NotNull TeamsModule tm) {
@@ -49,7 +50,7 @@ public class MenuItemAddTeam extends MenuItem {
 
 
     @Override
-    public void checkValidEntry(@NotNull String entry) {
+    public void acceptString(@NotNull String entry) {
         TeamColor col = TeamColor.matchColor(entry.toUpperCase().replace(" ", "_"));
         if (col != null) {
             if (!tm.hasTeam(col)) {

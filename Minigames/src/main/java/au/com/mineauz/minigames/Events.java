@@ -9,6 +9,9 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.consumer.BlockDataConsumer;
+import au.com.mineauz.minigames.menu.consumer.EntityConsumer;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
@@ -258,19 +261,34 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void playerInteract(@NotNull PlayerInteractEvent event) {
+    private void player(@NotNull EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player player) {
+            final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(player);
+
+            if (mgPlayer.isInMenu() && mgPlayer.getNoClose() && mgPlayer.getManualEntry() instanceof EntityConsumer entityConsumer) {
+                event.setCancelled(true);
+                mgPlayer.setNoClose(false);
+                mgPlayer.setNoClose(false);
+                entityConsumer.acceptEntity(event.getEntity());
+                mgPlayer.setManualEntry(null);
+            }
+        }
+    }
+
+    @EventHandler
+    private void playerInteract(@NotNull PlayerInteractEvent event) {
         MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
 
         if (mgPlayer.isInMinigame() && !mgPlayer.canInteract()) {
             event.setCancelled(true);
             return;
         }
-        if (mgPlayer.isInMenu() && mgPlayer.getNoClose() && mgPlayer.getManualEntry() != null) {
+        if (mgPlayer.isInMenu() && mgPlayer.getNoClose() && mgPlayer.getManualEntry() instanceof BlockDataConsumer blockDataConsumer) {
             event.setCancelled(true);
             mgPlayer.setNoClose(false);
             if (event.getClickedBlock() != null) {
                 mgPlayer.setNoClose(false);
-                mgPlayer.getManualEntry().checkValidEntry(event.getClickedBlock().getBlockData().getAsString());
+                blockDataConsumer.acceptBlockData(event.getClickedBlock().getBlockData());
                 mgPlayer.setManualEntry(null);
             }
             return;
@@ -742,10 +760,10 @@ public class Events implements Listener {
     @EventHandler
     private void manualItemEntry(@NotNull AsyncPlayerChatEvent event) {
         MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
-        if (mgPlayer.isInMenu() && mgPlayer.getNoClose() && mgPlayer.getManualEntry() != null) {
+        if (mgPlayer.isInMenu() && mgPlayer.getNoClose() && mgPlayer.getManualEntry() instanceof StringConsumer stringAcceptor) {
             event.setCancelled(true);
             mgPlayer.setNoClose(false);
-            mgPlayer.getManualEntry().checkValidEntry(event.getMessage());
+            stringAcceptor.acceptString(event.getMessage());
             mgPlayer.setManualEntry(null);
         }
     }

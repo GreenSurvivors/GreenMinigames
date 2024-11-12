@@ -43,7 +43,7 @@ public class RegenRecorder implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void vehicleCreate(@NotNull VehicleCreateEvent event) {
         if (minigame.hasPlayers() && minigame.isInRegenArea(event.getVehicle().getLocation())) {
-            recorderData.addEntity(event.getVehicle(), null, true);
+            recorderData.addEntity(event.getVehicle(), null, EntityData.ChangeType.CREATED);
         }
     }
 
@@ -52,7 +52,7 @@ public class RegenRecorder implements Listener {
     private void vehicleDestroy(@NotNull VehicleDestroyEvent event) {
         if (event.getAttacker() == null) {
             if (minigame.hasPlayers() && minigame.isInRegenArea(event.getVehicle().getLocation())) {
-                recorderData.addEntity(event.getVehicle(), null, false);
+                recorderData.addEntity(event.getVehicle(), null, EntityData.ChangeType.REMOVED);
             }
         }
     }
@@ -66,7 +66,7 @@ public class RegenRecorder implements Listener {
 
                 if (minigame.isInRegenArea(entityLoc)) {
                     if (animal.getHealth() <= event.getDamage()) {
-                        recorderData.addEntity(event.getEntity(), null, false);
+                        recorderData.addEntity(event.getEntity(), null, EntityData.ChangeType.REMOVED);
                     }
                 }
             }
@@ -77,7 +77,7 @@ public class RegenRecorder implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void mobSpawnEvent(@NotNull CreatureSpawnEvent event) {
         if (minigame.hasPlayers() && minigame.isInRegenArea(event.getLocation())) {
-            recorderData.addEntity(event.getEntity(), null, true);
+            recorderData.addEntity(event.getEntity(), null, EntityData.ChangeType.CREATED);
         }
     }
 
@@ -111,7 +111,7 @@ public class RegenRecorder implements Listener {
         if (minigame.hasPlayers()) {
             Location ent = event.getLocation();
             if (minigame.isInRegenArea(ent)) {
-                recorderData.addEntity(event.getEntity(), null, true);
+                recorderData.addEntity(event.getEntity(), null, EntityData.ChangeType.CREATED);
             }
         }
     }
@@ -126,11 +126,11 @@ public class RegenRecorder implements Listener {
             }
             if (event.getTo().hasGravity()) {
                 if (minigame.hasPlayers() || event.getEntity().hasMetadata("FellInMinigame")) {
-                    recorderData.addEntity(event.getEntity(), null, true);
+                    recorderData.addEntity(event.getEntity(), null, EntityData.ChangeType.CREATED);
                 }
             } else if (event.getEntityType() == EntityType.FALLING_BLOCK && minigame.hasPlayers()) {
                 event.getEntity().setMetadata("FellInMinigame", new FixedMetadataValue(Minigames.getPlugin(), true));
-                recorderData.addEntity(event.getEntity(), null, true);
+                recorderData.addEntity(event.getEntity(), null, EntityData.ChangeType.CREATED);
             }
         }
     }
@@ -141,7 +141,7 @@ public class RegenRecorder implements Listener {
         if (minigame.hasPlayers() && event.getInventory().getHolder() instanceof HopperMinecart) {
             Location loc = ((HopperMinecart) event.getInventory().getHolder()).getLocation();
             if (minigame.isInRegenArea(loc)) {
-                recorderData.addEntity((HopperMinecart) event.getInventory().getHolder(), null, false);
+                recorderData.addEntity((HopperMinecart) event.getInventory().getHolder(), null, EntityData.ChangeType.REMOVED);
             }
         }
     }
@@ -155,13 +155,13 @@ public class RegenRecorder implements Listener {
         if (event.getInitiator().getHolder() instanceof HopperMinecart hopperMinecart) {
             loc = hopperMinecart.getLocation().clone();
             if (minigame.isInRegenArea(loc))
-                recorderData.addEntity((Entity) event.getInitiator().getHolder(), null, false);
+                recorderData.addEntity((Entity) event.getInitiator().getHolder(), null, EntityData.ChangeType.REMOVED);
         }
 
         if (event.getDestination().getHolder() instanceof HopperMinecart hopperMinecart) {
             loc = hopperMinecart.getLocation().clone();
             if (minigame.isInRegenArea(loc))
-                recorderData.addEntity((Entity) event.getInitiator().getHolder(), null, false);
+                recorderData.addEntity((Entity) event.getInitiator().getHolder(), null, EntityData.ChangeType.REMOVED);
         }
     }
 

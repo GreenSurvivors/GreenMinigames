@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.managers.language;
 import org.intellij.lang.annotations.Subst;
 
 public enum MinigamePlaceHolderKey implements PlaceHolderKey {
+    ENTITY("entity"),
     BIOME("biome"),
     COMMAND("command"),
     COORDINATE_X("x"),
