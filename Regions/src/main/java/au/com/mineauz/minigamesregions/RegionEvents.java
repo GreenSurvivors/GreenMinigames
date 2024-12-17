@@ -246,7 +246,7 @@ public class RegionEvents implements Listener {
         }
     }
 
-    @EventHandler()
+    @EventHandler
     private void interactNode(@NotNull PlayerInteractEvent event) {
         final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         if (!mgPlayer.isInMinigame()) {
@@ -273,7 +273,7 @@ public class RegionEvents implements Listener {
         }
     }
 
-    private void trigger(final @NotNull MinigamePlayer player, final Block block, final @NotNull Trigger trigger) {
+    private void trigger(final @NotNull MinigamePlayer player, final @NotNull Block block, final @NotNull Trigger trigger) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             if (!player.isInMinigame()) {
                 return;
