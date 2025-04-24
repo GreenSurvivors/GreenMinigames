@@ -187,7 +187,7 @@ public class Minigames extends JavaPlugin {
                 case -1:
                     log().warning("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
                     log().warning("Your version is newer: " + Bukkit.getBukkitVersion());
-                    log().warning("Please check for an updated");
+                    log().warning("Please check for an updated Version!");
 
                     break;
                 case 0:

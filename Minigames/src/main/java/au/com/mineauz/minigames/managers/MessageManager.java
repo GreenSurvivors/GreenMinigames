@@ -39,7 +39,7 @@ public class MessageManager {
     }
 
     public static void registerCoreLanguage() {
-        String tag = Minigames.getPlugin().getConfig().getString("lang", Locale.getDefault().toLanguageTag());
+        String tag = Minigames.getPlugin().getConfig().getString("lang", Locale.getDefault().toLanguageTag()); // todo seems like this beaks on the first startup, when the config is still not saved on disk
         Locale locale = Locale.forLanguageTag(tag.replace("_", "-"));
 
         // fall back if locale is undefined
