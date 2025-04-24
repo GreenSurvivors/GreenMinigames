@@ -84,6 +84,11 @@ public class ScoreCommand implements ICommand {
                         sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
                         return true;
                     }
+
+                    if (ply.getMinigame() != mg) {
+                        sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing in Minigame" + mg.getName(false) + "!");
+                        return true;
+                    }
                 } else {
                     sender.sendMessage(ChatColor.RED + "No player or team found by the name " + args[2]);
                     return true;
