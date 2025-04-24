@@ -54,7 +54,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
             Minigames.getCmpnntLogger().warn("Couldn't save lang files: no CodeSource!");
         }
 
-        String tag = Minigames.getPlugin().getConfig().getString("lang", Locale.getDefault().toLanguageTag());
+        String tag = Minigames.getPlugin().getConfig().getString("lang", Locale.getDefault().toLanguageTag()); // todo seems like this beaks on the first startup, when the config is still not saved on disk
         Locale locale = Locale.forLanguageTag(tag.replace("_", "-"));
 
         // fall back if locale is undefined

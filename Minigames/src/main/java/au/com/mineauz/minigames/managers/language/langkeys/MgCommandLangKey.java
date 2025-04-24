@@ -53,6 +53,7 @@ public enum MgCommandLangKey implements MinigameLangKey {
     COMMAND_ERROR_NOTGAMEMECHANIC("command.set.error.notGameMechanic"),
     COMMAND_ERROR_NOTINMINIGAME_PLAYER("command.error.notInMinigame.player"),
     COMMAND_ERROR_NOTINMINIGAME_SELF("command.error.notInMinigame.self"),
+    COMMAND_ERROR_NOTPARTOFTHISMINIGAME("command.error.notPartOfThisMinigame"),
     COMMAND_ERROR_NOTMATERIAL("command.error.notMaterial"),
     COMMAND_ERROR_NOTNUMBER("command.error.notNumber"),
     COMMAND_ERROR_NOTSTATUSEFFECT("command.error.notStatusEffect"),
