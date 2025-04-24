@@ -70,6 +70,7 @@ public class ExecuteCommandAction extends AAction {
 
         return string
                 .replace("{player}", player.getName())
+                .replace("{uuid}", player.getUUID().toString())
                 .replace("{dispplayer}", player.getDisplayName())
                 .replace("{px}", String.valueOf(player.getLocation().getX()))
                 .replace("{py}", String.valueOf(player.getLocation().getY()))
