@@ -118,14 +118,28 @@ public class SetBlockWhitelistCommand extends ASetCommand {
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
-        if (args.length == 1)
+        if (args.length == 1) {
             return CommandDispatcher.tabCompleteMatch(List.of("true", "false", "add", "remove", "list", "clear"), args[0]);
-        else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
-            List<String> ls = new ArrayList<>();
-            for (Material m : minigame.getRecorderData().getWBBlocks()) {
-                ls.add(m.toString());
+        } else if (args.length == 2) {
+            switch (args[0]) {
+                case "add" -> {
+                    List<String> ls = new ArrayList<>();
+                    for (Material material : Material.values()) {
+                        if (material.isBlock()) {
+                            ls.add(material.getKey().getKey());
+                            ls.add(material.getKey().toString());
+                        }
+                    }
+                    return CommandDispatcher.tabCompleteMatch(ls, args[1]);
+                }
+                case "remove" -> {
+                    List<String> ls = new ArrayList<>();
+                    for (Material m : minigame.getRecorderData().getWBBlocks()) {
+                        ls.add(m.toString());
+                    }
+                    return CommandDispatcher.tabCompleteMatch(ls, args[1]);
+                }
             }
-            return CommandDispatcher.tabCompleteMatch(ls, args[1]);
         }
         return null;
     }

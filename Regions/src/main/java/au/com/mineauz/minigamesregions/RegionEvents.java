@@ -142,7 +142,7 @@ public class RegionEvents implements Listener {
         if (event.getMinigame().getPlayers().isEmpty()) {
             for (Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()) {
                 for (RegionExecutor ex : region.getExecutors()) {
-                    if (ex.getTrigger() == MgRegTrigger.CONFIG_TIME) {
+                    if (ex.getTrigger() == MgRegTrigger.TIME_CONFIGURED) {
                         region.startConfigTimerTask();
                     }
                     if (ex.getTrigger() == MgRegTrigger.TIME_GAMETICK) {
@@ -198,7 +198,7 @@ public class RegionEvents implements Listener {
                 for (RegionExecutor exec : region.getExecutors()) {
                     exec.clearTriggers();
                 }
-                region.removeTickTask();
+                region.removeConfiguredTask();
                 region.removeGameTickTask();
                 region.setEnabled(true);
             }

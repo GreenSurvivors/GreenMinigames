@@ -11,6 +11,7 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
+import au.com.mineauz.minigamesregions.actions.RegionActions;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
@@ -29,12 +30,12 @@ import java.util.List;
 import java.util.Set;
 
 public class Region extends MgRegion implements BaseExecutorHolder<RegionExecutor> {
+    private final static int GAME_TICK_DELAY = 1;
     private final @NotNull List<@NotNull RegionExecutor> executors = new ArrayList<>();
     private final @NotNull List<@NotNull MinigamePlayer> players = new ArrayList<>();
-    private final int gameTickDelay = 1;
     private final @NotNull Minigame minigame;
-    private long taskDelay = 20; //todo make ingame configurable
-    private int taskID;
+    private long configuredDelay = 20; //todo make ingame configurable
+    private int gameConfiguredtaskID;
     private int gameTickTaskID;
     private boolean enabled = true;
 
@@ -93,7 +94,7 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
         return executors.size();
     }
 
-    public int addExecutor(RegionExecutor exec) {
+    public int addExecutor(final @NotNull RegionExecutor exec) {
         executors.add(exec);
         return executors.size();
     }
@@ -113,32 +114,32 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
         executors.remove(executor);
     }
 
-    public void changeTickDelay(long delay) {
-        removeTickTask();
-        taskDelay = delay;
-        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
+    public void changeConfiguredTickDelay(long delay) {
+        removeConfiguredTask();
+        configuredDelay = delay;
+        gameConfiguredtaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
             List<MinigamePlayer> plys = new ArrayList<>(players);
             for (MinigamePlayer player : plys) {
-                execute(MgRegTrigger.CONFIG_TIME, player);
+                execute(MgRegTrigger.TIME_CONFIGURED, player);
             }
         }, 0, delay);
     }
 
-    public long getTickDelay() {
-        return taskDelay;
+    public long getConfiguredDelay() {
+        return configuredDelay;
     }
 
     public void startConfigTimerTask() {
-        if (taskID != -1) {
-            removeTickTask();
+        if (gameConfiguredtaskID != -1) {
+            removeConfiguredTask();
         }
 
-        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
+        gameConfiguredtaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
             List<MinigamePlayer> plys = new ArrayList<>(players);
             for (MinigamePlayer player : plys) {
-                execute(MgRegTrigger.CONFIG_TIME, player);
+                execute(MgRegTrigger.TIME_CONFIGURED, player);
             }
-        }, 0, taskDelay);
+        }, 0, configuredDelay);
     }
 
     public void startGameTickTask() {
@@ -148,11 +149,11 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
 
         gameTickTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(),
                 this::executeGameTick,
-                0, gameTickDelay);
+                0, GAME_TICK_DELAY);
     }
 
-    public void removeTickTask() {
-        Bukkit.getScheduler().cancelTask(taskID);
+    public void removeConfiguredTask() {
+        Bukkit.getScheduler().cancelTask(gameConfiguredtaskID);
     }
 
     public void removeGameTickTask() {
@@ -200,7 +201,10 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
     @Override
     public void execute(@NotNull RegionExecutor exec, @NotNull MinigamePlayer player) {
         for (ActionInterface act : exec.getActions()) {
-            if (!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
+            if (!enabled && !act.getName().equalsIgnoreCase(RegionActions.SET_ENABLED.getName())) {
+                continue;
+            }
+
             act.executeRegionAction(player, this);
             if (!exec.isTriggerPerPlayer()) {
                 exec.addPublicTrigger();
@@ -217,7 +221,9 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
         // There is no condition, which is not player specific, so we can just execute all executors.
         for (RegionExecutor exec : executors) {
             for (ActionInterface act : exec.getActions()) {
-                if (!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
+                if (!enabled && !act.getName().equalsIgnoreCase(RegionActions.SET_ENABLED.getName())) {
+                    continue;
+                }
                 try {
                     if (checkConditions(exec, null) && exec.getTrigger() == MgRegTrigger.TIME_GAMETICK) {
                         act.executeRegionAction(null, this);

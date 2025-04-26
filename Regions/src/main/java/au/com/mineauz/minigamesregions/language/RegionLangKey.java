@@ -244,7 +244,7 @@ public enum RegionLangKey implements LangKey {
     TOOL_REGION_DESELECTED("tool.region.deselected"),
     TOOL_REGION_EDIT("tool.region.edit"),
     TOOL_REGION_SELECTED("tool.region.selected"),
-    TRIGGER_CONFIG_TIME_NAME("trigger.time.config.name"),
+    TRIGGER_TIME_CONFIGURED_NAME("trigger.time.config.name"),
     TRIGGER_GAME_ENDED_NAME("trigger.game.ended.name"),
     TRIGGER_GAME_ENDPHASE_NAME("trigger.gameEndPhase.name"),
     TRIGGER_GAME_JOIN_NAME("trigger.player.gameJoin.name"),

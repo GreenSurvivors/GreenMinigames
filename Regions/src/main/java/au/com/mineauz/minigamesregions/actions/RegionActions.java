@@ -44,7 +44,7 @@ public enum RegionActions implements ActionFactory {
     TRIGGER_RANDOM("TRIGGER_RANDOM", TriggerRandomAction::new),
     TRIGGER_REGION("TRIGGER_REGION", TriggerRegionAction::new),
     VELOCITY("VELOCITY", VelocityAction::new),
-    addAction("RANDOM_FILLING", RandomFillingAction::new);
+    RANDOM_FILLING("RANDOM_FILLING", RandomFillingAction::new);
 
     private final @NotNull String name;
     private final @NotNull Function<@NotNull String, @NotNull ActionInterface> constructor;

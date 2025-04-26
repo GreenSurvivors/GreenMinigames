@@ -38,8 +38,7 @@ public enum MgRegTrigger implements Trigger {
     REMOTE_TIMED(true, true, true, RegionLangKey.TRIGGER_REMOTE_TIMED_NAME, "TIMED_REMOTE"),
     TIME_GAMETICK(true, true, false, RegionLangKey.TRIGGER_TIME_GAMETICK_NAME, "GAME_TICK"), // will tick every game tick --> 20 times per second!
     TIME_MINIGAMETIMER(false, true, true, RegionLangKey.TRIGGER_TIME_TIMER_NAME, "MINIGAME_TIMER"), // will tick every second -whenever the minigame itself does its important timer taks
-    CONFIG_TIME(true, true, true, RegionLangKey.TRIGGER_CONFIG_TIME_NAME, "TICK"); // will tick every <minigame>regions.<regionName>.tickDelay - per default also every second
-
+    TIME_CONFIGURED(true, true, true, RegionLangKey.TRIGGER_TIME_CONFIGURED_NAME, "TICK"); // will tick every <minigame>regions.<regionName>.tickDelay - per default also every second
 
     private final boolean useInRegions, useInNodes, triggerOnPlayerAvailable;
     private final @Nullable String legacyName; // dataFixerUpper

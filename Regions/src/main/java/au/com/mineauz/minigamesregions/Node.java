@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
+import au.com.mineauz.minigamesregions.actions.RegionActions;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
@@ -115,7 +116,10 @@ public class Node implements BaseExecutorHolder<NodeExecutor> {
     @Override
     public void execute(@NotNull NodeExecutor exec, @NotNull MinigamePlayer mgPlayer) {
         for (ActionInterface act : exec.getActions()) {
-            if (!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
+            if (!enabled && !act.getName().equalsIgnoreCase(RegionActions.SET_ENABLED.getName())) {
+                continue;
+            }
+
             act.executeNodeAction(mgPlayer, this);
             if (!exec.isTriggerPerPlayer()) {
                 exec.addPublicTrigger();

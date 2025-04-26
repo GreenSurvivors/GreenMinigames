@@ -86,8 +86,8 @@ public class RegionModule extends MinigameModule {
                 }
             }
 
-            if (region.getTickDelay() != 20) {
-                config.set(mainPath + configSeparator + "regions" + configSeparator + name + configSeparator + "tickDelay", region.getTickDelay());
+            if (region.getConfiguredDelay() != 20) {
+                config.set(mainPath + configSeparator + "regions" + configSeparator + name + configSeparator + "tickDelay", region.getConfiguredDelay());
             }
 
             int c = 0;
@@ -176,7 +176,7 @@ public class RegionModule extends MinigameModule {
                 regions.put(name, new Region(name, getMinigame(), loc1, loc2));
                 Region region = regions.get(name);
                 if (config.contains(mainPath + configSeparator + "regions" + configSeparator + name + configSeparator + "tickDelay")) {
-                    region.changeTickDelay(config.getLong(mainPath + configSeparator + "regions" + configSeparator + name +
+                    region.changeConfiguredTickDelay(config.getLong(mainPath + configSeparator + "regions" + configSeparator + name +
                             configSeparator + "tickDelay"));
                 }
                 if (config.contains(mainPath + configSeparator + "regions" + configSeparator + name + configSeparator + "executors")) {
@@ -317,13 +317,13 @@ public class RegionModule extends MinigameModule {
 
     public void removeRegion(@NotNull String name) {
         if (hasRegion(name)) {
-            regions.get(name).removeTickTask();
+            regions.get(name).removeConfiguredTask();
             regions.get(name).removeGameTickTask();
             regions.remove(name);
         } else {
             for (String n : regions.keySet()) {
                 if (n.equalsIgnoreCase(name)) {
-                    regions.get(n).removeTickTask();
+                    regions.get(n).removeConfiguredTask();
                     regions.get(n).removeGameTickTask();
                     regions.remove(n);
                     break;
