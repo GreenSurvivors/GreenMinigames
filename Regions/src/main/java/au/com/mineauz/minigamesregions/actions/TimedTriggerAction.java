@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
+import au.com.mineauz.minigames.events.EndedMinigameEvent;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
@@ -19,11 +20,14 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This Action trips {@link MgRegTrigger#REMOTE_TIMED} in a region or a node Applicable to nodes Uses the
@@ -31,13 +35,21 @@ import java.util.Map;
  *
  * @author <a href="https://github.com/Turidus/Minigames">Turidus</a>
  */
-public class TimedTriggerAction extends AAction {
+public class TimedTriggerAction extends AAction implements Listener {
     private final StringFlag toTrigger = new StringFlag("None", "toTrigger");
     private final BooleanFlag isRegion = new BooleanFlag(false, "isRegion");
     private final TimeFlag delay = new TimeFlag(20L, "delay");
+    /*
+     * The AAction Object is created once per minigame,
+     * but at the time of creation we don't know which minigame we belong to yet.
+     * So this Map contains all tasks of all minigames
+     */
+    private static final @NotNull Map<@NotNull Minigame, @NotNull Collection<BukkitTask>> globalTasks = new HashMap<>();
 
     protected TimedTriggerAction(@NotNull String name) {
         super(name);
+
+        Bukkit.getPluginManager().registerEvents(this, Main.getPlugin());
     }
 
     @Override
@@ -96,7 +108,16 @@ public class TimedTriggerAction extends AAction {
             return;
         }
         ExecutableScriptObject toExecute = isRegion.getFlag() ? rMod.getRegion(toTrigger.getFlag()) : rMod.getNode(toTrigger.getFlag());
-        Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> toExecute.execute(MgRegTrigger.REMOTE_TIMED, player), delay.getFlag());
+
+        final TaskHolder taskHolder = new TaskHolder();
+
+        taskHolder.task = Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> {
+                toExecute.execute(MgRegTrigger.REMOTE_TIMED, player);
+
+                globalTasks.remove(taskHolder.task);
+        }, delay.getFlag());
+
+        globalTasks.computeIfAbsent(mg, ignored -> new ArrayList<>()).add(taskHolder.task);
     }
 
     @Override
@@ -122,5 +143,23 @@ public class TimedTriggerAction extends AAction {
         m.addItem(delay.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME), 0L, null));
         m.displayMenu(mgPlayer);
         return true;
+    }
+
+    @EventHandler
+    protected void onGameEnd (final @NotNull EndedMinigameEvent event) {
+        final @Nullable Collection<BukkitTask> tasks = globalTasks.remove(event.getMinigame());
+
+        if (tasks != null) {
+            for (BukkitTask task : tasks) {
+                if (!task.isCancelled()) {
+                    task.cancel();
+                }
+            }
+        }
+    }
+
+    // Java being java and being too strict in lambdas
+    protected static class TaskHolder {
+        BukkitTask task = null;
     }
 }
