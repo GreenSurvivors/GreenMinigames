@@ -22,6 +22,7 @@ import com.google.common.io.Closeables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.papermc.lib.PaperLib;
+import io.papermc.paper.registry.RegistryAccess;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.CustomChart;
@@ -52,7 +53,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class Minigames extends JavaPlugin {
-    private static final Pattern COMPILE = Pattern.compile("[-]?[0-9]+");
+    private static final Pattern COMPILE = Pattern.compile("-?[0-9]+");
     public static Logger log;
     private static Minigames plugin;
     private static Economy econ;
@@ -183,6 +184,24 @@ public class Minigames extends JavaPlugin {
         log.addHandler(startUpHandler);
         try {
             plugin = this;
+
+            try {
+                RegistryAccess.registryAccess();
+            } catch (NoClassDefFoundError ex) {
+                log().severe("----------------------------------------------");
+                log().severe("You tried to load Minigames on Spigot or other incompatible server software.");
+                log().severe("Unfortunately Spigot and upstream isn't supported anymore.");
+                log().severe("Please switch your server software to Paper or further downstream.");
+                log().severe("Just exchange your server.jar -> https://docs.papermc.io/paper/migration/");
+                log().severe(":(");
+                log().severe("DISABLING MINIGAMES....");
+                log().severe("----------------------------------------------");
+                log().log(Level.SEVERE, "Exception for reference and drawing attention: ", ex);
+
+                plugin = null;
+                Bukkit.getPluginManager().disablePlugin(this);
+            }
+
             switch (this.checkVersion()) {
                 case -1:
                     log().warning("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
@@ -201,7 +220,7 @@ public class Minigames extends JavaPlugin {
 
                         log().warning("DISABLING MINIGAMES....");
                         plugin = null;
-                        this.onDisable();
+                        Bukkit.getPluginManager().disablePlugin(this);
                         return;
                     } else {
                         log().warning("Version incompatible - Force Loading Minigames.");
