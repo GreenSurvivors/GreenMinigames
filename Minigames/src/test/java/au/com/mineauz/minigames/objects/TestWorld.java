@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.objects;
 
-import be.seeseemelk.mockbukkit.WorldMock;
+import org.mockbukkit.mockbukkit.world.WorldMock;
 
 public class TestWorld extends WorldMock {
     private Long worldTime = 0L;

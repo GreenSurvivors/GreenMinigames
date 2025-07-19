@@ -1,7 +1,5 @@
 package au.com.mineauz.minigames.objects;
 
-import be.seeseemelk.mockbukkit.UnimplementedOperationException;
-import be.seeseemelk.mockbukkit.block.state.BlockStateMock;
 import net.kyori.adventure.text.Component;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -10,15 +8,19 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.mockbukkit.mockbukkit.block.state.BlockStateMock;
+import org.mockbukkit.mockbukkit.exception.UnimplementedOperationException;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 public class MockSign extends BlockStateMock implements Sign {
     private final LinkedList<String> lines = new LinkedList<>();
@@ -144,6 +146,26 @@ public class MockSign extends BlockStateMock implements Sign {
     @Override
     public @NotNull SignSide getSide(@NotNull Side side) {
         return null;
+    }
+
+    @Override
+    public @NotNull SignSide getTargetSide(@NotNull Player player) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Player getAllowedEditor() {
+        return null;
+    }
+
+    @Override
+    public @Nullable UUID getAllowedEditorUniqueId() {
+        return null;
+    }
+
+    @Override
+    public void setAllowedEditorUniqueId(@Nullable UUID uuid) {
+
     }
 
     public @NotNull Side getInteractableSideFor(double v, double v1) {

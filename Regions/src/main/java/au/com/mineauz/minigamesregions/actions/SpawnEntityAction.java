@@ -111,9 +111,9 @@ public class SpawnEntityAction extends AbstractAction {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         List<String> options = new ArrayList<>();
         for (EntityType type : EntityType.values()) {
-            if (type != EntityType.ITEM_FRAME && type != EntityType.LEASH_HITCH && type != EntityType.PLAYER &&
-                    type != EntityType.LIGHTNING && type != EntityType.PAINTING && type != EntityType.UNKNOWN &&
-                    type != EntityType.DROPPED_ITEM)
+            if (type != EntityType.ITEM_FRAME && type != EntityType.LEASH_KNOT && type != EntityType.PLAYER &&
+                    type != EntityType.LIGHTNING_BOLT && type != EntityType.PAINTING && type != EntityType.UNKNOWN &&
+                    type != EntityType.ITEM)
                 options.add(WordUtils.capitalize(type.toString().replace("_", " ")));
         }
         m.addItem(new MenuItemList("Entity Type", Material.SKELETON_SKULL, new Callback<>() {

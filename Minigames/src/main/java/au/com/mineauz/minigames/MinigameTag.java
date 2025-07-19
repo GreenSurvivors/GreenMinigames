@@ -12,6 +12,7 @@ public interface MinigameTag<T> {
      * MinigameTag representing vanilla potions with negative effect(s).
      * Also represents all potions with exclusive negative effects, which aren't in the value list.
      */
+    //Note: do to possible strategic reasons oozing, weaving are neither bad nor good.
     MinigameTag<Collection<PotionEffectType>> NEGATIVE_POTION = new MinigameTag() {
 
         @Override
@@ -23,20 +24,22 @@ public interface MinigameTag<T> {
         @Override
         public List<Collection<PotionEffectType>> getValues() {
             return List.of(
-                    List.of(PotionEffectType.SLOW),
-                    List.of(PotionEffectType.HARM),
+                    List.of(PotionEffectType.SLOWNESS),
+                    List.of(PotionEffectType.INSTANT_DAMAGE),
                     List.of(PotionEffectType.WEAKNESS),
                     List.of(PotionEffectType.POISON),
                     List.of(PotionEffectType.BLINDNESS),
                     List.of(PotionEffectType.BAD_OMEN),
-                    List.of(PotionEffectType.CONFUSION),
+                    List.of(PotionEffectType.TRIAL_OMEN),
+                    List.of(PotionEffectType.NAUSEA),
                     List.of(PotionEffectType.DARKNESS),
                     List.of(PotionEffectType.GLOWING),
                     List.of(PotionEffectType.HUNGER),
                     List.of(PotionEffectType.LEVITATION),
-                    List.of(PotionEffectType.SLOW_DIGGING),
+                    List.of(PotionEffectType.MINING_FATIGUE),
                     List.of(PotionEffectType.UNLUCK),
-                    List.of(PotionEffectType.WITHER)
+                    List.of(PotionEffectType.WITHER),
+                    List.of(PotionEffectType.INFESTED)
             );
         }
     };
@@ -57,23 +60,24 @@ public interface MinigameTag<T> {
             return List.of(
                     List.of(PotionEffectType.FIRE_RESISTANCE),
                     List.of(PotionEffectType.LUCK),
-                    List.of(PotionEffectType.HEAL),
+                    List.of(PotionEffectType.INSTANT_HEALTH),
                     List.of(PotionEffectType.NIGHT_VISION),
                     List.of(PotionEffectType.REGENERATION),
                     List.of(PotionEffectType.SLOW_FALLING),
                     List.of(PotionEffectType.SPEED),
-                    List.of(PotionEffectType.JUMP),
-                    List.of(PotionEffectType.INCREASE_DAMAGE),
+                    List.of(PotionEffectType.JUMP_BOOST),
+                    List.of(PotionEffectType.STRENGTH),
                     List.of(PotionEffectType.INVISIBILITY),
                     List.of(PotionEffectType.WATER_BREATHING),
                     List.of(PotionEffectType.ABSORPTION),
-                    List.of(PotionEffectType.DAMAGE_RESISTANCE),
+                    List.of(PotionEffectType.RESISTANCE),
                     List.of(PotionEffectType.CONDUIT_POWER),
                     List.of(PotionEffectType.DOLPHINS_GRACE),
-                    List.of(PotionEffectType.FAST_DIGGING),
+                    List.of(PotionEffectType.HASTE),
                     List.of(PotionEffectType.HEALTH_BOOST),
                     List.of(PotionEffectType.HERO_OF_THE_VILLAGE),
-                    List.of(PotionEffectType.SATURATION)
+                    List.of(PotionEffectType.SATURATION),
+                    List.of(PotionEffectType.WIND_CHARGED)
             );
         }
     };
@@ -82,7 +86,6 @@ public interface MinigameTag<T> {
      * MinigameTag representing vanilla potions with both, positive and negative, effects
      */
     MinigameTag<Collection<PotionEffectType>> MIXED_POTION = new MinigameTag() {
-
         @Override
         public boolean isTagged(Object item) {
             return getValues().contains(item);
@@ -91,7 +94,7 @@ public interface MinigameTag<T> {
         @Override
         public List<Collection<PotionEffectType>> getValues() {
             return List.of(
-                    List.of(PotionEffectType.SLOW, PotionEffectType.DAMAGE_RESISTANCE)
+                    List.of(PotionEffectType.SLOWNESS, PotionEffectType.RESISTANCE)
             );
         }
     };

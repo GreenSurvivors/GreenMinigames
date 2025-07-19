@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.objects;
 
-import be.seeseemelk.mockbukkit.block.BlockMock;
-import be.seeseemelk.mockbukkit.block.state.BlockStateMock;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
+import org.mockbukkit.mockbukkit.block.BlockMock;
+import org.mockbukkit.mockbukkit.block.state.BlockStateMock;
 
 public class SignBlockMock extends BlockMock {
 

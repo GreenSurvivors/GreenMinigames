@@ -52,7 +52,7 @@ public class MessageManager {
         registerCoreLanguage(file, locale);
     }
 
-    public static void registerCoreLanguage(File file, Locale locale) {
+    public static void registerCoreLanguage(final @NotNull File file, final @NotNull Locale locale) {
         ResourceBundle minigames = null;
         if (file.exists()) {
             try {
@@ -68,7 +68,6 @@ public class MessageManager {
         } else {
             logger.severe("No Core Language Resource Could be loaded...messaging will be broken");
         }
-
     }
 
     private static ResourceBundle fromFile(File file) throws IOException {

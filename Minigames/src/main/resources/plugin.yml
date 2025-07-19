@@ -7,7 +7,7 @@ softdepend: [ 'Multiverse-Core' ]
 description: ${project.description}
 
 libraries:
-    - org.apache.commons:commons-text:1.10.0
+    - org.apache.commons:commons-text:1.13.1
 
 commands:
     minigame:

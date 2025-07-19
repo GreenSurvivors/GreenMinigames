@@ -6,8 +6,7 @@ import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MockSign;
 import au.com.mineauz.minigames.objects.SignBlockMock;
-import be.seeseemelk.mockbukkit.WorldMock;
-import be.seeseemelk.mockbukkit.block.BlockMock;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SoundGroup;
@@ -16,7 +15,10 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.mockbukkit.mockbukkit.block.BlockMock;
+import org.mockbukkit.mockbukkit.world.WorldMock;
 
 import java.util.Map;
 
@@ -125,6 +127,16 @@ public class TestHelper {
             }
 
             @Override
+            public @NotNull VoxelShape getCollisionShape(@NotNull Location location) {
+                return null;
+            }
+
+            @Override
+            public @NotNull Color getMapColor() {
+                return null;
+            }
+
+            @Override
             public @NotNull Material getPlacementMaterial() {
                 return null;
             }
@@ -136,6 +148,11 @@ public class TestHelper {
 
             @Override
             public void mirror(@NotNull Mirror mirror) {
+
+            }
+
+            @Override
+            public void copyTo(@NotNull BlockData blockData) {
 
             }
 

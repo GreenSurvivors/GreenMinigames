@@ -1,8 +1,5 @@
 package au.com.mineauz.minigames.objects;
 
-import be.seeseemelk.mockbukkit.ServerMock;
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import be.seeseemelk.mockbukkit.scoreboard.ScoreboardMock;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -11,6 +8,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mockbukkit.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
+import org.mockbukkit.mockbukkit.scoreboard.ScoreboardMock;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,7 +114,7 @@ public class TestPlayer extends PlayerMock {
 
     @Override
     public void playSound(@NotNull Location location, Sound sound, @Nullable SoundCategory category, float volume, float pitch) {
-        this.playSound(location, sound.name(), category, volume, pitch);
+        this.playSound(location, sound.toString(), category, volume, pitch);
     }
 
     @Override
