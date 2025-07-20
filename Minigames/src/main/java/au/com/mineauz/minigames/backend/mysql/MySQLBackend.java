@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.stats.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
@@ -190,7 +191,7 @@ public class MySQLBackend extends Backend {
     }
 
     public void updatePlayer(@NotNull ConnectionHandler handler, @NotNull MinigamePlayer player) throws SQLException {
-        handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
+        handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), LegacyComponentSerializer.legacySection().serialize(player.displayName()));
     }
 
     @Override

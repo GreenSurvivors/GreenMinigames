@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class TriggerRegionAction extends AAction {
-    private final StringFlag region = new StringFlag("None", "region");
+    private final StringFlag region = new StringFlag("region", "None");
 
     protected TriggerRegionAction(@NotNull String name) {
         super(name);

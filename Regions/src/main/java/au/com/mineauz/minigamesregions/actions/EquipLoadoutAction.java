@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class EquipLoadoutAction extends AAction {
-    private final StringFlag loadout = new StringFlag("default", "loadout");
-    private final BooleanFlag equipOnTrigger = new BooleanFlag(false, "equipOnTrigger");
+    private final StringFlag loadout = new StringFlag("loadout", "default");
+    private final BooleanFlag equipOnTrigger = new BooleanFlag("equipOnTrigger", false);
 
     protected EquipLoadoutAction(@NotNull String name) {
         super(name);

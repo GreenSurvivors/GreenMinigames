@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.recorder.EntityData;
@@ -9,16 +10,22 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.config.EntitySnapshotFlag;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import com.mojang.serialization.DataResult;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntitySnapshot;
 import org.bukkit.craftbukkit.entity.CraftEntityType;
 import org.bukkit.entity.Entity;
@@ -29,10 +36,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SpawnEntityAction extends AAction {
     private static final @NotNull NamespacedKey MINIGAME_ENTITY_KEY = new NamespacedKey(Main.getPlugin(), "minigame");
@@ -67,11 +71,28 @@ public class SpawnEntityAction extends AAction {
         out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME), Component.translatable(entitySnapshotFlag.getFlagOrDefault().getEntityType().translationKey()));
 
         if (entitySnapshotFlag.getFlagOrDefault().getEntityType().isAlive()) {
-            String customName = ((CraftEntitySnapshot) entitySnapshotFlag.getFlagOrDefault()).getData().getString("CustomName");
+            String customName = ((CraftEntitySnapshot) entitySnapshotFlag.getFlagOrDefault()).getData().getString("CustomName").get();
+
+
+            net.minecraft.network.chat.Component ccc;
+            Tag tag = ((CraftEntitySnapshot) entitySnapshotFlag.getFlagOrDefault()).getData().get("CustomName");
+            if (tag == null) {
+                ccc = null;
+            } else {
+                DataResult<net.minecraft.network.chat.Component> var10000 = ComponentSerialization.CODEC.parse(((CraftWorld)Bukkit.getWorlds().getFirst()).getHandle().registryAccess().createSerializationContext(NbtOps.INSTANCE), tag);
+
+                ccc = switch (var10000) {
+                    case DataResult.Success<net.minecraft.network.chat.Component> success -> success.value();
+                    case DataResult.Error<net.minecraft.network.chat.Component> error -> {
+                        new ProblemReporter.ScopedCollector(Minigames.getCmpnntLogger()).report(new TagValueInput.DecodeFromFieldFailedProblem("CustomName", tag, error));
+                        yield error.partialValue().get();
+                    }
+                };
+            }
 
             if (!customName.isBlank()) {
                 out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
-                    PaperAdventure.asAdventure(net.minecraft.network.chat.Component.Serializer.fromJson(customName, MinecraftServer.getServer().registryAccess())));
+                    PaperAdventure.asAdventure(ccc));
             }
         }
 

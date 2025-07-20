@@ -30,15 +30,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlayerHasItemCondition extends ACondition { //todo amount
-    private final ItemFlag itemToSearchFor = new ItemFlag(new ItemStack(Material.STONE), "item");
-    private final IntegerFlag count = new IntegerFlag(1, "amount");
-    private final EnumFlag<PositionType> where = new EnumFlag<>(PositionType.ANYWHERE, "where");
-    private final IntegerFlag slot = new IntegerFlag(0, "slot");
+    private final ItemFlag itemToSearchFor = new ItemFlag("item", new ItemStack(Material.STONE));
+    private final IntegerFlag count = new IntegerFlag("amount", 1);
+    private final EnumFlag<PositionType> where = new EnumFlag<>("where", PositionType.ANYWHERE);
+    private final IntegerFlag slot = new IntegerFlag("slot", 0);
 
-    private final BooleanFlag matchName = new BooleanFlag(false, "matchName");
-    private final BooleanFlag matchLore = new BooleanFlag(false, "matchLore");
-    private final BooleanFlag matchEnchantments = new BooleanFlag(false, "matchEnchantments");
-    private final BooleanFlag matchExact = new BooleanFlag(false, "matchExact");
+    private final BooleanFlag matchName = new BooleanFlag("matchName", false);
+    private final BooleanFlag matchLore = new BooleanFlag("matchLore", false);
+    private final BooleanFlag matchEnchantments = new BooleanFlag("matchEnchantments", false);
+    private final BooleanFlag matchExact = new BooleanFlag("matchExact", false);
 
     protected PlayerHasItemCondition(@NotNull String name) {
         super(name);
@@ -328,11 +328,11 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
                 // sync with other menu Items
                 try { // try - catch just to shut the IDE / compiler up. Everything gets already checked beforehand.
                     if (futureNameItem.isDone() && !futureNameItem.isCompletedExceptionally() && meta.displayName() != null) {
-                        futureNameItem.get().checkValidEntry(value.getItemMeta().getDisplayName());
+                        futureNameItem.get().acceptString(value.getItemMeta().getDisplayName());
                     }
 
                     if (futureLoreItem.isDone() && !futureLoreItem.isCompletedExceptionally() && meta.lore() != null) {
-                        futureLoreItem.get().checkValidEntry(String.join(";", meta.getLore()));
+                        futureLoreItem.get().acceptString(String.join(";", meta.getLore()));
                     }
                 } catch (Throwable ignored) {
                 }

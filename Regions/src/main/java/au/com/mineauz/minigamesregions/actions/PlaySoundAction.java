@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 public class PlaySoundAction extends AAction {
-    private final @NotNull StringFlag soundName = new StringFlag(Sound.ENTITY_PLAYER_LEVELUP.name(), "sound");
-    private final @NotNull BooleanFlag privatePlayBack = new BooleanFlag(true, "private");
-    private final @NotNull FloatFlag volume = new FloatFlag(1f, "volume");
-    private final @NotNull FloatFlag pitch = new FloatFlag(1f, "pitch");
+    private final @NotNull StringFlag soundName = new StringFlag("sound", Sound.ENTITY_PLAYER_LEVELUP.getKey().toString());
+    private final @NotNull BooleanFlag privatePlayBack = new BooleanFlag("private", true);
+    private final @NotNull FloatFlag volume = new FloatFlag("volume", 1f);
+    private final @NotNull FloatFlag pitch = new FloatFlag("pitch", 1f);
 
     protected PlaySoundAction(@NotNull String name) {
         super(name);
@@ -48,7 +48,7 @@ public class PlaySoundAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME), Component.text(getSound().name()),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME), Component.text(getSound().getKey().asString()),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME), Component.text(volume.getFlag()),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME), Component.text(pitch.getFlag()),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME),

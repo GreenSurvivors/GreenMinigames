@@ -38,9 +38,9 @@ import java.util.Map;
  * It allows to have template regions that can be copied into game or two switch two regions.
  */
 public class RegionSwapAction extends AAction {
-    private final StringFlag fromRegion = new StringFlag("", "fromRegion");
-    private final StringFlag toRegion = new StringFlag("", "toRegion");
-    private final BooleanFlag swapRegion = new BooleanFlag(true, "swapRegion");
+    private final StringFlag fromRegion = new StringFlag("fromRegion", "");
+    private final StringFlag toRegion = new StringFlag("toRegion", "");
+    private final BooleanFlag swapRegion = new BooleanFlag("swapRegion", true);
 
     protected RegionSwapAction(@NotNull String name) {
         super(name);

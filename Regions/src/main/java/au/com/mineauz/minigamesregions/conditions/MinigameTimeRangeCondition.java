@@ -23,8 +23,8 @@ import java.time.Duration;
 import java.util.Map;
 
 public class MinigameTimeRangeCondition extends ACondition {
-    private final TimeFlag minTime = new TimeFlag(5L, "minTime");
-    private final TimeFlag maxTime = new TimeFlag(10L, "maxTime");
+    private final TimeFlag minTime = new TimeFlag("minTime", 5L);
+    private final TimeFlag maxTime = new TimeFlag("maxTime", 10L);
 
     protected MinigameTimeRangeCondition(@NotNull String name) {
         super(name);

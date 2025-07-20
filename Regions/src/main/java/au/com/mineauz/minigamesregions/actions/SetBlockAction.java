@@ -21,8 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class SetBlockAction extends AAction {
-    private final BlockDataFlag blockDataFlag = new BlockDataFlag(Material.STONE.createBlockData(), "type");//todo rename flag
-    private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur");//todo rename flag
+    private final BlockDataFlag blockDataFlag = new BlockDataFlag("type", Material.STONE.createBlockData());
+    private final BooleanFlag useBlockData = new BooleanFlag("usedur", false);//todo rename flag
 
     protected SetBlockAction(@NotNull String name) {
         super(name);

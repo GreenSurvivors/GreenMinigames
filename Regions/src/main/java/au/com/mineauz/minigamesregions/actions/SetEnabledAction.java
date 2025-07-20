@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class SetEnabledAction extends AAction {
-    private final BooleanFlag state = new BooleanFlag(false, "state");
+    private final BooleanFlag state = new BooleanFlag("state", false);
 
     protected SetEnabledAction(@NotNull String name) {
         super(name);

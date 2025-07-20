@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class MaterialListFlag extends AFlag<List<Material>> { // todo replace with GENERIC<T> list flag AFlag<List<AFlag<T>>>
 
-    public MaterialListFlag(List<Material> value, @NotNull String name) {
+    public MaterialListFlag(@NotNull String name, List<Material> value) {
         super(name, new ArrayList<>(), value); // default value - saving tests if the flag is equal to their default
     }
 

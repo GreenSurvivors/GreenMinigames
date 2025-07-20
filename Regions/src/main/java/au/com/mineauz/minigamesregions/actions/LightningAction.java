@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class LightningAction extends AAction {
-    private final BooleanFlag effect = new BooleanFlag(false, "effect");
+    private final BooleanFlag effect = new BooleanFlag("effect", false);
 
     protected LightningAction(@NotNull String name) {
         super(name);

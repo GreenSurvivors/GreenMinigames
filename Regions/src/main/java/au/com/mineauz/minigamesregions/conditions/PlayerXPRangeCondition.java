@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class PlayerXPRangeCondition extends ACondition {
-    private final FloatFlag min = new FloatFlag(1.0f, "min");
-    private final FloatFlag max = new FloatFlag(1.0f, "max");
+    private final FloatFlag min = new FloatFlag("min", 1.0f);
+    private final FloatFlag max = new FloatFlag("max", 1.0f);
 
     protected PlayerXPRangeCondition(@NotNull String name) {
         super(name);

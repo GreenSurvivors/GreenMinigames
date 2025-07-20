@@ -24,9 +24,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class VelocityAction extends AAction {
-    private final FloatFlag x = new FloatFlag(0f, "xv");
-    private final FloatFlag y = new FloatFlag(5f, "yv");
-    private final FloatFlag z = new FloatFlag(0f, "zv");
+    private final FloatFlag x = new FloatFlag("xv", 0f);
+    private final FloatFlag y = new FloatFlag("yv", 5f);
+    private final FloatFlag z = new FloatFlag("zv", 0f);
 
     protected VelocityAction(@NotNull String name) {
         super(name);

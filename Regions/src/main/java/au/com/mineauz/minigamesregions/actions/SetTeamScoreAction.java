@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SetTeamScoreAction extends AScoreAction { // todo merge with setScoreAction
-    private final IntegerFlag score = new IntegerFlag(1, "amount");
-    private final EnumFlag<TeamColor> team = new EnumFlag<>(TeamColor.NONE, "team");
+    private final IntegerFlag score = new IntegerFlag("amount", 1);
+    private final EnumFlag<TeamColor> team = new EnumFlag<>("team", TeamColor.NONE);
 
     protected SetTeamScoreAction(@NotNull String name) {
         super(name);

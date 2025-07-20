@@ -21,7 +21,7 @@ import java.util.Map;
  * Created by benjamincharlton on 6/11/2017.
  */
 public class SetLivesAction extends AAction { //todo unused!
-    private final IntegerFlag amount = new IntegerFlag(1, "amount");
+    private final IntegerFlag amount = new IntegerFlag("amount", 1);
 
     protected SetLivesAction(@NotNull String name) {
         super(name);

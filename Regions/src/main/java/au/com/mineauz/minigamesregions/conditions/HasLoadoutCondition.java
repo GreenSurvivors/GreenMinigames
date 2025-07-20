@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class HasLoadoutCondition extends ACondition {
-    private final StringFlag loadOutName = new StringFlag("default", "loadout");
+    private final StringFlag loadOutName = new StringFlag("loadout", "default");
 
     protected HasLoadoutCondition(@NotNull String name) {
         super(name);

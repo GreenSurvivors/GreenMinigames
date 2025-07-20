@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Random;
 
 public class ExplodeAction extends AAction {
-    private final FloatFlag power = new FloatFlag(4f, "power");
-    private final BooleanFlag fire = new BooleanFlag(false, "fire");
+    private final FloatFlag power = new FloatFlag("power", 4f);
+    private final BooleanFlag fire = new BooleanFlag("fire", false);
 
     protected ExplodeAction(@NotNull String name) {
         super(name);

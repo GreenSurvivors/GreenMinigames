@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class TriggerNodeAction extends AAction { // todo merge with TriggerRegion
-    private final StringFlag node = new StringFlag("None", "node");
+    private final StringFlag node = new StringFlag("node", "None");
 
     protected TriggerNodeAction(@NotNull String name) {
         super(name);

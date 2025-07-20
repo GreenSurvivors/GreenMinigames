@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 public class TeamScoreRangeCondition extends ACondition {
-    private final IntegerFlag min = new IntegerFlag(5, "min");
-    private final IntegerFlag max = new IntegerFlag(10, "max");
-    private final EnumFlag<TeamColor> teamColor = new EnumFlag<>(TeamColor.NONE, "team");
+    private final IntegerFlag min = new IntegerFlag("min", 5);
+    private final IntegerFlag max = new IntegerFlag("max", 10);
+    private final EnumFlag<TeamColor> teamColor = new EnumFlag<>("team", TeamColor.NONE);
 
     protected TeamScoreRangeCondition(@NotNull String name) {
         super(name);

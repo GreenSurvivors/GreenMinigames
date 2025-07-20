@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class PlayerFoodRangeCondition extends ACondition {
-    private final IntegerFlag min = new IntegerFlag(20, "min");
-    private final IntegerFlag max = new IntegerFlag(20, "max");
+    private final IntegerFlag min = new IntegerFlag("min", 20);
+    private final IntegerFlag max = new IntegerFlag("max", 20);
 
     protected PlayerFoodRangeCondition(@NotNull String name) {
         super(name);

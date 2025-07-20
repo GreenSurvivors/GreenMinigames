@@ -196,10 +196,10 @@ public class MemorySwapBlockAction extends AAction {
         //todo config for this, also move this standard list into a ressource file
     }
 
-    private final MaterialFlag matchType = new MaterialFlag(Material.COBBLESTONE, "matchtype");
-    private final MaterialListFlag wbList = new MaterialListFlag(new ArrayList<>(), "config.blacklist");
+    private final MaterialFlag matchType = new MaterialFlag("matchtype", Material.COBBLESTONE);
+    private final MaterialListFlag wbList = new MaterialListFlag("config.blacklist", new ArrayList<>());
     // is it a white or a blacklist?
-    private final BooleanFlag whitelistMode = new BooleanFlag(false, "whitelistmode");
+    private final BooleanFlag whitelistMode = new BooleanFlag("whitelistmode", false);
 
     protected MemorySwapBlockAction(@NotNull String name) {
         super(name);

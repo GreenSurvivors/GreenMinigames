@@ -24,8 +24,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SwitchTeamAction extends AAction {
-    private final StringFlag teamTo = new StringFlag("ALL", "To");
-    private final StringFlag teamFrom = new StringFlag("ALL", "From");
+    private final StringFlag teamFrom = new StringFlag("From", "ALL");
+    private final StringFlag teamTo = new StringFlag("To", "ALL");
 
     protected SwitchTeamAction(@NotNull String name) {
         super(name);

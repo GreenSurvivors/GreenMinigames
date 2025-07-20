@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class SetScoreAction extends AScoreAction {
-    private final IntegerFlag amount = new IntegerFlag(1, "amount");
+    private final IntegerFlag amount = new IntegerFlag("amount", 1);
 
     protected SetScoreAction(@NotNull String name) {
         super(name);

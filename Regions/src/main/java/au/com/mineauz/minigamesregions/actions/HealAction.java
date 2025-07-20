@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class HealAction extends AAction {
-    private final IntegerFlag heal = new IntegerFlag(1, "amount");
+    private final IntegerFlag heal = new IntegerFlag("amount", 1);
 
     protected HealAction(@NotNull String name) {
         super(name);

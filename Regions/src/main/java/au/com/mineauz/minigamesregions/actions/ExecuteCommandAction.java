@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class ExecuteCommandAction extends AAction {
-    private final StringFlag comd = new StringFlag("say Hello World!", "command");
-    private final BooleanFlag silentExecute = new BooleanFlag(false, "silent");
+    private final StringFlag comd = new StringFlag("command", "say Hello World!");
+    private final BooleanFlag silentExecute = new BooleanFlag("silent", false);
 
     protected ExecuteCommandAction(@NotNull String name) {
         super(name);
@@ -71,7 +71,7 @@ public class ExecuteCommandAction extends AAction {
         return string
                 .replace("{player}", player.getName())
                 .replace("{uuid}", player.getUUID().toString())
-                .replace("{dispplayer}", player.getDisplayName())
+                .replace("{dispplayer}", PlainTextComponentSerializer.plainText().serialize(player.displayName()))
                 .replace("{px}", String.valueOf(player.getLocation().getX()))
                 .replace("{py}", String.valueOf(player.getLocation().getY()))
                 .replace("{pz}", String.valueOf(player.getLocation().getZ()))

@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class PlayerHealthRangeCondition extends ACondition {
-    private final IntegerFlag minHealth = new IntegerFlag(20, "min");
-    private final IntegerFlag maxHealth = new IntegerFlag(20, "max");
+    private final IntegerFlag minHealth = new IntegerFlag("min", 20);
+    private final IntegerFlag maxHealth = new IntegerFlag("max", 20);
 
     protected PlayerHealthRangeCondition(@NotNull String name) {
         super(name);

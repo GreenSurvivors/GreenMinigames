@@ -29,10 +29,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ContainsEntityCondition extends ACondition { // todo same entity settings as SpawnEntity Action also amount and make entityType also optional
-    private final @NotNull EnumFlag<@NotNull EntityType> entityType = new EnumFlag<>(EntityType.PLAYER, "entity");
+    private final @NotNull EnumFlag<@NotNull EntityType> entityType = new EnumFlag<>("entity", EntityType.PLAYER);
 
-    private final BooleanFlag matchName = new BooleanFlag(false, "matchName");
-    private final StringFlag customName = new StringFlag(null, "name");
+    private final BooleanFlag matchName = new BooleanFlag("matchName", false);
+    private final StringFlag customName = new StringFlag("name", null);
 
     protected ContainsEntityCondition(@NotNull String name) {
         super(name);

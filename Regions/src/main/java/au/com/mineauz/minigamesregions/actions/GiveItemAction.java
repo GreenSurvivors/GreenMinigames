@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GiveItemAction extends AAction {
-    private final ItemFlag item = new ItemFlag(new ItemStack(Material.STONE), "item");
-    private final IntegerFlag count = new IntegerFlag(1, "count");
+    private final ItemFlag item = new ItemFlag("item", new ItemStack(Material.STONE));
+    private final IntegerFlag count = new IntegerFlag("count", 1);
 
     protected GiveItemAction(@NotNull String name) {
         super(name);

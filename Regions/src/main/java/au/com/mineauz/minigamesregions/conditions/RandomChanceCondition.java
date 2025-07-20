@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class RandomChanceCondition extends ACondition {
-    private final IntegerFlag chance = new IntegerFlag(50, "chance");
+    private final IntegerFlag chance = new IntegerFlag("chance", 50);
 
     protected RandomChanceCondition(@NotNull String name) {
         super(name);

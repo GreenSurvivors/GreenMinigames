@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class MessageAction extends AAction {
-    private final StringFlag msg = new StringFlag("Hello World", "message");
-    private final EnumFlag<MinigameMessageType> messageType = new EnumFlag<>(MinigameMessageType.INFO, "messageType");
+    private final StringFlag msg = new StringFlag("message", "Hello World");
+    private final EnumFlag<MinigameMessageType> messageType = new EnumFlag<>("messageType", MinigameMessageType.INFO);
 
     protected MessageAction(@NotNull String name) {
         super(name);

@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 public class TriggerRandomAction extends AAction {
-    private final IntegerFlag timesTriggered = new IntegerFlag(1, "timesTriggered");
-    private final BooleanFlag allowSameTrigger = new BooleanFlag(false, "randomPerTrigger"); // todo datafixerupper rename
+    private final IntegerFlag timesTriggered = new IntegerFlag("timesTriggered", 1);
+    private final BooleanFlag allowSameTrigger = new BooleanFlag("randomPerTrigger", false); // todo datafixerupper rename
 
     protected TriggerRandomAction(@NotNull String name) {
         super(name);

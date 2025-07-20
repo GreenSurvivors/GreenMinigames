@@ -27,8 +27,8 @@ import java.time.Duration;
 import java.util.Map;
 
 public class PulseRedstoneAction extends AAction {
-    private final TimeFlag time = new TimeFlag(1L, "time"); // in seconds
-    private final BooleanFlag torch = new BooleanFlag(false, "torch");
+    private final TimeFlag time = new TimeFlag("time", 1L); // in seconds
+    private final BooleanFlag torch = new BooleanFlag("torch", false);
 
     protected PulseRedstoneAction(@NotNull String name) {
         super(name);

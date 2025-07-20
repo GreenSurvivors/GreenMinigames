@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class PlayerCountRangeCondition extends ACondition {
-    private final IntegerFlag min = new IntegerFlag(1, "min");
-    private final IntegerFlag max = new IntegerFlag(5, "max");
+    private final IntegerFlag min = new IntegerFlag("min", 1);
+    private final IntegerFlag max = new IntegerFlag("max", 5);
 
     protected PlayerCountRangeCondition(@NotNull String name) {
         super(name);

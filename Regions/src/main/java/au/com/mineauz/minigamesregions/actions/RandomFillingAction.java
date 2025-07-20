@@ -30,9 +30,9 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  */
 public class RandomFillingAction extends AAction {
-    private final BlockDataFlag toData = new BlockDataFlag(Material.WHITE_WOOL.createBlockData(), "toData");
-    private final IntegerFlag percentageChance = new IntegerFlag(50, "percentagechance");
-    private final BooleanFlag replaceAll = new BooleanFlag(true, "replaceAll");
+    private final BlockDataFlag toData = new BlockDataFlag("toData", Material.WHITE_WOOL.createBlockData());
+    private final IntegerFlag percentageChance = new IntegerFlag("percentagechance", 50);
+    private final BooleanFlag replaceAll = new BooleanFlag("replaceAll", true);
 
     protected RandomFillingAction(@NotNull String name) {
         super(name);

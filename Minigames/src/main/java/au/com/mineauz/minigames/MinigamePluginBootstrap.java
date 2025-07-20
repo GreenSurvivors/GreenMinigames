@@ -25,7 +25,7 @@ public class MinigamePluginBootstrap implements PluginBootstrap, PluginLoader {
     @Override
     public void classloader(@NotNull PluginClasspathBuilder classpathBuilder) {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
-        resolver.addRepository(new RemoteRepository.Builder("central", "default", "https://repo1.maven.org/maven2/").build()); // todo as far as I remember there was a way to get maven central direct
+        resolver.addRepository(new RemoteRepository.Builder("central", "default", MavenLibraryResolver.MAVEN_CENTRAL_DEFAULT_MIRROR).build()); // todo as far as I remember there was a way to get maven central direct
         resolver.addRepository(new RemoteRepository.Builder("bstats", "default", "https://repo.codemc.org/repository/maven-public").build());
         resolver.addRepository(new RemoteRepository.Builder("addstar-repo", "default", "https://maven.addstar.com.au/artifactory/ext-snapshot-local").build()); // pastegg only exists as snapshots for now.
 

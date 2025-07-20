@@ -27,9 +27,9 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ApplyEffectAction extends AAction {
-    private final @NotNull StringFlag typeNameSpacedKey = new StringFlag(PotionEffectType.SPEED.getKey().toString(), "type");
-    private final @NotNull TimeFlag dur = new TimeFlag(60L, "duration");
-    private final @NotNull IntegerFlag amp = new IntegerFlag(1, "amplifier");
+    private final @NotNull StringFlag typeNameSpacedKey = new StringFlag("type", PotionEffectType.SPEED.getKey().toString());
+    private final @NotNull TimeFlag dur = new TimeFlag("duration", 60L);
+    private final @NotNull IntegerFlag amp = new IntegerFlag("amplifier", 1);
     private @Nullable PotionEffectType type = null;
 
     protected ApplyEffectAction(@NotNull String name) {

@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public abstract class ACondition {
-    private final @NotNull BooleanFlag invert = new BooleanFlag(false, "invert");
+    private final @NotNull BooleanFlag invert = new BooleanFlag("invert", false);
     protected final @NotNull String name;
 
     protected ACondition(@NotNull String name) {

@@ -22,8 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class MatchBlockCondition extends ACondition {
-    private final BlockDataFlag blockData = new BlockDataFlag(Material.STONE.createBlockData(), "type");
-    private final BooleanFlag useFullBlockData = new BooleanFlag(false, "usedur"); //todo datafixerupper rename the name
+    private final BlockDataFlag blockData = new BlockDataFlag("type", Material.STONE.createBlockData());
+    private final BooleanFlag useFullBlockData = new BooleanFlag("usedur", false); //todo datafixerupper rename the name
 
     protected MatchBlockCondition(@NotNull String name) {
         super(name);

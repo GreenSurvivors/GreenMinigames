@@ -25,9 +25,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class SwapBlockAction extends AAction { // todo once paper no longer relocates Craftbukkit, merge Blockdata via nms state, so everything that can remain of old data will, if the keep setting is on
-    private final BlockDataFlag matchType = new BlockDataFlag(Material.STONE.createBlockData(), "matchtype");
-    private final BlockDataFlag toData = new BlockDataFlag(Material.COBBLESTONE.createBlockData(), "totype");
-    private final BooleanFlag keepAttachment = new BooleanFlag(false, "keepattachment");
+    private final BlockDataFlag matchType = new BlockDataFlag("matchtype", Material.STONE.createBlockData());
+    private final BlockDataFlag toData = new BlockDataFlag("totype", Material.COBBLESTONE.createBlockData());
+    private final BooleanFlag keepAttachment = new BooleanFlag("keepattachment", false);
 
     protected SwapBlockAction(@NotNull String name) {
         super(name);

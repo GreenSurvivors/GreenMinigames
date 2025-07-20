@@ -66,7 +66,7 @@ public class NullCommandSender implements ConsoleCommandSender {
 
     @Override
     public @NotNull Spigot spigot() {
-        return new CommandSender.Spigot();
+        return new Spigot();
     }
 
     @Override

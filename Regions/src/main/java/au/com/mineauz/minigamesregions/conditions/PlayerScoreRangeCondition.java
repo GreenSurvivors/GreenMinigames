@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class PlayerScoreRangeCondition extends ACondition {
-    private final IntegerFlag min = new IntegerFlag(5, "min");
-    private final IntegerFlag max = new IntegerFlag(10, "max");
+    private final IntegerFlag min = new IntegerFlag("min", 5);
+    private final IntegerFlag max = new IntegerFlag("max", 10);
 
     protected PlayerScoreRangeCondition(@NotNull String name) {
         super(name);

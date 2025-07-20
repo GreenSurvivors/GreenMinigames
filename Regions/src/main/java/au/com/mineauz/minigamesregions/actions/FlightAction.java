@@ -20,8 +20,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class FlightAction extends AAction {
-    private final BooleanFlag setFly = new BooleanFlag(true, "setFlying");
-    private final BooleanFlag startFly = new BooleanFlag(false, "startFly");
+    private final BooleanFlag setFly = new BooleanFlag("setFlying", true);
+    private final BooleanFlag startFly = new BooleanFlag("startFly", false);
 
     protected FlightAction(@NotNull String name) {
         super(name);

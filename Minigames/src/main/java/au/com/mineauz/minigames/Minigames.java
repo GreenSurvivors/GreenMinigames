@@ -245,8 +245,8 @@ public class Minigames extends JavaPlugin {
 
             try {
                 initMetrics();
-            } catch (final IllegalStateException | NoClassDefFoundError | ExceptionInInitializerError e) {
-                logger.info("Metrics will not be available(enabled debug for more details): " + e.getMessage());
+            } catch (final IllegalStateException | NoClassDefFoundError | NoSuchMethodError | ExceptionInInitializerError e) {
+                logger.info("Metrics will not be available(enable debug for more details): " + e.getMessage());
                 if (debug) {
                     logger.info("", e);
                 }

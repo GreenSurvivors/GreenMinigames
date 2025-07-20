@@ -23,13 +23,13 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class TakeItemAction extends AAction { // todo make material match optional
-    private final ItemFlag itemToSearchFor = new ItemFlag(new ItemStack(Material.STONE), "item");
-    private final IntegerFlag count = new IntegerFlag(1, "amount");
+    private final ItemFlag itemToSearchFor = new ItemFlag("item", new ItemStack(Material.STONE));
+    private final IntegerFlag count = new IntegerFlag("amount", 1);
 
-    private final BooleanFlag matchName = new BooleanFlag(false, "matchName");
-    private final BooleanFlag matchLore = new BooleanFlag(false, "matchLore");
-    private final BooleanFlag matchEnchantments = new BooleanFlag(false, "matchEnchantments");
-    private final BooleanFlag matchExact = new BooleanFlag(false, "matchExact");
+    private final BooleanFlag matchName = new BooleanFlag("matchName", false);
+    private final BooleanFlag matchLore = new BooleanFlag("matchLore", false);
+    private final BooleanFlag matchEnchantments = new BooleanFlag("matchEnchantments", false);
+    private final BooleanFlag matchExact = new BooleanFlag("matchExact", false);
 
     protected TakeItemAction(@NotNull String name) {
         super(name);
@@ -204,11 +204,11 @@ public class TakeItemAction extends AAction { // todo make material match option
                 // sync with other menu Items
                 try { // try - catch just to shut the IDE / compiler up. Everything gets already checked beforehand.
                     if (futureNameItem.isDone() && !futureNameItem.isCompletedExceptionally() && meta.displayName() != null) {
-                        futureNameItem.get().checkValidEntry(value.getItemMeta().getDisplayName()); //todo component
+                        futureNameItem.get().acceptString(value.getItemMeta().getDisplayName()); //todo component
                     }
 
                     if (futureLoreItem.isDone() && !futureLoreItem.isCompletedExceptionally() && meta.lore() != null) {
-                        futureLoreItem.get().checkValidEntry(String.join(";", meta.getLore())); // todo component
+                        futureLoreItem.get().acceptString(String.join(";", meta.getLore())); // todo component
                     }
                 } catch (Throwable ignored) {
                 }

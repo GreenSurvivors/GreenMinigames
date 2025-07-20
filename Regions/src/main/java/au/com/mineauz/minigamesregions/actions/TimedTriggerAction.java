@@ -36,9 +36,9 @@ import java.util.*;
  * @author <a href="https://github.com/Turidus/Minigames">Turidus</a>
  */
 public class TimedTriggerAction extends AAction implements Listener {
-    private final StringFlag toTrigger = new StringFlag("None", "toTrigger");
-    private final BooleanFlag isRegion = new BooleanFlag(false, "isRegion");
-    private final TimeFlag delay = new TimeFlag(20L, "delay");
+    private final StringFlag toTrigger = new StringFlag("toTrigger", "None");
+    private final BooleanFlag isRegion = new BooleanFlag("isRegion", false);
+    private final TimeFlag delay = new TimeFlag("delay", 20L);
     /*
      * The AAction Object is created once per minigame,
      * but at the time of creation we don't know which minigame we belong to yet.

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MatchTeamCondition extends ACondition {
-    private final EnumFlag<TeamColor> teamColor = new EnumFlag<>(TeamColor.RED, "team");
+    private final EnumFlag<TeamColor> teamColor = new EnumFlag<>("team", TeamColor.RED);
 
     protected MatchTeamCondition(@NotNull String name) {
         super(name);

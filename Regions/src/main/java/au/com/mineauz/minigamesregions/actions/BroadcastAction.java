@@ -28,9 +28,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class BroadcastAction extends AAction {
-    private final StringFlag message = new StringFlag("Hello World", "message");
-    private final BooleanFlag excludeExecutor = new BooleanFlag(false, "exludeExecutor");
-    private final EnumFlag<MinigameMessageType> messageType = new EnumFlag<>(MinigameMessageType.INFO, "messageType");
+    private final StringFlag message = new StringFlag("message", "Hello World");
+    private final BooleanFlag excludeExecutor = new BooleanFlag("exludeExecutor", false);
+    private final EnumFlag<MinigameMessageType> messageType = new EnumFlag<>("messageType", MinigameMessageType.INFO);
 
     protected BroadcastAction(@NotNull String name) {
         super(name);
@@ -143,7 +143,7 @@ public class BroadcastAction extends AAction {
         // Old replacement
         String message = this.message.getFlag();
         if (mgPlayer != null) {
-            message = message.replace("%player%", mgPlayer.getDisplayName(mgPlayer.getMinigame().usePlayerDisplayNames()));
+            message = message.replace("%player%", mgPlayer.getName());
         }
         // New expression system
         message = ExpressionParser.stringResolve(message, base, true, true);

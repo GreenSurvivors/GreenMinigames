@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -65,7 +66,7 @@ public class CommandReward extends ARewardType {
         command = config.getString(path);
     }
 
-    private class CommandRewardItem extends MenuItem {
+    private class CommandRewardItem extends MenuItem implements StringConsumer {
         private final static @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
         private final CommandReward reward;
 
@@ -159,17 +160,17 @@ public class CommandReward extends ARewardType {
         }
 
         @Override
-        public void checkValidEntry(@NotNull String entry) {
-            if (entry.startsWith("./")) {
-                entry = entry.replace("./", "/");
+        public void acceptString(@NotNull String input) {
+            if (input.startsWith("./")) {
+                input = input.replace("./", "/");
             }
-            command = entry;
+            command = input;
 
             updateDescription();
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
 
-            updateName(entry);
+            updateName(input);
         }
     }
 }

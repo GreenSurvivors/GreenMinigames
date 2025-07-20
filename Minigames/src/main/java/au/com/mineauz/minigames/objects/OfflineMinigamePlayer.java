@@ -66,8 +66,8 @@ public class OfflineMinigamePlayer {
         health = config.getDouble("health", 20);
         saturation = config.getInt("saturation", 15);
         lastGM = GameMode.valueOf(config.getString("gamemode"));
-        exp = ((Double) con.getDouble("exp", 0)).floatValue();
-        level = con.getInt("level", 0);
+        exp = ((Double) config.getDouble("exp", 0)).floatValue();
+        level = config.getInt("level", 0);
         if (config.contains("location")) {
             loginLocation = new Location(Minigames.getPlugin().getServer().getWorld(config.getString("location.world", "")),
                     config.getDouble("location" + configSeparator + "x"),
