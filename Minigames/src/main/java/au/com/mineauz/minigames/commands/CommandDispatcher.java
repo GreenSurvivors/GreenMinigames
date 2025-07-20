@@ -107,13 +107,13 @@ public class CommandDispatcher extends Command {
     }
 
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String @NotNull [] args) {
         Player player = null;
         if (sender instanceof Player) {
             player = (Player) sender;
         }
 
-        if (args != null && args.length > 0) {
+        if (args.length > 0) {
             ACommand cmd = getCommand(args[0]);
 
             if (cmd != null) {

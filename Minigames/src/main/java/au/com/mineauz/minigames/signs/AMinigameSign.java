@@ -38,16 +38,11 @@ public abstract class AMinigameSign {
 
     /**
      * if the return value is null, there is no permission and everybody should be allowed to use it
-     *
-     * @return
      */
     public abstract @Nullable String getUsePermission();
 
     /**
      * if false the sign is invalid and the event will be canceled.
-     *
-     * @param event
-     * @return
      */
     public abstract boolean signCreate(@NotNull SignChangeEvent event);
 

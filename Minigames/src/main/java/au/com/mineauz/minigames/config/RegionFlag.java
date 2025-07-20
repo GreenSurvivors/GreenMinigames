@@ -18,15 +18,15 @@ import java.util.List;
 public class RegionFlag extends AFlag<MgRegion> {
     private final @Nullable String legacyFistPointLabel, legacySecondPointLabel;
 
-    public RegionFlag(MgRegion value, @NotNull String name,
+    public RegionFlag(@NotNull String name, MgRegion value,
                       @Nullable String legacyFirstPoint, @Nullable String legacySecondPoint) {
-        super(name, value, value);
+        super(name, value);
         this.legacyFistPointLabel = legacyFirstPoint;
         this.legacySecondPointLabel = legacySecondPoint;
     }
 
-    public RegionFlag(MgRegion value, @NotNull String name) {
-        super(name, value, value);
+    public RegionFlag(@NotNull String name, MgRegion value) {
+        super(name, value);
         this.legacyFistPointLabel = null;
         this.legacySecondPointLabel = null;
     }
@@ -76,8 +76,8 @@ public class RegionFlag extends AFlag<MgRegion> {
         } else {
             //import legacy regions from before regions existed
             if (legacyFistPointLabel != null && legacySecondPointLabel != null) {
-                SimpleLocationFlag locFlag1 = new SimpleLocationFlag(null, legacyFistPointLabel);
-                SimpleLocationFlag locFlag2 = new SimpleLocationFlag(null, legacySecondPointLabel);
+                SimpleLocationFlag locFlag1 = new SimpleLocationFlag(legacyFistPointLabel, null);
+                SimpleLocationFlag locFlag2 = new SimpleLocationFlag(legacySecondPointLabel, null);
 
                 if (locFlag1.getFlag() != null && locFlag2.getFlag() != null) {
                     result = new MgRegion("legacy", locFlag1.getFlag(), locFlag2.getFlag());

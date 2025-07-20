@@ -11,6 +11,7 @@ import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
@@ -18,7 +19,10 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Pattern;
+
 public class ScoreboardSign extends AMinigameSign {
+    private final static Pattern SIZE_PATTERN = Pattern.compile("[0-9]+x[0-9]+");
     private final Minigames plugin = Minigames.getPlugin();
 
     @Override
@@ -45,19 +49,28 @@ public class ScoreboardSign extends AMinigameSign {
 
             if (minigame != null) {
                 // Parse size
-                int width;
-                int height;
+                final int width;
+                final int height;
 
-                if (event.getLine(3).isEmpty()) {
+                if (event.line(3) != null) {
+                    final String line3 = PlainTextComponentSerializer.plainText().serialize(event.line(3));
+
+                    if (!line3.isEmpty()) {
+                        if (SIZE_PATTERN.matcher(line3).matches()) {
+                            String[] parts = line3.split("x");
+                            width = Integer.parseInt(parts[0]);
+                            height = Integer.parseInt(parts[1]);
+                        } else {
+                            MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_SCOREBOARD_ERROR_SIZE);
+                            return false;
+                        }
+                    } else {
+                        width = ScoreboardDisplay.defaultWidth;
+                        height = ScoreboardDisplay.defaultHeight;
+                    }
+                } else {
                     width = ScoreboardDisplay.defaultWidth;
                     height = ScoreboardDisplay.defaultHeight;
-                } else if (event.getLine(3).matches("[0-9]+x[0-9]+")) {
-                    String[] parts = event.getLine(3).split("x");
-                    width = Integer.parseInt(parts[0]);
-                    height = Integer.parseInt(parts[1]);
-                } else {
-                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_SCOREBOARD_ERROR_SIZE);
-                    return false;
                 }
 
                 // So we don't have to deal with even size scoreboards
@@ -83,15 +96,14 @@ public class ScoreboardSign extends AMinigameSign {
                 event.getBlock().setMetadata("Minigame", new FixedMetadataValue(plugin, minigame));
                 return true;
             } else {
-                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_SCOREBOARD_ERROR_WALL);
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
+                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2) == null ? Component.text("unknown") : event.line(2)));
                 return false;
             }
         } else {
-            MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
+            MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_SCOREBOARD_ERROR_WALL);
             return false;
         }
-
     }
 
     @Override

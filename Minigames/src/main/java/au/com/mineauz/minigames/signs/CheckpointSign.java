@@ -69,5 +69,4 @@ public class CheckpointSign extends AMinigameSign {
     public void signBreak(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
 
     }
-
 }

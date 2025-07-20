@@ -221,7 +221,6 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * Register a new Bundle
      * To load the bundle use the {@link UTF8ResourceBundleControl instance as the resource control.
      * This loads the resource with UTF8
-     *
      * @param identifier Unique identifier for your resource bundle
      * @param bundle     the ResourceBundle
      * @return true on success.
@@ -322,12 +321,12 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         return bundle.getString(key.getPath());
     }
 
-    public static void sendClickedCommandMessage(@NotNull Audience target, @NotNull String command,
+    public static void sendClickCommandMessage(@NotNull Audience target, @NotNull String command,
                                                  @Nullable String identifier, @NotNull LangKey key,
                                                  @NotNull TagResolver... resolvers) {
         Component init = getPluginPrefix(MinigameMessageType.INFO);
         Component message = getMessage(identifier, key, resolvers).
-                clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, command));
+                clickEvent(ClickEvent.runCommand(command));
 
         // don't use color of prefix
         message = message.colorIfAbsent(NamedTextColor.WHITE);
@@ -516,14 +515,14 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         sendMessage(mgPlayer.getPlayer(), type, message);
     }
 
-    @Deprecated(since = "1.21")
+
     public static void debugMessage(@NotNull String message) {
         debugMessage(Component.text(message));
     }
 
     public static void debugMessage(@NotNull Component message) {
         if (Minigames.getPlugin().isDebugging()) {
-            Minigames.getCmpnntLogger().info(DEBUG_PREFIX.append(message.colorIfAbsent(NamedTextColor.WHITE)));
+            Minigames.getCmpnntLogger().info(Component.text().append(DEBUG_PREFIX).appendSpace().append(message).asComponent());
         }
     }
 }

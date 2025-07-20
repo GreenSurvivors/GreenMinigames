@@ -36,7 +36,7 @@ import java.util.Map;
 
 public class SpawnEntityAction extends AAction {
     private static final @NotNull NamespacedKey MINIGAME_ENTITY_KEY = new NamespacedKey(Main.getPlugin(), "minigame");
-    private final @NotNull EntitySnapshotFlag entitySnapshotFlag = new EntitySnapshotFlag(getDefaultSnapshot(), "entity");
+    private final @NotNull EntitySnapshotFlag entitySnapshotFlag = new EntitySnapshotFlag("entity", getDefaultSnapshot());
 
     private static @NotNull EntitySnapshot getDefaultSnapshot() {
         return Bukkit.getWorlds().getFirst().createEntity(new Location(Bukkit.getWorlds().getFirst(), 0, 0, 0), Zombie.class).createSnapshot();

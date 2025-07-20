@@ -69,7 +69,7 @@ public class HealAction extends AAction {
             if (player.getPlayer().getHealth() != 20) {
                 double health = heal.getFlag() + player.getPlayer().getHealth();
 
-                AttributeInstance healthAttribute = player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                AttributeInstance healthAttribute = player.getPlayer().getAttribute(Attribute.MAX_HEALTH);
                 if (healthAttribute != null) {
                     health = Math.min(health, healthAttribute.getValue());
                 } else {

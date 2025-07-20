@@ -12,8 +12,8 @@ import java.util.List;
 
 public class StringFlag extends AFlag<String> {
 
-    public StringFlag(String value, @NotNull String name) {
-        super(name, value, value);
+    public StringFlag(@NotNull String name, String value) {
+        super(name, value);
     }
 
     @Override

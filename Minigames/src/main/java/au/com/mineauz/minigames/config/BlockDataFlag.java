@@ -18,8 +18,8 @@ import java.util.List;
 
 public class BlockDataFlag extends AFlag<BlockData> {
 
-    public BlockDataFlag(@NotNull BlockData value, @NotNull String name) {
-        super(name, value, value);
+    public BlockDataFlag(@NotNull String name, @NotNull BlockData value) {
+        super(name, value);
     }
 
     @Override

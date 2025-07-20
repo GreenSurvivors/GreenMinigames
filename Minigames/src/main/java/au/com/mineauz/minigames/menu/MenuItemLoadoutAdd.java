@@ -81,7 +81,7 @@ public class MenuItemLoadoutAdd extends MenuItem implements StringConsumer {
     }
 
     @Override
-    public void acceptString(String string) {
+    public void acceptString(@NotNull String string) {
         string = string.replace(" ", "_");
         if (!loadouts.containsKey(string)) {
             for (int i = 0; i < 45; i++) {

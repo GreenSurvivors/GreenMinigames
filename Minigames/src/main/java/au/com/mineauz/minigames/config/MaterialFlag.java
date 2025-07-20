@@ -13,8 +13,8 @@ import java.util.List;
 
 public class MaterialFlag extends AFlag<Material> {
 
-    public MaterialFlag(Material mat, @NotNull String name) {
-        super(name, mat, mat);
+    public MaterialFlag(@NotNull String name, Material mat) {
+        super(name, mat);
     }
 
     @Override

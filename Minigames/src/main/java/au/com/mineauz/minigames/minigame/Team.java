@@ -33,14 +33,14 @@ import java.util.List;
 import java.util.Set;
 
 public class Team implements ScriptObject {
-    private final @NotNull IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
+    private final @NotNull IntegerFlag maxPlayers = new IntegerFlag("maxPlayers", 0);
     private final @NotNull List<Location> startLocations = new ArrayList<>();
-    private final @NotNull StringFlag playerAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
-    private final @NotNull StringFlag joinAnnounceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE), "gameAssignMsg");
-    private final @NotNull StringFlag playerAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG), "autobalanceMsg");
-    private final @NotNull StringFlag gameAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG), "gameAutobalanceMsg");
-    private final @NotNull EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
-    private final @NotNull BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
+    private final @NotNull StringFlag playerAssignMsg = new StringFlag("assignMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM));
+    private final @NotNull StringFlag joinAnnounceMsg = new StringFlag("gameAssignMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE));
+    private final @NotNull StringFlag playerAutobalanceMsg = new StringFlag("autobalanceMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG));
+    private final @NotNull StringFlag gameAutobalanceMsg = new StringFlag("gameAutobalanceMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG));
+    private final @NotNull EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>("nametagVisibility", OptionStatus.ALWAYS);
+    private final @NotNull BooleanFlag autoBalance = new BooleanFlag("autoBalance", true);
     private final @NotNull List<@NotNull MinigamePlayer> players = new ArrayList<>();
     private final @NotNull Minigame mgm;
     private final @NotNull String scoreboardName;
@@ -223,7 +223,7 @@ public class Team implements ScriptObject {
         player.getPlayer().setScoreboard(mgm.getScoreboard());
         org.bukkit.scoreboard.Team team = mgm.getScoreboard().getTeam(scoreboardName);
         if (team != null) {
-            team.addEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
+            team.addPlayer(player.getPlayer());
         }
     }
 
@@ -237,7 +237,7 @@ public class Team implements ScriptObject {
         Scoreboard board = mgm.getScoreboard();
         org.bukkit.scoreboard.Team team = board.getTeam(scoreboardName);
         if (team != null) {
-            team.removeEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
+            team.removePlayer(player.getPlayer());
         }
         player.getPlayer().setScoreboard(Minigames.getPlugin().getServer().getScoreboardManager().getMainScoreboard());
     }

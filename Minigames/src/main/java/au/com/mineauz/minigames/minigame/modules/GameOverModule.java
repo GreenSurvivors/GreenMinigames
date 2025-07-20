@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameOverModule extends MinigameModule {
-    private final @NotNull TimeFlag timer = new TimeFlag(0L, "gameOver.timer"); // in seconds
-    private final @NotNull BooleanFlag invincible = new BooleanFlag(false, "gameOver.invincible");
-    private final @NotNull BooleanFlag humiliation = new BooleanFlag(false, "gameOver.humiliation");
-    private final @NotNull BooleanFlag interact = new BooleanFlag(false, "gameOver.interact");
+    private final @NotNull TimeFlag timer = new TimeFlag("gameOver.timer", 0L); // in seconds
+    private final @NotNull BooleanFlag invincible = new BooleanFlag("gameOver.invincible", false);
+    private final @NotNull BooleanFlag humiliation = new BooleanFlag("gameOver.humiliation", false);
+    private final @NotNull BooleanFlag interact = new BooleanFlag("gameOver.interact", false);
 
     private final @NotNull List<@NotNull MinigamePlayer> winners = new ArrayList<>();
     private final @NotNull List<@NotNull MinigamePlayer> losers = new ArrayList<>();

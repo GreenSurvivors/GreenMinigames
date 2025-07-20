@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class LocationListFlag extends AFlag<List<Location>> {
 
-    public LocationListFlag(List<Location> value, @NotNull String name) { // todo replace with GENERIC<T> list flag AFlag<List<AFlag<T>>>
+    public LocationListFlag(@NotNull String name, List<Location> value) { // todo replace with GENERIC<T> list flag AFlag<List<AFlag<T>>>
         super(name, value, new ArrayList<>()); // default flag - saving tests if the flag is equal to their default
     }
 
@@ -25,7 +25,7 @@ public class LocationListFlag extends AFlag<List<Location>> {
         if (!getFlag().isEmpty()) {
             LocationFlag locf;
             for (int i = 0; i < getFlag().size(); i++) {
-                locf = new LocationFlag(null, getName() + configSeparator + i);
+                locf = new LocationFlag(getName() + configSeparator + i, null);
                 locf.setFlag(getFlag().get(i));
                 locf.saveValue(config, path);
             }
@@ -42,7 +42,7 @@ public class LocationListFlag extends AFlag<List<Location>> {
         LocationFlag locf;
 
         for (int i = 0; i < ids.size(); i++) {
-            locf = new LocationFlag(null, getName() + configSeparator + i);
+            locf = new LocationFlag(getName() + configSeparator + i, null);
             locf.loadValue(config, path);
             locs.add(locf.getFlag());
         }

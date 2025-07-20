@@ -110,8 +110,8 @@ public class PlayerKillsMechanic extends GameMechanicBase {
                     ateam.addScore();
                     if (mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()) {
                         MinigameMessageManager.sendMinigameMessage(mgm, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_KILLS_FINALKILL,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), attacker.getName()),
-                                Placeholder.unparsed(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayerWhoDied.getName())));
+                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), attacker.displayName()),
+                                Placeholder.component(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayerWhoDied.displayName())));
 
                         List<MinigamePlayer> w = new ArrayList<>(ateam.getPlayers());
                         List<MinigamePlayer> l = new ArrayList<>(mgm.getPlayers().size() - ateam.getPlayers().size());

@@ -136,8 +136,6 @@ public enum MgMenuLangKey implements MinigameLangKey {
     MENU_PLAYERSETTINGS_BROADCASTS_JOINEXIT_NAME("menu.playerSettings.broadcasts.joinExit.name"),
     MENU_PLAYERSETTINGS_CHECKPOINT_MULTIPLAYER_NAME("menu.playerSettings.checkpoints.multiplayer.name"),
     MENU_PLAYERSETTINGS_CHECKPOINT_SAVE_NAME("menu.playerSettings.checkpoint.save.name"),
-    MENU_PLAYERSETTINGS_DISPLAYNAMES_DESCRIPTION("menu.playerSettings.displaynames.description"),
-    MENU_PLAYERSETTINGS_DISPLAYNAMES_NAME("menu.playerSettings.displaynames.name"),
     MENU_PLAYERSETTINGS_DRAGONEGGTELEPORT_NAME("menu.playerSettings.dragonEggTeleport.name"),
     MENU_PLAYERSETTINGS_DROP_DEATH_NAME("menu.playerSettings.drop.death.name"),
     MENU_PLAYERSETTINGS_DROP_ITEM_NAME("menu.playerSettings.drops.item.name"),

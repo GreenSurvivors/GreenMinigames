@@ -19,13 +19,13 @@ public class RegionMapFlag extends AFlag<Map<String, MgRegion>> { // todo move t
     // dataFixerUpper
     private final @Nullable String legacyFistPointLabel, legacySecondPointLabel;
 
-    public RegionMapFlag(@NotNull Map<String, MgRegion> value, @NotNull String name, @Nullable String legacyFirstPoint, @Nullable String legacySecondPoint) {
+    public RegionMapFlag(@NotNull String name, @NotNull Map<String, MgRegion> value, @Nullable String legacyFirstPoint, @Nullable String legacySecondPoint) {
         super(name, new HashMap<>(), value); //default value - saving tests if the flag is equal to their default
         this.legacyFistPointLabel = legacyFirstPoint;
         this.legacySecondPointLabel = legacySecondPoint;
     }
 
-    public RegionMapFlag(@NotNull Map<String, MgRegion> value, @NotNull String name) {
+    public RegionMapFlag(@NotNull String name, @NotNull Map<String, MgRegion> value) {
         super(name, new HashMap<>(), value); //default value - saving tests if the flag is equal to their default
 
         this.legacyFistPointLabel = null;
@@ -40,7 +40,7 @@ public class RegionMapFlag extends AFlag<Map<String, MgRegion>> { // todo move t
             RegionFlag regionFlag;
 
             for (MgRegion region : getFlag().values()) {
-                regionFlag = new RegionFlag(region, getName() + configSeparator + region.getName());
+                regionFlag = new RegionFlag(getName() + configSeparator + region.getName(), region);
                 regionFlag.saveValue(config, path + configSeparator + region.getName());
             }
         } else {
@@ -58,7 +58,7 @@ public class RegionMapFlag extends AFlag<Map<String, MgRegion>> { // todo move t
             RegionFlag regionFlag;
 
             for (String regionName : regionNames) {
-                regionFlag = new RegionFlag(null, getName() + configSeparator + regionName);
+                regionFlag = new RegionFlag(getName() + configSeparator + regionName, null);
                 regionFlag.loadValue(config, path + configSeparator + getName() + configSeparator + regionName);
                 if (regionFlag.getFlag() != null) {
                     regions.put(regionFlag.getFlag().getName(), regionFlag.getFlag());
@@ -72,8 +72,8 @@ public class RegionMapFlag extends AFlag<Map<String, MgRegion>> { // todo move t
 
         //dataFixerUpper - import legacy regions from before regions existed
         if (legacyFistPointLabel != null && legacySecondPointLabel != null) {
-            SimpleLocationFlag locFlag1 = new SimpleLocationFlag(null, legacyFistPointLabel);
-            SimpleLocationFlag locFlag2 = new SimpleLocationFlag(null, legacySecondPointLabel);
+            SimpleLocationFlag locFlag1 = new SimpleLocationFlag(legacyFistPointLabel, null);
+            SimpleLocationFlag locFlag2 = new SimpleLocationFlag(legacySecondPointLabel, null);
 
             if (locFlag1.getFlag() != null && locFlag2.getFlag() != null) {
                 regions.put("legacy", new MgRegion("legacy", locFlag1.getFlag(), locFlag2.getFlag()));

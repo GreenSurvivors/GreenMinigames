@@ -193,7 +193,7 @@ public class MgBlockData {
                         ret.append("enc-");
                         for (Enchantment e : i.getEnchantments().keySet()) {
                             ret.append("[");
-                            ret.append(e.getName()).append(",");
+                            ret.append(e.getKey()).append(",");
                             ret.append(i.getEnchantments().get(e));
                             ret.append("]");
                         }

@@ -17,10 +17,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 public class WeatherTimeModule extends MinigameModule {
-    private final TimeFlag time = new TimeFlag(0L, "customTime.value");
-    private final BooleanFlag useCustomTime = new BooleanFlag(false, "customTime.enabled");
-    private final BooleanFlag useCustomWeather = new BooleanFlag(false, "customWeather.enabled");
-    private final EnumFlag<WeatherType> weather = new EnumFlag<>(WeatherType.CLEAR, "customWeather.type");
+    private final TimeFlag time = new TimeFlag("customTime.value", 0L);
+    private final BooleanFlag useCustomTime = new BooleanFlag("customTime.enabled", false);
+    private final BooleanFlag useCustomWeather = new BooleanFlag("customWeather.enabled", false);
+    private final EnumFlag<WeatherType> weather = new EnumFlag<>("customWeather.type", WeatherType.CLEAR);
     private int task = -1;
 
     public WeatherTimeModule(@NotNull Minigame mgm, @NotNull String name) {

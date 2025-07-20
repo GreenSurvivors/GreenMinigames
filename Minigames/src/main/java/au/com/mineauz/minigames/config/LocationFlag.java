@@ -15,8 +15,8 @@ import java.util.List;
 
 public class LocationFlag extends AFlag<Location> {
 
-    public LocationFlag(@Nullable Location value, @NotNull String name) {
-        super(name, value, value);
+    public LocationFlag(@NotNull String name, @Nullable Location value) {
+        super(name, value);
     }
 
     @Override

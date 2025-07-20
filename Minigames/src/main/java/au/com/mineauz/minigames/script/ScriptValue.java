@@ -9,7 +9,7 @@ public record ScriptValue<T>(T value) implements ScriptReference {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return value.toString();
     }
 }

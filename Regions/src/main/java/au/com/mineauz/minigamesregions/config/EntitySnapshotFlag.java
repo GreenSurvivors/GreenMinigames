@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class EntitySnapshotFlag extends AFlag<EntitySnapshot> {
-    public EntitySnapshotFlag(@Nullable EntitySnapshot value, @NotNull String name) {
+    public EntitySnapshotFlag(@NotNull String name, @Nullable EntitySnapshot value) {
         super(name, value, value);
     }
 

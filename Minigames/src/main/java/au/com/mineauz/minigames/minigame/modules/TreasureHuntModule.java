@@ -28,13 +28,13 @@ import java.time.Duration;
 import java.util.*;
 
 public class TreasureHuntModule extends MinigameModule {
-    private final @NotNull StringFlag location = new StringFlag(null, "location");
-    private final @NotNull IntegerFlag maxRadius = new IntegerFlag(1000, "maxradius");
-    private final @NotNull IntegerFlag maxHeight = new IntegerFlag(20, "maxheight");
-    private final @NotNull IntegerFlag minTreasure = new IntegerFlag(0, "mintreasure");
-    private final @NotNull IntegerFlag maxTreasure = new IntegerFlag(8, "maxtreasure");
-    private final @NotNull TimeFlag treasureWaitTime = new TimeFlag(Minigames.getPlugin().getConfig().getLong("treasurehunt.waittime"), "treasurehuntwait");
-    private final @NotNull TimeFlag hintWaitTime = new TimeFlag(500L, "hintWaitTime");
+    private final @NotNull StringFlag location = new StringFlag("location", null);
+    private final @NotNull IntegerFlag maxRadius = new IntegerFlag("maxradius", 1000);
+    private final @NotNull IntegerFlag maxHeight = new IntegerFlag("maxheight", 20);
+    private final @NotNull IntegerFlag minTreasure = new IntegerFlag("mintreasure", 0);
+    private final @NotNull IntegerFlag maxTreasure = new IntegerFlag("maxtreasure", 8);
+    private final @NotNull TimeFlag treasureWaitTime = new TimeFlag("treasurehuntwait", Minigames.getPlugin().getConfig().getLong("treasurehunt.waittime"));
+    private final @NotNull TimeFlag hintWaitTime = new TimeFlag("hintWaitTime", 500L);
     private final @NotNull ArrayList<@NotNull Component> curHints = new ArrayList<>();
     private final @NotNull Map<@NotNull UUID, @NotNull Long> hintUse = new HashMap<>();
     //Unsaved Data

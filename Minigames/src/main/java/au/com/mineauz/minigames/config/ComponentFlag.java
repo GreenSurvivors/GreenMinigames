@@ -12,8 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ComponentFlag extends AFlag<Component> {
-    public ComponentFlag(@Nullable Component value, @NotNull String name) {
-        super(name, value, value);
+    public ComponentFlag(@NotNull String name, @Nullable Component value) {
+        super(name, value);
     }
 
     @Override

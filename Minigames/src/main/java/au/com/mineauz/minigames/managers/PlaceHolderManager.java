@@ -58,7 +58,7 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
 
     @Override
     public @NotNull String getAuthor() {
-        return Minigames.getPlugin().getDescription().getAuthors().toString();
+        return Minigames.getPlugin().getPluginMeta().getAuthors().toString();
     }
 
     @Override

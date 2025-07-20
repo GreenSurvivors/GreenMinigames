@@ -20,9 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ResourcePackModule extends MinigameModule { //todo rework to work with multiple ressource packs
-    private final @NotNull BooleanFlag enabled = new BooleanFlag(false, "resourcePackEnabled");
-    private final @NotNull ComponentFlag resourcePackDisplayName = new ComponentFlag(Component.empty(), "resourcePackName");
-    private final @NotNull BooleanFlag forced = new BooleanFlag(false, "forceResourcePack");
+    private final @NotNull BooleanFlag enabled = new BooleanFlag("resourcePackEnabled", false);
+    private final @NotNull ComponentFlag resourcePackDisplayName = new ComponentFlag("resourcePackName", Component.empty());
+    private final @NotNull BooleanFlag forced = new BooleanFlag("forceResourcePack", false);
     private @NotNull String resourcePackName = PlainTextComponentSerializer.plainText().serialize(resourcePackDisplayName.getFlag());
 
     public ResourcePackModule(@NotNull Minigame mgm, @NotNull String name) {

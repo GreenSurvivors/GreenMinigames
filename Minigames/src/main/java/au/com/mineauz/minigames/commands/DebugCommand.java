@@ -120,13 +120,13 @@ public class DebugCommand extends ACommand {
     private void generatePaste(@NotNull CommandSender sender) {
         StringBuilder mainInfo = new StringBuilder();
         mainInfo.append(Bukkit.getName()).append(" version: ").append(Bukkit.getServer().getVersion()).append('\n');
-        mainInfo.append("Plugin version: ").append(Minigames.getPlugin().getDescription().getVersion()).append('\n');
+        mainInfo.append("Plugin version: ").append(Minigames.getPlugin().getPluginMeta().getVersion()).append('\n');
         mainInfo.append("Java version: ").append(System.getProperty("java.version")).append('\n');
         mainInfo.append('\n');
         mainInfo.append("Plugins:\n");
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-            mainInfo.append(' ').append(plugin.getName()).append(" - ").append(plugin.getDescription().getVersion()).append('\n');
-            mainInfo.append("  ").append(plugin.getDescription().getAuthors()).append('\n');
+            mainInfo.append(' ').append(plugin.getName()).append(" - ").append(plugin.getPluginMeta().getVersion()).append('\n');
+            mainInfo.append("  ").append(plugin.getPluginMeta().getAuthors()).append('\n');
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () -> {

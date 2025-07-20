@@ -19,6 +19,7 @@ public abstract class AFlag<T> {
 
     protected AFlag(@NotNull String name, T defaultVal) {
         this.name = name;
+        this.value = defaultVal;
         this.defaultVal = defaultVal;
     }
 

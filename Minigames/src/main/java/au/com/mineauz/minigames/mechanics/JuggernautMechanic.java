@@ -71,15 +71,13 @@ public class JuggernautMechanic extends GameMechanicBase {
             juggernautModule.setJuggernaut(null);
 
             if (!forced && minigame.getPlayers().size() > 1) {
-                MinigamePlayer juggernaut = assignNewJuggernaut(minigame.getPlayers(), mgPlayer);
+                final MinigamePlayer juggernaut = assignNewJuggernaut(minigame.getPlayers(), mgPlayer);
 
-                if (juggernaut != null) {
-                    juggernautModule.setJuggernaut(juggernaut);
-                    MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
-                    MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.getDisplayName(minigame.usePlayerDisplayNames()))),
-                            MinigameMessageType.INFO, juggernaut);
-                }
+                juggernautModule.setJuggernaut(juggernaut);
+                MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
+                MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
+                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.displayName())),
+                        MinigameMessageType.INFO, juggernaut);
             }
         }
 

@@ -12,8 +12,8 @@ import java.util.List;
 
 public class FloatFlag extends AFlag<Float> {
 
-    public FloatFlag(float value, @NotNull String name) {
-        super(name, value, value);
+    public FloatFlag(@NotNull String name, float value) {
+        super(name, value);
     }
 
     @Override

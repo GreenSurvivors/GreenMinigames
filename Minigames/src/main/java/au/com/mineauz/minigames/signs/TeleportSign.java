@@ -37,36 +37,40 @@ public class TeleportSign extends AMinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
-        event.line(1, getName());
-        if (event.getLine(2).isEmpty()) {
+
+        if (event.line(2) == null) {
+            return false;
+        }
+
+        final String serialize = PlainTextComponentSerializer.plainText().serialize(event.line(2));
+
+        if (serialize.isEmpty()) {
             return false;
         } else {
-            return coordPattern.matcher(PlainTextComponentSerializer.plainText().serialize(event.line(2))).matches();
+            event.line(1, getName());
+            return coordPattern.matcher(serialize).matches();
         }
     }
 
     @Override
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        if (!sign.getSide(Side.FRONT).getLine(2).isEmpty()) {
-            Matcher coordMatcher = coordPattern.matcher(PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(2)));
-            if (coordMatcher.matches()) {
-                double x = Double.parseDouble(coordMatcher.group("x"));
-                double y = Double.parseDouble(coordMatcher.group("y"));
-                double z = Double.parseDouble(coordMatcher.group("z"));
+        final String line2 = PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(2));
+        Matcher coordMatcher = coordPattern.matcher(line2);
+        if (coordMatcher.matches()) {
+            double x = Double.parseDouble(coordMatcher.group("x"));
+            double y = Double.parseDouble(coordMatcher.group("y"));
+            double z = Double.parseDouble(coordMatcher.group("z"));
 
-                if (!sign.getSide(Side.FRONT).getLine(3).isEmpty()) {
-                    Matcher angleMatcher = anglePattern.matcher(PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(3)));
-                    if (angleMatcher.matches()) {
-                        float yaw = Float.parseFloat(angleMatcher.group("yaw"));
-                        float pitch = Float.parseFloat(angleMatcher.group("pitch"));
+            Matcher angleMatcher = anglePattern.matcher(PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(3)));
+            if (angleMatcher.matches()) {
+                float yaw = Float.parseFloat(angleMatcher.group("yaw"));
+                float pitch = Float.parseFloat(angleMatcher.group("pitch"));
 
-                        mgPlayer.teleport(new Location(mgPlayer.getPlayer().getWorld(), x + 0.5, y, z + 0.5, yaw, pitch));
-                        return true;
-                    }
-                }
-                mgPlayer.teleport(new Location(mgPlayer.getPlayer().getWorld(), x + 0.5, y, z + 0.5));
+                mgPlayer.teleport(new Location(mgPlayer.getPlayer().getWorld(), x + 0.5, y, z + 0.5, yaw, pitch));
                 return true;
             }
+            mgPlayer.teleport(new Location(mgPlayer.getPlayer().getWorld(), x + 0.5, y, z + 0.5));
+            return true;
         }
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_TELEPORT_INVALID);
         return false;

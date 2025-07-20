@@ -12,8 +12,8 @@ import java.util.List;
 
 public class RewardsFlag extends AFlag<Rewards> {
 
-    public RewardsFlag(Rewards value, @NotNull String name) {
-        super(name, value, value);
+    public RewardsFlag(@NotNull String name, Rewards value) {
+        super(name, value);
     }
 
     @Override

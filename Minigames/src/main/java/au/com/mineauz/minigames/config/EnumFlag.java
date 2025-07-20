@@ -14,8 +14,8 @@ public class EnumFlag<T extends Enum<T>> extends AFlag<T> {
     private final @NotNull Class<T> enumClass;
 
     @SuppressWarnings("unchecked")
-    public EnumFlag(@NotNull T value, @NotNull String name) {
-        super(name, value, value);
+    public EnumFlag(@NotNull String name, @NotNull T value) {
+        super(name, value);
         enumClass = (Class<T>) value.getClass();
     }
 

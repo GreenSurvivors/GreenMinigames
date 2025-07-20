@@ -100,12 +100,7 @@ public class BackendCommand extends ACommand {
         return null;
     }
 
-    private static class ExportNotifier implements Notifier {
-        private final CommandSender sender;
-
-        public ExportNotifier(CommandSender sender) {
-            this.sender = sender;
-        }
+    private record ExportNotifier(CommandSender sender) implements Notifier {
 
         @Override
         public void onProgress(@NotNull String state, int count) {
@@ -121,7 +116,7 @@ public class BackendCommand extends ACommand {
         @Override
         public void onError(@NotNull Exception e, @NotNull String state, int count) {
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
+                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
             Minigames.getCmpnntLogger().error("Exporting error at " + state + ": " + count, e);
         }
     }

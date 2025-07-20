@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.ARewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
@@ -32,9 +33,9 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARewardScheme {
-    private final EnumFlag<Comparison> comparisonType = new EnumFlag<>(Comparison.Greater, "comparison");
-    private final BooleanFlag enableRewardsOnLoss = new BooleanFlag(false, "loss-rewards");
-    private final BooleanFlag lossUsesSecondary = new BooleanFlag(true, "loss-use-secondary");
+    private final EnumFlag<Comparison> comparisonType = new EnumFlag<>("comparison", Comparison.Greater);
+    private final BooleanFlag enableRewardsOnLoss = new BooleanFlag("loss-rewards", false);
+    private final BooleanFlag lossUsesSecondary = new BooleanFlag("loss-use-secondary", true);
 
     private final TreeMap<T, Rewards> primaryRewards = new TreeMap<>();
     private final TreeMap<T, Rewards> secondaryRewards = new TreeMap<>();
@@ -208,7 +209,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
         Lesser
     }
 
-    private class MenuItemRewardPair extends MenuItem {
+    private class MenuItemRewardPair extends MenuItem implements StringConsumer {
         private final static String DESCRIPTION_TOKEN = "RewardPair_description";
         private final @NotNull Rewards reward;
         private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
@@ -295,7 +296,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
         }
 
         @Override
-        public void checkValidEntry(String entry) {
+        public void acceptString(@NotNull String entry) {
             try {
                 T value = loadKey(entry);
                 if (map.containsKey(value)) {
@@ -331,7 +332,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
         }
     }
 
-    public class MenuItemAddReward extends MenuItem {
+    public class MenuItemAddReward extends MenuItem implements StringConsumer {
         private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
 
         public MenuItemAddReward(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
@@ -364,7 +365,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
         }
 
         @Override
-        public void checkValidEntry(String entry) {
+        public void acceptString(@NotNull String entry) {
             boolean show = true;
 
             try {

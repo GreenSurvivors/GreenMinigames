@@ -14,7 +14,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -243,7 +243,7 @@ public class MinigameTool {
             PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
 
             for (Component l : lore) {
-                if (StringUtils.startsWithIgnoreCase(plainSerializer.serialize(l), name)) {
+                if (Strings.CI.startsWith(plainSerializer.serialize(l), name)) {
                     lore.remove(l);
                     break;
                 }

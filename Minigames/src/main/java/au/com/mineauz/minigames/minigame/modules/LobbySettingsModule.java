@@ -9,13 +9,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 public class LobbySettingsModule extends MinigameModule {
-    private final BooleanFlag canMovePlayerWait = new BooleanFlag(true, "canMovePlayerWait");
-    private final BooleanFlag canMoveStartWait = new BooleanFlag(true, "canMoveStartWait");
-    private final BooleanFlag canInteractPlayerWait = new BooleanFlag(true, "canInteractPlayerWait");
-    private final BooleanFlag canInteractStartWait = new BooleanFlag(true, "canInteractStartWait");
-    private final BooleanFlag teleportOnPlayerWait = new BooleanFlag(false, "teleportOnPlayerWait");
-    private final BooleanFlag teleportOnStart = new BooleanFlag(true, "teleportOnStart");
-    private final TimeFlag playerWaitTime = new TimeFlag(0L, "playerWaitTime");
+    private final BooleanFlag canMovePlayerWait = new BooleanFlag("canMovePlayerWait", true);
+    private final BooleanFlag canMoveStartWait = new BooleanFlag("canMoveStartWait", true);
+    private final BooleanFlag canInteractPlayerWait = new BooleanFlag("canInteractPlayerWait", true);
+    private final BooleanFlag canInteractStartWait = new BooleanFlag("canInteractStartWait", true);
+    private final BooleanFlag teleportOnPlayerWait = new BooleanFlag("teleportOnPlayerWait", false);
+    private final BooleanFlag teleportOnStart = new BooleanFlag("teleportOnStart", true);
+    private final TimeFlag playerWaitTime = new TimeFlag("playerWaitTime", 0L);
 
     public LobbySettingsModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);

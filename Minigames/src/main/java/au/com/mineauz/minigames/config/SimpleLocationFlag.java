@@ -18,8 +18,8 @@ import java.util.List;
  */
 public class SimpleLocationFlag extends AFlag<Location> {
 
-    public SimpleLocationFlag(Location value, @NotNull String name) {
-        super(name, value, value);
+    public SimpleLocationFlag(@NotNull String name, Location value) {
+        super(name, value);
     }
 
     @Override

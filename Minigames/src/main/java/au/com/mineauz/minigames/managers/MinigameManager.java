@@ -262,7 +262,7 @@ public class MinigameManager {
     }
 
     public void addRewardSign(final @NotNull Location loc) {
-        final RewardsFlag flag = new RewardsFlag(new Rewards(), MinigameUtils.createLocationID(loc));
+        final RewardsFlag flag = new RewardsFlag(MinigameUtils.createLocationID(loc), new Rewards());
         this.rewardSigns.put(MinigameUtils.createLocationID(loc), flag);
     }
 
@@ -322,7 +322,7 @@ public class MinigameManager {
         final FileConfiguration cfg = this.rewardSignsSave.getConfig();
         final Set<String> keys = cfg.getKeys(false);
         for (final String id : keys) {
-            final RewardsFlag rew = new RewardsFlag(new Rewards(), id);
+            final RewardsFlag rew = new RewardsFlag(id, new Rewards());
             rew.loadValue(cfg, "");
 
             this.rewardSigns.put(id, rew);

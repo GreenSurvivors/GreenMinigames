@@ -17,8 +17,8 @@ import java.util.Set;
 public class TeamFlag extends AFlag<Team> {
     private final @NotNull Minigame mgm;
 
-    public TeamFlag(Team value, @NotNull String name, @NotNull Minigame mgm) {
-        super(name, value, value);
+    public TeamFlag(@NotNull String name, Team value, @NotNull Minigame mgm) {
+        super(name, value);
         this.mgm = mgm;
     }
 
@@ -29,7 +29,7 @@ public class TeamFlag extends AFlag<Team> {
         config.set(path + configSeparator + getName() + configSeparator + "displayName", getFlag().getDisplayName());
         if (!getFlag().getStartLocations().isEmpty()) {
             for (int i = 0; i < getFlag().getStartLocations().size(); i++) {
-                LocationFlag locf = new LocationFlag(null, "startpos" + configSeparator + i);
+                LocationFlag locf = new LocationFlag("startpos" + configSeparator + i, null);
                 locf.setFlag(getFlag().getStartLocations().get(i));
                 locf.saveValue(config, path + configSeparator + getName());
             }
@@ -49,7 +49,7 @@ public class TeamFlag extends AFlag<Team> {
             if (config.contains(path + configSeparator + getName() + configSeparator + "startpos")) {
                 Set<String> locations = config.getConfigurationSection(path + configSeparator + getName() + configSeparator + "startpos").getKeys(false);
                 for (String loc : locations) {
-                    LocationFlag locf = new LocationFlag(null, "startpos" + configSeparator + loc);
+                    LocationFlag locf = new LocationFlag("startpos" + configSeparator + loc, null);
                     locf.loadValue(config, path + configSeparator + getName());
                     team.addStartLocation(locf.getFlag());
                 }

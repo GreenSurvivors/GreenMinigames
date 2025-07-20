@@ -16,9 +16,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,9 +72,8 @@ public class FinishSign extends AMinigameSign {
 
             if (!minigame.getSinglePlayerFlags().isEmpty()) {
                 if (plugin.getPlayerManager().checkRequiredFlags(mgPlayer, minigame).isEmpty()) {
-                    Minigame mgmOnSign = getMinigame(sign);
-                    if (sign.getSide(Side.FRONT).getLine(2).isEmpty() ||
-                            (mgmOnSign != null && mgmOnSign.getName().equals(mgPlayer.getMinigame().getName()))) {
+                    final @Nullable Minigame mgmOnSign = getMinigame(sign);
+                    if (mgmOnSign == null || mgmOnSign.getName().equals(mgPlayer.getMinigame().getName())) {
                         if (mgPlayer.getMinigame().isTeamGame()) {
                             List<MinigamePlayer> w = new ArrayList<>(mgPlayer.getTeam().getPlayers());
                             List<MinigamePlayer> l = new ArrayList<>(minigame.getPlayers().size() - mgPlayer.getTeam().getPlayers().size());

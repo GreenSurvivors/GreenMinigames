@@ -49,18 +49,12 @@ public interface ICommand {
     @Nullable String getPermission();
 
     /**
-     * @param sender
      * @param minigame all set commands are guarantied to have not null minigame parameter. Everything else probably is null.
-     * @param args
-     * @return
      */
     boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String @Nullable [] args);
 
     /**
-     * @param sender
-     * @param minigame
      * @param args     might be null for all set commands, else wise shouldn't be
-     * @return
      */
     @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String[] args);
 }

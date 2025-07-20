@@ -24,7 +24,7 @@ public class MaterialListFlag extends AFlag<List<Material>> { // todo replace wi
             char configSeparator = config.options().pathSeparator();
             MaterialFlag matflag;
             for (int i = 0; i < getFlag().size(); i++) {
-                matflag = new MaterialFlag(null, getName() + configSeparator + i);
+                matflag = new MaterialFlag(getName() + configSeparator + i, null);
                 matflag.setFlag(getFlag().get(i));
                 matflag.saveValue(config, path);
             }
@@ -44,7 +44,7 @@ public class MaterialListFlag extends AFlag<List<Material>> { // todo replace wi
             MaterialFlag matFlag;
 
             for (String id : ids) {
-                matFlag = new MaterialFlag(null, getName() + configSeparator + id);
+                matFlag = new MaterialFlag(getName() + configSeparator + id, null);
                 matFlag.loadValue(config, path);
 
                 materials.add(matFlag.getFlag());

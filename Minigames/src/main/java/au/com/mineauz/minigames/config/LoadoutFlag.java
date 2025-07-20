@@ -12,7 +12,7 @@ import java.util.List;
 
 public class LoadoutFlag extends AFlag<PlayerLoadout> {
 
-    public LoadoutFlag(PlayerLoadout value, @NotNull String name) {
+    public LoadoutFlag(@NotNull String name, PlayerLoadout value) {
         super(name, null, value); // todo why force null default?
     }
 

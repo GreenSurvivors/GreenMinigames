@@ -14,8 +14,8 @@ import java.util.List;
 
 public class IntegerFlag extends AFlag<Integer> {
 
-    public IntegerFlag(int value, @NotNull String name) {
-        super(name, value, value);
+    public IntegerFlag(@NotNull String name, int value) {
+        super(name, value);
     }
 
     @Override

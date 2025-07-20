@@ -23,8 +23,8 @@ import java.util.List;
  * reward. The primary reward is acquired on the first completion only.
  */
 public class StandardRewardScheme extends ARewardScheme {
-    private final RewardsFlag primaryRewardFlag = new RewardsFlag(new Rewards(), "reward");
-    private final RewardsFlag secondaryRewardFlag = new RewardsFlag(new Rewards(), "reward2");
+    private final RewardsFlag primaryRewardFlag = new RewardsFlag("reward", new Rewards());
+    private final RewardsFlag secondaryRewardFlag = new RewardsFlag("reward2", new Rewards());
 
     protected StandardRewardScheme(@NotNull String name) {
         super(name);

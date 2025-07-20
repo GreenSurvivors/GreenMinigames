@@ -54,17 +54,17 @@ public class JuggernautModule extends MinigameModule {
         if (juggernaut != null) {
             Team team = juggernaut.getMinigame().getScoreboard().getTeam("juggernaut");
             juggernaut.setLoadout(null);
-            team.removeEntry(team.getColor() + juggernaut.getPlayer().getDisplayName()); // todo find modern equivalent
+            team.removePlayer(juggernaut.getPlayer());
         }
         juggernaut = player;
 
         if (juggernaut != null) {
             Team team = player.getMinigame().getScoreboard().getTeam("juggernaut");
-            team.addEntry(team.getColor() + player.getPlayer().getDisplayName());
+            team.addPlayer(player.getPlayer());
 
             MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
             MinigameMessageManager.sendMinigameMessage(getMinigame(), MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.getDisplayName(getMinigame().usePlayerDisplayNames()))
+                    Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.displayName())
             ), MinigameMessageType.INFO, juggernaut);
 
             LoadoutModule lm = LoadoutModule.getMinigameModule(getMinigame());

@@ -17,9 +17,12 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,7 +50,7 @@ public class RewardSign extends AMinigameSign {
 
     @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
-        if (!event.getLine(2).isEmpty()) {
+        if (event.line(2) != null && !PlainTextComponentSerializer.plainText().serialize(event.line(2)).isEmpty()) {
             event.line(1, getName());
             return true;
         }
@@ -59,7 +62,7 @@ public class RewardSign extends AMinigameSign {
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
         Location loc = sign.getLocation();
         if (!MinigameTool.isMinigameTool(mgPlayer.getPlayer().getInventory().getItemInMainHand())) {
-            String label = sign.getLine(2).toLowerCase();
+            String label = LegacyComponentSerializer.legacySection().serialize(sign.getSide(Side.FRONT).line(2)).toLowerCase(); // note: legacy serialize to stay backwards compatible with already paid rewards
             if (mgPlayer.isInMinigame()) {
                 if (!mgPlayer.hasTempClaimedReward(label)) {
                     if (mdata.hasRewardSign(loc)) {

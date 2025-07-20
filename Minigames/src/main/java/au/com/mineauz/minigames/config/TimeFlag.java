@@ -15,8 +15,8 @@ import java.util.List;
 
 public class TimeFlag extends AFlag<Long> {
 
-    public TimeFlag(Long value, @NotNull String name) {
-        super(name, value, value);
+    public TimeFlag(@NotNull String name, Long value) {
+        super(name, value);
     }
 
     @Override

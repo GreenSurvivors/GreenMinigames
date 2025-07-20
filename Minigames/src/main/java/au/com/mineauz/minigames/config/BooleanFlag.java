@@ -13,8 +13,8 @@ import java.util.List;
 
 public class BooleanFlag extends AFlag<Boolean> {
 
-    public BooleanFlag(boolean value, @NotNull String name) {
-        super(name, value, value);
+    public BooleanFlag(@NotNull String name, boolean value) {
+        super(name, value);
     }
 
     @Override

@@ -17,10 +17,6 @@ public class TakeCTFFlagEvent extends AbstractCancellableMinigameEvent {
         this.player = player;
     }
 
-    public boolean isCTFFlag() {
-        return flag != null;
-    }
-
     public @Nullable CTFFlag getFlag() {
         return flag;
     }

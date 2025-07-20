@@ -83,17 +83,17 @@ public class MinigamePlayer implements ScriptObject {
 
     public MinigamePlayer(final @NotNull Player player) {
         this.player = player;
-        this.spc = new StoredPlayerCheckpoints(this.getUUID().toString());
+        spc = new StoredPlayerCheckpoints(getUUID().toString());
 
         final File plcp = new File(Minigames.getPlugin().getDataFolder() + File.separator + "playerdata" +
-                File.separator + "checkpoints" + File.separator + this.getUUID() + ".yml");
+                File.separator + "checkpoints" + File.separator + getUUID() + ".yml");
         if (plcp.exists()) {
-            this.getStoredPlayerCheckpoints().loadCheckpoints();
+            getStoredPlayerCheckpoints().loadCheckpoints();
         }
     }
 
     public @Nullable Location getStartPos() {
-        return this.startPos;
+        return startPos;
     }
 
     public void setStartPos(final @Nullable Location startPos) {
@@ -101,108 +101,91 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public @NotNull Player getPlayer() {
-        return this.player;
+        return player;
     }
 
     public @NotNull String getName() {
-        return ChatColor.stripColor(this.player.getName()); // todo
-    }
-
-    /**
-     * @deprecated use {@link #displayName()} if possible
-     */
-    @Deprecated
-    public @NotNull String getDisplayName() {
-        return this.getDisplayName(true);
-    }
-
-    @Deprecated
-    public @NotNull String getDisplayName(final @NotNull Boolean displayName) {
-        if (displayName) {
-            return ChatColor.stripColor(this.player.getDisplayName());
-        } else {
-            return this.getName();
-        }
+        return player.getName();
     }
 
     public @NotNull Component displayName() {
-        return this.player.displayName();
+        return player.displayName();
     }
 
     public @NotNull UUID getUUID() {
-        return this.player.getUniqueId();
+        return player.getUniqueId();
     }
 
     public @NotNull Location getLocation() {
-        return this.player.getLocation();
+        return player.getLocation();
     }
 
     public void storePlayerData() {
-        final ItemStack[] storedItems = this.player.getInventory().getContents();
-        final ItemStack[] storedArmour = this.player.getInventory().getArmorContents();
-        final int food = this.player.getFoodLevel();
-        final double health = this.player.getHealth();
-        final float saturation = this.player.getSaturation();
-        this.lastScoreboard = this.player.getScoreboard();
-        final GameMode lastGM = this.player.getGameMode();
-        float exp = this.player.getExp();
+        final ItemStack[] storedItems = player.getInventory().getContents();
+        final ItemStack[] storedArmour = player.getInventory().getArmorContents();
+        final int food = player.getFoodLevel();
+        final double health = player.getHealth();
+        final float saturation = player.getSaturation();
+        lastScoreboard = player.getScoreboard();
+        final GameMode lastGM = player.getGameMode();
+        float exp = player.getExp();
         if (exp < 0) {
-            Minigames.getCmpnntLogger().warn("Player Experience was less that 0: " + this.player.getDisplayName() + " " + this.player.getExp());
+            Minigames.getCmpnntLogger().warn("Player Experience was less that 0: " + player.getName() + " " + player.getExp());
             exp = 0;
         }
-        final int level = this.player.getLevel();
+        final int level = player.getLevel();
 
-        this.player.setSaturation(15);
-        this.player.setFoodLevel(20);
-        this.player.setHealth(this.player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
-        this.player.getInventory().clear();
-        this.player.getInventory().setArmorContents(null);
-        this.player.setLevel(0);
-        this.player.setExp(0);
+        player.setSaturation(15);
+        player.setFoodLevel(20);
+        player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getDefaultValue());
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
+        player.setLevel(0);
+        player.setExp(0);
 
-        this.offlineMinigamePlayer = new OfflineMinigamePlayer(this.getPlayer().getUniqueId(), storedItems, storedArmour, food,
-                health, saturation, lastGM, exp, level, this.getPlayer().getLocation());
-        this.player.updateInventory();
+        offlineMinigamePlayer = new OfflineMinigamePlayer(getPlayer().getUniqueId(), storedItems, storedArmour, food,
+                health, saturation, lastGM, exp, level, getPlayer().getLocation());
+        player.updateInventory();
     }
 
     public void restorePlayerData() {
-        this.player.getInventory().clear();
-        this.player.getInventory().setArmorContents(null);
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
 
-        this.player.getInventory().setContents(this.offlineMinigamePlayer.getStoredItems());
-        this.player.getInventory().setArmorContents(this.offlineMinigamePlayer.getStoredArmour());
-        this.player.setFoodLevel(this.offlineMinigamePlayer.getFood());
-        if (this.offlineMinigamePlayer.getHealth() > 20) { // todo don't hardcode. use attributes!
-            this.player.setHealth(20);
+        player.getInventory().setContents(offlineMinigamePlayer.getStoredItems());
+        player.getInventory().setArmorContents(offlineMinigamePlayer.getStoredArmour());
+        player.setFoodLevel(offlineMinigamePlayer.getFood());
+        if (offlineMinigamePlayer.getHealth() > 20) { // todo don't hardcode. use attributes!
+            player.setHealth(20);
         } else {
-            this.player.setHealth(this.offlineMinigamePlayer.getHealth());
+            player.setHealth(offlineMinigamePlayer.getHealth());
         }
-        this.player.setSaturation(this.offlineMinigamePlayer.getSaturation());
-        this.player.setScoreboard(Objects.requireNonNullElseGet(this.lastScoreboard, () -> this.player.getServer().getScoreboardManager().getMainScoreboard()));
+        player.setSaturation(offlineMinigamePlayer.getSaturation());
+        player.setScoreboard(Objects.requireNonNullElseGet(lastScoreboard, () -> player.getServer().getScoreboardManager().getMainScoreboard()));
 
-        if (this.offlineMinigamePlayer.getExp() >= 0) {
-            this.player.setExp(this.offlineMinigamePlayer.getExp());
-            this.player.setLevel(this.offlineMinigamePlayer.getLevel());
+        if (offlineMinigamePlayer.getExp() >= 0) {
+            player.setExp(offlineMinigamePlayer.getExp());
+            player.setLevel(offlineMinigamePlayer.getLevel());
         }
-        this.startPos = null;
-        this.player.resetPlayerWeather();
-        this.player.resetPlayerTime();
-        this.allowGMChange = true;
-        this.allowTP = true;
-        this.player.setGameMode(this.offlineMinigamePlayer.getLastGamemode());
+        startPos = null;
+        player.resetPlayerWeather();
+        player.resetPlayerTime();
+        allowGMChange = true;
+        allowTP = true;
+        player.setGameMode(offlineMinigamePlayer.getLastGamemode());
 
-        this.offlineMinigamePlayer.deletePlayerData();
-        this.offlineMinigamePlayer = null;
+        offlineMinigamePlayer.deletePlayerData();
+        offlineMinigamePlayer = null;
 
-        this.player.updateInventory();
+        player.updateInventory();
     }
 
     public boolean hasStoredData() {
-        return this.offlineMinigamePlayer != null;
+        return offlineMinigamePlayer != null;
     }
 
     public boolean getAllowTeleport() {
-        return this.allowTP;
+        return allowTP;
     }
 
     public void setAllowTeleport(final boolean allowTP) {
@@ -210,7 +193,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public boolean getAllowGamemodeChange() {
-        return this.allowGMChange;
+        return allowGMChange;
     }
 
     public void setAllowGamemodeChange(final boolean allowGMChange) {
@@ -221,7 +204,7 @@ public class MinigamePlayer implements ScriptObject {
      * Will return null, whenever the player is not currently in a minigame
      */
     public @Nullable Minigame getMinigame() {
-        return this.minigame;
+        return minigame;
     }
 
     public void setMinigame(final @NotNull Minigame minigame) {
@@ -229,15 +212,15 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void removeMinigame() {
-        this.minigame = null;
+        minigame = null;
     }
 
     public boolean isInMinigame() {
-        return this.minigame != null;
+        return minigame != null;
     }
 
     public boolean isRequiredQuit() {
-        return this.requiredQuit;
+        return requiredQuit;
     }
 
     public void setRequiredQuit(final boolean requiredQuit) {
@@ -245,7 +228,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public @Nullable Location getQuitPos() {
-        return this.quitPos;
+        return quitPos;
     }
 
     public void setQuitPos(final @Nullable Location quitPos) {
@@ -256,13 +239,13 @@ public class MinigamePlayer implements ScriptObject {
      * will return null, if the player is NOT in a Minigame
      */
     public @Nullable PlayerLoadout getLoadout() {
-        if (this.minigame != null) {
+        if (minigame != null) {
             LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
 
-            if (this.loadout != null) {
-                return this.loadout;
-            } else if (this.team != null && loadoutModule.hasLoadout(this.team.getColor().toString().toLowerCase())) {
-                return loadoutModule.getLoadout(this.team.getColor().toString().toLowerCase());
+            if (loadout != null) {
+                return loadout;
+            } else if (team != null && loadoutModule.hasLoadout(team.getColor().toString().toLowerCase())) {
+                return loadoutModule.getLoadout(team.getColor().toString().toLowerCase());
             }
             return loadoutModule.getLoadout("default");
         } else {
@@ -274,10 +257,10 @@ public class MinigamePlayer implements ScriptObject {
      * will return null, if the player is NOT in a Minigame
      */
     public @Nullable PlayerLoadout getDefaultLoadout() {
-        if (this.minigame != null) {
+        if (minigame != null) {
             LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
-            if (this.team != null && loadoutModule.hasLoadout(this.team.getColor().toString().toLowerCase())) {
-                return loadoutModule.getLoadout(this.team.getColor().toString().toLowerCase());
+            if (team != null && loadoutModule.hasLoadout(team.getColor().toString().toLowerCase())) {
+                return loadoutModule.getLoadout(team.getColor().toString().toLowerCase());
             }
             return loadoutModule.getLoadout("default");
         } else {
@@ -286,8 +269,8 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public boolean setLoadout(final @Nullable PlayerLoadout loadout) {
-        if (this.getMinigame() == null) return false;
-        if (loadout == null || !this.getMinigame().isTeamGame() || loadout.getTeamColor() == null || this.getTeam().getColor() == loadout.getTeamColor()) {
+        if (getMinigame() == null) return false;
+        if (loadout == null || !getMinigame().isTeamGame() || loadout.getTeamColor() == null || getTeam().getColor() == loadout.getTeamColor()) {
             this.loadout = loadout;
             return true;
         }
@@ -295,7 +278,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public @NotNull List<@NotNull String> getSinglePlayerFlags() {
-        return this.singlePlayerFlags;
+        return singlePlayerFlags;
     }
 
     public void setSinglePlayerFlags(final @NotNull List<@NotNull String> singlePlayerFlags) {
@@ -303,23 +286,23 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public boolean addFlag(final @NotNull String flag) {
-        if (!this.singlePlayerFlags.contains(flag)) {
-            this.singlePlayerFlags.add(flag);
+        if (!singlePlayerFlags.contains(flag)) {
+            singlePlayerFlags.add(flag);
             return true;
         }
         return false;
     }
 
     public boolean hasFlag(final @NotNull String flagName) {
-        return this.singlePlayerFlags.contains(flagName);
+        return singlePlayerFlags.contains(flagName);
     }
 
     public void clearFlags() {
-        this.singlePlayerFlags.clear();
+        singlePlayerFlags.clear();
     }
 
     public @Nullable Location getCheckpoint() {
-        return this.checkpoint;
+        return checkpoint;
     }
 
     public void setCheckpoint(final @Nullable Location checkpoint) {
@@ -327,27 +310,27 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public boolean hasCheckpoint() {
-        return this.checkpoint != null;
+        return checkpoint != null;
     }
 
     public void removeCheckpoint() {
-        this.checkpoint = null;
+        checkpoint = null;
     }
 
     public int getKills() {
-        return this.kills;
+        return kills;
     }
 
     public void addKill() {
-        this.kills++;
+        kills++;
     }
 
     public void resetKills() {
-        this.kills = 0;
+        kills = 0;
     }
 
     public int getDeaths() {
-        return this.deaths;
+        return deaths;
     }
 
     public void setDeaths(final int deaths) {
@@ -355,15 +338,15 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void addDeath() {
-        this.deaths++;
+        deaths++;
     }
 
     public void resetDeaths() {
-        this.deaths = 0;
+        deaths = 0;
     }
 
     public int getScore() {
-        return this.score;
+        return score;
     }
 
     public void setScore(final int score) {
@@ -371,89 +354,89 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void addScore() {
-        this.score++;
+        score++;
     }
 
     public void addScore(final int amount) {
-        this.score += amount;
+        score += amount;
     }
 
     public void resetScore() {
-        this.score = 0;
+        score = 0;
     }
 
     public void takeScore() {
-        this.score--;
+        score--;
     }
 
     public long getStartTime() {
-        return this.startTime;
+        return startTime;
     }
 
     public void setStartTime(final long ms) {
-        this.startTime = ms;
+        startTime = ms;
     }
 
     /**
      * in milliseconds
      */
     public long getEndTime() {
-        return this.endTime;
+        return endTime;
     }
 
     /**
      * in milliseconds
      */
     public void setEndTime(final long ms) {
-        this.endTime = ms;
+        endTime = ms;
     }
 
     public void resetTime() {
-        this.startTime = 0;
-        this.endTime = 0;
-        this.storedTime = 0;
+        startTime = 0;
+        endTime = 0;
+        storedTime = 0;
     }
 
     /**
      * in milliseconds
      */
     public long getStoredTime() {
-        return this.storedTime;
+        return storedTime;
     }
 
     /**
      * in milliseconds
      */
     public void setStoredTime(final long ms) {
-        this.storedTime = ms;
+        storedTime = ms;
     }
 
     public long getCompletionTime() {
-        return this.completeTime;
+        return completeTime;
     }
 
     public void setCompleteTime(final long ms) {
-        this.completeTime = ms;
+        completeTime = ms;
     }
 
     public void addRevert() {
-        this.reverts++;
+        reverts++;
     }
 
     public int getReverts() {
-        return this.reverts;
+        return reverts;
     }
 
     public void setReverts(final int count) {
-        this.reverts = count;
+        reverts = count;
     }
 
     public void resetReverts() {
-        this.reverts = 0;
+        reverts = 0;
     }
 
     public boolean isFrozen() {
-        return this.isFrozen;
+        return isFrozen;
     }
 
     public void setFrozen(final boolean isFrozen) {
@@ -461,7 +444,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public boolean canPvP() {
-        return this.canPvP;
+        return canPvP;
     }
 
     public void setCanPvP(final boolean canPvP) {
@@ -469,7 +452,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public boolean isInvincible() {
-        return this.isInvincible;
+        return isInvincible;
     }
 
     public void setInvincible(final boolean isInvincible) {
@@ -477,7 +460,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public boolean canInteract() {
-        return this.canInteract;
+        return canInteract;
     }
 
     public void setCanInteract(final boolean canInteract) {
@@ -485,43 +468,43 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public boolean canFly() {
-        return this.canFly;
+        return canFly;
     }
 
     public void setCanFly(final boolean bool) {
-        this.canFly = bool;
-        this.player.setAllowFlight(bool);
+        canFly = bool;
+        player.setAllowFlight(bool);
     }
 
     public void resetAllStats() {
 //        setLoadout(null);
-        this.loadout = null;
-        this.resetReverts();
-        this.resetDeaths();
-        this.resetKills();
-        this.resetScore();
-        this.resetTime();
-        this.clearFlags();
-        this.removeCheckpoint();
-        this.setFrozen(false);
-        this.setCanPvP(true);
-        this.setInvincible(false);
-        this.setCanInteract(true);
-        this.setLatejoining(false);
-        if (this.player.getGameMode() != GameMode.CREATIVE) {
-            this.setCanFly(false);
+        loadout = null;
+        resetReverts();
+        resetDeaths();
+        resetKills();
+        resetScore();
+        resetTime();
+        clearFlags();
+        removeCheckpoint();
+        setFrozen(false);
+        setCanPvP(true);
+        setInvincible(false);
+        setCanInteract(true);
+        setLatejoining(false);
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            setCanFly(false);
         }
-        this.tempClaimedRewards.clear();
-        this.tempRewardItems.clear();
-        this.claimedScoreSigns.clear();
-        if (this.lateJoinTimer != -1) {
-            Bukkit.getScheduler().cancelTask(this.lateJoinTimer);
-            this.setLateJoinTimer(-1);
+        tempClaimedRewards.clear();
+        tempRewardItems.clear();
+        claimedScoreSigns.clear();
+        if (lateJoinTimer != -1) {
+            Bukkit.getScheduler().cancelTask(lateJoinTimer);
+            setLateJoinTimer(-1);
         }
     }
 
     public boolean isLatejoining() {
-        return this.isLatejoining;
+        return isLatejoining;
     }
 
     public void setLatejoining(final boolean isLatejoining) {
@@ -529,7 +512,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public @Nullable Menu getMenu() {
-        return this.menu;
+        return menu;
     }
 
     public void setMenu(final @Nullable Menu menu) {
@@ -537,23 +520,23 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public boolean isInMenu() {
-        return this.menu != null;
+        return menu != null;
     }
 
     public boolean getNoClose() {
-        return this.noClose;
+        return noClose;
     }
 
     public void setNoClose(final boolean value) {
-        this.noClose = value;
+        noClose = value;
     }
 
     public @Nullable MenuItem getManualEntry() {
-        return this.manualEntry;
+        return manualEntry;
     }
 
     public void setManualEntry(final @Nullable MenuItem item) {
-        this.manualEntry = item;
+        manualEntry = item;
     }
 
     public void addSelectionPoint(final @NotNull Location loc) {
@@ -573,30 +556,30 @@ public class MinigamePlayer implements ScriptObject {
                 MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS1);
             }
         } else {
-            if (this.selection1 == null) {
-                this.selection1 = loc;
-                this.showSelection(true);
+            if (selection1 == null) {
+                selection1 = loc;
+                showSelection(true);
                 MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS1);
-            } else if (this.selection2 == null) {
-                this.selection2 = loc;
-                this.showSelection(true);
+            } else if (selection2 == null) {
+                selection2 = loc;
+                showSelection(true);
                 MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS2);
             } else {
-                this.showSelection(false);
-                this.selection1 = loc;
+                showSelection(false);
+                selection1 = loc;
                 MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_RESTART);
                 MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS1);
-                this.selection2 = null;
-                this.showSelection(true);
+                selection2 = null;
+                showSelection(true);
             }
         }
     }
 
     public boolean hasSelection() {
         if (DependencyManager.isWorldEditEnabled()) {
-            return DependencyManager.hasSelection(this.player);
+            return DependencyManager.hasSelection(player);
         } else {
-            return this.selection1 != null && this.selection2 != null;
+            return selection1 != null && selection2 != null;
         }
     }
 
@@ -604,113 +587,113 @@ public class MinigamePlayer implements ScriptObject {
         final Location[] loc = new Location[2];
 
         if (DependencyManager.isWorldEditEnabled()) {
-            DependencyManager.SelectedRegionStatusWrapper statusWrapper = DependencyManager.getSelectedRegion(this.player);
+            DependencyManager.SelectedRegionStatusWrapper statusWrapper = DependencyManager.getSelectedRegion(player);
 
             loc[0] = statusWrapper.pos1();
             loc[1] = statusWrapper.pos2();
         } else {
-            loc[0] = this.selection1;
-            loc[1] = this.selection2;
+            loc[0] = selection1;
+            loc[1] = selection2;
         }
         return loc;
     }
 
     public void clearSelection() {
         if (DependencyManager.isWorldEditEnabled()) {
-            DependencyManager.clearSelection(this.player);
+            DependencyManager.clearSelection(player);
         } else {
-            this.showSelection(false);
-            this.selection1 = null;
-            this.selection2 = null;
+            showSelection(false);
+            selection1 = null;
+            selection2 = null;
         }
     }
 
     public void setSelection1(final @NotNull Location point1) {
         if (DependencyManager.isWorldEditEnabled()) {
-            DependencyManager.setPos1(this.player, point1);
+            DependencyManager.setPos1(player, point1);
         } else {
-            this.selection1 = point1;
-            this.showSelection(false);
+            selection1 = point1;
+            showSelection(false);
         }
     }
 
     public void setSelection2(final @NotNull Location point2) {
         if (DependencyManager.isWorldEditEnabled()) {
-            DependencyManager.setPos2(this.player, point2);
+            DependencyManager.setPos2(player, point2);
         } else {
-            this.selection2 = point2;
-            this.showSelection(true);
+            selection2 = point2;
+            showSelection(true);
         }
     }
 
     public void setSelection(final @NotNull MgRegion region) {
         if (DependencyManager.isWorldEditEnabled()) {
-            DependencyManager.setPos2(this.player, region.getLocation1());
-            DependencyManager.setPos2(this.player, region.getLocation2());
+            DependencyManager.setPos2(player, region.getLocation1());
+            DependencyManager.setPos2(player, region.getLocation2());
         } else {
-            this.selection1 = region.getLocation1();
-            this.selection2 = region.getLocation2();
+            selection1 = region.getLocation1();
+            selection2 = region.getLocation2();
 
-            this.showSelection(true);
+            showSelection(true);
         }
     }
 
     public void showSelection(final boolean show) {
-        if (this.selectionDisplay != null) {
-            this.selectionDisplay.remove();
-            this.selectionDisplay = null;
+        if (selectionDisplay != null) {
+            selectionDisplay.remove();
+            selectionDisplay = null;
         }
 
         if (show) {
-            if (this.selection2 != null && this.selection1 != null) {
-                this.selectionDisplay = Minigames.getPlugin().display.displayCuboid(this.getPlayer(), selection1, selection2.clone().add(1, 1, 1));
-                this.selectionDisplay.show();
-            } else if (this.selection1 != null) {
-                this.selectionDisplay = Minigames.getPlugin().display.displayCuboid(this.getPlayer(), this.selection1, this.selection1.clone().add(1, 1, 1));
-                this.selectionDisplay.show();
-            } else if (this.selection2 != null) {
-                this.selectionDisplay = Minigames.getPlugin().display.displayCuboid(this.getPlayer(), this.selection2, this.selection2.clone().add(1, 1, 1));
-                this.selectionDisplay.show();
+            if (selection2 != null && selection1 != null) {
+                selectionDisplay = Minigames.getPlugin().display.displayCuboid(getPlayer(), selection1, selection2.clone().add(1, 1, 1));
+                selectionDisplay.show();
+            } else if (selection1 != null) {
+                selectionDisplay = Minigames.getPlugin().display.displayCuboid(getPlayer(), selection1, selection1.clone().add(1, 1, 1));
+                selectionDisplay.show();
+            } else if (selection2 != null) {
+                selectionDisplay = Minigames.getPlugin().display.displayCuboid(getPlayer(), selection2, selection2.clone().add(1, 1, 1));
+                selectionDisplay.show();
             }
         }
     }
 
     public @Nullable OfflineMinigamePlayer getOfflineMinigamePlayer() {
-        return this.offlineMinigamePlayer;
+        return offlineMinigamePlayer;
     }
 
     public void setOfflineMinigamePlayer(final @NotNull OfflineMinigamePlayer oply) {
-        this.offlineMinigamePlayer = oply;
+        offlineMinigamePlayer = oply;
     }
 
     public @NotNull StoredPlayerCheckpoints getStoredPlayerCheckpoints() {
-        return this.spc;
+        return spc;
     }
 
     public void setGamemode(final @NotNull GameMode gamemode) {
-        this.setAllowGamemodeChange(true);
-        this.player.setGameMode(gamemode);
-        this.setAllowGamemodeChange(false);
+        setAllowGamemodeChange(true);
+        player.setGameMode(gamemode);
+        setAllowGamemodeChange(false);
     }
 
     public boolean teleport(final @NotNull Location location) {
-        this.setAllowTeleport(true);
-        boolean bool = this.getPlayer().teleport(location);
-        this.setAllowTeleport(false);
+        setAllowTeleport(true);
+        boolean bool = getPlayer().teleport(location);
+        setAllowTeleport(false);
 
         return bool;
     }
 
     public void updateInventory() {
-        this.getPlayer().updateInventory();
+        getPlayer().updateInventory();
     }
 
     public boolean isLiving() {
-        return !this.player.isDead();
+        return !player.isDead();
     }
 
     public @Nullable Team getTeam() {
-        return this.team;
+        return team;
     }
 
     public void setTeam(final @Nullable Team team) {
@@ -718,92 +701,92 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void removeTeam() {
-        if (this.team != null) {
-            this.team.removePlayer(this);
-            this.team = null;
+        if (team != null) {
+            team.removePlayer(this);
+            team = null;
         }
     }
 
     public boolean hasClaimedReward(final @NotNull String reward) {
-        return this.claimedRewards.contains(reward);
+        return claimedRewards.contains(reward);
     }
 
     public boolean hasTempClaimedReward(final @NotNull String reward) {
-        return this.tempClaimedRewards.contains(reward);
+        return tempClaimedRewards.contains(reward);
     }
 
     public void addTempClaimedReward(final @NotNull String reward) {
-        this.tempClaimedRewards.add(reward);
+        tempClaimedRewards.add(reward);
     }
 
     public void addClaimedReward(final @NotNull String reward) {
-        this.claimedRewards.add(reward);
+        claimedRewards.add(reward);
     }
 
     public void saveClaimedRewards() {
-        if (!this.claimedRewards.isEmpty()) {
-            final MinigameSave save = new MinigameSave("playerdata" + File.separator + "data" + File.separator + this.getUUID());
+        if (!claimedRewards.isEmpty()) {
+            final MinigameSave save = new MinigameSave("playerdata" + File.separator + "data" + File.separator + getUUID());
             final FileConfiguration cfg = save.getConfig();
-            cfg.set("claims", this.claimedRewards);
+            cfg.set("claims", claimedRewards);
             save.saveConfig();
         }
     }
 
     public void loadClaimedRewards() {
         final File f = new File(Minigames.getPlugin().getDataFolder() + File.separator + "playerdata" +
-                File.separator + "data" + File.separator + this.getUUID() + ".yml");
+                File.separator + "data" + File.separator + getUUID() + ".yml");
         if (f.exists()) {
-            final MinigameSave save = new MinigameSave("playerdata" + File.separator + "data" + File.separator + this.getUUID());
-            this.claimedRewards = save.getConfig().getStringList("claims");
+            final MinigameSave save = new MinigameSave("playerdata" + File.separator + "data" + File.separator + getUUID());
+            claimedRewards = save.getConfig().getStringList("claims");
         }
     }
 
     public void addTempRewardItem(final @NotNull ItemStack item) {
-        this.tempRewardItems.add(item);
+        tempRewardItems.add(item);
     }
 
     public @NotNull List<@NotNull ItemStack> getTempRewardItems() {
-        return this.tempRewardItems;
+        return tempRewardItems;
     }
 
     public void addRewardItem(final @NotNull ItemStack item) {
-        this.rewardItems.add(item);
+        rewardItems.add(item);
     }
 
     public @NotNull List<@NotNull ItemStack> getRewardItems() {
-        return this.rewardItems;
+        return rewardItems;
     }
 
     public boolean hasClaimedScore(final @NotNull Location loc) {
         final String id = MinigameUtils.createLocationID(loc);
-        return this.claimedScoreSigns.contains(id);
+        return claimedScoreSigns.contains(id);
     }
 
     public boolean applyResourcePack(final @NotNull ResourcePack pack) {
         try {
-            this.player.getPlayer().setResourcePack(pack.getUrl().toString(), pack.getSH1Hash());
+            player.getPlayer().setResourcePack(pack.getUrl().toString(), pack.getSH1Hash());
             return true;
         } catch (final IllegalArgumentException e) {
-            Minigames.getCmpnntLogger().warn("Could not apply ressource pack to player " + this.getPlayer().getName(), e);
+            Minigames.getCmpnntLogger().warn("Could not apply ressource pack to player " + getPlayer().getName(), e);
         }
         return false;
     }
 
     public void addClaimedScore(final @NotNull Location loc) {
         final String id = MinigameUtils.createLocationID(loc);
-        this.claimedScoreSigns.add(id);
+        claimedScoreSigns.add(id);
     }
 
     public void claimTempRewardItems() {
-        if (this.isLiving()) {
-            final List<ItemStack> tempItems = new ArrayList<>(this.getTempRewardItems());
+        if (isLiving()) {
+            final List<ItemStack> tempItems = new ArrayList<>(getTempRewardItems());
 
             if (!tempItems.isEmpty()) {
                 for (final ItemStack item : tempItems) {
-                    final Map<Integer, ItemStack> m = this.player.getPlayer().getInventory().addItem(item);
+                    final Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(item);
                     if (!m.isEmpty()) {
                         for (final ItemStack i : m.values()) {
-                            this.player.getPlayer().getWorld().dropItemNaturally(this.player.getPlayer().getLocation(), i);
+                            player.getPlayer().getWorld().dropItemNaturally(player.getPlayer().getLocation(), i);
                         }
                     }
                 }
@@ -812,15 +795,15 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void claimRewards() {
-        if (this.isLiving()) {
-            final List<ItemStack> tempItems = new ArrayList<>(this.getRewardItems());
+        if (isLiving()) {
+            final List<ItemStack> tempItems = new ArrayList<>(getRewardItems());
 
             if (!tempItems.isEmpty()) {
                 for (final ItemStack item : tempItems) {
-                    final Map<Integer, ItemStack> m = this.player.getPlayer().getInventory().addItem(item);
+                    final Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(item);
                     if (!m.isEmpty()) {
                         for (final ItemStack i : m.values()) {
-                            this.player.getPlayer().getWorld().dropItemNaturally(this.player.getPlayer().getLocation(), i);
+                            player.getPlayer().getWorld().dropItemNaturally(player.getPlayer().getLocation(), i);
                         }
                     }
                 }
@@ -829,21 +812,21 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void setLateJoinTimer(final int taskID) {
-        this.lateJoinTimer = taskID;
+        lateJoinTimer = taskID;
     }
 
     @Override
     public @Nullable ScriptReference get(final @NotNull String name) {
         return switch (name.toLowerCase()) {
-            case "name" -> ScriptValue.of(this.player.getName());
-            case "displayname" -> ScriptValue.of(this.player.getDisplayName());
-            case "score" -> ScriptValue.of(this.score);
-            case "kills" -> ScriptValue.of(this.kills);
-            case "deaths" -> ScriptValue.of(this.deaths);
-            case "health" -> ScriptValue.of(this.player.getHealth());
-            case "team" -> this.team;
-            case "pos" -> ScriptWrapper.wrap(this.player.getLocation());
-            case "minigame" -> this.minigame;
+            case "name" -> ScriptValue.of(player.getName());
+            case "displayname" -> ScriptValue.of(player.getDisplayName());
+            case "score" -> ScriptValue.of(score);
+            case "kills" -> ScriptValue.of(kills);
+            case "deaths" -> ScriptValue.of(deaths);
+            case "health" -> ScriptValue.of(player.getHealth());
+            case "team" -> team;
+            case "pos" -> ScriptWrapper.wrap(player.getLocation());
+            case "minigame" -> minigame;
             default -> null;
         };
     }
@@ -855,6 +838,6 @@ public class MinigamePlayer implements ScriptObject {
 
     @Override
     public @NotNull String getAsString() {
-        return this.getName();
+        return getName();
     }
 }

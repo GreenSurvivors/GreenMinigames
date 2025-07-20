@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InfectionModule extends MinigameModule {
-    private final IntegerFlag infectedPercent = new IntegerFlag(18, "infectedPercent");
-    private final EnumFlag<TeamColor> infectedTeam = new EnumFlag<>(TeamColor.RED, "infectedTeam");
-    private final EnumFlag<TeamColor> survivorTeam = new EnumFlag<>(TeamColor.BLUE, "survivorTeam");
+    private final IntegerFlag infectedPercent = new IntegerFlag("infectedPercent", 18);
+    private final EnumFlag<TeamColor> infectedTeam = new EnumFlag<>("infectedTeam", TeamColor.RED);
+    private final EnumFlag<TeamColor> survivorTeam = new EnumFlag<>("survivorTeam", TeamColor.BLUE);
 
     //Unsaved Data
     private final List<MinigamePlayer> infected = new ArrayList<>();

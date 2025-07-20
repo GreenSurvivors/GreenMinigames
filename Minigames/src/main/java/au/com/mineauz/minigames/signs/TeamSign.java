@@ -81,7 +81,7 @@ public class TeamSign extends AMinigameSign {
                                 if (nt.getPlayers().size() - sm.getPlayers().size() < 1) {
                                     MultiplayerType.switchTeam(mgm, mgPlayer, nt);
                                     MinigameMessageManager.sendMinigameMessage(mgm, MiniMessage.miniMessage().deserialize(nt.getJoinAnnounceMessage(),
-                                                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getDisplayName(mgm.usePlayerDisplayNames())),
+                                                    Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(nt.getDisplayName(), nt.getTextColor()))),
                                             MinigameMessageType.INFO, mgPlayer);
 
@@ -104,7 +104,7 @@ public class TeamSign extends AMinigameSign {
                                 if (nt.getPlayers().size() - currentTeam.getPlayers().size() < 2) { //todo this breaks with more then 2 teams
                                     MultiplayerType.switchTeam(mgm, mgPlayer, nt);
                                     MinigameMessageManager.sendMinigameMessage(mgm, MiniMessage.miniMessage().deserialize(nt.getJoinAnnounceMessage(),
-                                                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getDisplayName(mgm.usePlayerDisplayNames())),
+                                                    Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(nt.getDisplayName(), nt.getTextColor()))),
                                             MinigameMessageType.INFO, mgPlayer);
 
@@ -121,7 +121,7 @@ public class TeamSign extends AMinigameSign {
                                 if (nt.getPlayers().size() < nt.getMaxPlayers()) { // todo this does not check balancing
                                     MultiplayerType.switchTeam(mgm, mgPlayer, nt);
                                     MinigameMessageManager.sendMinigameMessage(mgm, MiniMessage.miniMessage().deserialize(nt.getJoinAnnounceMessage(),
-                                                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getDisplayName(mgm.usePlayerDisplayNames())),
+                                                    Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(nt.getDisplayName(), nt.getTextColor()))),
                                             MinigameMessageType.INFO, mgPlayer);
 

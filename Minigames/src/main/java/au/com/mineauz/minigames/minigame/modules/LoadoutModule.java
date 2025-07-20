@@ -89,7 +89,7 @@ public class LoadoutModule extends MinigameModule {
         char configSeparator = config.options().pathSeparator();
         LoadoutFlag loadoutFlag;
         for (Map.Entry<String, PlayerLoadout> loadoutEntry : loadouts.entrySet()) {
-            loadoutFlag = new LoadoutFlag(loadoutEntry.getValue(), loadoutEntry.getKey());
+            loadoutFlag = new LoadoutFlag(loadoutEntry.getKey(), loadoutEntry.getValue());
             loadoutFlag.saveValue(config, path + configSeparator + "loadouts");
         }
     }
@@ -102,7 +102,7 @@ public class LoadoutModule extends MinigameModule {
             LoadoutFlag loadoutFlag;
 
             for (String loadout : configSection.getKeys(false)) {
-                loadoutFlag = new LoadoutFlag(new PlayerLoadout(loadout), loadout);
+                loadoutFlag = new LoadoutFlag(loadout, new PlayerLoadout(loadout));
                 if (loadout.equals("default")) {
                     loadoutFlag.getFlag().setDeletable(false);
                 }

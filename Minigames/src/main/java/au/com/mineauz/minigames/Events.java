@@ -64,7 +64,6 @@ import java.io.File;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class Events implements Listener {
     private static final @NotNull Minigames plugin = Minigames.getPlugin();
@@ -366,7 +365,13 @@ public class Events implements Listener {
 
                                 Component players;
                                 if (mgm.hasPlayers()) {
-                                    players = Component.text(mgm.getPlayers().stream().map(MinigamePlayer::getName).collect(Collectors.joining(", ")));
+                                    players = Component.join(JoinConfiguration.commas(true),
+                                        new Iterable<Component>() {
+                                            @Override
+                                            public @NotNull Iterator<Component> iterator() {
+                                                return mgm.getPlayers().stream().map(MinigamePlayer::displayName).iterator();
+                                            }
+                                        });
                                 } else {
                                     players = MinigameMessageManager.getMgMessage(MgMiscLangKey.QUANTIFIER_NONE);
                                 }
@@ -497,42 +502,48 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     private void entityDamageEntity(@NotNull EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Player) {
-            if (event.getDamager() instanceof Snowball sb) {
-                MinigamePlayer mgPlayer = pdata.getMinigamePlayer((Player) event.getEntity());
-                if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().hasPaintBallMode()) {
-                    if (sb.getShooter() instanceof Player player) {
-                        MinigamePlayer shooter = pdata.getMinigamePlayer(player);
-                        Minigame mgm = mgPlayer.getMinigame();
-                        if (shooter.isInMinigame() && shooter.getMinigame().equals(mgPlayer.getMinigame())) {
-                            if (!shooter.canPvP()) {
-                                event.setCancelled(true);
-                                return;
-                            }
+            switch (event.getDamager()) {
+                case Snowball sb -> {
+                    MinigamePlayer mgPlayer = pdata.getMinigamePlayer((Player) event.getEntity());
+                    if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().hasPaintBallMode()) {
+                        if (sb.getShooter() instanceof Player player) {
+                            MinigamePlayer shooter = pdata.getMinigamePlayer(player);
+                            Minigame mgm = mgPlayer.getMinigame();
+                            if (shooter.isInMinigame() && shooter.getMinigame().equals(mgPlayer.getMinigame())) {
+                                if (!shooter.canPvP()) {
+                                    event.setCancelled(true);
+                                    return;
+                                }
 
-                            Team plyTeam = mgPlayer.getTeam();
-                            Team atcTeam = shooter.getTeam();
-                            if (!mgm.isTeamGame() || plyTeam != atcTeam) {
-                                int damage = mgm.getPaintBallDamage();
-                                event.setDamage(damage);
+                                Team plyTeam = mgPlayer.getTeam();
+                                Team atcTeam = shooter.getTeam();
+                                if (!mgm.isTeamGame() || plyTeam != atcTeam) {
+                                    int damage = mgm.getPaintBallDamage();
+                                    event.setDamage(damage);
+                                }
                             }
                         }
                     }
                 }
-            } else if (event.getDamager() instanceof Player) {
-                MinigamePlayer mgPlayer = pdata.getMinigamePlayer((Player) event.getDamager());
-                if (mgPlayer.isInMinigame() && !mgPlayer.canPvP())
-                    event.setCancelled(true);
-                else if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getState() == MinigameState.ENDED &&
+                case Player damager -> {
+                    MinigamePlayer mgPlayer = pdata.getMinigamePlayer(damager);
+                    if (mgPlayer.isInMinigame() && !mgPlayer.canPvP())
+                        event.setCancelled(true);
+                    else if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getState() == MinigameState.ENDED &&
                         GameOverModule.getMinigameModule(mgPlayer.getMinigame()).isHumiliationMode() &&
                         GameOverModule.getMinigameModule(mgPlayer.getMinigame()).getLosers().contains(mgPlayer)) {
-                    event.setCancelled(true);
-                }
-            } else if (event.getDamager() instanceof Arrow arrow) {
-                if (arrow.getShooter() instanceof Player player) {
-                    MinigamePlayer mgpl = pdata.getMinigamePlayer(player);
-
-                    if (mgpl.isInMinigame() && !mgpl.canPvP())
                         event.setCancelled(true);
+                    }
+                }
+                case Arrow arrow -> {
+                    if (arrow.getShooter() instanceof Player player) {
+                        MinigamePlayer mgpl = pdata.getMinigamePlayer(player);
+
+                        if (mgpl.isInMinigame() && !mgpl.canPvP())
+                            event.setCancelled(true);
+                    }
+                }
+                default -> {
                 }
             }
         }

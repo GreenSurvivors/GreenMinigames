@@ -12,7 +12,7 @@ import java.util.List;
 
 public class StrListFlag extends AFlag<List<String>> { // todo replace with GENERIC<T> list flag AFlag<List<AFlag<T>>>
 
-    public StrListFlag(List<String> value, @NotNull String name) {
+    public StrListFlag(@NotNull String name, List<String> value) {
         super(name, new ArrayList<>(), value); // default value - saving tests if the flag is equal to their default
     }
 

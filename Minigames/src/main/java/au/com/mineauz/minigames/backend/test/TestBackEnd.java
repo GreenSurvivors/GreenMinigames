@@ -160,7 +160,7 @@ public class TestBackEnd extends Backend {
     }
 
     @Override
-    protected BackendImportCallback getImportCallback() {
+    protected @NotNull BackendImportCallback getImportCallback() {
         return null;
     }
 

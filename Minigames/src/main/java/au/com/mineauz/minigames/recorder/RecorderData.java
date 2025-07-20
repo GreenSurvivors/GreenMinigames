@@ -334,8 +334,8 @@ public class RecorderData implements Listener {
                         final Entity entity = nextEntityData.getEntity();
                         if (entity != null && entity.isValid() && entity.getType() == nextEntityData.getEntityType()) {
                             if (nextEntityData.getSnapshot() != null) {
-                                ((CraftEntity) entity).getHandle().load(((CraftEntitySnapshot) nextEntityData.getSnapshot()).getData());
-                                entity.teleportAsync(nextEntityData.getEntityLocation());
+                                nextEntityData.getSnapshot().createEntity(nextEntityData.getEntityLocation());
+                                entity.remove();
                             }
                         } else {
                             if (nextEntityData.getSnapshot() != null) {
@@ -422,156 +422,42 @@ public class RecorderData implements Listener {
      * @return true if loading the data was successful else false
      */
     public boolean restoreBlockData() { //todo load entity data as well
-        if (covertOldFormat()) {
-            saveAllBlockData();
-            Minigames.getCmpnntLogger().info("Converted backup for: " + minigame.getName());
-            return true;
-        } else {
-            File file = new File(plugin.getDataFolder() + File.separator + "minigames" + File.separator +
-                    minigame.getName() + File.separator + "backup.json");
+        File file = new File(plugin.getDataFolder() + File.separator + "minigames" + File.separator +
+            minigame.getName() + File.separator + "backup.json");
 
-            if (file.exists() && file.isFile() && file.canRead()) {
-                // register custom deserializer for Position.
-                // this is purely for backwards compatibility.
-                // If that is not important to you, just use Gson gson = new Gson(); instead of GsonBuilder gsonBuilder = new GsonBuilder(); and following
-                GsonBuilder gsonBuilder = new GsonBuilder();
-                JsonDeserializer<Position> deserializer = (json, typeOfT, context) -> {
-                    try {
-                        String posStr = json.getAsString(); //throws JsonParseException
+        if (file.exists() && file.isFile() && file.canRead()) {
+            // register custom deserializer for Position.
+            // this is purely for backwards compatibility.
+            // If that is not important to you, just use Gson gson = new Gson(); instead of GsonBuilder gsonBuilder = new GsonBuilder(); and following
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            JsonDeserializer<Position> deserializer = (json, typeOfT, context) -> {
+                try {
+                    String posStr = json.getAsString(); //throws JsonParseException
 
-                        String[] args = posStr.split(":");
-                        if (args.length < 3) {
-                            throw new JsonParseException("'" + posStr + "' is not a valid position.");
-                        }
-
-                        return Position.fine(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
-                    } catch (JsonParseException | NumberFormatException e) {
-                        Minigames.getCmpnntLogger().error("", e);
-                        return null;
+                    String[] args = posStr.split(":");
+                    if (args.length < 3) {
+                        throw new JsonParseException("'" + posStr + "' is not a valid position.");
                     }
-                };
 
-                gsonBuilder.registerTypeAdapter(Position.class, deserializer);
-
-                Gson customGson = gsonBuilder.create();
-                Type type = new TypeToken<Map<Position, MgBlockData>>() {
-                }.getType();
-                try (FileReader reader = new FileReader(file)) {
-                    blockdata = customGson.fromJson(reader, type);
-                    return true;
-                } catch (IOException e) {
+                    return Position.fine(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
+                } catch (JsonParseException | NumberFormatException e) {
                     Minigames.getCmpnntLogger().error("", e);
+                    return null;
                 }
+            };
+
+            gsonBuilder.registerTypeAdapter(Position.class, deserializer);
+
+            Gson customGson = gsonBuilder.create();
+            Type type = new TypeToken<Map<Position, MgBlockData>>() {
+            }.getType();
+            try (FileReader reader = new FileReader(file)) {
+                blockdata = customGson.fromJson(reader, type);
+                return true;
+            } catch (IOException e) {
+                Minigames.getCmpnntLogger().error("", e);
             }
         }
         return false;
-    }
-
-    @Deprecated(since = "1.19")
-    private boolean covertOldFormat() { // dataFixerUpper
-        File f = new File(plugin.getDataFolder() + File.separator + "minigames" + File.separator +
-                minigame.getName() + File.separator + "backup.dat");
-
-        if (!f.exists()) {
-            return false;
-        }
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(f));
-
-            Map<String, String> args = new HashMap<>();
-            String line;
-            String[] blocks;
-            String[] block;
-            World w;
-            MgBlockData bd;
-            BlockState state;
-            ItemStack[] inventory;
-            String[] sitems;
-            ItemStack item;
-            Map<String, String> iargs = new HashMap<>();
-
-            while (br.ready()) {
-                line = br.readLine();
-
-                blocks = line.split("}\\{");
-
-                for (String bl : blocks) {
-                    args.clear();
-
-                    bl = bl.replace("{", "");
-                    bl = bl.replace("}", "");
-
-                    block = bl.split(";");
-                    for (String b : block) {
-                        String[] spl = b.split(":");
-                        if (spl.length > 1) {
-                            args.put(spl[0], spl[1]);
-                        }
-                    }
-
-                    w = Bukkit.getWorld(args.get("world"));
-                    state = w.getBlockAt(Integer.parseInt(args.get("x")), Integer.parseInt(args.get("y")), Integer.parseInt(args.get("z"))).getState();
-                    state.setBlockData(Bukkit.getUnsafe().fromLegacy(Material.getMaterial(args.get("mat")), Byte.parseByte(args.get("data"))));
-
-                    bd = new MgBlockData(state, null);
-
-                    if (args.containsKey("items")) {
-                        if (state.getType() == Material.DISPENSER || state.getType() == Material.DROPPER) {
-                            inventory = new ItemStack[InventoryType.DISPENSER.getDefaultSize()];
-                        } else if (state.getType() == Material.HOPPER) {
-                            inventory = new ItemStack[InventoryType.HOPPER.getDefaultSize()];
-                        } else if (state.getType() == Material.FURNACE) {
-                            inventory = new ItemStack[InventoryType.FURNACE.getDefaultSize()];
-                        } else if (state.getType() == Material.BREWING_STAND) {
-                            inventory = new ItemStack[InventoryType.BREWING.getDefaultSize()];
-                        } else {
-                            inventory = new ItemStack[InventoryType.CHEST.getDefaultSize()];
-                        }
-
-                        sitems = args.get("items").split("\\)\\(");
-
-                        for (String i : sitems) {
-                            i = i.replace("(", "");
-                            i = i.replace(")", "");
-
-                            for (String s : i.split("\\|")) {
-                                String[] spl = s.split("-");
-                                if (spl.length > 1) {
-                                    iargs.put(s.split("-")[0], s.split("-")[1]);
-                                }
-                            }
-                            item = new ItemStack(Material.matchMaterial(iargs.get("item")),
-                                    Integer.parseInt(iargs.get("c")));
-                            if (item.getItemMeta() instanceof Damageable damageable) {
-                                damageable.setDamage(Short.parseShort(iargs.get("dur")));
-                                item.setItemMeta(damageable);
-                            }
-
-                            if (iargs.containsKey("enc")) {
-                                for (String s : iargs.get("enc").split("\\]\\[")) {
-                                    item.addUnsafeEnchantment(Enchantment.getByName(s.split(",")[0].replace("[", "")),
-                                            Integer.parseInt(s.split(",")[1].replace("]", "")));
-                                }
-                            }
-
-                            inventory[Integer.parseInt(iargs.get("slot"))] = item;
-                            iargs.clear();
-                        }
-
-                        bd.setInventory(inventory);
-                    }
-
-                    blockdata.put(Position.block(bd.getLocation()), bd);
-                }
-            }
-
-            br.close();
-        } catch (FileNotFoundException e) {
-            Minigames.getCmpnntLogger().error("File not found!!!", e);
-        } catch (IOException e) {
-            Minigames.getCmpnntLogger().error("IO Error!", e);
-        }
-
-        return true;
     }
 }

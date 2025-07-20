@@ -97,7 +97,7 @@ public class InfoCommand extends ACommand {
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), team.getColor().name()))).appendNewline();
                             outputBuilder.append(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DIVIDER_SMALL)).appendNewline();
                             for (MinigamePlayer mgPlayer : team.getPlayers()) {
-                                Component playerComponent = Component.text(mgPlayer.getDisplayName(minigame.usePlayerDisplayNames()));
+                                Component playerComponent = mgPlayer.displayName();
                                 if (minigame.isTeamGame()) {
                                     playerComponent = playerComponent.color(mgPlayer.getTeam().getTextColor());
                                 }
@@ -112,7 +112,7 @@ public class InfoCommand extends ACommand {
                         }
                     } else {
                         for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
-                            Component playerComponent = Component.text(mgPlayer.getDisplayName(minigame.usePlayerDisplayNames()));
+                            Component playerComponent = mgPlayer.displayName();
                             if (minigame.isTeamGame()) {
                                 playerComponent = playerComponent.color(mgPlayer.getTeam().getTextColor());
                             }

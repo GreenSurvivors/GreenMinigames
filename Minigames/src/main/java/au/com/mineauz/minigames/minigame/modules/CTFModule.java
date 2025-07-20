@@ -10,8 +10,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 public class CTFModule extends MinigameModule {
-    private final BooleanFlag useFlagAsCapturePoint = new BooleanFlag(true, "useFlagAsCapturePoint");
-    private final BooleanFlag bringFlagBackManual = new BooleanFlag(false, "bringFlagBackManual");
+    private final BooleanFlag useFlagAsCapturePoint = new BooleanFlag("useFlagAsCapturePoint", true);
+    private final BooleanFlag bringFlagBackManual = new BooleanFlag("bringFlagBackManual", false);
 
     public CTFModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
