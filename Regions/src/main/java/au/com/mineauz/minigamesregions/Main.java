@@ -78,7 +78,7 @@ public class Main extends JavaPlugin {
         } catch (Exception e) {
             plugin = null;
             minigames = null;
-            Minigames.getCmpnntLogger().error("Failed to enable Minigames Regions " + getDescription().getVersion() + ": ", e);
+            Minigames.getCmpnntLogger().error("Failed to enable Minigames Regions " + getPluginMeta().getVersion() + ": ", e);
             Bukkit.getPluginManager().disablePlugin(this);
         }
     }
