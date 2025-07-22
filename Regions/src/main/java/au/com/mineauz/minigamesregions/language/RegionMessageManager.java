@@ -19,7 +19,7 @@ import java.security.CodeSource;
 import java.util.*;
 
 public class RegionMessageManager {
-    private final static String BUNDLE_KEY = "minigames-regions";
+    private static final String BUNDLE_KEY = "minigames-regions";
 
     public static void register() {
         CodeSource src = Main.class.getProtectionDomain().getCodeSource();

@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Pattern;
 
 public class ScoreboardSign extends AMinigameSign {
-    private final static Pattern SIZE_PATTERN = Pattern.compile("[0-9]+x[0-9]+");
+    private static final Pattern SIZE_PATTERN = Pattern.compile("[0-9]+x[0-9]+");
     private final Minigames plugin = Minigames.getPlugin();
 
     @Override

@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MenuItem {
-    private final static String BASE_DESCRIPTION_TOKEN = "Base_description";
+    private static final String BASE_DESCRIPTION_TOKEN = "Base_description";
     private final @NotNull List<@NotNull IdComponent> descriptionRegistry = new ArrayList<>();
     private @NotNull ItemStack displayItem;
     private @Nullable Menu container = null;

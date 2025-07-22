@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemRewardGroup extends MenuItem implements StringConsumer {
-    private final static String DESCRIPTION_TOKEN = "RewardGroup_description";
-    private final static @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
+    private static final String DESCRIPTION_TOKEN = "RewardGroup_description";
+    private static final @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
     private final @NotNull RewardGroup group;
     private final @NotNull Rewards rewards;
 

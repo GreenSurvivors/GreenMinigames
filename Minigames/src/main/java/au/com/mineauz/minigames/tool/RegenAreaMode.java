@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class RegenAreaMode implements ToolMode {
-    private final static String SETTING_KEY = "Region";
+    private static final String SETTING_KEY = "Region";
     private final HashMap<UUID, IDisplayObject> displayedRegions = new HashMap<>();
 
     @Override

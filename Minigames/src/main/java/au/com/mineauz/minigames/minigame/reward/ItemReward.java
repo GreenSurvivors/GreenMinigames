@@ -82,7 +82,7 @@ public class ItemReward extends ARewardType {
     }
 
     private class MenuItemReward extends MenuItem {
-        private final static String DESCRIPTION_REWARD_TOKEN = "Reward_description";
+        private static final String DESCRIPTION_REWARD_TOKEN = "Reward_description";
         private final @NotNull ItemReward reward;
         private final @NotNull List<RewardRarity> rarities;
 

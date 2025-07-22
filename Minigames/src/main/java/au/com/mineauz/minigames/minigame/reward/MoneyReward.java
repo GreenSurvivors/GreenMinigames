@@ -24,8 +24,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MoneyReward extends ARewardType {
-    private final static Minigames PLUGIN = Minigames.getPlugin();
-    private final static String DESCRIPTION_TOKEN = "Reward_description";
+    private static final Minigames PLUGIN = Minigames.getPlugin();
+    private static final String DESCRIPTION_TOKEN = "Reward_description";
     private double money = 0d;
 
     public MoneyReward(@NotNull Rewards rewards) {

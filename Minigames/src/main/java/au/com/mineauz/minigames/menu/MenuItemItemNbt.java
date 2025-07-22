@@ -20,7 +20,7 @@ import java.util.List;
  * Also now the max stack size depends on the vanilla data component
  */
 public class MenuItemItemNbt extends MenuItem {
-    private final static String DESCRIPTION_TOKEN = "Nbt_description";
+    private static final String DESCRIPTION_TOKEN = "Nbt_description";
 
     /**
      * NEVER EVER confuse this item with the display item of MenuItem!

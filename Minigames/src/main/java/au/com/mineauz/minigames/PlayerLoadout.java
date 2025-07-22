@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class PlayerLoadout {
-    private final static @NotNull Pattern NUMBER = Pattern.compile("[+-]?[0-9]+");
+    private static final @NotNull Pattern NUMBER = Pattern.compile("[+-]?[0-9]+");
 
     private final @NotNull Map<@NotNull Integer, @NotNull ItemStack> itemSlots = new HashMap<>();
     private final @NotNull List<@NotNull PotionEffect> effects = new ArrayList<>();

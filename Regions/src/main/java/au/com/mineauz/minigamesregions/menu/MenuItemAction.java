@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class MenuItemAction extends MenuItem {
-    private final static String DESCRIPTION_TOKEN = "Action_description";
+    private static final String DESCRIPTION_TOKEN = "Action_description";
     private final @NotNull BaseExecutor exec;
     private final @NotNull ActionInterface act;
 

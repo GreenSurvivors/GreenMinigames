@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class ScoreSign extends AMinigameSign {
-    private final static Pattern INT_PATTERN = Pattern.compile("^[+-]?[0-9]+$");
+    private static final Pattern INT_PATTERN = Pattern.compile("^[+-]?[0-9]+$");
 
     @Override
     public @NotNull Component getName() {

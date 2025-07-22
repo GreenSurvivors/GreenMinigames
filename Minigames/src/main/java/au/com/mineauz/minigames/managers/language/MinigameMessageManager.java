@@ -36,14 +36,14 @@ import java.util.zip.ZipInputStream;
  * Class will hold and store all messages that are required for minigames
  */
 public class MinigameMessageManager { // todo cache unformatted // todo clean all the different sendMessages - there are to many similar
-    private final static String BUNDLE_KEY = "minigames";
-    private final static String BUNDLE_NAME = "messages";
-    private final static Pattern LIST_PATTERN = Pattern.compile("<newline>");
+    private static final String BUNDLE_KEY = "minigames";
+    private static final String BUNDLE_NAME = "messages";
+    private static final Pattern LIST_PATTERN = Pattern.compile("<newline>");
 
     /**
      * Stores each prop file with an identifier
      */
-    private final static @NotNull ConcurrentHashMap<String, ResourceBundle> propertiesHashMap = new ConcurrentHashMap<>();
+    private static final @NotNull ConcurrentHashMap<String, ResourceBundle> propertiesHashMap = new ConcurrentHashMap<>();
     public static final Component DEBUG_PREFIX = Component.text("[Debug]", NamedTextColor.RED);
 
     public static void registerCoreLanguage() {

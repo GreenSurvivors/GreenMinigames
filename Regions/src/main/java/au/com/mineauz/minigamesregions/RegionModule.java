@@ -37,7 +37,7 @@ import java.util.*;
 public class RegionModule extends MinigameModule {
     private final @NotNull Map<@NotNull String, @NotNull Region> regions = new HashMap<>();
     private final @NotNull Map<@NotNull String, @NotNull Node> nodes = new HashMap<>();
-    private final static @NotNull ModuleFactory moduleFactory = new ModuleFactory() {
+    private static final @NotNull ModuleFactory moduleFactory = new ModuleFactory() {
         private final String name = "Regions";
 
         @Override

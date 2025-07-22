@@ -26,7 +26,7 @@ import java.time.Duration;
 import java.util.List;
 
 public class MenuItemSelectEntity extends MenuItem implements EntityConsumer {
-    private final static String DESCRIPTION_TOKEN = "Entity_description";
+    private static final String DESCRIPTION_TOKEN = "Entity_description";
     private final @NotNull Callback<EntitySnapshot> entitySnapshotCallback;
 
     public MenuItemSelectEntity(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<EntitySnapshot> c) {

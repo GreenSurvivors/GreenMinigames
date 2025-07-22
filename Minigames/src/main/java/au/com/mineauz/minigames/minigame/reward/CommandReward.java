@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandReward extends ARewardType {
-    private final static String DESCRIPTION_TOKEN = "CommandReward_description";
+    private static final String DESCRIPTION_TOKEN = "CommandReward_description";
     private String command = "say Hello World!";
 
     public CommandReward(@NotNull Rewards rewards) {
@@ -67,7 +67,7 @@ public class CommandReward extends ARewardType {
     }
 
     private class CommandRewardItem extends MenuItem implements StringConsumer {
-        private final static @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
+        private static final @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
         private final CommandReward reward;
 
         public CommandRewardItem(CommandReward reward) {

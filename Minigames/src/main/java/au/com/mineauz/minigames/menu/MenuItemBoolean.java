@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemBoolean extends MenuItem {
-    private final static String DESCRIPTION_TOKEN = "Boolean_description";
+    private static final String DESCRIPTION_TOKEN = "Boolean_description";
     private final @NotNull Callback<@NotNull Boolean> toggle;
 
     public MenuItemBoolean(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,

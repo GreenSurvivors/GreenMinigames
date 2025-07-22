@@ -23,8 +23,8 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class MenuItemInteger extends MenuItem implements StringConsumer {
-    private final static String DESCRIPTION_TOKEN = "Integer_description";
-    protected final static @NotNull Pattern INT_PATTERN = Pattern.compile("-?[0-9]+");
+    private static final String DESCRIPTION_TOKEN = "Integer_description";
+    protected static final @NotNull Pattern INT_PATTERN = Pattern.compile("-?[0-9]+");
     private final @NotNull Callback<Integer> value;
     private final @Nullable Integer min; // inclusive
     private final @Nullable Integer max; // inclusive

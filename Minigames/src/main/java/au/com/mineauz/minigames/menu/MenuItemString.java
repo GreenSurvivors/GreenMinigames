@@ -20,7 +20,7 @@ import java.time.Duration;
 import java.util.List;
 
 public class MenuItemString extends MenuItem implements StringConsumer {
-    private final static String DESCRIPTION_TOKEN = "String_description";
+    private static final String DESCRIPTION_TOKEN = "String_description";
     private final @NotNull Callback<String> stringCallback;
     private boolean allowNull = false;
 

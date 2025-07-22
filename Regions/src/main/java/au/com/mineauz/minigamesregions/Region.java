@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 public class Region extends MgRegion implements BaseExecutorHolder<RegionExecutor> {
-    private final static int GAME_TICK_DELAY = 1;
+    private static final int GAME_TICK_DELAY = 1;
     private final @NotNull List<@NotNull RegionExecutor> executors = new ArrayList<>();
     private final @NotNull List<@NotNull MinigamePlayer> players = new ArrayList<>();
     private final @NotNull Minigame minigame;

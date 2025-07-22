@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class ResourcePackManager { //todo work with multiple ressource packs
-    final static @NotNull Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
+    private static final @NotNull Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
     private final @NotNull Map<@NotNull String, @NotNull ResourcePack> resources = new HashMap<>();
     private boolean enabled = true;
     private MinigameSave config;

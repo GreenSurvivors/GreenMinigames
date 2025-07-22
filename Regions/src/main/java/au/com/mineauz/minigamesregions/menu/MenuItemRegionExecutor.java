@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemRegionExecutor extends MenuItem { // todo merge with MenuItemNodeExecutor
-    private final static String DESCRIPTION_TOKEN = "Executor_description";
+    private static final String DESCRIPTION_TOKEN = "Executor_description";
     private final @NotNull Region region;
     private final @NotNull RegionExecutor ex;
 

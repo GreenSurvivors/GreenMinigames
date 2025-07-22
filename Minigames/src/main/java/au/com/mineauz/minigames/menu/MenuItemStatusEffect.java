@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemStatusEffect extends MenuItem {
-    private final static String DESCRIPTION_TOKEN = "Potion_description";
+    private static final String DESCRIPTION_TOKEN = "Potion_description";
     private final @NotNull PotionEffect eff;
     private final @NotNull PlayerLoadout loadout;
 

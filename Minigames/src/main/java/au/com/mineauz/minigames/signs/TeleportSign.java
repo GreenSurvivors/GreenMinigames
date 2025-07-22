@@ -17,8 +17,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TeleportSign extends AMinigameSign {
-    private final static Pattern coordPattern = Pattern.compile("(?<x>[+-]?[0-9]+),(?<y>[+-]?[0-9]+),(?<z>[+-]?[0-9]+)");
-    private final static Pattern anglePattern = Pattern.compile("(?<yaw>-?[0-9]+),(?<pitch>-?[0-9]+)");
+    private static final Pattern coordPattern = Pattern.compile("(?<x>[+-]?[0-9]+),(?<y>[+-]?[0-9]+),(?<z>[+-]?[0-9]+)");
+    private static final Pattern anglePattern = Pattern.compile("(?<yaw>-?[0-9]+),(?<pitch>-?[0-9]+)");
 
     @Override
     public @NotNull Component getName() {

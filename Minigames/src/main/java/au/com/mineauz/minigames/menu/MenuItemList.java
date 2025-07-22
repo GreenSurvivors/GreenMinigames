@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemList<T> extends MenuItem implements StringConsumer { //todo add constructor with map T -> Component for display
-    private final static @NotNull String DESCRIPTION_TOKEN = "List_description";
+    private static final @NotNull String DESCRIPTION_TOKEN = "List_description";
     private final @NotNull Callback<T> value;
     private final @NotNull List<T> options;
 

@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 public class MenuItemLong extends MenuItem implements StringConsumer {
     protected static final @NotNull Pattern LONG_PATTERN = Pattern.compile("-?[0-9]+");
-    private final static String DESCRIPTION_TOKEN = "Long_description";
+    private static final String DESCRIPTION_TOKEN = "Long_description";
     protected final @NotNull Callback<Long> value;
     protected final @Nullable Long min;
     protected final @Nullable Long max;

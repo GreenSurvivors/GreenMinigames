@@ -16,7 +16,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
-    private final static @NotNull String DESCRIPTION_VALUE_TOKEN = "EnumValue_description";
+    private static final @NotNull String DESCRIPTION_VALUE_TOKEN = "EnumValue_description";
     private final @NotNull List<T> enumList;
     private final @NotNull Callback<T> callback;
 

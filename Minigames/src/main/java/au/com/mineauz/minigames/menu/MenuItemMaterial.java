@@ -19,7 +19,7 @@ import java.util.List;
  * Created by benjamincharlton on 15/11/2018.
  */
 public class MenuItemMaterial extends MenuItem {
-    private final static String DESCRIPTION_TOKEN = "Material_description";
+    private static final String DESCRIPTION_TOKEN = "Material_description";
     private final @NotNull Callback<Material> materialCallback;
 
     public MenuItemMaterial(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Material> c) {

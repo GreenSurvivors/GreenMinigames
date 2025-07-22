@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemNodeExecutor extends MenuItem {
-    private final static String DESCRIPTION_TOKEN = "Executor_description";
+    private static final String DESCRIPTION_TOKEN = "Executor_description";
     private final @NotNull Node node;
     private final @NotNull NodeExecutor ex;
 

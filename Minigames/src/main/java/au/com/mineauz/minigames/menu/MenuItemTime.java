@@ -17,7 +17,7 @@ import java.time.Duration;
 import java.util.List;
 
 public class MenuItemTime extends MenuItemLong {
-    private final static String DESCRIPTION_TOKEN = "Time_description";
+    private static final String DESCRIPTION_TOKEN = "Time_description";
 
     public MenuItemTime(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Long> value,
                         @Nullable Long min, @Nullable Long max) {

@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class MenuItemStatusEffectAdd extends MenuItem implements StringConsumer {
-    private final static @NotNull Pattern POSITIV_INT_PATTERN = Pattern.compile("[+]?[0-9]+");
+    private static final @NotNull Pattern POSITIV_INT_PATTERN = Pattern.compile("[+]?[0-9]+");
     private final @NotNull PlayerLoadout loadout;
 
     public MenuItemStatusEffectAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull PlayerLoadout loadout) {

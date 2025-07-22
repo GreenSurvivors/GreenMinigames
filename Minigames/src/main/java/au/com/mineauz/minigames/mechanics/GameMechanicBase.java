@@ -26,7 +26,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public abstract class GameMechanicBase implements Listener {
-    protected final static @NotNull Minigames plugin = Minigames.getPlugin();
+    protected static final @NotNull Minigames plugin = Minigames.getPlugin();
     protected final @NotNull MinigamePlayerManager pdata;
     protected final @NotNull MinigameManager mdata;
 

@@ -210,7 +210,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
     }
 
     private class MenuItemRewardPair extends MenuItem implements StringConsumer {
-        private final static String DESCRIPTION_TOKEN = "RewardPair_description";
+        private static final String DESCRIPTION_TOKEN = "RewardPair_description";
         private final @NotNull Rewards reward;
         private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
         private @NotNull T value;
