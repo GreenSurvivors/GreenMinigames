@@ -31,23 +31,23 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("${rootProject.properties["mcVersion"]}-R0.1-SNAPSHOT")
 
-    api("org.bstats", "bstats-bukkit", rootProject.properties["bstatsVersion"].toString())
-    api("org.kitteh", "paste-gg-api", rootProject.properties["paste-ggVersion"].toString())
-    api("org.apache.commons", "commons-lang3", rootProject.properties["commons-lang3Version"].toString())
-    api("org.apache.commons", "commons-text", rootProject.properties["commons-textVersion"].toString())
-    api("commons-io", "commons-io", rootProject.properties["commons-ioVersion"].toString())
+    api("org.bstats", "bstats-bukkit", "${rootProject.properties["bstatsVersion"]}")
+    api("org.kitteh", "paste-gg-api", "${rootProject.properties["paste-ggVersion"]}")
+    api("org.apache.commons", "commons-lang3", "${rootProject.properties["commons-lang3Version"]}")
+    api("org.apache.commons", "commons-text", "${rootProject.properties["commons-textVersion"]}")
+    api("commons-io", "commons-io", "${rootProject.properties["commons-ioVersion"]}")
 
-    compileOnly("com.github.MilkBowl", "VaultAPI", rootProject.properties["vaultVersion"].toString()) {
+    compileOnly("com.github.MilkBowl", "VaultAPI", "${rootProject.properties["vaultApiVersion"]}") {
         exclude("org.bukkit", "bukkit")
         exclude("org.bukkit", "craftbukkit")
     }
-    compileOnly("me.clip", "placeholderapi", rootProject.properties["placeholderApiVersion"].toString()) {
+    compileOnly("me.clip", "placeholderapi", "${rootProject.properties["placeholderApiVersion"]}") {
         exclude("net.kyori", "adventure-api")
     }
-    compileOnly("com.sk89q.worldedit", "worldedit-bukkit", rootProject.properties["worldeditVersionCompile"].toString())
-    compileOnly("org.jetbrains", "annotations", rootProject.properties["jetbrainsAnnotations"].toString())
+    compileOnly("com.sk89q.worldedit", "worldedit-bukkit", "${rootProject.properties["worldeditVersionCompile"]}")
+    compileOnly("org.jetbrains", "annotations", "${rootProject.properties["jetbrainsAnnotations"]}")
 
-    compileOnly("org.xerial", "sqlite-jdbc", rootProject.properties["sqlite-jdbcVersion"].toString())
+    compileOnly("org.xerial", "sqlite-jdbc", "${rootProject.properties["sqlite-jdbcVersion"]}")
 
-    compileOnly("com.mysql", "mysql-connector-j", rootProject.properties["mysql-connector-jVersion"].toString())
+    compileOnly("com.mysql", "mysql-connector-j", "${rootProject.properties["mysql-connector-jVersion"]}")
 }

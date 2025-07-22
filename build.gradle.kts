@@ -31,12 +31,19 @@ tasks.named("classes") {
 runPaper.disablePluginJarDetection()
 tasks.runServer {
     // configure minecraft
-    minecraftVersion(project.ext.properties["mcVersion"] as String)
+    minecraftVersion(project.properties["mcVersion"] as String)
 
     pluginJars.from(
         project(":Minigames").tasks.jar.flatMap { it.archiveFile },
-        project(":Minigames-Regions").tasks.jar.flatMap { it.archiveFile }
+        project(":Minigames-Regions").tasks.jar.flatMap { it.archiveFile },
     )
+
+    downloadPlugins {
+        // make sure to double-check the version id on the Modrinth version page
+        modrinth("worldedit", "${project.properties["worldeditVersionRunTask"]}")
+        hangar("PlaceholderAPI", "${project.properties["placeholderApiVersion"]}")
+        github("MilkBowl", "Vault", "${project.properties["vaultVersionRunTask"]}", "Vault.jar")
+    }
 
     // disable bstats, as it isn't needed for dev environment
     doFirst { // this happens after downloading the plugins above, but before the server starts

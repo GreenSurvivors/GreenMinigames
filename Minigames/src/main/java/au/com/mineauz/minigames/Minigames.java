@@ -391,7 +391,7 @@ public class Minigames extends JavaPlugin {
                 getComponentLogger().trace("Adding Placeholders for " + game.getKey());
                 placeHolderManager.addGameIdentifiers(game.getValue());
             }
-            getComponentLogger().info("PlaceHolders: " + placeHolderManager.getRegisteredPlaceHolders().toString());
+            getComponentLogger().info("PlaceHolders: " + placeHolderManager.getRegisteredPlaceHolders());
             getComponentLogger().info("--------------------");
         }
     }

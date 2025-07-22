@@ -19,8 +19,6 @@ dependencies:
       required: false
       load: AFTER
     PlaceholderAPI:
-      # This means that your plugin will not have access to their classpath
-      join-classpath: false
       required: false
       load: BEFORE
     Vault:
