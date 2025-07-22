@@ -5,9 +5,6 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.3.1" // Adds runServer task for testing
 }
 
-// todo:
-//  - Fix Sound deprecations(key AND name isn't valid anymore!)
-
 version = buildString {
     append(project.properties["pluginVersion"])
 

@@ -14,19 +14,16 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class PlaySoundAction extends AAction {
-    private final @NotNull StringFlag soundName = new StringFlag("sound", Sound.ENTITY_PLAYER_LEVELUP.getKey().toString());
+    private final @NotNull StringFlag soundKey = new StringFlag("sound", Registry.SOUNDS.getKey(Sound.ENTITY_PLAYER_LEVELUP).asString());
     private final @NotNull BooleanFlag privatePlayBack = new BooleanFlag("private", true);
     private final @NotNull FloatFlag volume = new FloatFlag("volume", 1f);
     private final @NotNull FloatFlag pitch = new FloatFlag("pitch", 1f);
@@ -48,7 +45,7 @@ public class PlaySoundAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME), Component.text(getSound().getKey().asString()),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME), Component.text(Registry.SOUNDS.getKey(getSound()).asString()),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME), Component.text(volume.getFlag()),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME), Component.text(pitch.getFlag()),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME),
@@ -99,7 +96,7 @@ public class PlaySoundAction extends AAction {
     @Override
     public void saveArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        soundName.saveValue(config, path);
+        soundKey.saveValue(config, path);
         privatePlayBack.saveValue(config, path);
         volume.saveValue(config, path);
         pitch.saveValue(config, path);
@@ -108,7 +105,16 @@ public class PlaySoundAction extends AAction {
     @Override
     public void loadArguments(@NotNull FileConfiguration config,
                               @NotNull String path) {
-        soundName.loadValue(config, path);
+        soundKey.loadValue(config, path);
+
+        try {
+            @SuppressWarnings({"UnstableApiUsage", "removal"})
+            final @NotNull Sound legacySound = Sound.valueOf(soundKey.getFlag().toUpperCase());
+
+            soundKey.setFlag(Registry.SOUNDS.getKey(legacySound).asString());
+        } catch (IllegalArgumentException ignored) {
+        }
+
         privatePlayBack.loadValue(config, path);
         volume.loadValue(config, path);
         pitch.loadValue(config, path);
@@ -119,21 +125,22 @@ public class PlaySoundAction extends AAction {
         Menu m = new Menu(3, MgMenuLangKey.MENU_PLAYSOUND_MENU_NAME, mgPlayer);
 
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        List<Sound> sounds = Arrays.asList(Sound.values());
+        List<Sound> sounds = Registry.SOUNDS.stream().toList();
         m.addItem(new MenuItemList<>(Material.NOTE_BLOCK, MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME, new Callback<>() {
 
             @Override
             public @NotNull Sound getValue() {
-                Sound s = getSound();              //ENSURE CONFIG doesn't contain old enums replace if they do.
-                if (!s.name().equals(soundName.getFlag())) {
-                    soundName.setFlag(s.toString());
+                final Sound sound = getSound();              //ensure config doesn't contain old values; replace if they do.
+
+                if (!Registry.SOUNDS.getKey(sound).asString().equals(soundKey.getFlag())) {
+                    soundKey.setFlag(sound.toString());
                 }
-                return s;
+                return sound;
             }
 
             @Override
             public void setValue(@NotNull Sound value) {
-                soundName.setFlag(value.toString().toUpperCase().replace(" ", "_"));
+                soundKey.setFlag(Registry.SOUNDS.getKey(value).asString());
             }
         }, sounds));
 
@@ -170,11 +177,10 @@ public class PlaySoundAction extends AAction {
     }
 
     private @NotNull Sound getSound() {
-        Sound result;
-        try {
-            result = Sound.valueOf(soundName.getFlag());
-        } catch (IllegalArgumentException e) {
-            Minigames.getPlugin().getComponentLogger().warn("Bad Sound Config in Minigame Config : " + soundName.getFlag());
+        Sound result = Registry.SOUNDS.get(NamespacedKey.fromString(soundKey.getFlag()));
+
+        if (result == null) {
+            Minigames.getPlugin().getComponentLogger().warn("Bad Sound Config in Minigame Config : " + soundKey.getFlag());
             result = Sound.ENTITY_PLAYER_BURP;
         }
         return result;
