@@ -6,7 +6,6 @@ plugins {
 }
 
 // todo:
-//  - figure out how distribution packaging would work
 //  - Fix Sound deprecations(key AND name isn't valid anymore!)
 
 version = buildString {
@@ -27,6 +26,13 @@ tasks.named("classes") {
     enabled = false
 }
 
+tasks.register<Zip>("zipDistribution") {
+    from(
+        project(":Minigames").tasks.jar.flatMap { it.archiveFile },
+        project(":Minigames-Regions").tasks.jar.flatMap { it.archiveFile }
+    )
+}
+
 // ignore a potential artifact from this root project
 runPaper.disablePluginJarDetection()
 tasks.runServer {
@@ -35,7 +41,7 @@ tasks.runServer {
 
     pluginJars.from(
         project(":Minigames").tasks.jar.flatMap { it.archiveFile },
-        project(":Minigames-Regions").tasks.jar.flatMap { it.archiveFile },
+        project(":Minigames-Regions").tasks.jar.flatMap { it.archiveFile }
     )
 
     downloadPlugins {

@@ -51,3 +51,56 @@ dependencies {
 
     compileOnly("com.mysql", "mysql-connector-j", "${rootProject.properties["mysql-connector-jVersion"]}")
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("Minigames") {
+            from(components["java"])
+            pom {
+                name.set("Minigames")
+                description.set(project.description)
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://opensource.org/license/mit")
+                    }
+                }
+                developers {
+                    developer {
+                        name.set("_Razz_")
+                    }
+                    developer {
+                        name.set("Schmoller")
+                    }
+                    developer {
+                        name.set("Narimm")
+                    }
+                    developer {
+                        name.set("Addstar")
+                    }
+                    developer {
+                        name.set("GreenSurvivors Team")
+                        organizationUrl.set("https://greensurvivors.de")
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "greensurvivorsMaven"
+            url = uri("https://maven.greensurvivors.de/" +
+                if ((project.properties["release"] as String).toBoolean()) {
+                    "releases"
+                } else {
+                    "snapshots"
+                }
+            )
+            credentials(PasswordCredentials::class)
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
+    }
+}
