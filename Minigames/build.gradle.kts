@@ -10,7 +10,7 @@ dependencies {
   paperweight.paperDevBundle("${rootProject.project.extra.properties["mcVersion"]}-R0.1-SNAPSHOT")
 
   api("org.bstats", "bstats-bukkit", "3.1.0")
-  api("org.kitteh", "paste-gg-api", "2.0.0-SNAPSHOT")
+  api("com.github.interaapps", "pastefy-java-apiclient", "1.2.0")
   api("org.apache.commons", "commons-lang3", "3.18.0")
   api("org.apache.commons", "commons-text", "1.13.1")
   api("commons-io", "commons-io", "2.20.0")
