@@ -119,7 +119,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
     }
 
     private void openMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @NotNull ExecutableScriptObject hit) {
-        Menu menu = null;
+        final Menu menu;
         if (hit instanceof Region region) {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.TOOL_REGION_EDIT,
@@ -152,11 +152,11 @@ public class ExecutorHolderEditToolMode implements ToolMode {
 
             if (object instanceof Region region) {
                 options.append(region.getName());
-                MenuItemRegion item = new MenuItemRegion(Material.CHEST, Component.text(region.getName()), (Region) object, module);
+                MenuItemRegion item = new MenuItemRegion(Material.CHEST, Component.text(region.getName()), region, module);
                 menu.addItem(item);
             } else if (object instanceof Node node) {
                 options.append(node.getName());
-                MenuItemNode item = new MenuItemNode(Material.STONE_BUTTON, Component.text(node.getName()), (Node) object, module);
+                MenuItemNode item = new MenuItemNode(Material.STONE_BUTTON, Component.text(node.getName()), node, module);
                 menu.addItem(item);
             }
         }

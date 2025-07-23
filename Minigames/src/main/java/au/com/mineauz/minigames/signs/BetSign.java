@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -45,10 +46,14 @@ public class BetSign extends AMinigameSign {
             event.line(2, minigame.getDisplayName());
             setPersistentMinigame(sign, minigame);
 
-            if (event.getLine(3).matches("[0-9]+")) {
-                //todo use plugin.getEconomy().currencyNamePlural()
-                event.setLine(3, "$" + event.getLine(3));
+            if (event.line(3) != null) {
+                final Double amount = getMoneyBetFromLine(event.line(3), true);
+
+                if (amount != null) {
+                    setMoneyBet(event, amount);
+                }
             }
+
             return true;
         } else {
             MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
@@ -59,18 +64,20 @@ public class BetSign extends AMinigameSign {
 
     @Override
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getSide(Side.FRONT).getLine(2));
+        Minigame mgm = plugin.getMinigameManager().getMinigame(PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(2)));
         if (mgm != null) {
             boolean invOk = true;
-            boolean fullInv;
-            boolean moneyBet = sign.getSide(Side.FRONT).getLine(3).startsWith("$");
+            final boolean fullInv;
+
+            final Double moneyBetAmount = getMoneyBet(sign);
+            final boolean isMoneyBet = moneyBetAmount != null;
 
             if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
                 fullInv = true;
                 ItemStack[] contents = mgPlayer.getPlayer().getInventory().getContents();
                 for (int i = 0; i < contents.length; ++i) {
                     // Non money bets can hold an item
-                    if (!moneyBet && i == mgPlayer.getPlayer().getInventory().getHeldItemSlot()) {
+                    if (!isMoneyBet && i == mgPlayer.getPlayer().getInventory().getHeldItemSlot()) {
                         continue;
                     }
 
@@ -88,7 +95,7 @@ public class BetSign extends AMinigameSign {
                 }
             } else {
                 fullInv = false;
-                invOk = (moneyBet == (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR));
+                invOk = (isMoneyBet == (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR));
             }
 
             if (invOk) {
@@ -97,13 +104,11 @@ public class BetSign extends AMinigameSign {
                         return false;
                     }
 
-                    if (!sign.getSide(Side.FRONT).getLine(3).startsWith("$")) {
+                    if (!isMoneyBet) {
                         plugin.getPlayerManager().joinMinigame(mgm, mgPlayer, true, 0.0);
                     } else {
                         if (plugin.hasEconomy()) {
-                            //todo use  plugin.getEconomy().currencyNamePlural()
-                            double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
-                            plugin.getPlayerManager().joinMinigame(mgm, mgPlayer, true, bet);
+                            plugin.getPlayerManager().joinMinigame(mgm, mgPlayer, true, moneyBetAmount);
                             return true;
                         } else if (plugin.getConfig().getBoolean("warnings")) {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_NOVAULT);
@@ -114,7 +119,7 @@ public class BetSign extends AMinigameSign {
                 } else if (mgm.getUsePermissions()) {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
                 }
-            } else if (!moneyBet) {
+            } else if (!isMoneyBet) {
                 if (fullInv && mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_FULLINV);
                 } else {

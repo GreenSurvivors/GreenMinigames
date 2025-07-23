@@ -128,7 +128,7 @@ public class DisplayManager {
         }
     }
 
-    protected void onRemove(@NotNull IDisplayObject object) {
+    protected void onRemove(final @NotNull IDisplayObject object) {
         if (object.isPlayerDisplay()) {
             playerDisplays.remove(object.getPlayer(), object);
         } else {

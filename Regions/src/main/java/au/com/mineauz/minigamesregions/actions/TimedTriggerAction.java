@@ -27,7 +27,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This Action trips {@link MgRegTrigger#REMOTE_TIMED} in a region or a node Applicable to nodes Uses the
@@ -107,8 +110,7 @@ public class TimedTriggerAction extends AAction implements Listener {
                 || (!isRegion.getFlag() && !rMod.hasNode(toTrigger.getFlag())))) {
             return;
         }
-        ExecutableScriptObject toExecute = isRegion.getFlag() ? rMod.getRegion(toTrigger.getFlag()) : rMod.getNode(toTrigger.getFlag());
-
+        final ExecutableScriptObject toExecute = isRegion.getFlag() ? rMod.getRegion(toTrigger.getFlag()) : rMod.getNode(toTrigger.getFlag());
         final TaskHolder taskHolder = new TaskHolder();
 
         taskHolder.task = Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> {

@@ -125,16 +125,15 @@ public class RegionEvents implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void playerJoin(@NotNull JoinMinigameEvent event) {
-        final MinigamePlayer mgPlayer = event.getMinigamePlayer();
-        if (mgPlayer == null) return;
-        final Minigame mg = event.getMinigame();
+        final @NotNull MinigamePlayer mgPlayer = event.getMinigamePlayer();
+        final @NotNull Minigame minigame = event.getMinigame();
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            executeRegionChanges(mg, mgPlayer);
+            executeRegionChanges(minigame, mgPlayer);
 
-            for (Node node : RegionModule.getMinigameModule(mg).getNodes()) {
+            for (Node node : RegionModule.getMinigameModule(minigame).getNodes()) {
                 node.execute(MgRegTrigger.PLAYER_GAME_JOIN, mgPlayer);
             }
-            for (Region region : RegionModule.getMinigameModule(mg).getRegions()) {
+            for (Region region : RegionModule.getMinigameModule(minigame).getRegions()) {
                 if (region.hasPlayer(mgPlayer))
                     region.execute(MgRegTrigger.PLAYER_GAME_JOIN, mgPlayer);
             }
@@ -168,10 +167,9 @@ public class RegionEvents implements Listener {
             MinigameMessageManager.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
             return;
         }
-        MinigamePlayer mgPlayer = event.getMinigamePlayer();
-        if (mgPlayer == null) return;
-        Minigame mg = mgPlayer.getMinigame();
-        for (Region r : RegionModule.getMinigameModule(mg).getRegions()) {
+        final @NotNull MinigamePlayer mgPlayer = event.getMinigamePlayer();
+        final @NotNull Minigame minigame = mgPlayer.getMinigame();
+        for (Region r : RegionModule.getMinigameModule(minigame).getRegions()) {
             if (r.hasPlayer(mgPlayer))
                 r.removePlayer(mgPlayer);
         }

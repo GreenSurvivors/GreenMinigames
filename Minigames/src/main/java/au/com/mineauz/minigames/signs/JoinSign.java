@@ -11,12 +11,14 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -51,12 +53,20 @@ public class JoinSign extends AMinigameSign {
             event.line(2, minigame.getDisplayName());
             setPersistentMinigame(sign, minigame);
 
-            if (Minigames.getPlugin().hasEconomy()) { // todo
-                if (!event.getLine(3).isEmpty() && !event.getLine(3).matches("\\$?[0-9]+(.[0-9]{2})?")) {
-                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_JOIN_ERROR_INVALIDMONEY);
-                    return false;
-                } else if (event.getLine(3).matches("[0-9]+(?:.[0-9]{2})?")) {
-                    event.setLine(3, "$" + event.getLine(3));
+            if (Minigames.getPlugin().hasEconomy()) {
+                if (event.line(3) != null) {
+                    final @NotNull String line3 = PlainTextComponentSerializer.plainText().serialize(event.line(3));
+
+                    if (!line3.isEmpty()) {
+                        final Double amount = getMoneyBetFromLine(event.line(3), true);
+
+                        if (amount == null) {
+                            MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_JOIN_ERROR_INVALIDMONEY);
+                            return false;
+                        } else {
+                            setMoneyBet(event, amount);
+                        }
+                    }
                 }
             } else if (plugin.getConfig().getBoolean("warnings")) {
                 event.line(3, Component.empty());
@@ -103,15 +113,14 @@ public class JoinSign extends AMinigameSign {
             invOk = mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR;
         }
         if (invOk) {
-            Minigame mgm = getMinigame(sign);
+            final @NotNull Minigame mgm = getMinigame(sign);
             if (mgm != null && (!mgm.getUsePermissions() ||
                     mgPlayer.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
                 if (mgm.isEnabled()) {
-                    if (!sign.getLine(3).isEmpty() && Minigames.getPlugin().hasEconomy()) {
-                        double amount = Double.parseDouble(sign.getLine(3).replace("$", ""));
-                        if (Minigames.getPlugin().getEconomy().getBalance(mgPlayer.getPlayer().getPlayer()) >= amount) {
-                            Minigames.getPlugin().getEconomy().withdrawPlayer(mgPlayer.getPlayer().getPlayer(), amount);
-                        } else {
+                    final @Nullable Double moneyBet = getMoneyBet(sign);
+
+                    if (moneyBet != null && Minigames.getPlugin().hasEconomy()) {
+                        if (!Minigames.getPlugin().getEconomy().withdrawPlayer(mgPlayer.getPlayer().getPlayer(), moneyBet).transactionSuccess()) {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_JOIN_ERROR_NOTENOUGH_MONEY);
                             return false;
                         }

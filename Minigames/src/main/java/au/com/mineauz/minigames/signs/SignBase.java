@@ -59,20 +59,26 @@ public class SignBase implements Listener {
         minigameSigns.add(mgSign);
     }
 
-    public static boolean isMinigameSign(@NotNull Component firstLine) {
-        String firstLineStr = PlainTextComponentSerializer.plainText().serialize(firstLine);
+    public static boolean isMinigameSign(final @Nullable Component firstLine) {
+        if (firstLine != null) {
+            String firstLineStr = PlainTextComponentSerializer.plainText().serialize(firstLine);
 
-        return (MinigameMessageManager.getStrippedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLineStr) ||
-                alternativeMgmPattern.matcher(firstLineStr).matches());
+            return (MinigameMessageManager.getStrippedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLineStr) ||
+                    alternativeMgmPattern.matcher(firstLineStr).matches());
+        } else {
+            return false;
+        }
     }
 
-    public @Nullable AMinigameSign getMgSign(@NotNull Component secondLine) {
-        // don't use a map here, with names as keys since it might be possible to reload messages via command
-        String strLine = PlainTextComponentSerializer.plainText().serialize(secondLine);
+    public @Nullable AMinigameSign getMgSign(final @Nullable Component secondLine) {
+        if (secondLine != null) {
+            // don't use a map here, with names as keys since it might be possible to reload messages via command
+            String strLine = PlainTextComponentSerializer.plainText().serialize(secondLine);
 
-        for (AMinigameSign mgSign : minigameSigns) {
-            if (mgSign.isType(strLine)) {
-                return mgSign;
+            for (AMinigameSign mgSign : minigameSigns) {
+                if (mgSign.isType(strLine)) {
+                    return mgSign;
+                }
             }
         }
 
