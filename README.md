@@ -1,11 +1,10 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ebc703ec975419ebe693158241259cd)](https://app.codacy.com/gh/Narimm/Minigames?utm_source=github.com&utm_medium=referral&utm_content=AddstarMC/Minigames&utm_campaign=Badge_Grade)
 
-The Minigames plugin for CraftBukkit servers.
+The Minigames plugin for Paper servers.
 
 To build this source you require Vault and the latest build of Bukkit.
 
-`mvn clean install`
-####Build Status
+#### Build Status
 
 | Branch      | Status                                                                                                                             | Coverage                                                                                                                                                           |
 |-------------|------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -14,7 +13,6 @@ To build this source you require Vault and the latest build of Bukkit.
 
 Minigames is compiled against Paper and will only work wih it or further downstream.
 
-The General release will always be available on SpigotMC
 For the most up-to-date info go to [Minigames](https://minigames.addstar.com.au)  You can access the wiki and other
 related pages there.
 
