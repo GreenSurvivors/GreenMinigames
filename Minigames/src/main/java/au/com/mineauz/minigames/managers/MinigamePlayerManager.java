@@ -1027,16 +1027,17 @@ public class MinigamePlayerManager {
         return minigamePlayers.containsKey(uuid);
     }
 
-    public @NotNull List<@NotNull String> checkRequiredFlags(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame) {
-        List<String> checkpoints = new ArrayList<>(minigame.getSinglePlayerFlags());
-        List<String> pchecks = mgPlayer.getSinglePlayerFlags();
-
-        if (!pchecks.isEmpty()) {
-            checkpoints.removeAll(pchecks);
-        }
-
-        return checkpoints;
-    }
+// the whole singleplayer flag system is unused.
+//    public @NotNull List<@NotNull String> checkRequiredFlags(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame) {
+//        List<String> checkpoints = new ArrayList<>(minigame.getSinglePlayerFlags());
+//        List<String> pchecks = mgPlayer.getSinglePlayerFlags();
+//
+//        if (!pchecks.isEmpty()) {
+//            checkpoints.removeAll(pchecks);
+//        }
+//
+//        return checkpoints;
+//    }
 
     public boolean onPartyMode() {
         return partyMode;

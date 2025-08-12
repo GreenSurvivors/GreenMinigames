@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -15,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class HasRequiredFlagsCondition extends ACondition {
+public class HasRequiredFlagsCondition extends ACondition { // the whole singleplayer flag system is unused.
 
     protected HasRequiredFlagsCondition(@NotNull String name) {
         super(name);
@@ -49,13 +48,13 @@ public class HasRequiredFlagsCondition extends ACondition {
     @Override
     public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
-        return Minigames.getPlugin().getPlayerManager().checkRequiredFlags(mgPlayer, mgPlayer.getMinigame()).isEmpty();
+        return true;//Minigames.getPlugin().getPlayerManager().checkRequiredFlags(mgPlayer, mgPlayer.getMinigame()).isEmpty();
     }
 
     @Override
     public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
-        return Minigames.getPlugin().getPlayerManager().checkRequiredFlags(mgPlayer, mgPlayer.getMinigame()).isEmpty();
+        return true; //Minigames.getPlugin().getPlayerManager().checkRequiredFlags(mgPlayer, mgPlayer.getMinigame()).isEmpty();
     }
 
     @Override

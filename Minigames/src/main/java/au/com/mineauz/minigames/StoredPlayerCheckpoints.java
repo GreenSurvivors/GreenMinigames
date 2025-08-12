@@ -9,12 +9,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class StoredPlayerCheckpoints {
     private final @NotNull String uuid;
     private final @NotNull Map<@NotNull String, @NotNull Location> checkpoints;
-    private final @NotNull Map<@NotNull String, @NotNull List<@NotNull String>> singlePlayerFlags;
+//    private final @NotNull Map<@NotNull String, @NotNull List<@NotNull String>> singlePlayerFlags; // the whole singleplayer flag system is unused.
     private final @NotNull Map<@NotNull String, @NotNull Long> storedTime;
     private final @NotNull Map<@NotNull String, @NotNull Integer> storedDeaths;
     private final @NotNull Map<@NotNull String, @NotNull Integer> storedReverts;
@@ -23,7 +25,7 @@ public class StoredPlayerCheckpoints {
     public StoredPlayerCheckpoints(@NotNull String uuid) {
         this.uuid = uuid;
         checkpoints = new HashMap<>();
-        singlePlayerFlags = new HashMap<>();
+//        singlePlayerFlags = new HashMap<>();
         storedTime = new HashMap<>();
         storedDeaths = new HashMap<>();
         storedReverts = new HashMap<>();
@@ -61,21 +63,21 @@ public class StoredPlayerCheckpoints {
         return checkpoints.isEmpty();
     }
 
-    public boolean hasSinglePlayerFlags(@NotNull String minigame) {
-        return singlePlayerFlags.containsKey(minigame);
-    }
+//    public boolean hasSinglePlayerFlags(@NotNull String minigame) {
+//        return singlePlayerFlags.containsKey(minigame);
+//    }
 
-    public void addSinglePlayerFlags(@NotNull String minigame, @NotNull List<String> flagList) {
-        singlePlayerFlags.put(minigame, new ArrayList<>(flagList));
-    }
+//    public void addSinglePlayerFlags(@NotNull String minigame, @NotNull List<String> flagList) {
+//        singlePlayerFlags.put(minigame, new ArrayList<>(flagList));
+//    }
+//
+//    public @NotNull List<@NotNull String> getSinglePlayerFlags(@NotNull String minigame) {
+//        return singlePlayerFlags.get(minigame);
+//    }
 
-    public @NotNull List<@NotNull String> getSinglePlayerFlags(@NotNull String minigame) {
-        return singlePlayerFlags.get(minigame);
-    }
-
-    public void removeSinglePlayerFlags(@NotNull String minigame) {
-        singlePlayerFlags.remove(minigame);
-    }
+//    public void removeSinglePlayerFlags(@NotNull String minigame) {
+//        singlePlayerFlags.remove(minigame);
+//    }
 
     public void addTime(@NotNull String minigame, long time) {
         storedTime.put(minigame, time);
@@ -144,9 +146,9 @@ public class StoredPlayerCheckpoints {
                 config.set(mgm + configSeparator + "pitch", checkpoints.get(mgm).getPitch());
                 config.set(mgm + configSeparator + "world", checkpoints.get(mgm).getWorld().getName());
 
-                if (singlePlayerFlags.containsKey(mgm)) {
-                    config.set(mgm + configSeparator + "flags", getSinglePlayerFlags(mgm));
-                }
+//                if (singlePlayerFlags.containsKey(mgm)) {
+//                    config.set(mgm + configSeparator + "flags", getSinglePlayerFlags(mgm));
+//                }
 
                 if (storedTime.containsKey(mgm)) {
                     config.set(mgm + configSeparator + "time", getTime(mgm));
@@ -167,7 +169,7 @@ public class StoredPlayerCheckpoints {
                 // Remove the checkpoint from memory, so it doesn't cause an error again
                 config.set(mgm, null);
                 checkpoints.remove(mgm);
-                singlePlayerFlags.remove(mgm);
+//                singlePlayerFlags.remove(mgm);
                 storedTime.remove(mgm);
                 storedDeaths.remove(mgm);
                 storedReverts.remove(mgm);
@@ -220,9 +222,9 @@ public class StoredPlayerCheckpoints {
                 } catch (NullPointerException e) {
                     Minigames.getCmpnntLogger().error("", e);
                 }
-                if (config.contains(mgm + configSeparator + "flags")) {
-                    singlePlayerFlags.put(mgm, config.getStringList(mgm + configSeparator + "flags"));
-                }
+//                if (config.contains(mgm + configSeparator + "flags")) {
+//                    singlePlayerFlags.put(mgm, config.getStringList(mgm + configSeparator + "flags"));
+//                }
 
                 if (config.contains(mgm + configSeparator + "time")) {
                     storedTime.put(mgm, config.getLong(mgm + configSeparator + "time"));

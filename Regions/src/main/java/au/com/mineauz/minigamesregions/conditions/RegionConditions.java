@@ -7,7 +7,7 @@ import java.util.function.Function;
 public enum RegionConditions implements ConditionFactory {
     CONTAINS_ENTIRE_TEAM("CONTAINS_ENTIRE_TEAM", ContainsEntireTeamCondition::new),
     CONTAINS_ONE_TEAM("CONTAINS_ONE_TEAM", ContainsOneTeamCondition::new),
-    HAS_REQUIRED_FLAGS("HAS_REQUIRED_FLAGS", HasRequiredFlagsCondition::new),
+//    HAS_REQUIRED_FLAGS("HAS_REQUIRED_FLAGS", HasRequiredFlagsCondition::new),
     MATCH_BLOCK("MATCH_BLOCK", MatchBlockCondition::new),
     MATCH_TEAM("MATCH_TEAM", MatchTeamCondition::new),
     PLAYER_COUNT("PLAYER_COUNT", PlayerCountRangeCondition::new),
@@ -20,7 +20,7 @@ public enum RegionConditions implements ConditionFactory {
     MINIGAME_TIMER("MINIGAME_TIMER", MinigameTimeRangeCondition::new),
     PLAYER_XP_RANGE("PLAYER_XP_RANGE", PlayerXPRangeCondition::new),
     PLAYER_FOOD_RANGE("PLAYER_FOOD_RANGE", PlayerFoodRangeCondition::new),
-    HAS_FLAG("HAS_FLAG", HasSinglePlayerFlagCondition::new),
+   // HAS_FLAG("HAS_FLAG", HasSinglePlayerFlagCondition::new),
     CONTAINS_ENTITY("CONTAINS_ENTITY", ContainsEntityCondition::new),
     HAS_LOADOUT("HAS_LOADOUT", HasLoadoutCondition::new),
     BLOCK_ON_AND_HELD("BLOCK_ON_AND_HELD", BlockOnAndHeldCondition::new);

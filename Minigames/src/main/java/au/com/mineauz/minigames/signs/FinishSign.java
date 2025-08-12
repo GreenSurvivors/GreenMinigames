@@ -71,7 +71,8 @@ public class FinishSign extends AMinigameSign {
             }
 
             if (!minigame.getSinglePlayerFlags().isEmpty()) {
-                if (plugin.getPlayerManager().checkRequiredFlags(mgPlayer, minigame).isEmpty()) {
+                // the whole singleplayer flag system is unused.
+//                if (plugin.getPlayerManager().checkRequiredFlags(mgPlayer, minigame).isEmpty()) {
                     final @Nullable Minigame mgmOnSign = getMinigame(sign);
                     if (mgmOnSign == null || mgmOnSign.getName().equals(mgPlayer.getMinigame().getName())) {
                         if (mgPlayer.getMinigame().isTeamGame()) {
@@ -96,11 +97,11 @@ public class FinishSign extends AMinigameSign {
 
                         plugin.getPlayerManager().partyMode(mgPlayer, 3, 10L);
                     }
-                } else {
-                    String requiredFlags = String.join(", ", plugin.getPlayerManager().checkRequiredFlags(mgPlayer, minigame));
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.SIGN_FINISH_REQUIREFLAGS,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), requiredFlags));
-                }
+//                } else {
+//                    String requiredFlags = String.join(", ", plugin.getPlayerManager().checkRequiredFlags(mgPlayer, minigame));
+//                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.SIGN_FINISH_REQUIREFLAGS,
+//                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), requiredFlags));
+//                }
             } else {
                 if (mgPlayer.getMinigame().isTeamGame()) {
                     List<MinigamePlayer> w = new ArrayList<>(mgPlayer.getTeam().getPlayers());

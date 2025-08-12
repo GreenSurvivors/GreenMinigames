@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class HasSinglePlayerFlagCondition extends ACondition {
+public class HasSinglePlayerFlagCondition extends ACondition { // the whole singleplayer flag system is unused.
     private final StringFlag flagName = new StringFlag("flag", "flag");
 
     protected HasSinglePlayerFlagCondition(@NotNull String name) {
@@ -62,7 +62,7 @@ public class HasSinglePlayerFlagCondition extends ACondition {
         if (player == null) {
             return false;
         }
-        return player.hasFlag(flagName.getFlag());
+        return true;//player.hasFlag(flagName.getFlag());
     }
 
     @Override

@@ -40,7 +40,7 @@ import java.util.*;
  */
 public class MinigamePlayer implements ScriptObject {
     private final @NotNull Player player;
-    private final @NotNull List<@NotNull String> singlePlayerFlags = new ArrayList<>();
+//    private final @NotNull List<@NotNull String> singlePlayerFlags = new ArrayList<>(); // the whole singleplayer flag system is unused.
     private final @NotNull List<@NotNull String> tempClaimedRewards = new ArrayList<>();
     private final @NotNull List<@NotNull ItemStack> tempRewardItems = new ArrayList<>();
     private final @NotNull List<@NotNull ItemStack> rewardItems = new ArrayList<>();
@@ -276,29 +276,30 @@ public class MinigamePlayer implements ScriptObject {
         return false;
     }
 
-    public @NotNull List<@NotNull String> getSinglePlayerFlags() {
-        return singlePlayerFlags;
-    }
+// the whole singleplayer flag system is unused.
+//    public @NotNull List<@NotNull String> getSinglePlayerFlags() {
+//        return singlePlayerFlags;
+//    }
 
-    public void setSinglePlayerFlags(final @NotNull List<@NotNull String> singlePlayerFlags) {
-        this.singlePlayerFlags.addAll(singlePlayerFlags);
-    }
+//    public void setSinglePlayerFlags(final @NotNull List<@NotNull String> singlePlayerFlags) {
+//        this.singlePlayerFlags.addAll(singlePlayerFlags);
+//    }
 
-    public boolean addFlag(final @NotNull String flag) {
-        if (!singlePlayerFlags.contains(flag)) {
-            singlePlayerFlags.add(flag);
-            return true;
-        }
-        return false;
-    }
+//    public boolean addFlag(final @NotNull String flag) {
+//        if (!singlePlayerFlags.contains(flag)) {
+//            singlePlayerFlags.add(flag);
+//            return true;
+//        }
+//        return false;
+//    }
 
-    public boolean hasFlag(final @NotNull String flagName) {
-        return singlePlayerFlags.contains(flagName);
-    }
+//    public boolean hasFlag(final @NotNull String flagName) {
+//        return singlePlayerFlags.contains(flagName);
+//    }
 
-    public void clearFlags() {
-        singlePlayerFlags.clear();
-    }
+//    public void clearFlags() {
+//        singlePlayerFlags.clear();
+//    }
 
     public @Nullable Location getCheckpoint() {
         return checkpoint;
@@ -483,7 +484,7 @@ public class MinigamePlayer implements ScriptObject {
         resetKills();
         resetScore();
         resetTime();
-        clearFlags();
+        //clearFlags(); // the whole singleplayer flag system is unused.
         removeCheckpoint();
         setFrozen(false);
         setCanPvP(true);
