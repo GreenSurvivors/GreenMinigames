@@ -181,6 +181,7 @@ public enum RegionLangKey implements LangKey {
     MENU_CONDITION_PLAYERHEALTHRANGE_NAME("menu.condition.playerHealthRange.name"),
     MENU_CONDITION_PLAYERSCORERANGE_NAME("menu.condition.playerScoreRange.name"),
     MENU_CONDITION_PLAYERXPRANGE_NAME("menu.condition.playerXPRange.name"),
+    MENU_CONDITION_PLAYERXPRANGE_CHECK_LEVEL("menu.condition.playerXPRange.checkLevel"),
     MENU_CONDITION_RANCOMCHANCE_NAME("menu.condition.randomChance.name"),
     MENU_CONDITION_TEAMPLAYERCOUNTRANGE_NAME("menu.condition.teamPlayerCountRange.name"),
     MENU_CONDITION_TEAMSCORERANGE_NAME("menu.condition.teamScoreRange.name"),
