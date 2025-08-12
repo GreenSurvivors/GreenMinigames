@@ -50,7 +50,7 @@ public class ScoreCommand extends ACommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull String @NotNull [] args) {
+                             @NotNull String @NotNull [] args) { // todo make minigame optional if player was used.
         if (args.length >= 3) {
             final @Nullable Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[1]);
 
@@ -60,14 +60,13 @@ public class ScoreCommand extends ACommand {
                 return true;
             }
 
-            final @Nullable TeamColor color = TeamColor.matchColor(args[1]);
+            final @Nullable TeamColor color = TeamColor.matchColor(args[2]);
             @Nullable MinigamePlayer mgPlayer = null;
 
             if (color == null) {
-                List<Player> plys = PLUGIN.getServer().matchPlayer(args[1]);
+                List<Player> plys = PLUGIN.getServer().matchPlayer(args[2]);
                 if (!plys.isEmpty()) {
                     mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(plys.getFirst());
-
 
                     if (!mgPlayer.isInMinigame()) {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_PLAYER,
@@ -83,7 +82,7 @@ public class ScoreCommand extends ACommand {
                     }
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]));
                     return true;
                 }
             } else if (!minigame.isTeamGame()) {

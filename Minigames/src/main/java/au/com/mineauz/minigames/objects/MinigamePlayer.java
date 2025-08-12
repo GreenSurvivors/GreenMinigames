@@ -38,7 +38,7 @@ import java.util.*;
  * wrapper class to keep track of players with additional information.
  * A MinigamePlayer does NOT have to be in a Minigame to be valid!
  */
-public class MinigamePlayer implements ScriptObject {
+public class MinigamePlayer implements ScriptObject, ScoreHolder {
     private final @NotNull Player player;
 //    private final @NotNull List<@NotNull String> singlePlayerFlags = new ArrayList<>(); // the whole singleplayer flag system is unused.
     private final @NotNull List<@NotNull String> tempClaimedRewards = new ArrayList<>();
@@ -353,12 +353,12 @@ public class MinigamePlayer implements ScriptObject {
         this.score = score;
     }
 
-    public void addScore() {
-        score++;
+    public int addScore() {
+        return addScore(1);
     }
 
-    public void addScore(final int amount) {
-        score += amount;
+    public int addScore(final int amount) {
+        return score += amount;
     }
 
     public void resetScore() {

@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.ScoreHolder;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Team implements ScriptObject {
+public class Team implements ScriptObject, ScoreHolder {
     private final @NotNull IntegerFlag maxPlayers = new IntegerFlag("maxPlayers", 0);
     private final @NotNull List<Location> startLocations = new ArrayList<>();
     private final @NotNull StringFlag playerAssignMsg = new StringFlag("assignMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM));
