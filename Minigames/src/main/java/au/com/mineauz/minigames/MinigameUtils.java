@@ -7,6 +7,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,6 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +26,9 @@ import java.util.regex.Pattern;
 public class MinigameUtils {
     private static final @NotNull Pattern PERIOD_PATTERN = Pattern.compile("(\\d+)\\s*((?:ms)|[tsmhdw])", Pattern.CASE_INSENSITIVE);
     private static final @NotNull Pattern LONG_PATTERN = Pattern.compile("-?[0-9]+");
+
+    private static final Pattern BET_MONEY_PATTERN = Pattern.compile("\\$\\s*?(?<amount>[+-]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
+    private static final DecimalFormat FALLBACK_BET_MONEY_FORMAT = new DecimalFormat("$#0.00");
 
     /**
      * Try to get a time period of a string.
@@ -245,6 +250,25 @@ public class MinigameUtils {
             return null;
         } else {
             return input;
+        }
+    }
+
+    public static @Nullable Double getMoneyFromString(final @NotNull String line3, final boolean acceptPlainNumber) {
+        final Matcher fallbackMatcher = BET_MONEY_PATTERN.matcher(line3);
+        if (fallbackMatcher.matches()) {
+            return Double.parseDouble(fallbackMatcher.group("amount"));
+        } else if (acceptPlainNumber && NumberUtils.isParsable(line3)){
+            return Double.parseDouble(line3);
+        } else {
+            return null;
+        }
+    }
+
+    public static @NotNull Component formatMoney (final double amount) {
+        if (Minigames.getPlugin().hasEconomy()) {
+            return Component.text(Minigames.getPlugin().getEconomy().format(amount));
+        } else {
+            return Component.text(FALLBACK_BET_MONEY_FORMAT.format(amount));
         }
     }
 }

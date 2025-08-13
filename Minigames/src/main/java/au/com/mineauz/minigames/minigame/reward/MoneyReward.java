@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -87,7 +88,7 @@ public class MoneyReward extends ARewardType {
         private final @NotNull List<@NotNull RewardRarity> options = new ArrayList<>();
 
         public MenuItemReward(@NotNull MoneyReward reward) {
-            super(Material.PAPER, Component.text("$" + money));
+            super(Material.PAPER, MinigameUtils.formatMoney(money));
             options.addAll(Arrays.asList(RewardRarity.values()));
             this.reward = reward;
             updateDescription();
@@ -161,7 +162,7 @@ public class MoneyReward extends ARewardType {
                             if (economy != null) {
                                 meta.displayName(Component.text(economy.format(value)));
                             } else {
-                                meta.displayName(Component.text("$" + value));
+                                meta.displayName(MinigameUtils.formatMoney(value));
                             }
 
                             getDisplayItem().setItemMeta(meta);

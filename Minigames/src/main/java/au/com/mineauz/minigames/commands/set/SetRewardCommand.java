@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -28,11 +29,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SetRewardCommand extends ASetCommand { //todo allow commands
-    private static final Pattern MONEY_PATTERN = Pattern.compile("\\$-?(\\d+(\\.\\d+)?)");
 
     private static void setItemReward(@NotNull Minigame minigame, @NotNull Rewards rewards, @NotNull CommandSender sender,
                                       @NotNull ItemStack item, @NotNull RewardRarity rarity, boolean isPrimary) {
@@ -61,7 +59,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
             RewardsModule module = RewardsModule.getModule(minigame);
 
             if (module.getScheme() instanceof StandardRewardScheme standardRewardScheme) {
-                Rewards rewards;
+                final @NotNull Rewards rewards;
                 if (isPrimary) {
                     rewards = standardRewardScheme.getPrimaryReward();
                 } else {
@@ -69,42 +67,36 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                 }
 
                 if (args.length >= 1) {
-                    if (args[0].startsWith("$")) {
+                    final @Nullable Double moneyBet = MinigameUtils.getMoneyFromString(args[0], false);
+
+                    if (moneyBet != null) {
                         Economy economy = PLUGIN.getEconomy();
 
                         if (economy != null) {
-                            Matcher matcher = MONEY_PATTERN.matcher(args[0]);
 
-                            if (matcher.matches()) {
-                                double money = Double.parseDouble(matcher.group(1));
+                            final RewardRarity rarity;
+                            if (args.length >= 2) {
+                                rarity = RewardRarity.matchRarity(args[1]);
 
-                                RewardRarity rarity;
-                                if (args.length >= 2) {
-                                    rarity = RewardRarity.matchRarity(args[1]);
-
-                                    if (rarity == null) {
-                                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
-                                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
-                                        return false;
-                                    }
-                                } else {
-                                    rarity = RewardRarity.NORMAL;
+                                if (rarity == null) {
+                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                                    return false;
                                 }
-
-                                MoneyReward moneyReward = MoneyReward.getMinigameReward(rewards);
-                                moneyReward.setRewardMoney(money);
-                                moneyReward.setRarity(rarity);
-                                rewards.addReward(moneyReward);
-
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS,
-                                        isPrimary ? MgCommandLangKey.COMMAND_SET_REWARD_MONEY_SUCCESS : MgCommandLangKey.COMMAND_SET_REWARD2_MONEY_SUCCESS,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), economy.format(money)),
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.RARITY.getKey(), rarity.toString().toLowerCase().replace("_", " ")));
                             } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                                rarity = RewardRarity.NORMAL;
                             }
+
+                            MoneyReward moneyReward = MoneyReward.getMinigameReward(rewards);
+                            moneyReward.setRewardMoney(moneyBet);
+                            moneyReward.setRarity(rarity);
+                            rewards.addReward(moneyReward);
+
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS,
+                                    isPrimary ? MgCommandLangKey.COMMAND_SET_REWARD_MONEY_SUCCESS : MgCommandLangKey.COMMAND_SET_REWARD2_MONEY_SUCCESS,
+                                    Placeholder.component(MinigamePlaceHolderKey.MONEY.getKey(), MinigameUtils.formatMoney(moneyBet)),
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.RARITY.getKey(), rarity.toString().toLowerCase().replace("_", " ")));
                         } else {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.REWARD_ERROR_NOVAULT,
                                     Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(),
@@ -115,7 +107,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                         if (sender instanceof Player player) {
                             ItemStack item = player.getInventory().getItemInMainHand();
 
-                            RewardRarity rarity;
+                            final RewardRarity rarity;
                             if (args.length == 2) {
                                 rarity = RewardRarity.matchRarity(args[1]);
 

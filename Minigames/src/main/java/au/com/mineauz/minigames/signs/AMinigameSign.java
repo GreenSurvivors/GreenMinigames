@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
@@ -7,7 +8,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -16,16 +16,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public abstract class AMinigameSign {
     private static final NamespacedKey MINIGAME_NAME_KEY = new NamespacedKey(Minigames.getPlugin(), "minigame_name");
-
     private static final NamespacedKey BET_MONEY_AMOUNT_KEY = new NamespacedKey(Minigames.getPlugin(), "money_amount");
-    private static final DecimalFormat FALLBACK_BET_MONEY_FORMAT = new DecimalFormat("$#0.00");
-    private static final Pattern FALLBACK_BET_MONEY_PATTERN = Pattern.compile("\\$\\s*?(?<amount>[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)");
 
     public abstract @NotNull Component getName();
 
@@ -99,19 +92,7 @@ public abstract class AMinigameSign {
             return null;
         }
 
-        final @NotNull String line3 = PlainTextComponentSerializer.plainText().serialize(line);
-        final double amount;
-
-        final Matcher fallbackMatcher = FALLBACK_BET_MONEY_PATTERN.matcher(line3);
-        if (fallbackMatcher.matches()) {
-            amount = Double.parseDouble(fallbackMatcher.group("amount"));
-        } else if (acceptPlainNumber && NumberUtils.isParsable(line3)){
-            amount = Double.parseDouble(line3);
-        } else {
-            return null;
-        }
-
-        return amount;
+        return MinigameUtils.getMoneyFromString(PlainTextComponentSerializer.plainText().serialize(line), acceptPlainNumber);
     }
 
     protected static @Nullable Double getMoneyBet(final @NotNull Sign sign) {
@@ -124,11 +105,6 @@ public abstract class AMinigameSign {
 
     protected static void setMoneyBet(final @NotNull SignChangeEvent event, final double amount) {
         ((Sign)event.getBlock().getState()).getPersistentDataContainer().set(BET_MONEY_AMOUNT_KEY, PersistentDataType.DOUBLE, amount);
-
-        if (Minigames.getPlugin().hasEconomy()) {
-            event.line(3, Component.text(Minigames.getPlugin().getEconomy().format(amount)));
-        } else {
-            event.line(3, Component.text(FALLBACK_BET_MONEY_FORMAT.format(amount)));
-        }
+        event.line(3, MinigameUtils.formatMoney(amount));
     }
 }
