@@ -32,7 +32,7 @@ dependencies {
     paperweight.paperDevBundle("${rootProject.properties["mcVersion"]}-R0.1-SNAPSHOT")
 
     api("org.bstats", "bstats-bukkit", "${rootProject.properties["bstatsVersion"]}")
-    api("org.kitteh", "paste-gg-api", "${rootProject.properties["paste-ggVersion"]}")
+    api("com.github.interaapps", "pastefy-java-apiclient", "${rootProject.properties["pastefyVersion"]}")
     api("org.apache.commons", "commons-lang3", "${rootProject.properties["commons-lang3Version"]}")
     api("org.apache.commons", "commons-text", "${rootProject.properties["commons-textVersion"]}")
     api("commons-io", "commons-io", "${rootProject.properties["commons-ioVersion"]}")
