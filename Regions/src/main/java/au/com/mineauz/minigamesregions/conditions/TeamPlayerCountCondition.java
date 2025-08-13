@@ -13,7 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-public class TeamPlayerCountCondition extends ConditionInterface {
+public class TeamPlayerCountCondition extends ACondition {
 
     private final IntegerFlag min = new IntegerFlag(1, "min");
     private final IntegerFlag max = new IntegerFlag(5, "max");

@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PlayerHasItemCondition extends ConditionInterface {
+public class PlayerHasItemCondition extends ACondition {
     private final MaterialFlag type = new MaterialFlag(Material.STONE, "type");
     private final StringFlag where = new StringFlag("ANYWHERE", "where");
     private final IntegerFlag slot = new IntegerFlag(0, "slot");
@@ -172,7 +172,6 @@ public class PlayerHasItemCondition extends ConditionInterface {
 
         StringBuffer buffer = new StringBuffer();
         int start = 0;
-        int index = 0;
 
         createPattern(name, buffer, start);
 
@@ -189,7 +188,6 @@ public class PlayerHasItemCondition extends ConditionInterface {
 
         StringBuffer buffer = new StringBuffer();
         int start = 0;
-        int index = 0;
         createPattern(lore, buffer, start);
         return Pattern.compile(buffer.toString());
     }

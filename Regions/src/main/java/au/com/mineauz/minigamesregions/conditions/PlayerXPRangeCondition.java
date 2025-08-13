@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-public class PlayerXPRangeCondition extends ConditionInterface {
+public class PlayerXPRangeCondition extends ACondition {
     private final FloatFlag min = new FloatFlag(1.0f, "min");
     private final FloatFlag max = new FloatFlag(1.0f, "max");
 
@@ -71,12 +71,12 @@ public class PlayerXPRangeCondition extends ConditionInterface {
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "XP Range", player);
-        m.addItem(min.getMenuItem("Min XP", Material.STONE_SLAB, 0.5, 1, 0.0, null));
-        m.addItem(max.getMenuItem("Max XP", Material.STONE, 0.5, 1, 0.0, null));
-        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
-        addInvertMenuItem(m);
-        m.displayMenu(player);
+        Menu menu = new Menu(3, "XP Range", player);
+        menu.addItem(min.getMenuItem("Min XP", Material.STONE_SLAB, 0.5, 1, 0.0, null));
+        menu.addItem(max.getMenuItem("Max XP", Material.STONE, 0.5, 1, 0.0, null));
+        menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), menu.getSize() - 9);
+        addInvertMenuItem(menu);
+        menu.displayMenu(player);
         return true;
     }
 

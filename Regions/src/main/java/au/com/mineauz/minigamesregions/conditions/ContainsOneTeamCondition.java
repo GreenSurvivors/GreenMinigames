@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-public class ContainsOneTeamCondition extends ConditionInterface {
+public class ContainsOneTeamCondition extends ACondition {
 
     @Override
     public String getName() {

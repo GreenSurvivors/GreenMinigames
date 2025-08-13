@@ -10,7 +10,7 @@ import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.actions.Actions;
-import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
@@ -86,7 +86,7 @@ public class RegionModule extends MinigameModule {
                 }
 
                 acc = 0;
-                for (ConditionInterface con : ex.getConditions()) {
+                for (ACondition con : ex.getConditions()) {
                     config.set(path + ".conditions." + acc + ".type", con.getName());
                     con.saveArguments(config, path + ".conditions." + acc + ".arguments");
                     acc++;
@@ -121,7 +121,7 @@ public class RegionModule extends MinigameModule {
                 }
 
                 acc = 0;
-                for (ConditionInterface con : ex.getConditions()) {
+                for (ACondition con : ex.getConditions()) {
                     config.set(path + ".conditions." + acc + ".type", con.getName());
                     con.saveArguments(config, path + ".conditions." + acc + ".arguments");
                     acc++;
@@ -176,7 +176,7 @@ public class RegionModule extends MinigameModule {
                         }
                         if (config.contains(path + ".conditions")) {
                             for (String c : config.getConfigurationSection(path + ".conditions").getKeys(false)) {
-                                ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
+                                ACondition ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
                                 if (ci != null) {
                                     ci.loadArguments(config, path + ".conditions." + c + ".arguments");
                                     rex.addCondition(ci);
@@ -227,7 +227,7 @@ public class RegionModule extends MinigameModule {
                         }
                         if (config.contains(path + ".conditions")) {
                             for (String c : config.getConfigurationSection(path + ".conditions").getKeys(false)) {
-                                ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
+                                ACondition ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
                                 ci.loadArguments(config, path + ".conditions." + c + ".arguments");
                                 rex.addCondition(ci);
                             }

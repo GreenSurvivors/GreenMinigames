@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-public class HasRequiredFlagsCondition extends ConditionInterface {
+public class HasRequiredFlagsCondition extends ACondition {
 
     @Override
     public String getName() {

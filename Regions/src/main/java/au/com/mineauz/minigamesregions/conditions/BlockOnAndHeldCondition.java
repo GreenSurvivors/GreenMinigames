@@ -18,7 +18,7 @@ import java.util.Map;
  * This class allows a check if the first solid block under a player is equal
  * to the block that player holds in his hand.
  */
-public class BlockOnAndHeldCondition extends ConditionInterface {
+public class BlockOnAndHeldCondition extends ACondition {
 
     @Override
     public String getName() {

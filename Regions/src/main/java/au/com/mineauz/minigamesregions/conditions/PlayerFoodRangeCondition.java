@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-public class PlayerFoodRangeCondition extends ConditionInterface {
+public class PlayerFoodRangeCondition extends ACondition {
     private final IntegerFlag min = new IntegerFlag(20, "min");
     private final IntegerFlag max = new IntegerFlag(20, "max");
 

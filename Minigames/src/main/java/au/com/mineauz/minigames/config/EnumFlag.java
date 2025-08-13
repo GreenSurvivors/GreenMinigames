@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.menu.MenuItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -25,7 +26,18 @@ public class EnumFlag<T extends Enum<T>> extends Flag<T> {
 
     @Override
     public void loadValue(String path, FileConfiguration config) {
-        setFlag(T.valueOf(enumClass, config.getString(path + "." + getName())));
+        if (config.contains(path + "." + getName())) {final @Nullable String configValue = config.getString(path + "." + getName());
+
+            // because of implementation specifics of FileConfiguration, this should never be null.
+            // However, theoretically setting a value explicit as null in config is a different state from not being defined in the config at all.
+            if (configValue != null) {
+                setFlag(T.valueOf(enumClass, configValue));
+            } else {
+                setFlag(null);
+            }
+        } else {
+            setFlag(getDefaultFlag());
+        }
     }
 
     @Override

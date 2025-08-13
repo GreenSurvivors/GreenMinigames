@@ -23,7 +23,7 @@ public class FloatFlag extends Flag<Float> {
 
     @Override
     public void loadValue(String path, FileConfiguration config) {
-        setFlag(((Double) config.getDouble(path + "." + getName())).floatValue());
+        setFlag(((Double) config.getDouble(path + "." + getName(), getDefaultFlag())).floatValue());
     }
 
     @Override

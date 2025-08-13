@@ -16,8 +16,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-public class MinigameTimerCondition extends ConditionInterface {
-
+public class MinigameTimerCondition extends ACondition {
     private final IntegerFlag minTime = new IntegerFlag(5, "minTime");
     private final IntegerFlag maxTime = new IntegerFlag(10, "maxTime");
 
