@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,9 +55,11 @@ public enum TeamColor {
         return Arrays.stream(TeamColor.values()).filter(tc -> tc != NONE).collect(Collectors.toSet());
     }
 
-    public static @NotNull Component validColorNamesComp() {
+    public static @NotNull Component inputColorNamesComp(final @NotNull Collection<@NotNull TeamColor> colors) {
         return Component.join(JoinConfiguration.separator(MiniMessage.miniMessage().deserialize("<gray>, </gray>")),
-                validColors().stream().map(TeamColor::getCompName).collect(Collectors.toSet()));
+            colors.stream().map( color ->
+                    Component.text(color.getUserFriendlyName().replaceAll(" ", "_"), color.getColor())
+                ).collect(Collectors.toSet()));
     }
 
     public @NotNull Component getCompName() {

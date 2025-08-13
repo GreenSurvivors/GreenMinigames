@@ -41,7 +41,7 @@ public class MenuItemAddTeam extends MenuItem implements StringConsumer {
         mgPlayer.getPlayer().closeInventory();
 
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TEAM_ADD,
-                Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), TeamColor.validColorNamesComp()));
+                Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors())));
         mgPlayer.setManualEntry(this);
 
         getContainer().startReopenTimer(30);

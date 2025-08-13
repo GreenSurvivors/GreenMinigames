@@ -19,8 +19,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class SetInfectedTeamCommand extends ASetCommand {
 
@@ -65,19 +68,23 @@ public class SetInfectedTeamCommand extends ASetCommand {
                 if (teamsModule != null) {
                     TeamColor teamColor = TeamColor.matchColor(args[0]);
 
+                    final Predicate<TeamColor> teamCheck = teamColor1 -> teamColor1 == infectionModule.getDefaultInfectedTeam() ||
+                        teamColor1 == infectionModule.getDefaultSurvivorTeam() ||
+                        teamsModule.hasTeam(teamColor1) ||
+                        teamColor1 == TeamColor.NONE;
+
                     if (teamColor != null) {
-                        if (teamColor == infectionModule.getDefaultInfectedTeam() ||
-                                teamColor == infectionModule.getDefaultSurvivorTeam() ||
-                                teamsModule.hasTeam(teamColor) ||
-                                teamColor == TeamColor.NONE) {
+                        if (teamCheck.test(teamColor)) {
                             infectionModule.setInfectedTeam(teamColor);
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_INFECTEDTEAM_SUCCESS,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                             return true;
                         } else {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]),
+                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(
+                                    Arrays.stream(TeamColor.values()).filter(teamCheck).collect(Collectors.toSet()))));
                         }
                     } else {
                         if (args[0].equalsIgnoreCase("Default")) {
@@ -85,12 +92,14 @@ public class SetInfectedTeamCommand extends ASetCommand {
                             infectionModule.setInfectedTeam(teamColor);
 
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_INFECTEDTEAM_SUCCESS,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                             return true;
                         } else {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]),
+                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(
+                                    Arrays.stream(TeamColor.values()).filter(teamCheck).collect(Collectors.toSet()))));
                         }
                     }
                 } else {

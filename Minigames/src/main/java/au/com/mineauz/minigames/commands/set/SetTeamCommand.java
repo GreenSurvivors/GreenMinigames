@@ -80,8 +80,8 @@ public class SetTeamCommand extends ASetCommand {
                                 return true;
                             } else {
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
-                                //sender.sendMessage(TeamColor.validColorNamesComp()); //todo
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]),
+                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors())));
                             }
                         }
                     }
@@ -105,48 +105,55 @@ public class SetTeamCommand extends ASetCommand {
                                 if (tmod.hasTeam(teamColor)) {
                                     tmod.removeTeam(teamColor);
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TEAM_REMOVE,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                                 } else {
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamColor.getCompName()));
+                                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamColor.getCompName()),
+                                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors().
+                                            stream().filter(tmod::hasTeam).toList())));
                                 }
                                 return true;
                             } else {
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
-                                //String cols = tmod.getTeams().stream().map(t -> t.getColor().toString()).collect(Collectors.joining("<gray>, </gray>")); //todo
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]),
+                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors().
+                                        stream().filter(tmod::hasTeam).toList())));
                             }
                         }
                     }
                     case "rename" -> {
                         if (args.length > 2) {
-                            TeamColor teamColor = TeamColor.matchColor(args[1]);
-                            StringBuilder name = new StringBuilder();
-                            for (int i = 2; i < args.length; i++) {
-                                name.append(args[i]);
-                                if (i != args.length - 1)
-                                    name.append(" ");
-                            }
+                            final TeamColor teamColor = TeamColor.matchColor(args[1]);
+
                             if (teamColor != null) {
-                                Team team = tmod.getTeam(teamColor);
+                                final StringBuilder name = new StringBuilder();
+                                for (int i = 2; i < args.length; i++) {
+                                    name.append(args[i]);
+                                    if (i != args.length - 1) {
+                                        name.append(" ");
+                                    }
+                                }
+                                final Team team = tmod.getTeam(teamColor);
 
                                 if (team != null) {
                                     team.setDisplayName(name.toString());
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TEAM_RENAME,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()),
-                                            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), team.getColoredDisplayName()));
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()),
+                                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), team.getColoredDisplayName()));
                                 } else {
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamColor.getCompName()));
+                                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamColor.getCompName()),
+                                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors().
+                                            stream().filter(tmod::hasTeam).toList())));
                                 }
                                 return true;
                             } else {
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
-
-                                //String cols = tmod.getTeams().stream().map(t -> t.getColor().toString()).collect(Collectors.joining("<gray>, </gray>")); //todo
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]),
+                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors().
+                                        stream().filter(tmod::hasTeam).toList())));
                             }
                         }
                     }
@@ -170,11 +177,15 @@ public class SetTeamCommand extends ASetCommand {
                                     }
                                 } else {
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamColor.getCompName()));
+                                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamColor.getCompName()),
+                                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors().
+                                            stream().filter(tmod::hasTeam).toList())));
                                 }
                             } else {
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]),
+                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors().
+                                        stream().filter(tmod::hasTeam).toList())));
                             }
                         }
                         return true;

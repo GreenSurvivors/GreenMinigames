@@ -62,17 +62,18 @@ public class SetDefaultWinnerCommand extends ASetCommand {
                 if (teamColor != null) {
                     teamsModule.setDefaultWinner(teamColor);
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_DEFAULTWINNER_SUCCESS,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), args[0]));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), args[0]),
+                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(List.of(TeamColor.values()))));
                 }
                 return true;
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getName()));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getName()));
             }
         }
         return false;
@@ -86,7 +87,7 @@ public class SetDefaultWinnerCommand extends ASetCommand {
 
             if (teamsModule != null) {
                 return CommandDispatcher.tabCompleteMatch(teamsModule.getTeams().stream().map(t ->
-                        t.getColor().name().toLowerCase(Locale.ENGLISH)).toList(), args[0]);
+                    t.getColor().name().toLowerCase(Locale.ENGLISH)).toList(), args[0]);
             }
         }
         return null;

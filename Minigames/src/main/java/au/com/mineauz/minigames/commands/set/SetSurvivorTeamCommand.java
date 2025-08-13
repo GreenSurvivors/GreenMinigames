@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.minigame.modules.InfectionModule;
 import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.command.CommandSender;
@@ -19,8 +20,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class SetSurvivorTeamCommand extends ASetCommand {
     @Override
@@ -66,23 +70,30 @@ public class SetSurvivorTeamCommand extends ASetCommand {
                     teamColor = infectionModule.getDefaultSurvivorTeam();
                 }
 
-                if (teamColor != null) {
-                    TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+                final TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+                final Predicate<TeamColor> teamCheck = teamColor1 -> teamColor1 == infectionModule.getDefaultInfectedTeam() ||
+                    teamColor1 == infectionModule.getDefaultSurvivorTeam() ||
+                    (teamsModule != null && teamsModule.hasTeam(teamColor1));
 
-                    if (teamColor == infectionModule.getDefaultInfectedTeam() ||
-                            teamColor == infectionModule.getDefaultSurvivorTeam() ||
-                            (teamsModule != null && teamsModule.hasTeam(teamColor))) {
+                if (teamColor != null) {
+                    if (teamCheck.test(teamColor)) {
                         infectionModule.setSurvivorTeam(teamColor);
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_SUCCESS,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]),
+                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(
+                                Arrays.stream(TeamColor.values()).filter(teamCheck).collect(Collectors.toSet())).append(MiniMessage.miniMessage().
+                                deserialize("<gray>, </gray><white>Default</white>"))));
                     }
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]),
+                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(
+                            Arrays.stream(TeamColor.values()).filter(teamCheck).collect(Collectors.toSet())).append(MiniMessage.miniMessage().
+                            deserialize("<gray>, </gray><white>Default</white>"))));
                     return false;
                 }
             } else {

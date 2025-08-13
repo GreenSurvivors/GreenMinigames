@@ -68,16 +68,18 @@ public class SetStartCommand extends ASetCommand {
                             team.getStartLocations().clear();
 
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_START_CLEAR_TEAM,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                         } else {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]),
+                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors())));
                             return false;
                         }
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]),
+                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors())));
                         return false;
                     }
                 } else {
@@ -87,8 +89,8 @@ public class SetStartCommand extends ASetCommand {
                 }
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getName()));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getName()));
                 return false;
             }
         } else if (sender instanceof Player player) {
@@ -132,7 +134,8 @@ public class SetStartCommand extends ASetCommand {
                     }
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]),
+                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors())));
 
                     return false;
                 }
@@ -160,7 +163,8 @@ public class SetStartCommand extends ASetCommand {
                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(number)));
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
-                                Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamColor.getCompName()));
+                            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamColor.getCompName()),
+                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors())));
                         return false;
                     }
                 }
