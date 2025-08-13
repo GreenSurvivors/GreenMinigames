@@ -29,6 +29,11 @@ public class ConditionRegistry {
 
     public static void addCondition(@NotNull ConditionFactory conditionFactory) {
         conditions.put(conditionFactory.getName(), conditionFactory);
+
+        // data fixer upper
+        if (conditionFactory.getOldName() != null) {
+            conditions.put(conditionFactory.getOldName(), conditionFactory);
+        }
     }
 
     public static @Nullable ACondition getConditionByName(@NotNull String name) {

@@ -27,11 +27,7 @@ public class StringFlag extends AFlag<String> {
 
     @Override
     public void loadValue(@NotNull Configuration config, @NotNull String path) {
-        if (config.contains(path + config.options().pathSeparator() + getName())) {
-            setFlag(config.getString(path + config.options().pathSeparator() + getName()));
-        } else {
-            setFlag(getDefaultFlag());
-        }
+        setFlag(config.getString(path + config.options().pathSeparator() + getName(), getDefaultFlag()));
     }
 
     @Override

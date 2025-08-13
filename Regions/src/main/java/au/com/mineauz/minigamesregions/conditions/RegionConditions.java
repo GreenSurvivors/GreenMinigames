@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -16,7 +17,7 @@ public enum RegionConditions implements ConditionFactory {
     PLAYER_SCORE_RANGE("PLAYER_SCORE_RANGE", PlayerScoreRangeCondition::new),
     RANDOM_CHANCE("RANDOM_CHANCE", RandomChanceCondition::new),
     TEAM_PLAYER_COUNT("TEAM_PLAYER_COUNT", TeamPlayerCountRangeCondition::new),
-    TEAM_SCORE_RANGE("TEAM_SCORE_RANGE", TeamScoreRangeCondition::new),
+    SCORE_RANGE("SCORE_RANGE", "TEAM_SCORE_RANGE", ScoreRangeCondition::new),
     MINIGAME_TIMER("MINIGAME_TIMER", MinigameTimeRangeCondition::new),
     PLAYER_XP_RANGE("PLAYER_XP_RANGE", PlayerXPRangeCondition::new),
     PLAYER_FOOD_RANGE("PLAYER_FOOD_RANGE", PlayerFoodRangeCondition::new),
@@ -26,11 +27,19 @@ public enum RegionConditions implements ConditionFactory {
     BLOCK_ON_AND_HELD("BLOCK_ON_AND_HELD", BlockOnAndHeldCondition::new);
 
     private final @NotNull String name;
+    private final @Deprecated(forRemoval = true) @Nullable String oldName; // data fixer upper
     private final @NotNull Function<String, ACondition> constructor;
 
     RegionConditions(@NotNull String name, @NotNull Function<String, ACondition> constructor) {
         this.name = name;
         this.constructor = constructor;
+        this.oldName = null;
+    }
+
+    RegionConditions(@NotNull String name, @NotNull String oldName, @NotNull Function<String, ACondition> constructor) {
+        this.name = name;
+        this.constructor = constructor;
+        this.oldName = oldName;
     }
 
     @Override
@@ -41,5 +50,10 @@ public enum RegionConditions implements ConditionFactory {
     @Override
     public @NotNull String getName() {
         return name;
+    }
+
+    @Override @Deprecated(forRemoval = true)
+    public @Nullable String getOldName () { // data fixer upper
+        return oldName;
     }
 }
