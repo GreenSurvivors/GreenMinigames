@@ -130,13 +130,7 @@ public class DebugCommand extends ACommand {
         Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () -> {
             Path dataPath = Minigames.getPlugin().getDataFolder().toPath();
 
-            // api
-            // unlisted
-            // with deletion key
-            // text files
-
             final @Nullable String apiKey = Minigames.getPlugin().getConfig().getString("pasteApiKey", null);
-
             final PastefyAPI pastefyAPI = new PastefyAPI(apiKey);
 
             final Folder newFolder = new Folder();
