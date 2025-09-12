@@ -41,9 +41,11 @@ public class TeamSetFlag extends Flag<Map<TeamColor, Team>> {
             getFlag().put(tf.getFlag().getColor(), tf.getFlag());
             String sbTeam = tf.getFlag().getColor().toString().toLowerCase();
             mgm.getScoreboardManager().registerNewTeam(sbTeam);
-            mgm.getScoreboardManager().getTeam(sbTeam).setAllowFriendlyFire(false);
-            mgm.getScoreboardManager().getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
+            mgm.getScoreboardManager().getTeam(sbTeam).setAllowFriendlyFire(tf.getFlag().isFriendlyFireAllowed());
+            mgm.getScoreboardManager().getTeam(sbTeam).setCanSeeFriendlyInvisibles(tf.getFlag().canSeeFriendlyInvisibles());
             mgm.getScoreboardManager().getTeam(sbTeam).setOption(Option.NAME_TAG_VISIBILITY, tf.getFlag().getNameTagVisibility());
+            mgm.getScoreboardManager().getTeam(sbTeam).setOption(Option.COLLISION_RULE, tf.getFlag().getCollisionRule());
+            mgm.getScoreboardManager().getTeam(sbTeam).setOption(Option.DEATH_MESSAGE_VISIBILITY, tf.getFlag().showDeathMessageToWhom());
             mgm.getScoreboardManager().getTeam(sbTeam).setColor(tf.getFlag().getChatColor());
         }
     }

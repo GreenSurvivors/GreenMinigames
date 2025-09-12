@@ -104,7 +104,44 @@ public class MenuItemTeam extends MenuItem {
             ntvo.add(v.toString());
         }
         m.addItem(new MenuItemList("NameTag Visibility", Material.NAME_TAG, team.getNameTagVisibilityCallback(), ntvo));
-        m.addItem(new MenuItemBoolean("Auto Balance Team", Material.PAPER, team.getAutoBalanceCallBack()));
+        m.addItem(new MenuItemList("Player collides with", Material.SCAFFOLDING, team.getCollisionRuleCallback(), ntvo));
+        m.addItem(new MenuItemList("Whom to show DeathMessage", Material.RECOVERY_COMPASS, team.getWhohmtoShowDeathmessageCallback(), ntvo));
+        m.addItem(new MenuItemBoolean("Witch invisible entities can be seen", Material.POTION, new Callback<>() {
+
+            @Override
+            public Boolean getValue() {
+                return team.canSeeFriendlyInvisibles();
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                team.setCanSeeFriendlyInvisibles(value);
+            }
+        }));
+        m.addItem(new MenuItemBoolean("Is friendly fire allowed", Material.DIAMOND_SWORD, new Callback<>() {
+
+            @Override
+            public Boolean getValue() {
+                return team.isFriendlyFireAllowed();
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                team.setFriendlyFireAllowed(value);
+            }
+        }));
+        m.addItem(new MenuItemBoolean("Auto Balance Team", Material.PAPER, new Callback<>() {
+
+            @Override
+            public Boolean getValue() {
+                return team.shouldAutoBalance();
+            }
+
+            @Override
+            public void setValue(Boolean value) {
+                team.setAutoBalance(value);
+            }
+        }));
 
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), getContainer()), m.getSize() - 9);
         m.displayMenu(getContainer().getViewer());
