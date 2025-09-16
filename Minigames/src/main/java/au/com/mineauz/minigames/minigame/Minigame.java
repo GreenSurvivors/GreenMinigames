@@ -82,6 +82,7 @@ public class Minigame implements ScriptObject {
     private final EnumFlag<GameMode> defaultGamemode = new EnumFlag<>(GameMode.ADVENTURE, "gamemode");
     private final BooleanFlag blocksDrop = new BooleanFlag(true, "blocksdrop");
     private final BooleanFlag allowEnderPearls = new BooleanFlag(false, "allowEnderpearls");
+    private final BooleanFlag allowThirdPartyTeleportation = new BooleanFlag(false, "allowThirdPartyTeleportation");
     private final BooleanFlag allowMPCheckpoints = new BooleanFlag(false, "allowMPCheckpoints");
     private final BooleanFlag allowFlight = new BooleanFlag(false, "allowFlight");
     private final BooleanFlag enableFlight = new BooleanFlag(false, "enableFlight");
@@ -117,7 +118,7 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag randomizeChests = new BooleanFlag(false, "randomizechests");
     private final IntegerFlag minChestRandom = new IntegerFlag(5, "minchestrandom");
     private final IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
-    @NotNull
+
     private final ScoreboardData sbData = new ScoreboardData();
     private final Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
     private final BooleanFlag activatePlayerRecorder = new BooleanFlag(true, "activatePlayerRecorder");
@@ -183,6 +184,7 @@ public class Minigame implements ScriptObject {
 
         addConfigFlag(activatePlayerRecorder);
         addConfigFlag(allowEnderPearls);
+        addConfigFlag(allowThirdPartyTeleportation);
         addConfigFlag(allowFlight);
         addConfigFlag(allowMPCheckpoints);
         addConfigFlag(blockBreak);
@@ -997,6 +999,14 @@ public class Minigame implements ScriptObject {
         this.allowEnderPearls.setFlag(allowEnderPearls);
     }
 
+    public boolean areThirdPartyTeleportationAllowed () {
+        return allowThirdPartyTeleportation.getFlag();
+    }
+
+    public void setThirdPartyTeleportationAllowed(boolean allowThirdPartyTeleportation) {
+        this.allowThirdPartyTeleportation.setFlag(allowThirdPartyTeleportation);
+    }
+
     public boolean isAllowedMPCheckpoints() {
         return allowMPCheckpoints.getFlag();
     }
@@ -1278,6 +1288,7 @@ public class Minigame implements ScriptObject {
         }
         itemsPlayer.add(new MenuItemList("Players Gamemode", Material.CRAFTING_TABLE, getDefaultGamemodeCallback(), gmopts));
         itemsPlayer.add(allowEnderPearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));
+        itemsPlayer.add(allowThirdPartyTeleportation.getMenuItem("Allow third party teleporations", Material.COMMAND_BLOCK));
         itemsPlayer.add(itemDrops.getMenuItem("Allow Item Drops", Material.DIAMOND_SWORD));
         itemsPlayer.add(deathDrops.getMenuItem("Allow Death Drops", Material.SKELETON_SKULL));
         itemsPlayer.add(itemPickup.getMenuItem("Allow Item Pickup", Material.DIAMOND));
