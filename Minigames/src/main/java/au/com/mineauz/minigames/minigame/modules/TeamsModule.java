@@ -67,9 +67,10 @@ public class TeamsModule extends MinigameModule {
                 teams.put(tf.getFlag().getColor(), tf);
                 String sbTeam = tf.getFlag().getColor().toString().toLowerCase();
                 org.bukkit.scoreboard.Team scoreboardTeam = scoreboard.registerNewTeam(sbTeam);
-                scoreboardTeam.setAllowFriendlyFire(false);
-                scoreboardTeam.setCanSeeFriendlyInvisibles(true);
+                scoreboardTeam.setAllowFriendlyFire(tf.getFlag().isFriendlyFireEnabled());
+                scoreboardTeam.setCanSeeFriendlyInvisibles(tf.getFlag().canSeeFriendlyInvisibles());
                 scoreboardTeam.setOption(org.bukkit.scoreboard.Team.Option.NAME_TAG_VISIBILITY, tf.getFlag().getNameTagVisibility());
+                scoreboardTeam.setOption(org.bukkit.scoreboard.Team.Option.COLLISION_RULE, tf.getFlag().getCollisionRule());
                 scoreboardTeam.color(tf.getFlag().getTextColor());
             }
         }
@@ -122,11 +123,13 @@ public class TeamsModule extends MinigameModule {
      */
     public @NotNull Team addTeam(@NotNull TeamColor color, @Nullable String name) {
         if (!hasTeam(color)) {
-            teams.put(color, new TeamFlag(color.name(), new Team(color, getMinigame()), getMinigame()));
+            final TeamFlag teamFlag = new TeamFlag(color.name(), new Team(color, getMinigame()), getMinigame());
+            teams.put(color, teamFlag);
             String teamNameString = color.getUserFriendlyName().toLowerCase();
             @NotNull org.bukkit.scoreboard.Team bukkitTeam = getMinigame().getScoreboard().registerNewTeam(teamNameString);
-            bukkitTeam.setAllowFriendlyFire(false);
-            bukkitTeam.setCanSeeFriendlyInvisibles(true);
+            bukkitTeam.setAllowFriendlyFire(teamFlag.getFlag().isFriendlyFireEnabled());
+            bukkitTeam.setCanSeeFriendlyInvisibles(teamFlag.getFlag().canSeeFriendlyInvisibles());
+            bukkitTeam.setOption(org.bukkit.scoreboard.Team.Option.COLLISION_RULE, teamFlag.getFlag().getCollisionRule());
             bukkitTeam.color(color.getColor());
             if (name != null && !name.isEmpty()) {
                 bukkitTeam.displayName(MiniMessage.miniMessage().deserialize(name).colorIfAbsent(color.getColor()));

@@ -517,7 +517,7 @@ public class Events implements Listener {
 
                                 Team plyTeam = mgPlayer.getTeam();
                                 Team atcTeam = shooter.getTeam();
-                                if (!mgm.isTeamGame() || plyTeam != atcTeam) {
+                                if (!mgm.isTeamGame() || plyTeam != atcTeam || (atcTeam != null && atcTeam.isFriendlyFireEnabled())) {
                                     int damage = mgm.getPaintBallDamage();
                                     event.setDamage(damage);
                                 }
@@ -527,9 +527,9 @@ public class Events implements Listener {
                 }
                 case Player damager -> {
                     MinigamePlayer mgPlayer = pdata.getMinigamePlayer(damager);
-                    if (mgPlayer.isInMinigame() && !mgPlayer.canPvP())
+                    if (mgPlayer.isInMinigame() && !mgPlayer.canPvP()) {
                         event.setCancelled(true);
-                    else if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getState() == MinigameState.ENDED &&
+                    } else if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getState() == MinigameState.ENDED &&
                         GameOverModule.getMinigameModule(mgPlayer.getMinigame()).isHumiliationMode() &&
                         GameOverModule.getMinigameModule(mgPlayer.getMinigame()).getLosers().contains(mgPlayer)) {
                         event.setCancelled(true);
@@ -560,7 +560,6 @@ public class Events implements Listener {
                     tool.openMenu(mgPlayer);
                     event.setCancelled(true);
                 }
-
             }
         }
     }
@@ -859,7 +858,7 @@ public class Events implements Listener {
     private boolean isEffectApplicable(@NotNull Collection<@NotNull PotionEffect> effectTypes,
                                        @NotNull MinigamePlayer mgPlayerEffecting, @NotNull MinigamePlayer mgPlayerReceiving) {
         if (mgPlayerEffecting.getMinigame().isTeamGame()) {
-            if (mgPlayerEffecting.getTeam() == mgPlayerReceiving.getTeam()) {
+            if (mgPlayerEffecting.getTeam() == mgPlayerReceiving.getTeam()) { // todo friendly fire setting here
                 return effectTypes.stream().noneMatch(s -> s.getType().getEffectCategory() == PotionEffectType.Category.HARMFUL);
             } else {
                 return effectTypes.stream().anyMatch(s -> s.getType().getEffectCategory() == PotionEffectType.Category.BENEFICIAL);

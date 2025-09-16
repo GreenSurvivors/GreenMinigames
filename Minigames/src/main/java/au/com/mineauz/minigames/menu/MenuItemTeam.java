@@ -94,6 +94,10 @@ public class MenuItemTeam extends MenuItem {
 
         menu.addItem(new MenuItemList<>(Material.NAME_TAG, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_NAME, team.getNameTagVisibilityCallback(),
                 Arrays.asList(Team.VisibilityMapper.values())));
+        menu.addItem(new MenuItemList<>(Material.STRUCTURE_VOID, MgMenuLangKey.MENU_TEAM_COLLISIONRULE_NAME, team.getCollisionRuleCallback(),
+            Arrays.asList(Team.CollisionRuleMapper.values())));
+        menu.addItem(new MenuItemBoolean(Material.ARROW, MgMenuLangKey.MENU_TEAM_FRIENDLYFIRE_NAME, team.getFriedndlyFireCallback()));
+        menu.addItem(new MenuItemBoolean(Material.ARROW, MgMenuLangKey.MENU_TEAM_SEE_FRIENDLY_INVISIBLES_NAME, team.getSeeFriendlyInvisiblesCallback()));
         menu.addItem(new MenuItemBoolean(Material.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCE, team.getAutoBalanceCallBack()));
 
         menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);

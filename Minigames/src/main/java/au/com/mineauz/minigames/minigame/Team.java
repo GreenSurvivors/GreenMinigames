@@ -41,6 +41,9 @@ public class Team implements ScriptObject, ScoreHolder {
     private final @NotNull StringFlag playerAutobalanceMsg = new StringFlag("autobalanceMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG));
     private final @NotNull StringFlag gameAutobalanceMsg = new StringFlag("gameAutobalanceMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG));
     private final @NotNull EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>("nametagVisibility", OptionStatus.ALWAYS);
+    private final @NotNull EnumFlag<OptionStatus> collisionRule = new EnumFlag<>("collision", OptionStatus.ALWAYS);
+    private final @NotNull BooleanFlag friendlyFire = new BooleanFlag("friendlyFire", false);
+    private final @NotNull BooleanFlag seeFriendlyInvisibles = new BooleanFlag("seeFriendlyInvisibles", true);
     private final @NotNull BooleanFlag autoBalance = new BooleanFlag("autoBalance", true);
     private final @NotNull List<@NotNull MinigamePlayer> players = new ArrayList<>();
     private final @NotNull Minigame mgm;
@@ -343,16 +346,45 @@ public class Team implements ScriptObject, ScoreHolder {
     }
 
     public @NotNull OptionStatus getNameTagVisibility() {
-        return nametagVisibility.getFlag();
+        return nametagVisibility.getFlagOrDefault();
+    }
+
+    public @NotNull OptionStatus getCollisionRule() {
+        return collisionRule.getFlagOrDefault();
+    }
+
+    public boolean isFriendlyFireEnabled() {
+        return friendlyFire.getFlagOrDefault();
+    }
+
+    public void setFriendlyFire(boolean isEnabled) {
+         friendlyFire.setFlag(isEnabled);
+
+        org.bukkit.scoreboard.Team bukkitTeam = mgm.getScoreboard().getTeam(color.getUserFriendlyName().toLowerCase());
+        if (bukkitTeam != null) {
+            bukkitTeam.setAllowFriendlyFire(isEnabled);
+        } else {
+            Minigames.getCmpnntLogger().warn("No team for set friendly fire call");
+        }
     }
 
     public void setNameTagVisibility(@NotNull OptionStatus vis) {
         nametagVisibility.setFlag(vis);
-        org.bukkit.scoreboard.Team team = mgm.getScoreboard().getTeam(color.getUserFriendlyName().toLowerCase());
-        if (team != null) {
-            team.setOption(Option.NAME_TAG_VISIBILITY, vis);
+        org.bukkit.scoreboard.Team bukkitTeam = mgm.getScoreboard().getTeam(color.getUserFriendlyName().toLowerCase());
+        if (bukkitTeam != null) {
+            bukkitTeam.setOption(Option.NAME_TAG_VISIBILITY, vis);
         } else {
             Minigames.getCmpnntLogger().warn("No team set for visibility call");
+        }
+    }
+
+    public void setCollisionRule(@NotNull OptionStatus col) {
+        nametagVisibility.setFlag(col);
+        org.bukkit.scoreboard.Team bukkitTeam = mgm.getScoreboard().getTeam(color.getUserFriendlyName().toLowerCase());
+        if (bukkitTeam != null) {
+            bukkitTeam.setOption(Option.COLLISION_RULE, col);
+        } else {
+            Minigames.getCmpnntLogger().warn("No team set for collision rule call");
         }
     }
 
@@ -371,18 +403,78 @@ public class Team implements ScriptObject, ScoreHolder {
         };
     }
 
+    public @NotNull Callback<@NotNull CollisionRuleMapper> getCollisionRuleCallback() {
+        return new Callback<>() {
+
+            @Override
+            public @NotNull CollisionRuleMapper getValue() {
+                return CollisionRuleMapper.getMapping(getCollisionRule());
+            }
+
+            @Override
+            public void setValue(@NotNull CollisionRuleMapper value) {
+                setCollisionRule(value.getStatus());
+            }
+        };
+    }
+
     @NotNull
-    public Callback<Boolean> getAutoBalanceCallBack() {
+    public Callback<Boolean> getFriedndlyFireCallback() {
         return new Callback<>() {
 
             @NotNull
             @Override
             public Boolean getValue() {
-                return getAutoBalanceTeam();
+                return isFriendlyFireEnabled();
             }
 
             @Override
             public void setValue(Boolean value) {
+                setFriendlyFire(value);
+            }
+        };
+    }
+
+    public @NotNull Callback<@NotNull Boolean> getSeeFriendlyInvisiblesCallback() {
+        return new Callback<>() {
+            @Override
+            public @NotNull Boolean getValue() {
+                return canSeeFriendlyInvisibles();
+            }
+
+            @Override
+            public void setValue(@NotNull Boolean value) {
+                setCanSeeFriendlyInvisibles(value);
+            }
+        };
+    }
+
+    public boolean canSeeFriendlyInvisibles() {
+        return seeFriendlyInvisibles.getFlag();
+    }
+
+    public void setCanSeeFriendlyInvisibles(boolean seeFriendlyInvisibles) {
+        this.seeFriendlyInvisibles.setFlag(seeFriendlyInvisibles);
+
+        org.bukkit.scoreboard.Team bukkitTeam = mgm.getScoreboard().getTeam(color.getUserFriendlyName().toLowerCase());
+        if (bukkitTeam != null) {
+            bukkitTeam.setCanSeeFriendlyInvisibles(seeFriendlyInvisibles);
+        } else {
+            Minigames.getCmpnntLogger().warn("No team for set see friendly invisibles call");
+        }
+    }
+
+    @NotNull
+    public Callback<Boolean> getAutoBalanceCallBack() {
+        return new Callback<>() {
+
+            @Override
+            public @NotNull Boolean getValue() {
+                return getAutoBalanceTeam();
+            }
+
+            @Override
+            public void setValue(@NotNull Boolean value) {
                 setAutoBalance(value);
             }
         };
@@ -432,6 +524,9 @@ public class Team implements ScriptObject, ScoreHolder {
         gameAutobalanceMsg.loadValue(config, path);
         playerAutobalanceMsg.loadValue(config, path);
         nametagVisibility.loadValue(config, path);
+        collisionRule.loadValue(config, path);
+        friendlyFire.loadValue(config, path);
+        seeFriendlyInvisibles.loadValue(config, path);
         autoBalance.loadValue(config, path);
 
         //dataFixerUpper
@@ -448,7 +543,61 @@ public class Team implements ScriptObject, ScoreHolder {
         gameAutobalanceMsg.saveValue(config, path);
         playerAutobalanceMsg.saveValue(config, path);
         nametagVisibility.saveValue(config, path);
+        collisionRule.saveValue(config, path);
+        friendlyFire.loadValue(config, path);
+        seeFriendlyInvisibles.loadValue(config, path);
         autoBalance.saveValue(config, path);
+    }
+
+
+    /**
+     * I have no Idea, why whoever fucked the naming in Bukkit up, but it is pretty bad
+     */
+    public enum CollisionRuleMapper {
+        /**
+         * Apply this option to everyone.
+         */
+        ALWAYS(OptionStatus.ALWAYS, MgMenuLangKey.MENU_TEAM_COLLIDE_ALLWAYS),
+        /**
+         * Never apply this option.
+         */
+        NEVER(OptionStatus.NEVER, MgMenuLangKey.MENU_TEAM_COLLIDE_NEVER),
+        /**
+         * Apply this option only for opposing teams.
+         */
+        COLLIDE_WITH_OTHER_TEAMS(OptionStatus.FOR_OTHER_TEAMS, MgMenuLangKey.MENU_TEAM_COLLIDE_WITH_OTHER_TEAMS),
+        /**
+         * Apply this option for only team members.
+         */
+        COLLIDE_WITH_OWN_TEAM(OptionStatus.FOR_OWN_TEAM, MgMenuLangKey.MENU_TEAM_COLLIDE_WITH_OWN_TEAM);
+
+        private final @NotNull OptionStatus status;
+        private final @NotNull String name;
+
+        CollisionRuleMapper(@NotNull OptionStatus status, @NotNull MinigameLangKey langKey) {
+            this.status = status;
+            this.name = MinigameMessageManager.getUnformattedMgMessage(langKey);
+        }
+
+        static @NotNull CollisionRuleMapper getMapping(@NotNull OptionStatus status) {
+            for (CollisionRuleMapper mapping : CollisionRuleMapper.values()) {
+                if (status == mapping.status) {
+                    return mapping;
+                }
+            }
+
+            // fallback should never get used unless Mojang decides to add another visibility
+            return ALWAYS;
+        }
+
+        @NotNull OptionStatus getStatus() {
+            return status;
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return name;
+        }
     }
 
     /**

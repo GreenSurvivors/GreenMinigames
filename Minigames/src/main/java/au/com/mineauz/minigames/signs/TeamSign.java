@@ -66,7 +66,6 @@ public class TeamSign extends AMinigameSign {
             Minigame mgm = mgPlayer.getMinigame();
             if (mgm.isTeamGame()) {
                 SignSide frontSide = sign.getSide(Side.FRONT);
-                PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
 
                 if (mgPlayer.getTeam() != matchTeam(mgm, frontSide.line(2))) {
                     if (!mgm.isWaitingForPlayers() && !isNeutral(frontSide.line(2))) {

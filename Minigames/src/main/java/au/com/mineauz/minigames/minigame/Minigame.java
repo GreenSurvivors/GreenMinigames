@@ -363,7 +363,7 @@ public class Minigame implements ScriptObject {
         keepInventory.setFlag(value);
     }
 
-    public boolean friendlyFireSplashPotions() {
+    public boolean friendlyFireSplashPotions() { // todo move this to a per team basis to integrate into friendlyFire setting.
         return friendlyFireSplashPotions.getFlag();
     }
 
