@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>au.com.mineauz</groupId>
     <artifactId>MinigamesProject</artifactId>
-    <version>1.20-SNAPSHOT</version>
+    <version>1.21.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Minigames-Project</name>
     <url>https://www.spigotmc.org/resources/minigames.19687/</url>
@@ -19,8 +19,8 @@
         <plugin.version>${project.version}-${build.number}</plugin.version>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
         <spigot.version>${spigot.api.version}.${spigot.minor.version}-R0.1-SNAPSHOT</spigot.version>
-        <spigot.api.version>1.20</spigot.api.version>
-        <spigot.minor.version>1</spigot.minor.version>
+        <spigot.api.version>1.21</spigot.api.version>
+        <spigot.minor.version>4</spigot.minor.version>
         <codacy.api.token>${env.CODACY_API_TOKEN}</codacy.api.token>
         <!--suppress UnresolvedMavenProperty -->
         <travis.commit>${env.TRAVIS_COMMIT}</travis.commit>
@@ -144,7 +144,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>24.1.0</version>
+            <version>26.0.2-1</version>
             <scope>provided</scope>
             <!-- no runtime features are used-->
         </dependency>
@@ -157,41 +157,41 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.11.0</version>
+                    <version>3.14.0</version>
                     <configuration>
-                        <source>17</source>
-                        <target>17</target>
-                        <release>17</release>
+                        <source>21</source>
+                        <target>21</target>
+                        <release>21</release>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>3.7.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>3.11.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.1.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.6.1</version>
+                    <version>3.8.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>3.4.5</version>
+                    <version>3.9.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.2.1</version>
+                    <version>3.5.4</version>
                     <configuration>
                         <!-- no argLine here -->
                     </configuration>
@@ -224,8 +224,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>

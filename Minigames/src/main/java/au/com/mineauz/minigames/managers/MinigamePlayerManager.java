@@ -463,7 +463,7 @@ public class MinigamePlayerManager {
             Player p = player.getPlayer();
             if ((p != null) && (p.isOnline())) {
                 p.setFireTicks(0);
-                AttributeInstance maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                AttributeInstance maxHealth = p.getAttribute(Attribute.MAX_HEALTH);
                 if (maxHealth != null) {
                     p.setHealth(maxHealth.getValue());
                 }
@@ -983,7 +983,7 @@ public class MinigamePlayerManager {
     public void partyMode(@NotNull MinigamePlayer player) {
         if (onPartyMode()) {
             Location loc = player.getPlayer().getLocation();
-            Firework firework = (Firework) player.getPlayer().getWorld().spawnEntity(loc, EntityType.FIREWORK);
+            Firework firework = (Firework) player.getPlayer().getWorld().spawnEntity(loc, EntityType.FIREWORK_ROCKET);
             FireworkMeta fwm = firework.getFireworkMeta();
 
             Random chance = new Random();

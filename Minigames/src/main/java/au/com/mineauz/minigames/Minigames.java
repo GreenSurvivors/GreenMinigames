@@ -21,7 +21,6 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 import com.google.common.io.Closeables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
-import io.papermc.lib.PaperLib;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.CustomChart;
@@ -251,7 +250,6 @@ public class Minigames extends JavaPlugin {
                     e.printStackTrace();
                 }
             }
-            PaperLib.suggestPaper(this);
             log().info(desc.getName() + " successfully enabled.");
             this.hookPlaceHolderApi();
         } catch (final Throwable e) {

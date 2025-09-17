@@ -213,7 +213,7 @@ public class MinigamePlayer implements ScriptObject {
 
         this.player.setSaturation(15);
         this.player.setFoodLevel(20);
-        this.player.setHealth(this.player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
+        this.player.setHealth(this.player.getAttribute(Attribute.MAX_HEALTH).getDefaultValue());
         this.player.getInventory().clear();
         this.player.getInventory().setArmorContents(null);
         this.player.setLevel(0);

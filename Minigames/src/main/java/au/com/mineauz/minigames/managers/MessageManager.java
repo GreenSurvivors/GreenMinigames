@@ -6,7 +6,6 @@ import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
 import au.com.mineauz.minigames.managers.message.UTF8Control;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import io.papermc.lib.PaperLib;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -175,12 +174,7 @@ public class MessageManager {
     }
 
     private static void sendMessage(CommandSender target, BaseComponent... message) {
-        if (PaperLib.isPaper()) {
-            target.sendMessage(message);
-            return;
-        }
-        target.spigot().sendMessage(message);
-
+        target.sendMessage(message);
     }
 
     /**
@@ -216,14 +210,8 @@ public class MessageManager {
 
         // Only send broadcast if event was not cancelled and is not empty
         if (!ev.isCancelled() && !ev.getMessage().isEmpty()) {
-            if (PaperLib.isPaper()) {
-                Bukkit.getServer().broadcast(init, m);
-            } else {
-                Bukkit.getServer().spigot().broadcast(init, m);
-            }
+            Bukkit.getServer().broadcast(init, m);
         }
     }
-
-
 }
 
