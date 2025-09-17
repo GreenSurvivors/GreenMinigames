@@ -42,6 +42,7 @@ public class Team implements ScriptObject, ScoreHolder {
     private final @NotNull StringFlag gameAutobalanceMsg = new StringFlag("gameAutobalanceMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG));
     private final @NotNull EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>("nametagVisibility", OptionStatus.ALWAYS);
     private final @NotNull EnumFlag<OptionStatus> collisionRule = new EnumFlag<>("collision", OptionStatus.ALWAYS);
+    private final EnumFlag<OptionStatus> showDeathMessage = new EnumFlag<>("deathMessage", OptionStatus.ALWAYS);  // todo does this need a helper like the visibility?
     private final @NotNull BooleanFlag friendlyFire = new BooleanFlag("friendlyFire", false);
     private final @NotNull BooleanFlag seeFriendlyInvisibles = new BooleanFlag("seeFriendlyInvisibles", true);
     private final @NotNull BooleanFlag autoBalance = new BooleanFlag("autoBalance", true);
@@ -435,6 +436,30 @@ public class Team implements ScriptObject, ScoreHolder {
         };
     }
 
+    public OptionStatus showDeathMessageToWhom() {
+        return showDeathMessage.getFlag();
+    }
+
+    public void setToWhomShowDeathMessage(OptionStatus death) {
+        showDeathMessage.setFlag(death);
+    }
+
+    public Callback<String> getWhohmtoShowDeathmessageCallback() {
+        return new Callback<>() {
+
+            @Override
+            public String getValue() {
+                return showDeathMessageToWhom().toString();
+            }
+
+            @Override
+            public void setValue(String value) {
+                setToWhomShowDeathMessage(OptionStatus.valueOf(value));
+            }
+
+        };
+    }
+
     public @NotNull Callback<@NotNull Boolean> getSeeFriendlyInvisiblesCallback() {
         return new Callback<>() {
             @Override
@@ -447,10 +472,6 @@ public class Team implements ScriptObject, ScoreHolder {
                 setCanSeeFriendlyInvisibles(value);
             }
         };
-    }
-
-    public boolean canSeeFriendlyInvisibles() {
-        return seeFriendlyInvisibles.getFlag();
     }
 
     public void setCanSeeFriendlyInvisibles(boolean seeFriendlyInvisibles) {
@@ -470,7 +491,7 @@ public class Team implements ScriptObject, ScoreHolder {
 
             @Override
             public @NotNull Boolean getValue() {
-                return getAutoBalanceTeam();
+                return shouldAutoBalance();
             }
 
             @Override
@@ -480,7 +501,11 @@ public class Team implements ScriptObject, ScoreHolder {
         };
     }
 
-    public boolean getAutoBalanceTeam() {
+    public boolean canSeeFriendlyInvisibles() {
+        return seeFriendlyInvisibles.getFlag();
+    }
+
+    public boolean shouldAutoBalance() {
         return autoBalance.getFlag();
     }
 
@@ -527,6 +552,7 @@ public class Team implements ScriptObject, ScoreHolder {
         collisionRule.loadValue(config, path);
         friendlyFire.loadValue(config, path);
         seeFriendlyInvisibles.loadValue(config, path);
+        showDeathMessage.loadValue(config, path);
         autoBalance.loadValue(config, path);
 
         //dataFixerUpper
@@ -546,6 +572,7 @@ public class Team implements ScriptObject, ScoreHolder {
         collisionRule.saveValue(config, path);
         friendlyFire.loadValue(config, path);
         seeFriendlyInvisibles.loadValue(config, path);
+        showDeathMessage.loadValue(config, path);
         autoBalance.saveValue(config, path);
     }
 

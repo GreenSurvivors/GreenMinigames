@@ -77,7 +77,6 @@ public class Minigames extends JavaPlugin {
     private Metrics metrics;
 
     public Minigames() {
-        super();
         startUpHandler = new StartUpLogHandler();
     }
 

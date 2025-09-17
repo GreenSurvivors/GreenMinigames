@@ -102,9 +102,9 @@ public abstract class GameMechanicBase implements Listener {
                 Team teamToJoin = null;
                 Team teamToBalance = null;
                 for (Team teamToCheck : TeamsModule.getMinigameModule(minigame).getTeams()) {
-                    if (teamToJoin == null || (teamToCheck.getPlayers().size() < teamToJoin.getPlayers().size() - 1 && teamToCheck.hasRoom() && teamToCheck.getAutoBalanceTeam()))
+                    if (teamToJoin == null || (teamToCheck.getPlayers().size() < teamToJoin.getPlayers().size() - 1 && teamToCheck.hasRoom() && teamToCheck.shouldAutoBalance()))
                         teamToJoin = teamToCheck;
-                    if ((teamToBalance == null || (teamToCheck.getPlayers().size() > teamToBalance.getPlayers().size() && teamToCheck.hasRoom())) && teamToCheck != teamToJoin && teamToCheck.getAutoBalanceTeam())
+                    if ((teamToBalance == null || (teamToCheck.getPlayers().size() > teamToBalance.getPlayers().size() && teamToCheck.hasRoom())) && teamToCheck != teamToJoin && teamToCheck.shouldAutoBalance())
                         teamToBalance = teamToCheck;
                 }
                 if (teamToJoin != null && teamToBalance != null && teamToBalance.getPlayers().size() - teamToJoin.getPlayers().size() > 1) {
@@ -138,13 +138,13 @@ public abstract class GameMechanicBase implements Listener {
     void autoBalanceOnDeath(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {
         Team teamToJoin = null;
         Team teamToBalance = mgPlayer.getTeam();
-        if (teamToBalance.getAutoBalanceTeam()) {//this team is flagged as  balanced - players will be removed.
+        if (teamToBalance.shouldAutoBalance()) {//this team is flagged as  balanced - players will be removed.
             for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
                 if (teamToJoin == null || t.getPlayers().size() < teamToJoin.getPlayers().size() - 1)
                     teamToJoin = t;
             }
             if (teamToJoin != null) {
-                if (teamToBalance.getPlayers().size() - teamToJoin.getPlayers().size() > 1 && teamToJoin.getAutoBalanceTeam()) {
+                if (teamToBalance.getPlayers().size() - teamToJoin.getPlayers().size() > 1 && teamToJoin.shouldAutoBalance()) {
                     MultiplayerType.switchTeam(mgm, mgPlayer, teamToJoin);
 
 

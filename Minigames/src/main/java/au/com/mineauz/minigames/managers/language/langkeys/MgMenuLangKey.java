@@ -231,6 +231,8 @@ public enum MgMenuLangKey implements MinigameLangKey {
     MENU_TEAM_COLLISIONRULE_NAME("menu.team.collisionrule.name"),
     MENU_TEAM_FRIENDLYFIRE_NAME("menu.team.friendlyfire.name"),
     MENU_TEAM_SEE_FRIENDLY_INVISIBLES_NAME("menu.team.seeFriendlyInvisibles.name"),
+    MENU_TEAM_SHOW_DEATH_MESSAGE_NAME("menu.team.showDeathMessage.name"),
+    MENU_PLAYERSETTINGS_THIRDPARTY_TELEPORTATION_NAME("menu.team.thirdpartyTeleportation.name"),
     MENU_TEAM_NAMEVISIBILITY_NEVERVISIBLE("menu.team.nameVisibility.neverVisible"),
     MENU_TEAM_OPTIONS_NAME("menu.team.options.name"),
     MENU_TIMEWEATHER_NAME("menu.timeWeather.name"),

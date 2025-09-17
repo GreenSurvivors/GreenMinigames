@@ -439,13 +439,18 @@ public class Events implements Listener {
     private void onTeleportAway(@NotNull PlayerTeleportEvent event) {
         MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
 
-        if (mgPlayer.isInMinigame() && (event.getCause() == TeleportCause.COMMAND || event.getCause() == TeleportCause.PLUGIN || (!mgPlayer.getMinigame().isAllowedEnderpearls() && event.getCause() == TeleportCause.ENDER_PEARL))) {
-            if (!mgPlayer.getAllowTeleport()) {
-                Location from = event.getFrom();
-                Location to = event.getTo();
-                if (from.getWorld() != to.getWorld() || from.distance(to) > 2) {
-                    event.setCancelled(true);
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTELEPORTALLOWED);
+        if (mgPlayer.isInMinigame()) {
+            final @NotNull Minigame minigame = mgPlayer.getMinigame();
+
+            if (((event.getCause() == TeleportCause.COMMAND || event.getCause() == TeleportCause.PLUGIN) && !minigame.areThirdPartyTeleportationAllowed()) ||
+                (!mgPlayer.getMinigame().isAllowedEnderpearls() && event.getCause() == TeleportCause.ENDER_PEARL)) {
+                if (!mgPlayer.getAllowTeleport()) {
+                    Location from = event.getFrom();
+                    Location to = event.getTo();
+                    if (from.getWorld() != to.getWorld() || from.distanceSquared(to) > 4) {
+                        event.setCancelled(true);
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTELEPORTALLOWED);
+                    }
                 }
             }
         }

@@ -79,6 +79,7 @@ public class Minigame implements ScriptObject {
     private final EnumFlag<GameMode> defaultGamemode = new EnumFlag<>("gamemode", GameMode.ADVENTURE);
     private final BooleanFlag blocksDrop = new BooleanFlag("blocksdrop", true);
     private final BooleanFlag allowEnderPearls = new BooleanFlag("allowEnderpearls", false);
+    private final BooleanFlag allowThirdPartyTeleportation = new BooleanFlag("allowThirdPartyTeleportation", false);
     private final BooleanFlag allowMPCheckpoints = new BooleanFlag("allowMPCheckpoints", false);
     private final BooleanFlag allowFlight = new BooleanFlag("allowFlight", false);
     private final BooleanFlag enableFlight = new BooleanFlag("enableFlight", false);
@@ -164,6 +165,7 @@ public class Minigame implements ScriptObject {
 
         addConfigFlag(activatePlayerRecorder);
         addConfigFlag(allowEnderPearls);
+        addConfigFlag(allowThirdPartyTeleportation);
         addConfigFlag(allowFlight);
         addConfigFlag(allowMPCheckpoints);
         addConfigFlag(blockBreak);
@@ -971,6 +973,14 @@ public class Minigame implements ScriptObject {
         this.allowEnderPearls.setFlag(allowEnderPearls);
     }
 
+    public boolean areThirdPartyTeleportationAllowed () {
+        return allowThirdPartyTeleportation.getFlag();
+    }
+
+    public void setThirdPartyTeleportationAllowed(boolean allowThirdPartyTeleportation) {
+        this.allowThirdPartyTeleportation.setFlag(allowThirdPartyTeleportation);
+    }
+
     public boolean isAllowedMPCheckpoints() {
         return allowMPCheckpoints.getFlag();
     }
@@ -1314,6 +1324,7 @@ public class Minigame implements ScriptObject {
         List<MenuItem> itemsPlayer = new ArrayList<>(20);
         itemsPlayer.add(defaultGamemode.getMenuItem(Material.CRAFTING_TABLE, MgMenuLangKey.MENU_PLAYERSETTINGS_GAMEMODE_NAME));
         itemsPlayer.add(allowEnderPearls.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_PLAYERSETTINGS_ENDERPERLS_NAME));
+        itemsPlayer.add(allowThirdPartyTeleportation.getMenuItem(Material.COMMAND_BLOCK, MgMenuLangKey.MENU_PLAYERSETTINGS_THIRDPARTY_TELEPORTATION_NAME));
         itemsPlayer.add(itemDrops.getMenuItem(Material.DIAMOND_SWORD, MgMenuLangKey.MENU_PLAYERSETTINGS_DROP_ITEM_NAME));
         itemsPlayer.add(deathDrops.getMenuItem(Material.SKELETON_SKULL, MgMenuLangKey.MENU_PLAYERSETTINGS_DROP_DEATH_NAME));
         itemsPlayer.add(itemPickup.getMenuItem(Material.DIAMOND, MgMenuLangKey.MENU_PLAYERSETTINGS_ITEMPICKUP_NAME));
