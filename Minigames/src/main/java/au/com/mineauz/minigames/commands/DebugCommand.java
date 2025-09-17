@@ -1,10 +1,9 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
-import de.interaapps.pastefy.apiclient.PastefyAPI;
-import de.interaapps.pastefy.apiclient.exceptions.CreationFailedException;
-import de.interaapps.pastefy.apiclient.models.Folder;
-import de.interaapps.pastefy.apiclient.models.Paste;
+import de.greensurvivors.Paste;
+import de.greensurvivors.PasteContent;
+import de.greensurvivors.Session;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
@@ -131,57 +130,28 @@ public class DebugCommand extends ACommand {
             Path dataPath = Minigames.getPlugin().getDataFolder().toPath();
 
             final @Nullable String apiKey = Minigames.getPlugin().getConfig().getString("pasteApiKey", null);
-            final PastefyAPI pastefyAPI = new PastefyAPI(apiKey);
 
-            final Folder newFolder = new Folder();
-            newFolder.setName("Minigames debug output");
+            try (Session pastefySession = Session.newSession(apiKey)) {// default visibility is unlisted
+                PasteContent.BundledContent bundledContent = PasteContent.newBundledContent();
+                bundledContent.addContent("mainInfo.txt", PasteContent.fromString(mainInfo.toString()));
+                bundledContent.addContent("config.yml", PasteContent.fromString(getFile(dataPath.resolve("config.yml"))));
+                bundledContent.addContent("spigot.yml", PasteContent.fromString(getFile(Paths.get("spigot.yml"))));
+                bundledContent.addContent("startup.log", PasteContent.fromString(PLUGIN.getStartupLog()));
+                bundledContent.addContent("startupExceptions.log", PasteContent.fromString(PLUGIN.getStartupExceptionLog()));
 
-            final Paste mainInfoPaste = new Paste();
-            mainInfoPaste.setContent(mainInfo.toString());
-            mainInfoPaste.setTitle("mainInfo.txt");
+                pastefySession.createPaste(Paste.newBuilder(bundledContent).setTitle("Minigames debug output")).thenAccept(pasteReplay -> {
+                    sender.sendMessage("Debug Paste: https://pastefy.app/" + pasteReplay.getId());
+                    Minigames.getCmpnntLogger().info("Paste:  https://pastefy.app/" + pasteReplay.getId());
+                }).exceptionally(throwable -> {
+                    sender.sendMessage("Paste Failed with: " + throwable.getMessage());
+                    Minigames.getCmpnntLogger().warn("Couldn't create debug paste: ", throwable);
 
-            final Paste minigamesConfigPaste = new Paste();
-            minigamesConfigPaste.setContent(getFile(dataPath.resolve("config.yml")));
-            minigamesConfigPaste.setTitle("config.yml");
-
-            final Paste spigotConfigPaste = new Paste();
-            spigotConfigPaste.setContent(getFile(Paths.get("spigot.yml")));
-            spigotConfigPaste.setTitle("spigot.yml");
-
-            final Paste startupLogPaste = new Paste();
-            startupLogPaste.setContent(PLUGIN.getStartupLog());
-            startupLogPaste.setTitle("startup.log");
-
-            final Paste startupExceptionLogPaste = new Paste();
-            startupExceptionLogPaste.setContent(PLUGIN.getStartupExceptionLog());
-            startupExceptionLogPaste.setTitle("startupExceptions.log");
-
-            try { // default visibility is unlisted
-                pastefyAPI.createFolder(newFolder);
-
-                mainInfoPaste.setFolderId(newFolder.getId());
-                pastefyAPI.createPaste(mainInfoPaste);
-
-                minigamesConfigPaste.setFolderId(newFolder.getId());
-                pastefyAPI.createPaste(minigamesConfigPaste);
-
-                spigotConfigPaste.setFolderId(newFolder.getId());
-                pastefyAPI.createPaste(spigotConfigPaste);
-
-                startupLogPaste.setFolderId(newFolder.getId());
-                pastefyAPI.createPaste(startupLogPaste);
-
-                startupExceptionLogPaste.setFolderId(newFolder.getId());
-                pastefyAPI.createPaste(startupExceptionLogPaste);
-            } catch (CreationFailedException e) {
+                    return null;
+                });
+            } catch (Exception e) {
                 sender.sendMessage("Paste Failed with: " + e.getMessage());
                 Minigames.getCmpnntLogger().warn("Couldn't create debug paste: ", e);
-
-                return;
             }
-
-            sender.sendMessage("Debug Paste: https://pastefy.app/folder/" + newFolder.getId());
-            Minigames.getCmpnntLogger().info("Paste:  https://pastefy.app/folder/" + newFolder.getId());
         });
     }
 }

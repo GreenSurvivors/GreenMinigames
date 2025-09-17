@@ -16,7 +16,7 @@ dependencies {
     paperweight.paperDevBundle("${rootProject.properties["mcVersion"]}-R0.1-SNAPSHOT")
 
     implementation(project(":Minigames")) {
-        exclude("org.kitteh", "paste-gg-api") // the resolving of this artifact is pretty odd. But not needed anyway
+        exclude("de.greensurvivors", "PastefyAPI") // the resolving of this artifact is pretty odd. But not needed anyway
     }
 }
 

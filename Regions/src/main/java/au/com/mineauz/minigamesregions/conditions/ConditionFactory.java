@@ -7,6 +7,7 @@ public interface ConditionFactory {
     @NotNull ACondition makeNewCondition();
 
     @NotNull String getName();
+
     default @Deprecated(forRemoval = true) @Nullable String getOldName() { // data fixer upper
         return null;
     }
