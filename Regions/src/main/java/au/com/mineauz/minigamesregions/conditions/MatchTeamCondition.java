@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MatchTeamCondition extends ConditionInterface {
-
+public class MatchTeamCondition extends ACondition {
     private final StringFlag team = new StringFlag("RED", "team");
 
     @Override

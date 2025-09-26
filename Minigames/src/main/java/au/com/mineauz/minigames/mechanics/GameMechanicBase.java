@@ -96,9 +96,9 @@ public abstract class GameMechanicBase implements Listener {
                 Team smt = null;
                 Team lgt = null;
                 for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
-                    if (smt == null || (t.getPlayers().size() < smt.getPlayers().size() - 1 && t.hasRoom() && t.getAutoBalanceTeam()))
+                    if (smt == null || (t.getPlayers().size() < smt.getPlayers().size() - 1 && t.hasRoom() && t.shouldAutoBalance()))
                         smt = t;
-                    if ((lgt == null || (t.getPlayers().size() > lgt.getPlayers().size() && t.hasRoom())) && t != smt && t.getAutoBalanceTeam())
+                    if ((lgt == null || (t.getPlayers().size() > lgt.getPlayers().size() && t.hasRoom())) && t != smt && t.shouldAutoBalance())
                         lgt = t;
                 }
                 if (smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1) {
@@ -120,13 +120,13 @@ public abstract class GameMechanicBase implements Listener {
     void autoBalanceonDeath(MinigamePlayer ply, Minigame mgm) {
         Team smt = null;
         Team lgt = ply.getTeam();
-        if (lgt.getAutoBalanceTeam()) {//this team is flagged as  balanced - players will be removed.
+        if (lgt.shouldAutoBalance()) {//this team is flagged as  balanced - players will be removed.
             for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
                 if (smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
                     smt = t;
             }
             if (smt != null) {
-                if (lgt.getPlayers().size() - smt.getPlayers().size() > 1 && smt.getAutoBalanceTeam()) {
+                if (lgt.getPlayers().size() - smt.getPlayers().size() > 1 && smt.shouldAutoBalance()) {
                     MultiplayerType.switchTeam(mgm, ply, smt);
                     ply.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()));
                     mdata.sendMinigameMessage(mgm,

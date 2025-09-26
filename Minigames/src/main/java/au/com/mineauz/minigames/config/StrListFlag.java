@@ -22,7 +22,11 @@ public class StrListFlag extends Flag<List<String>> {
 
     @Override
     public void loadValue(String path, FileConfiguration config) {
-        setFlag(config.getStringList(path + "." + getName()));
+        if (config.contains(path + "." + getName())) {
+            setFlag(config.getStringList(path + "." + getName()));
+        } else {
+            setFlag(getDefaultFlag());
+        }
     }
 
     @Override

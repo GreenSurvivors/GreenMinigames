@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-public abstract class ConditionInterface {
+public abstract class ACondition {
 
     private final BooleanFlag invert = new BooleanFlag(false, "invert");
 

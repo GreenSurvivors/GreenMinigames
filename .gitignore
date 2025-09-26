@@ -3,4 +3,4 @@ target
 .idea/
 *.iml
 docs/build/
-/.gradle/
+.gradle/

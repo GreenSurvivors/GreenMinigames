@@ -10,6 +10,7 @@ import au.com.mineauz.minigamesregions.menuitems.MenuItemCondition;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemConditionAdd;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -17,7 +18,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class Conditions {
-    private static final Map<String, Class<? extends ConditionInterface>> conditions = new HashMap<>();
+    private static final Map<String, Class<? extends ACondition>> conditions = new HashMap<>();
+    @Deprecated(forRemoval = true)
+    private static final Map<String, Class<? extends ACondition>> nameDataFixerUpperConditions = new HashMap<>();
 
     static {
         addCondition("PLAYER_HEALTH_RANGE", PlayerHealthRangeCondition.class);
@@ -31,7 +34,7 @@ public class Conditions {
         addCondition("PLAYER_COUNT", PlayerCountCondition.class);
         addCondition("PLAYER_HAS_ITEM", PlayerHasItemCondition.class);
         addCondition("TEAM_PLAYER_COUNT", TeamPlayerCountCondition.class);
-        addCondition("TEAM_SCORE_RANGE", TeamScoreRangeCondition.class);
+        addCondition("SCORE_RANGE", ScoreRangeCondition.class);
         addCondition("MINIGAME_TIMER", MinigameTimerCondition.class);
         addCondition("PLAYER_XP_RANGE", PlayerXPRangeCondition.class);
         addCondition("PLAYER_FOOD_RANGE", PlayerFoodRangeCondition.class);
@@ -39,25 +42,30 @@ public class Conditions {
         addCondition("CONTAINS_ENTITY", ContainsEntityCondition.class);
         addCondition("HAS_LOADOUT", HasLoadoutCondition.class);
         addCondition("BLOCK_ON_AND_HELD", BlockOnAndHeldCondition.class);
+
+        nameDataFixerUpperConditions.put("TEAM_SCORE_RANGE", ScoreRangeCondition.class);
     }
 
-    public static void addCondition(String name, Class<? extends ConditionInterface> condition) {
+    public static void addCondition(String name, Class<? extends ACondition> condition) {
         conditions.put(name, condition);
     }
 
-    public static boolean hasCondition(String condition) {
-        return conditions.containsKey(condition.toUpperCase());
-    }
+    public static ACondition getConditionByName(String name) {
+        @Nullable Class<? extends ACondition> condition = nameDataFixerUpperConditions.get(name.toUpperCase());
 
-    public static ConditionInterface getConditionByName(String name) {
-        if (hasCondition(name.toUpperCase())) {
-            try {
-                return conditions.get(name.toUpperCase()).getDeclaredConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                     InvocationTargetException e) {
-                e.printStackTrace();
-            }
+        if (condition == null) {
+            condition = conditions.get(name.toUpperCase());
         }
+
+        try {
+            if (condition != null) {
+                return conditions.get(name.toUpperCase()).getDeclaredConstructor().newInstance();
+            }
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
@@ -68,7 +76,7 @@ public class Conditions {
     public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev) {
         Menu m = new Menu(3, "Conditions", player);
         m.setPreviousPage(prev);
-        for (ConditionInterface con : exec.getConditions()) {
+        for (ACondition con : exec.getConditions()) {
             m.addItem(new MenuItemCondition(WordUtils.capitalize(con.getName()), Material.PAPER, exec, con));
         }
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
@@ -79,7 +87,7 @@ public class Conditions {
     public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev) {
         Menu m = new Menu(3, "Conditions", player);
         m.setPreviousPage(prev);
-        for (ConditionInterface con : exec.getConditions()) {
+        for (ACondition con : exec.getConditions()) {
             m.addItem(new MenuItemCondition(WordUtils.capitalize(con.getName()), Material.PAPER, exec, con));
         }
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);

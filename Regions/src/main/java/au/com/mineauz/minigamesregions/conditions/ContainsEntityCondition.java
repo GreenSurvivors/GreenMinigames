@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ContainsEntityCondition extends ConditionInterface {
+public class ContainsEntityCondition extends ACondition {
     private final EnumFlag<EntityType> entityType = new EnumFlag<>(EntityType.PLAYER, "entity");
 
     private final BooleanFlag matchName = new BooleanFlag(false, "matchName");

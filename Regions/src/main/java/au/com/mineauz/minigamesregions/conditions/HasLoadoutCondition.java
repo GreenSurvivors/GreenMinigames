@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-public class HasLoadoutCondition extends ConditionInterface {
+public class HasLoadoutCondition extends ACondition {
     private final StringFlag loadOutName = new StringFlag("default", "loadout");
 
     @Override

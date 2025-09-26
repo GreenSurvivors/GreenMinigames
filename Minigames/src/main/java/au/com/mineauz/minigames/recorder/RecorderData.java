@@ -9,8 +9,6 @@ import au.com.mineauz.minigames.objects.Position;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import io.papermc.lib.PaperLib;
-import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -147,8 +145,7 @@ public class RecorderData implements Listener {
     }
 
     public MgBlockData addBlock(@NotNull Block block, @Nullable MinigamePlayer modifier) {
-        BlockStateSnapshotResult blockState = PaperLib.getBlockState(block, true);
-        return addBlock(blockState.getState(), modifier);
+        return addBlock(block.getState(), modifier);
     }
 
     public MgBlockData addBlock(@NotNull BlockState block, @Nullable MinigamePlayer modifier) {

@@ -13,8 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Map;
 import java.util.Random;
 
-public class RandomChanceCondition extends ConditionInterface {
-
+public class RandomChanceCondition extends ACondition {
     private final IntegerFlag chance = new IntegerFlag(50, "chance");
 
     @Override

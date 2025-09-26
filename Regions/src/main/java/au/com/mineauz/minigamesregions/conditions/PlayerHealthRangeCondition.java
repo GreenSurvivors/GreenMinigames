@@ -12,8 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-public class PlayerHealthRangeCondition extends ConditionInterface {
-
+public class PlayerHealthRangeCondition extends ACondition {
     private final IntegerFlag minHealth = new IntegerFlag(20, "min");
     private final IntegerFlag maxHealth = new IntegerFlag(20, "max");
 

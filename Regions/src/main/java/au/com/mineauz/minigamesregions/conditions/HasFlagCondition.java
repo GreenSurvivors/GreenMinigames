@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-public class HasFlagCondition extends ConditionInterface {
+public class HasFlagCondition extends ACondition {
     private final StringFlag flagName = new StringFlag("flag", "flag");
 
     @Override

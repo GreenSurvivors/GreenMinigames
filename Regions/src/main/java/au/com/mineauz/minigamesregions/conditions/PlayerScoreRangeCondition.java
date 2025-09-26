@@ -12,8 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-public class PlayerScoreRangeCondition extends ConditionInterface {
-
+public class PlayerScoreRangeCondition extends ACondition {
     private final IntegerFlag min = new IntegerFlag(5, "min");
     private final IntegerFlag max = new IntegerFlag(10, "max");
 

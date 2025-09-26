@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.HashSet;
 import java.util.Map;
 
-public class ContainsEntireTeamCondition extends ConditionInterface {
+public class ContainsEntireTeamCondition extends ACondition {
 
     @Override
     public String getName() {

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
 import au.com.mineauz.minigames.menu.*;
-import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class MenuItemConditionAdd extends MenuItem {
-
     private RegionExecutor rexec;
     private NodeExecutor nexec;
 
@@ -56,7 +55,7 @@ public class MenuItemConditionAdd extends MenuItem {
                 MenuItemCustom c = new MenuItemCustom(WordUtils.capitalize(con), Material.PAPER);
                 final String fcon = con;
                 c.setClick(object -> {
-                    ConditionInterface condition = Conditions.getConditionByName(fcon);
+                    ACondition condition = Conditions.getConditionByName(fcon);
                     if (rexec != null) {
                         rexec.addCondition(condition);
                         getContainer().addItem(new MenuItemCondition(WordUtils.capitalize(fcon), Material.PAPER, rexec, condition));

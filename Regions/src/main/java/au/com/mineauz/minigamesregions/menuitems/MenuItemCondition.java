@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import com.google.common.collect.Lists;
@@ -15,12 +15,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class MenuItemCondition extends MenuItem {
-
-    private final ConditionInterface con;
+    private final ACondition con;
     private RegionExecutor rexec;
     private NodeExecutor nexec;
 
-    public MenuItemCondition(String name, Material displayItem, RegionExecutor exec, ConditionInterface con) {
+    public MenuItemCondition(String name, Material displayItem, RegionExecutor exec, ACondition con) {
         super(name, displayItem);
         this.rexec = exec;
         this.con = con;
@@ -28,7 +27,7 @@ public class MenuItemCondition extends MenuItem {
         updateDescription();
     }
 
-    public MenuItemCondition(String name, Material displayItem, NodeExecutor exec, ConditionInterface con) {
+    public MenuItemCondition(String name, Material displayItem, NodeExecutor exec, ACondition con) {
         super(name, displayItem);
         this.nexec = exec;
         this.con = con;

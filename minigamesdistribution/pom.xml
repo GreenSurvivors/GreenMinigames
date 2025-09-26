@@ -3,7 +3,7 @@
     <parent>
         <artifactId>MinigamesProject</artifactId>
         <groupId>au.com.mineauz</groupId>
-        <version>1.21-SNAPSHOT</version>
+        <version>1.21.4-SNAPSHOT</version>
     </parent>
     <artifactId>minigames-distribution</artifactId>
     <name>Minigames-Pack</name>
@@ -46,6 +46,7 @@
                 <artifactId>maven-source-plugin</artifactId>
                 <configuration>
                     <skipSource>true</skipSource>
+                    <defaultManifestFile/>
                 </configuration>
             </plugin>
         </plugins>

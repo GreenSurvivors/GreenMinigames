@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Map;
 
-public class MatchBlockCondition extends ConditionInterface {
+public class MatchBlockCondition extends ACondition {
 
     private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
     private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur");

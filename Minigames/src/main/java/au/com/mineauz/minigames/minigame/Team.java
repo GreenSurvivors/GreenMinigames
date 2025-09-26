@@ -32,7 +32,11 @@ public class Team implements ScriptObject {
     private final StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
     private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
     private final EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
-    private final BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
+    private final EnumFlag<OptionStatus> collisionRule = new EnumFlag<>(OptionStatus.ALWAYS, "collisionRule"); // todo does this need a helper like the visibility?;;
+    private final EnumFlag<OptionStatus> showDeathMessage = new EnumFlag<>(OptionStatus.ALWAYS, "deathMessage");  // todo does this need a helper like the visibility?
+    private final BooleanFlag canSeeFriendlyInvisibles = new BooleanFlag(Boolean.TRUE, "canSeeFriendlyInvisibles");
+    private final BooleanFlag friendlyFireAllowed = new BooleanFlag(Boolean.FALSE, "isFriendlyFriendlyFireAllowed");
+    private final BooleanFlag autoBalance = new BooleanFlag(Boolean.TRUE, "autoBalance");
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final Minigame mgm;
     private String displayName;
@@ -138,6 +142,10 @@ public class Team implements ScriptObject {
         flags.add(gameAutobalanceMsg);
         flags.add(autobalanceMsg);
         flags.add(nametagVisibility);
+        flags.add(collisionRule);
+        flags.add(showDeathMessage);
+        flags.add(canSeeFriendlyInvisibles);
+        flags.add(friendlyFireAllowed);
         flags.add(autoBalance);
 
         return flags;
@@ -354,28 +362,74 @@ public class Team implements ScriptObject {
                 setNameTagVisibility(OptionStatus.valueOf(value));
             }
 
-
         };
     }
 
-    public Callback<Boolean> getAutoBalanceCallBack() {
+    public OptionStatus getCollisionRule() {
+        return collisionRule.getFlag();
+    }
+
+    public Callback<String> getCollisionRuleCallback() {
         return new Callback<>() {
 
             @Override
-            public Boolean getValue() {
-                return getAutoBalanceTeam();
+            public String getValue() {
+                return getCollisionRule().toString();
             }
 
             @Override
-            public void setValue(Boolean value) {
-                setAutoBalance(value);
+            public void setValue(String value) {
+                setCollisionRule(OptionStatus.valueOf(value));
             }
-
 
         };
     }
 
-    public boolean getAutoBalanceTeam() {
+    public void setCollisionRule(OptionStatus col) {
+        collisionRule.setFlag(col);
+    }
+
+    public OptionStatus showDeathMessageToWhom() {
+        return showDeathMessage.getFlag();
+    }
+
+    public void setToWhomShowDeathMessage(OptionStatus death) {
+        showDeathMessage.setFlag(death);
+    }
+
+    public Callback<String> getWhohmtoShowDeathmessageCallback() {
+        return new Callback<>() {
+
+            @Override
+            public String getValue() {
+                return showDeathMessageToWhom().toString();
+            }
+
+            @Override
+            public void setValue(String value) {
+                setToWhomShowDeathMessage(OptionStatus.valueOf(value));
+            }
+
+        };
+    }
+
+    public boolean canSeeFriendlyInvisibles() {
+        return canSeeFriendlyInvisibles.getFlag();
+    }
+
+    public void setCanSeeFriendlyInvisibles(boolean canSeeFriendlyInvisibles) {
+        this.canSeeFriendlyInvisibles.setFlag(canSeeFriendlyInvisibles);
+    }
+
+    public boolean isFriendlyFireAllowed() {
+        return friendlyFireAllowed.getFlag();
+    }
+
+    public void setFriendlyFireAllowed(boolean isFriendlyFireAllowed) {
+        friendlyFireAllowed.setFlag(isFriendlyFireAllowed);
+    }
+
+    public boolean shouldAutoBalance() {
         return autoBalance.getFlag();
     }
 

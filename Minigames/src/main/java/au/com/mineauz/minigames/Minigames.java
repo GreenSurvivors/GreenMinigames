@@ -21,7 +21,6 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 import com.google.common.io.Closeables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
-import io.papermc.lib.PaperLib;
 import io.papermc.paper.registry.RegistryAccess;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
@@ -38,7 +37,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -73,13 +71,6 @@ public class Minigames extends JavaPlugin {
     private Metrics metrics;
 
     public Minigames() {
-        super();
-        log = this.getLogger();
-        startUpHandler = new StartUpLogHandler();
-    }
-
-    protected Minigames(final JavaPluginLoader loader, final PluginDescriptionFile description, final File dataFolder, final File file) {
-        super(loader, description, dataFolder, file);
         log = this.getLogger();
         startUpHandler = new StartUpLogHandler();
     }
@@ -206,7 +197,7 @@ public class Minigames extends JavaPlugin {
                 case -1:
                     log().warning("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
                     log().warning("Your version is newer: " + Bukkit.getBukkitVersion());
-                    log().warning("Please check for an updated");
+                    log().warning("Please check for an updated Version!");
 
                     break;
                 case 0:
@@ -270,7 +261,6 @@ public class Minigames extends JavaPlugin {
                     e.printStackTrace();
                 }
             }
-            PaperLib.suggestPaper(this);
             log().info(desc.getName() + " successfully enabled.");
             this.hookPlaceHolderApi();
         } catch (final Throwable e) {
