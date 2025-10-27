@@ -86,7 +86,7 @@
             <version>2.11.6</version>
             <scope>provided</scope>
         </dependency>
-        <dependency> <!-- todo this adds vulnerable dependencies! -->
+        <dependency>
             <groupId>com.github.GreenSurvivors</groupId>
             <artifactId>PasteGGAPI</artifactId>
             <version>-SNAPSHOT</version>

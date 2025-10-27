@@ -81,7 +81,7 @@ public class CTFFlag {
         return team;
     }
 
-    public Location spawnFlag(Location location) {
+    public @Nullable Location spawnFlag(Location location) {
         Location blockBelow = location.clone();
         blockBelow.setY(blockBelow.getBlockY() - 1);
 
