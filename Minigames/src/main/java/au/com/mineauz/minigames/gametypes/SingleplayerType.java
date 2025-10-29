@@ -60,13 +60,16 @@ public class SingleplayerType extends MinigameTypeBase {
         if (mgm.getLives() > 0 && Math.abs(mgm.getLives()) < Integer.MAX_VALUE) {
             player.sendInfoMessage(MessageManager.getMinigamesMessage("minigame.livesLeft", mgm.getLives()));
         }
-        if (!mgm.isAllowedFlight()) {
-            player.setCanFly(false);
-        } else {
+        if (mgm.isAllowedFlight()) {
             player.setCanFly(true);
-            if (mgm.isFlightEnabled())
+
+            if (mgm.isFlightEnabled()) {
                 player.getPlayer().setFlying(true);
+            }
+        } else {
+            player.setCanFly(false);
         }
+
         if (player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))) {
             player.setCheckpoint(player.getStoredPlayerCheckpoints().getCheckpoint(mgm.getName(false)));
             StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();

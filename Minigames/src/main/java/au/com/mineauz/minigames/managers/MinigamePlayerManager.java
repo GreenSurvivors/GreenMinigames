@@ -282,8 +282,17 @@ public class MinigamePlayerManager {
         for (MinigamePlayer ply : players) {
             if (minigame.getMaxScore() != 0)
                 ply.sendInfoMessage(MessageManager.getMinigamesMessage("minigame.scoreToWin", minigame.getMaxScorePerPlayer()));
-            if (minigame.isAllowedFlight()) ply.setCanFly(true);
-            if (minigame.isFlightEnabled() && ply.canFly()) ply.getPlayer().setFlying(true);
+
+            if (minigame.isAllowedFlight()) {
+                ply.setCanFly(true);
+
+                if (minigame.isFlightEnabled()) {
+                    ply.getPlayer().setFlying(true);
+                }
+            } else {
+                ply.setCanFly(false);
+            }
+
             ply.getLoadout().equiptLoadout(ply);
 
             if (!minigame.isTeamGame()) {
