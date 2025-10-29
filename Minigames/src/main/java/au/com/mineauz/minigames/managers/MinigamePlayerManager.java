@@ -305,11 +305,13 @@ public class MinigamePlayerManager {
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_SCORETOWIN,
                         Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(minigame.getMaxScorePerPlayer())));
             }
+
             if (minigame.isAllowedFlight()) {
                 mgPlayer.setCanFly(true);
-            }
-            if (minigame.isFlightEnabled() && mgPlayer.canFly()) {
-                mgPlayer.getPlayer().setFlying(true);
+                if (minigame.isFlightEnabled())
+                    mgPlayer.getPlayer().setFlying(true);
+            } else {
+                mgPlayer.setCanFly(false);
             }
             mgPlayer.getLoadout().equipLoadout(mgPlayer);
 
