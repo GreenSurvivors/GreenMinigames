@@ -316,7 +316,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
             Block cblock = event.getClickedBlock();
             boolean cancelled = (event.useInteractedBlock() == Event.Result.DENY || event.useItemInHand() == Event.Result.DENY);
             if (cblock != null && cblock.getState() instanceof Chest && !cancelled) {
-                for (Minigame minigame : mdata.getAllMinigames().values()) {
+                for (Minigame minigame : minigameManager.getAllMinigames().values()) {
                     if (minigame.getType() == MinigameType.GLOBAL &&
                             minigame.getMechanicName().equalsIgnoreCase(getMechanic()) &&
                             minigame.getMinigameTimer() != null) {

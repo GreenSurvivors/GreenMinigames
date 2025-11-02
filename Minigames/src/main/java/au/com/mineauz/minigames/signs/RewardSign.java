@@ -14,6 +14,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,32 +26,32 @@ public class RewardSign implements MinigameSign {
     private final MinigameManager mdata = plugin.getMinigameManager();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Reward";
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.reward";
     }
 
     @Override
-    public String getCreatePermissionMessage() {
+    public @NotNull String getCreatePermissionMessage() {
         return MinigameUtils.getLang("sign.reward.createPermission");
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.reward";
     }
 
     @Override
-    public String getUsePermissionMessage() {
+    public @NotNull String getUsePermissionMessage() {
         return MinigameUtils.getLang("sign.reward.usePermission");
     }
 
     @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         if (!event.getLine(2).equals("")) {
             event.setLine(1, ChatColor.GREEN + getName());
             return true;
@@ -59,7 +61,7 @@ public class RewardSign implements MinigameSign {
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer player) {
         Location loc = sign.getLocation();
         if (!MinigameUtils.isMinigameTool(player.getPlayer().getInventory().getItemInMainHand())) {
             String label = sign.getLine(2).toLowerCase();
@@ -128,10 +130,9 @@ public class RewardSign implements MinigameSign {
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, @Nullable MinigamePlayer player) {
         if (plugin.getMinigameManager().hasRewardSign(sign.getLocation())) {
             plugin.getMinigameManager().removeRewardSign(sign.getLocation());
         }
     }
-
 }

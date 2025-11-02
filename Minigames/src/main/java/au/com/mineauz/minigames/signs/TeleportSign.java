@@ -7,36 +7,38 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TeleportSign implements MinigameSign {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Teleport";
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.teleport";
     }
 
     @Override
-    public String getCreatePermissionMessage() {
+    public @NotNull String getCreatePermissionMessage() {
         return MinigameUtils.getLang("sign.teleport.createPermission");
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.teleport";
     }
 
     @Override
-    public String getUsePermissionMessage() {
+    public @NotNull String getUsePermissionMessage() {
         return MinigameUtils.getLang("sign.teleport.usePermission");
     }
 
     @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         event.setLine(1, ChatColor.GREEN + "Teleport");
         if (event.getLine(2).isEmpty()) {
             return false;
@@ -46,7 +48,7 @@ public class TeleportSign implements MinigameSign {
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer player) {
         if (!sign.getLine(2).isEmpty() && sign.getLine(2).matches("-?[0-9]+,[0-9]+,-?[0-9]+")) {
             int x;
             int y;
@@ -73,8 +75,7 @@ public class TeleportSign implements MinigameSign {
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, @Nullable MinigamePlayer player) {
 
     }
-
 }

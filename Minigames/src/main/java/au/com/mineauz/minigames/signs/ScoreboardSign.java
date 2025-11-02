@@ -10,37 +10,39 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ScoreboardSign implements MinigameSign {
     private final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Scoreboard";
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.scoreboard";
     }
 
     @Override
-    public String getCreatePermissionMessage() {
+    public @NotNull String getCreatePermissionMessage() {
         return "You do not have permission to create a Minigame scoreboard sign!";
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.scoreboard";
     }
 
     @Override
-    public String getUsePermissionMessage() {
+    public @NotNull String getUsePermissionMessage() {
         return "You do not have permission to set up a Minigame scoreboard sign!";
     }
 
     @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         if (event.getBlock().getState().getBlockData() instanceof WallSign sign) {
 
             // Parse minigame
@@ -100,7 +102,7 @@ public class ScoreboardSign implements MinigameSign {
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer player) {
         Minigame minigame = plugin.getMinigameManager().getMinigame(sign.getLine(2));
         if (minigame == null) {
             return false;
@@ -117,11 +119,10 @@ public class ScoreboardSign implements MinigameSign {
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, @Nullable MinigamePlayer player) {
         Minigame minigame = (Minigame) sign.getBlock().getMetadata("Minigame").get(0).value();
         if (minigame != null) {
             minigame.getScoreboardData().removeDisplay(sign.getBlock());
         }
     }
-
 }

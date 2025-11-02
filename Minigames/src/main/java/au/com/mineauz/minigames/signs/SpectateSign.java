@@ -9,38 +9,40 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SpectateSign implements MinigameSign {
 
     private final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Spectate";
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.spectate";
     }
 
     @Override
-    public String getCreatePermissionMessage() {
+    public @NotNull String getCreatePermissionMessage() {
         return MinigameUtils.getLang("sign.spectate.createPermission");
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.spectate";
     }
 
     @Override
-    public String getUsePermissionMessage() {
+    public @NotNull String getUsePermissionMessage() {
         return MinigameUtils.getLang("sign.spectate.usePermission");
     }
 
     @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
             event.setLine(1, ChatColor.GREEN + "Spectate");
             event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
@@ -51,7 +53,7 @@ public class SpectateSign implements MinigameSign {
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer player) {
         if (player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && !player.isInMinigame()) {
             Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getLine(2));
             if (mgm != null) {
@@ -70,8 +72,7 @@ public class SpectateSign implements MinigameSign {
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, @Nullable MinigamePlayer player) {
 
     }
-
 }

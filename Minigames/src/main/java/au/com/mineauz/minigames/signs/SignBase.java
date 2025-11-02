@@ -2,12 +2,7 @@ package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.events.TakeFlagEvent;
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.minigame.MinigameState;
-import au.com.mineauz.minigames.objects.CTFFlag;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -20,21 +15,20 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 public class SignBase implements Listener {
     private static final Map<String, MinigameSign> minigameSigns = new HashMap<>();
-    private final HashSet<CTFFlag> takenFlags = new HashSet<>();
 
     static {
         registerMinigameSign(new FinishSign());
         registerMinigameSign(new JoinSign());
         registerMinigameSign(new BetSign());
         registerMinigameSign(new CheckpointSign());
-        registerMinigameSign(new FlagSign());
+        registerMinigameSign(new CTFFlagSign());
         registerMinigameSign(new QuitSign());
         registerMinigameSign(new LoadoutSign());
         registerMinigameSign(new TeleportSign());
@@ -53,11 +47,8 @@ public class SignBase implements Listener {
         minigameSigns.put(mgSign.getName().toLowerCase(), mgSign);
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    private void takeFlag(@NotNull TakeFlagEvent event) {
-        if (event.getFlag() != null && event.getFlag().getAttachedToLocation() != null) {
-            this.takenFlags.add(event.getFlag());
-        }
+    public static @Nullable MinigameSign getMinigameSignById(final @NotNull String id) {
+        return minigameSigns.get(id);
     }
 
     @EventHandler
@@ -109,7 +100,9 @@ public class SignBase implements Listener {
 
                     if (mgSign.getUsePermission() != null && !event.getPlayer().hasPermission(mgSign.getUsePermission())) {
                         event.setCancelled(true);
-                        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + mgSign.getUsePermissionMessage());
+                        if (mgSign.getUsePermissionMessage() != null) {
+                            event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + mgSign.getUsePermissionMessage());
+                        }
                         return;
                     }
 
@@ -122,7 +115,7 @@ public class SignBase implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    private void signBreak(BlockBreakEvent event) {
+    private void signBreak(final @NotNull BlockBreakEvent event) {
         if (Tag.ALL_SIGNS.isTagged(event.getBlock().getType())) {
             Sign sign = (Sign) event.getBlock().getState();
             if (sign.getLine(0).equals(ChatColor.DARK_BLUE + "[Minigame]") &&
@@ -134,27 +127,6 @@ public class SignBase implements Listener {
                     return;
                 }
                 mgSign.signBreak(sign, Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()));
-            }
-        } else {
-            Location blockLocation = event.getBlock().getLocation().toBlockLocation();
-
-            for (CTFFlag ctfFlag : takenFlags) {
-                if (ctfFlag.getAttachedToLocation().equals(blockLocation)) {
-                    MinigameSign mgSign = minigameSigns.get("Flag");
-
-                    if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
-                        event.setCancelled(true);
-                        return;
-                    } else {
-                        MessageManager.sendMessage(Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()),
-                                MinigameMessageType.WARN, null, "sign.flag.broken.support");
-                        takenFlags.remove(ctfFlag);
-                    }
-
-                    break;
-                } else if (ctfFlag.getMinigame().getState() != MinigameState.STARTED) {
-                    takenFlags.remove(ctfFlag);
-                }
             }
         }
     }

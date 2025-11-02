@@ -8,36 +8,38 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CheckpointSign implements MinigameSign {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Checkpoint";
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.checkpoint";
     }
 
     @Override
-    public String getCreatePermissionMessage() {
+    public @NotNull String getCreatePermissionMessage() {
         return MinigameUtils.getLang("sign.checkpoint.createPermission");
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.checkpoint";
     }
 
     @Override
-    public String getUsePermissionMessage() {
+    public @NotNull String getUsePermissionMessage() {
         return MinigameUtils.getLang("sign.checkpoint.usePermission");
     }
 
     @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         event.setLine(1, ChatColor.GREEN + "Checkpoint");
         if (event.getLine(2).equalsIgnoreCase("global")) {
             event.setLine(2, ChatColor.BLUE + "Global");
@@ -46,7 +48,7 @@ public class CheckpointSign implements MinigameSign {
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer player) {
         if ((player.isInMinigame() || (!player.isInMinigame() && sign.getLine(2).equals(ChatColor.BLUE + "Global")))
                 && player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
             if (player.isInMinigame() && player.getMinigame().isSpectator(player)) {
@@ -71,8 +73,7 @@ public class CheckpointSign implements MinigameSign {
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, @Nullable MinigamePlayer player) {
 
     }
-
 }

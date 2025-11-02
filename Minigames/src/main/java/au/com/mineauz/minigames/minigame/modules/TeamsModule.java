@@ -43,7 +43,7 @@ public class TeamsModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, Flag<?>> getConfigFlags() {
         Map<String, Flag<?>> flags = new HashMap<>();
         flags.put(teamsFlag.getName(), teamsFlag);
         flags.put(defaultWinner.getName(), defaultWinner);

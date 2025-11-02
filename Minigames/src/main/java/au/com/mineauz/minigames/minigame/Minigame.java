@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.RegenRegionSetResult;
@@ -39,7 +38,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.logging.Level;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
 public class Minigame implements ScriptObject {
     private final String name;
     private final Map<String, Flag<?>> configFlags = new HashMap<>();
@@ -60,7 +58,7 @@ public class Minigame implements ScriptObject {
     private FloorDegenerator sFloorDegen;
     private final IntegerFlag floorDegenTime = new IntegerFlag(Minigames.getPlugin().getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
     // Respawn Module
-    private final BooleanFlag respawn = new BooleanFlag(Minigames.getPlugin().getConfig().getBoolean("has-respawn"), "respawn");
+    private final BooleanFlag respawn = new BooleanFlag(Minigames.getPlugin().getConfig().getBoolean("has-respawn"), "respawn"); // todo why is this here?
     private final LocationListFlag startLocations = new LocationListFlag(null, "startpos");
     private final BooleanFlag randomizeStart = new BooleanFlag(false, "ranndomizeStart");
     private final LocationFlag endLocation = new LocationFlag(null, "endpos");
@@ -131,9 +129,6 @@ public class Minigame implements ScriptObject {
     private MultiplayerTimer mpTimer = null;
     private MinigameTimer miniTimer = null;
     private MultiplayerBets mpBets = null;
-    //CTF
-    private final Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<>();
-    private final Map<String, CTFFlag> droppedFlag = new HashMap<>();
     private boolean playersAtStart = false;
 
     public Minigame(String name, MinigameType type, Location start) {
@@ -282,7 +277,7 @@ public class Minigame implements ScriptObject {
     }
 
     public boolean isTeamGame() {
-        return getType() == MinigameType.MULTIPLAYER && TeamsModule.getMinigameModule(this).getTeams().size() > 0;
+        return getType() == MinigameType.MULTIPLAYER && !TeamsModule.getMinigameModule(this).getTeams().isEmpty();
     }
 
     public boolean hasFlags() {
@@ -491,7 +486,7 @@ public class Minigame implements ScriptObject {
         this.displayName.setFlag(displayName);
     }
 
-    public void setshowPlayerBroadcasts(Boolean showPlayerBroadcasts) {
+    public void setShowPlayerBroadcasts(Boolean showPlayerBroadcasts) {
         this.showPlayerBroadcasts.setFlag(showPlayerBroadcasts);
     }
 
@@ -597,7 +592,7 @@ public class Minigame implements ScriptObject {
         return !spectators.isEmpty();
     }
 
-    public List<MinigamePlayer> getSpectators() {
+    public @NotNull List<@NotNull MinigamePlayer> getSpectators() {
         return spectators;
     }
 
@@ -613,7 +608,7 @@ public class Minigame implements ScriptObject {
         return spectators.contains(player);
     }
 
-    public void setScore(MinigamePlayer ply, int amount) {
+    public void setScore(final @NotNull MinigamePlayer ply, final int amount) {
         if (sbManager == null) {
             ScoreboardManager s = Minigames.getPlugin().getServer().getScoreboardManager();
             sbManager = s.getNewScoreboard();
@@ -755,7 +750,6 @@ public class Minigame implements ScriptObject {
                 defaultGamemode.setFlag(GameMode.valueOf(value.toUpperCase()));
             }
 
-
         };
     }
 
@@ -781,53 +775,6 @@ public class Minigame implements ScriptObject {
         } catch (Exception e) {
             Minigames.log(Level.WARNING, "Mechanic Not found:" + e.getLocalizedMessage());
         }
-    }
-
-    public boolean isFlagCarrier(MinigamePlayer ply) {
-        return flagCarriers.containsKey(ply);
-    }
-
-    public void addFlagCarrier(MinigamePlayer ply, CTFFlag flag) {
-        flagCarriers.put(ply, flag);
-    }
-
-    public void removeFlagCarrier(MinigamePlayer ply) {
-        flagCarriers.remove(ply);
-    }
-
-    public CTFFlag getFlagCarrier(MinigamePlayer ply) {
-        return flagCarriers.get(ply);
-    }
-
-    public void resetFlags() {
-        for (MinigamePlayer ply : flagCarriers.keySet()) {
-            getFlagCarrier(ply).respawnFlag();
-            getFlagCarrier(ply).stopCarrierParticleEffect();
-        }
-        flagCarriers.clear();
-        for (String id : droppedFlag.keySet()) {
-            if (!getDroppedFlag(id).isAtHome()) {
-                getDroppedFlag(id).stopTimer();
-                getDroppedFlag(id).respawnFlag();
-            }
-        }
-        droppedFlag.clear();
-    }
-
-    public boolean hasDroppedFlag(String id) {
-        return droppedFlag.containsKey(id);
-    }
-
-    public void addDroppedFlag(String id, CTFFlag flag) {
-        droppedFlag.put(id, flag);
-    }
-
-    public void removeDroppedFlag(String id) {
-        droppedFlag.remove(id);
-    }
-
-    public @Nullable CTFFlag getDroppedFlag(String id) {
-        return droppedFlag.get(id);
     }
 
     public boolean hasPaintBallMode() {
@@ -1003,7 +950,7 @@ public class Minigame implements ScriptObject {
         return allowThirdPartyTeleportation.getFlag();
     }
 
-    public void setThirdPartyTeleportationAllowed(boolean allowThirdPartyTeleportation) {
+    public void setThirdPartyTeleportationAllowed(final boolean allowThirdPartyTeleportation) {
         this.allowThirdPartyTeleportation.setFlag(allowThirdPartyTeleportation);
     }
 
@@ -1127,9 +1074,11 @@ public class Minigame implements ScriptObject {
         final Menu fmain = main;
         mechSettings.setClick(object -> {
             if (getMechanic().displaySettings(mgm) != null &&
-                    getMechanic().displaySettings(mgm).displayMechanicSettings(fmain))
+                    getMechanic().displaySettings(mgm).displayMechanicSettings(fmain)) {
                 return null;
-            return mechSettings.getItem();
+            } else {
+                return mechSettings.getItem();
+            }
         });
         itemsMain.add(mechSettings);
         MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
@@ -1365,8 +1314,8 @@ public class Minigame implements ScriptObject {
             if (!module.useSeparateConfig()) {
                 module.save(cfg);
 
-                if (module.getFlags() != null) {
-                    for (Flag<?> flag : module.getFlags().values()) {
+                if (module.getConfigFlags() != null) {
+                    for (Flag<?> flag : module.getConfigFlags().values()) {
                         if (flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
                             flag.saveValue(name, cfg);
                     }
@@ -1377,8 +1326,8 @@ public class Minigame implements ScriptObject {
                 modsave.getConfig().createSection(name);
                 module.save(modsave.getConfig());
 
-                if (module.getFlags() != null) {
-                    for (Flag<?> flag : module.getFlags().values()) {
+                if (module.getConfigFlags() != null) {
+                    for (Flag<?> flag : module.getConfigFlags().values()) {
                         if (flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
                             flag.saveValue(name, modsave.getConfig());
                     }
@@ -1421,20 +1370,20 @@ public class Minigame implements ScriptObject {
             if (!module.useSeparateConfig()) {
                 module.load(cfg);
 
-                if (module.getFlags() != null) {
-                    for (String flag : module.getFlags().keySet()) {
+                if (module.getConfigFlags() != null) {
+                    for (String flag : module.getConfigFlags().keySet()) {
                         if (cfg.contains(name + "." + flag))
-                            module.getFlags().get(flag).loadValue(name, cfg);
+                            module.getConfigFlags().get(flag).loadValue(name, cfg);
                     }
                 }
             } else {
                 MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
                 module.load(modsave.getConfig());
 
-                if (module.getFlags() != null) {
-                    for (String flag : module.getFlags().keySet()) {
+                if (module.getConfigFlags() != null) {
+                    for (String flag : module.getConfigFlags().keySet()) {
                         if (modsave.getConfig().contains(name + "." + flag))
-                            module.getFlags().get(flag).loadValue(name, modsave.getConfig());
+                            module.getConfigFlags().get(flag).loadValue(name, modsave.getConfig());
                     }
                 }
             }

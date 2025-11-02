@@ -12,38 +12,40 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BetSign implements MinigameSign {
 
     private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Bet";
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.bet";
     }
 
     @Override
-    public String getCreatePermissionMessage() {
+    public @NotNull String getCreatePermissionMessage() {
         return MinigameUtils.getLang("sign.bet.createPermission");
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.bet";
     }
 
     @Override
-    public String getUsePermissionMessage() {
+    public @NotNull String getUsePermissionMessage() {
         return MinigameUtils.getLang("sign.bet.usePermission");
     }
 
     @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
             event.setLine(1, ChatColor.GREEN + "Bet");
             event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
@@ -58,7 +60,7 @@ public class BetSign implements MinigameSign {
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer player) {
         Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getSide(Side.FRONT).getLine(2));
         if (mgm != null) {
             boolean invOk = true;
@@ -134,8 +136,7 @@ public class BetSign implements MinigameSign {
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, @Nullable MinigamePlayer player) {
 
     }
-
 }

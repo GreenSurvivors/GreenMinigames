@@ -49,7 +49,7 @@ public abstract class MinigameModule {
 
     public abstract String getName();
 
-    public abstract Map<String, Flag<?>> getFlags();
+    public abstract Map<String, Flag<?>> getConfigFlags();
 
     public abstract boolean useSeparateConfig();
 

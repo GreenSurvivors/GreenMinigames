@@ -11,36 +11,38 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class FlagSign implements MinigameSign {
+public class CTFFlagSign implements MinigameSign {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Flag";
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.flag";
     }
 
     @Override
-    public String getCreatePermissionMessage() {
+    public @NotNull String getCreatePermissionMessage() {
         return MinigameUtils.getLang("sign.flag.createPermission");
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return null;
     }
 
     @Override
-    public String getUsePermissionMessage() {
+    public @NotNull String getUsePermissionMessage() {
         return null;
     }
 
     @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         event.setLine(1, ChatColor.GREEN + "Flag");
         if (TeamColor.matchColor(event.getLine(2)) != null) {
             TeamColor col = TeamColor.matchColor(event.getLine(2));
@@ -69,7 +71,7 @@ public class FlagSign implements MinigameSign {
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer player) {
         if (player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && player.isInMinigame()) {
             Minigame mgm = player.getMinigame();
 
@@ -90,8 +92,7 @@ public class FlagSign implements MinigameSign {
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, @Nullable MinigamePlayer player) {
 
     }
-
 }

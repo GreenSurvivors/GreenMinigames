@@ -13,38 +13,40 @@ import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TeamSign implements MinigameSign {
 
     private final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Team";
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.team";
     }
 
     @Override
-    public String getCreatePermissionMessage() {
+    public @NotNull String getCreatePermissionMessage() {
         return MessageManager.getMessage(null, "sign.team.createPermission");
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.team";
     }
 
     @Override
-    public String getUsePermissionMessage() {
+    public @NotNull String getUsePermissionMessage() {
         return MessageManager.getMessage(null, "sign.team.usePermission");
     }
 
     @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         event.setLine(1, ChatColor.GREEN + "Team");
         if (TeamColor.matchColor(event.getLine(2)) != null ||
                 event.getLine(2).equalsIgnoreCase("neutral")) {
@@ -61,7 +63,7 @@ public class TeamSign implements MinigameSign {
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer player) {
         if (player.isInMinigame()) {
             Minigame mgm = player.getMinigame();
             if (mgm.isTeamGame()) {
@@ -90,8 +92,8 @@ public class TeamSign implements MinigameSign {
                         }
                     } else if (sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getLine(2)) != player.getTeam()) {
                         Team cur = player.getTeam();
+                        Team nt = matchTeam(mgm, sign.getLine(2));
                         if (cur != null) {
-                            Team nt = matchTeam(mgm, sign.getLine(2));
                             if (nt != null) {
                                 if (nt.getPlayers().size() - cur.getPlayers().size() < 2) {
                                     MultiplayerType.switchTeam(mgm, player, nt);
@@ -104,7 +106,6 @@ public class TeamSign implements MinigameSign {
                                 player.removeTeam();
                             }
                         } else {
-                            Team nt = matchTeam(mgm, sign.getLine(2));
                             if (nt != null) {
                                 if (nt.getPlayers().size() < nt.getMaxPlayers()) {
                                     MultiplayerType.switchTeam(mgm, player, nt);
@@ -123,7 +124,7 @@ public class TeamSign implements MinigameSign {
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, @Nullable MinigamePlayer player) {
 
     }
 
@@ -133,5 +134,4 @@ public class TeamSign implements MinigameSign {
             return TeamsModule.getMinigameModule(mgm).getTeam(col);
         return null;
     }
-
 }

@@ -3,22 +3,24 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface MinigameSign {
 
-    String getName();
+    @NotNull String getName();
 
-    String getCreatePermission();
+    @Nullable String getCreatePermission();
 
-    String getCreatePermissionMessage();
+    @NotNull String getCreatePermissionMessage();
 
-    String getUsePermission();
+    @Nullable String getUsePermission();
 
-    String getUsePermissionMessage();
+    @Nullable String getUsePermissionMessage();
 
-    boolean signCreate(SignChangeEvent event);
+    boolean signCreate(@NotNull SignChangeEvent event);
 
-    boolean signUse(Sign sign, MinigamePlayer player);
+    boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer player);
 
-    void signBreak(Sign sign, MinigamePlayer player);
+    void signBreak(@NotNull Sign sign, @Nullable MinigamePlayer player);
 }

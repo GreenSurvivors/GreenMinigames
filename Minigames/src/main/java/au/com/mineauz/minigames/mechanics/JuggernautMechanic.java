@@ -69,7 +69,7 @@ public class JuggernautMechanic extends GameMechanicBase {
                 if (j != null) {
                     jm.setJuggernaut(j);
                     j.sendInfoMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"));
-                    mdata.sendMinigameMessage(minigame,
+                    minigameManager.sendMinigameMessage(minigame,
                             MessageManager.getMinigamesMessage("player.juggernaut.gameMsg", j.getDisplayName(minigame.usePlayerDisplayNames())), null, j);
                 }
             }
@@ -105,7 +105,7 @@ public class JuggernautMechanic extends GameMechanicBase {
             winners.add(ply);
             List<MinigamePlayer> losers = new ArrayList<>(ply.getMinigame().getPlayers());
             losers.remove(ply);
-            pdata.endMinigame(ply.getMinigame(), winners, losers);
+            playerManager.endMinigame(ply.getMinigame(), winners, losers);
         }
     }
 
@@ -124,13 +124,13 @@ public class JuggernautMechanic extends GameMechanicBase {
 
     @EventHandler
     private void playerDeath(PlayerDeathEvent event) {
-        MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+        MinigamePlayer ply = playerManager.getMinigamePlayer(event.getEntity());
         if (ply.getMinigame() != null && ply.getMinigame().getMechanic() == this) {
             JuggernautModule jm = JuggernautModule.getMinigameModule(ply.getMinigame());
 
             if (jm.getJuggernaut() == ply) {
                 if (event.getEntity().getKiller() != null) {
-                    MinigamePlayer pk = pdata.getMinigamePlayer(event.getEntity().getKiller());
+                    MinigamePlayer pk = playerManager.getMinigamePlayer(event.getEntity().getKiller());
                     jm.setJuggernaut(pk);
                     pk.addScore();
                     pk.getMinigame().setScore(pk, pk.getScore());
@@ -141,7 +141,7 @@ public class JuggernautMechanic extends GameMechanicBase {
                 }
             } else {
                 if (event.getEntity().getKiller() != null) {
-                    MinigamePlayer pk = pdata.getMinigamePlayer(event.getEntity().getKiller());
+                    MinigamePlayer pk = playerManager.getMinigamePlayer(event.getEntity().getKiller());
                     if (jm.getJuggernaut() == pk) {
                         pk.addScore();
                         pk.getMinigame().setScore(pk, pk.getScore());

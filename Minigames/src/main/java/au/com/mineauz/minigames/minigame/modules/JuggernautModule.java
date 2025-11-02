@@ -31,7 +31,7 @@ public class JuggernautModule extends MinigameModule {
     }
 
     @Override
-    public Map<String, Flag<?>> getFlags() {
+    public Map<String, Flag<?>> getConfigFlags() {
         return null;
     }
 

@@ -60,12 +60,12 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
     @EventHandler
     private void playerAttackPlayer(PlayerDeathEvent event) {
-        MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+        MinigamePlayer ply = playerManager.getMinigamePlayer(event.getEntity());
         Minigame mgm = ply.getMinigame();
         if (ply.isInMinigame() && mgm.getMechanicName().equals("kills")) {
             MinigamePlayer attacker;
             if (ply.getPlayer().getKiller() != null) {
-                attacker = pdata.getMinigamePlayer(ply.getPlayer().getKiller());
+                attacker = playerManager.getMinigamePlayer(ply.getPlayer().getKiller());
                 if (attacker == ply) {
                     return;
                 }
@@ -89,7 +89,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
                         if (player != attacker)
                             losers.add(player);
                     }
-                    pdata.endMinigame(mgm, winner, losers);
+                    playerManager.endMinigame(mgm, winner, losers);
                 }
             } else {
                 Team team = ply.getTeam();
@@ -101,7 +101,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
                     ateam.addScore();
                     if (mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()) {
-                        mdata.sendMinigameMessage(mgm, MessageManager.getMinigamesMessage("player.kills.finalKill", attacker.getName(), ply.getName()));
+                        minigameManager.sendMinigameMessage(mgm, MessageManager.getMinigamesMessage("player.kills.finalKill", attacker.getName(), ply.getName()));
 
                         List<MinigamePlayer> w = new ArrayList<>(ateam.getPlayers());
                         List<MinigamePlayer> l = new ArrayList<>(mgm.getPlayers().size() - ateam.getPlayers().size());
@@ -118,7 +118,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
     @EventHandler
     private void playerSuicide(PlayerDeathEvent event) {
-        MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+        MinigamePlayer ply = playerManager.getMinigamePlayer(event.getEntity());
         if (ply.isInMinigame() &&
                 (ply.getPlayer().getKiller() == null || ply.getPlayer().getKiller() == ply.getPlayer()) &&
                 ply.getMinigame().hasStarted()) {
@@ -134,7 +134,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
     @EventHandler
     public void playerAutoBalance(PlayerDeathEvent event) {
-        MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+        MinigamePlayer ply = playerManager.getMinigamePlayer(event.getEntity());
         if (ply.isInMinigame() && ply.getMinigame().isTeamGame()) {
             Minigame mgm = ply.getMinigame();
 

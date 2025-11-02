@@ -20,13 +20,13 @@ import java.util.List;
 
 public abstract class GameMechanicBase implements Listener {
     public static Minigames plugin;
-    public final MinigamePlayerManager pdata;
-    public final MinigameManager mdata;
+    public final MinigamePlayerManager playerManager;
+    public final MinigameManager minigameManager;
 
     public GameMechanicBase() {
         plugin = Minigames.getPlugin();
-        pdata = plugin.getPlayerManager();
-        mdata = plugin.getMinigameManager();
+        playerManager = plugin.getPlayerManager();
+        minigameManager = plugin.getMinigameManager();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -80,12 +80,12 @@ public abstract class GameMechanicBase implements Listener {
                             smt = t;
                     }
                     if (smt == null) {
-                        pdata.quitMinigame(ply, false);
+                        playerManager.quitMinigame(ply, false);
                         ply.sendMessage(MinigameUtils.getLang("minigame.full"), MinigameMessageType.ERROR);
                     } else {
                         smt.addPlayer(ply);
                         ply.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()));
-                        mdata.sendMinigameMessage(minigame,
+                        minigameManager.sendMinigameMessage(minigame,
                                 String.format(smt.getGameAutobalanceMessage(),
                                         ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
                     }
@@ -106,7 +106,7 @@ public abstract class GameMechanicBase implements Listener {
                     MultiplayerType.switchTeam(minigame, pl, smt);
                     result.add(pl);
                     pl.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()));
-                    mdata.sendMinigameMessage(minigame,
+                    minigameManager.sendMinigameMessage(minigame,
                             String.format(smt.getGameAutobalanceMessage(),
                                     pl.getDisplayName(minigame.usePlayerDisplayNames()), smt.getChatColor() + smt.getDisplayName()), null, pl);
                 } else {
@@ -129,7 +129,7 @@ public abstract class GameMechanicBase implements Listener {
                 if (lgt.getPlayers().size() - smt.getPlayers().size() > 1 && smt.shouldAutoBalance()) {
                     MultiplayerType.switchTeam(mgm, ply, smt);
                     ply.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()));
-                    mdata.sendMinigameMessage(mgm,
+                    minigameManager.sendMinigameMessage(mgm,
                             String.format(smt.getGameAutobalanceMessage(),
                                     ply.getDisplayName(mgm.usePlayerDisplayNames()), smt.getChatColor() + smt.getDisplayName()), null, ply);
                 }
