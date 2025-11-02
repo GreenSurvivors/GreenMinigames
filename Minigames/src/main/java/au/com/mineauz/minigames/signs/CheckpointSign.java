@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CheckpointSign extends AMinigameSign {
 
@@ -21,12 +22,12 @@ public class CheckpointSign extends AMinigameSign {
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.checkpoint";
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.checkpoint";
     }
 

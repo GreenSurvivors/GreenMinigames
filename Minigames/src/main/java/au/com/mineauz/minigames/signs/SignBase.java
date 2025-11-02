@@ -1,16 +1,12 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.events.TakeCTFFlagEvent;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
-import au.com.mineauz.minigames.minigame.MinigameState;
-import au.com.mineauz.minigames.objects.CTFFlag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Location;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -26,14 +22,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class SignBase implements Listener {
     private static final List<AMinigameSign> minigameSigns = new ArrayList<>();
     private static final Pattern alternativeMgmPattern = Pattern.compile("(?:\\[mgm])|(?:\\[mg])", Pattern.CASE_INSENSITIVE); // todo don't hardcode
-    private final HashSet<CTFFlag> takenFlags = new HashSet<>();
 
     static {
         registerMinigameSign(new FinishSign());
@@ -83,14 +77,6 @@ public class SignBase implements Listener {
         }
 
         return null;
-    }
-
-    //todo move to ctf module
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    private void takeFlag(@NotNull TakeCTFFlagEvent event) {
-        if (event.getFlag() != null && event.getFlag().getAttachedToLocation() != null) {
-            this.takenFlags.add(event.getFlag());
-        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -150,7 +136,7 @@ public class SignBase implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    private void signBreak(@NotNull BlockBreakEvent event) {
+    private void signBreak(final @NotNull BlockBreakEvent event) {
         if (Tag.ALL_SIGNS.isTagged(event.getBlock().getType())) {
             Sign sign = (Sign) event.getBlock().getState();
             AMinigameSign mgSign = getMgSign(sign.getSide(Side.FRONT).line(2));
@@ -161,31 +147,6 @@ public class SignBase implements Listener {
                     return;
                 }
                 mgSign.signBreak(sign, Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()));
-            }
-        } else {
-            Location blockLocation = event.getBlock().getLocation().toBlockLocation();
-
-            for (CTFFlag ctfFlag : takenFlags) {
-                if (ctfFlag.getAttachedToLocation().equals(blockLocation)) {
-                    // new creation for easy access to permissions.
-                    // I wish once again that you could define abstract static methods,
-                    // so we could access static values like permissions without an object
-                    // but guarantee that this methode exists
-                    AMinigameSign mgSign = new CTFFlagSign();
-
-                    if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
-                        event.setCancelled(true);
-                        return;
-                    } else {
-                        MinigameMessageManager.sendMgMessage(Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()),
-                                MinigameMessageType.WARNING, MgMiscLangKey.SIGN_FLAG_BROKEN_SUPPORT);
-                        takenFlags.remove(ctfFlag);
-                    }
-
-                    break;
-                } else if (ctfFlag.getMinigame().getState() != MinigameState.STARTED) {
-                    takenFlags.remove(ctfFlag);
-                }
             }
         }
     }

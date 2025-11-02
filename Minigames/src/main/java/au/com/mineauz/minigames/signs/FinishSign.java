@@ -32,16 +32,14 @@ public class FinishSign extends AMinigameSign {
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.finish";
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return null;
     }
-
-    @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
         event.line(1, getName());
         Component line2 = event.line(2);

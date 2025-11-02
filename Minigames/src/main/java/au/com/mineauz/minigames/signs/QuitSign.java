@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QuitSign extends AMinigameSign {
     private static final Minigames plugin = Minigames.getPlugin();
@@ -21,12 +22,12 @@ public class QuitSign extends AMinigameSign {
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.quit";
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return null;
     }
 

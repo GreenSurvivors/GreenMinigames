@@ -68,12 +68,12 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
     @EventHandler
     private void playerAttackPlayer(@NotNull PlayerDeathEvent event) {
-        MinigamePlayer mgPlayerWhoDied = pdata.getMinigamePlayer(event.getEntity());
+        MinigamePlayer mgPlayerWhoDied = playerManager.getMinigamePlayer(event.getEntity());
         Minigame mgm = mgPlayerWhoDied.getMinigame();
         if (mgPlayerWhoDied.isInMinigame() && mgm.getMechanicName().equals("kills")) {
             MinigamePlayer attacker;
             if (mgPlayerWhoDied.getPlayer().getKiller() != null) {
-                attacker = pdata.getMinigamePlayer(mgPlayerWhoDied.getPlayer().getKiller());
+                attacker = playerManager.getMinigamePlayer(mgPlayerWhoDied.getPlayer().getKiller());
                 if (attacker == mgPlayerWhoDied) {
                     return;
                 }
@@ -97,7 +97,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
                         if (player != attacker)
                             losers.add(player);
                     }
-                    pdata.endMinigame(mgm, winner, losers);
+                    playerManager.endMinigame(mgm, winner, losers);
                 }
             } else {
                 Team team = mgPlayerWhoDied.getTeam();
@@ -128,7 +128,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
     @EventHandler
     private void playerSuicide(@NotNull PlayerDeathEvent event) {
-        MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity());
+        MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getEntity());
         if (mgPlayer.isInMinigame() &&
                 (mgPlayer.getPlayer().getKiller() == null || mgPlayer.getPlayer().getKiller() == mgPlayer.getPlayer()) &&
                 mgPlayer.getMinigame().hasStarted()) {
@@ -144,7 +144,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
     @EventHandler
     public void playerAutoBalance(@NotNull PlayerDeathEvent event) {
-        MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity());
+        MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getEntity());
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isTeamGame()) {
             Minigame mgm = mgPlayer.getMinigame();
 

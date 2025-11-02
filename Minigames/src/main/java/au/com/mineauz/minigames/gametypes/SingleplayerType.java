@@ -72,6 +72,7 @@ public class SingleplayerType extends MinigameTypeBase {
         } else {
             mgPlayer.setCanFly(false);
         }
+
         if (mgPlayer.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName())) {
             mgPlayer.setCheckpoint(mgPlayer.getStoredPlayerCheckpoints().getCheckpoint(mgm.getName()));
             StoredPlayerCheckpoints spc = mgPlayer.getStoredPlayerCheckpoints();

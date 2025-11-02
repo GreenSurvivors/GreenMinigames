@@ -13,6 +13,8 @@ public enum MgMenuLangKey implements MinigameLangKey {
     MENU_CTF_CAPTUREPOINT_NAME("menu.ctf.capturePoint.name"),
     MENU_CTF_FLAGBACKMANUALLY_DESCRIPTION("menu.ctf.flagBackManually.description"),
     MENU_CTF_FLAGBACKMANUALLY_NAME("menu.ctf.flagBackManually.name"),
+    MENU_CTF_CARRYFLAGASITEM_NAME("menu.ctf.carryFlagAsItem.name"),
+    MENU_CTF_CARRYFLAGASITEM_DESCRIPTION("menu.ctf.carryFlagAsItem.description"),
     MENU_CTF_NAME("menu.ctf.name"),
     MENU_DEFAULTWINNINGTEAM_NAME("menu.defaultWinningTeam.name"),
     MENU_DELETE_RIGHTCLICK("menu.delete.RightClick"),

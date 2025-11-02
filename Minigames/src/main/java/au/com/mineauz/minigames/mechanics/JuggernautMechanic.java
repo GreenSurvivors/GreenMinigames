@@ -111,7 +111,7 @@ public class JuggernautMechanic extends GameMechanicBase {
             winners.add(mgPlayer);
             List<MinigamePlayer> losers = new ArrayList<>(mgPlayer.getMinigame().getPlayers());
             losers.remove(mgPlayer);
-            pdata.endMinigame(mgPlayer.getMinigame(), winners, losers);
+            playerManager.endMinigame(mgPlayer.getMinigame(), winners, losers);
         }
     }
 
@@ -130,13 +130,13 @@ public class JuggernautMechanic extends GameMechanicBase {
 
     @EventHandler
     private void playerDeath(@NotNull PlayerDeathEvent event) {
-        MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity());
+        MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getEntity());
         if (mgPlayer.getMinigame() != null && mgPlayer.getMinigame().getMechanic() == this) {
             JuggernautModule jm = JuggernautModule.getMinigameModule(mgPlayer.getMinigame());
 
             if (jm.getJuggernaut() == mgPlayer) {
                 if (event.getEntity().getKiller() != null) {
-                    MinigamePlayer pk = pdata.getMinigamePlayer(event.getEntity().getKiller());
+                    MinigamePlayer pk = playerManager.getMinigamePlayer(event.getEntity().getKiller());
                     jm.setJuggernaut(pk);
                     pk.addScore();
                     pk.getMinigame().setScore(pk, pk.getScore());
@@ -147,7 +147,7 @@ public class JuggernautMechanic extends GameMechanicBase {
                 }
             } else {
                 if (event.getEntity().getKiller() != null) {
-                    MinigamePlayer pk = pdata.getMinigamePlayer(event.getEntity().getKiller());
+                    MinigamePlayer pk = playerManager.getMinigamePlayer(event.getEntity().getKiller());
                     if (jm.getJuggernaut() == pk) {
                         pk.addScore();
                         pk.getMinigame().setScore(pk, pk.getScore());

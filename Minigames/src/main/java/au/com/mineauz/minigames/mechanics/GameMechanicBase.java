@@ -27,12 +27,12 @@ import java.util.List;
 
 public abstract class GameMechanicBase implements Listener {
     protected static final @NotNull Minigames plugin = Minigames.getPlugin();
-    protected final @NotNull MinigamePlayerManager pdata;
-    protected final @NotNull MinigameManager mdata;
+    protected final @NotNull MinigamePlayerManager playerManager;
+    protected final @NotNull MinigameManager minigameManager;
 
     public GameMechanicBase() {
-        pdata = plugin.getPlayerManager();
-        mdata = plugin.getMinigameManager();
+        playerManager = plugin.getPlayerManager();
+        minigameManager = plugin.getMinigameManager();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -87,7 +87,7 @@ public abstract class GameMechanicBase implements Listener {
                             teamToJoin = teamToCheck;
                     }
                     if (teamToJoin == null) {
-                        pdata.quitMinigame(mgPlayer, false);
+                        playerManager.quitMinigame(mgPlayer, false);
                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_FULL);
                     } else {
                         teamToJoin.addPlayer(mgPlayer);
@@ -111,7 +111,6 @@ public abstract class GameMechanicBase implements Listener {
                     MinigamePlayer mgPlayer = teamToBalance.getPlayers().getFirst();
                     MultiplayerType.switchTeam(minigame, mgPlayer, teamToJoin);
                     result.add(mgPlayer);
-
 
                     teamToJoin.addPlayer(mgPlayer);
                     broadcastAutobalance(minigame, mgPlayer, teamToJoin);
@@ -146,7 +145,6 @@ public abstract class GameMechanicBase implements Listener {
             if (teamToJoin != null) {
                 if (teamToBalance.getPlayers().size() - teamToJoin.getPlayers().size() > 1 && teamToJoin.shouldAutoBalance()) {
                     MultiplayerType.switchTeam(mgm, mgPlayer, teamToJoin);
-
 
                     teamToJoin.addPlayer(mgPlayer);
                     broadcastAutobalance(mgm, mgPlayer, teamToJoin);

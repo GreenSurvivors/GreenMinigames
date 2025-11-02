@@ -17,6 +17,7 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BetSign extends AMinigameSign {
     private static final Minigames plugin = Minigames.getPlugin();
@@ -27,12 +28,12 @@ public class BetSign extends AMinigameSign {
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.bet";
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.bet";
     }
 

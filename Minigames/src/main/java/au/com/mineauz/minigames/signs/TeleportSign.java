@@ -12,6 +12,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,12 +27,12 @@ public class TeleportSign extends AMinigameSign {
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.teleport";
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.teleport";
     }
 

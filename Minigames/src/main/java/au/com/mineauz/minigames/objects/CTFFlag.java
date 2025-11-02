@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.CTFModule;
 import au.com.mineauz.minigames.signs.CTFFlagSign;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -15,9 +16,13 @@ import org.bukkit.block.*;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,14 +30,16 @@ import java.util.List;
  * Technical background for {@link CTFFlagSign}
  */
 public class CTFFlag {
+    private final @NotNull NamespacedKey flagKey = new NamespacedKey(Minigames.getPlugin(), "is_ctf_flag");
     private final @NotNull BlockState spawnData;
     private final @NotNull List<@NotNull Component> signText;
     private final @NotNull Minigame minigame;
+    private final @NotNull CTFModule ctfModule;
     private final @NotNull Location spawnLocation;
     private final @Nullable Location attachedToLocation;
     private final @Nullable Team team;
     private @Nullable Location currentLocation = null;
-    private @Nullable BlockState originalBlock = null;
+    private BlockState originalBlockStateBelow = null;
     private boolean atHome = true;
     private int respawnTime = 60;
     private int taskID = -1;
@@ -46,6 +53,7 @@ public class CTFFlag {
         this.signText = sign.getSide(Side.FRONT).lines();
         this.team = team;
         this.minigame = minigame;
+        this.ctfModule = CTFModule.getMinigameModule(minigame);
         this.respawnTime = Minigames.getPlugin().getConfig().getInt("multiplayer.ctf.flagrespawntime");
 
         // get the location the sign was attached to
@@ -69,8 +77,8 @@ public class CTFFlag {
         return currentLocation;
     }
 
-    public void setCurrentLocation(@Nullable Location currentLocation) {
-        this.currentLocation = currentLocation;
+    public void setCurrentLocation(final @Nullable Location newLocation) {
+        this.currentLocation = newLocation;
     }
 
     public boolean isAtHome() {
@@ -85,7 +93,12 @@ public class CTFFlag {
         return team;
     }
 
-    public @Nullable Location spawnFlag(@NotNull Location location) {
+    /**
+     * Sets a flag as a block in the world above or below the given location, so that is stands on the ground
+     * @param location the location near where the flag should be placed
+     * @return the location where the flag was placed or null if not possible
+     */
+    public @Nullable Location spawnFlag(final @NotNull Location location) {
         Location blockBelow = location.clone();
         blockBelow.setY(blockBelow.getBlockY() - 1);
 
@@ -130,7 +143,7 @@ public class CTFFlag {
         newLocation.getBlock().setType(standingSign == null ? Material.OAK_SIGN : standingSign);
         Sign sign = (Sign) newLocation.getBlock().getState();
 
-        originalBlock = blockBelow.getBlock().getState();
+        originalBlockStateBelow = blockBelow.getBlock().getState();
         blockBelow.getBlock().setType(Material.BEDROCK);
 
         atHome = false;
@@ -139,7 +152,7 @@ public class CTFFlag {
             sign.getSide(Side.FRONT).line(i, signText.get(i));
         }
         sign.update();
-        currentLocation = newLocation.clone();
+        setCurrentLocation(newLocation.clone());
 
         return newLocation;
     }
@@ -151,10 +164,10 @@ public class CTFFlag {
                 currentLocation.getBlock().setType(Material.AIR);
 
                 blockBelow.setY(blockBelow.getY() - 1);
-                blockBelow.getBlock().setType(originalBlock.getType());
-                originalBlock.update();
+                blockBelow.getBlock().setType(originalBlockStateBelow.getType());
+                originalBlockStateBelow.update();
 
-                currentLocation = null;
+                setCurrentLocation(null);
                 stopTimer();
             }
         } else {
@@ -166,7 +179,7 @@ public class CTFFlag {
         removeFlag();
         spawnLocation.getBlock().setType(spawnData.getType());
         spawnData.update();
-        currentLocation = null;
+        setCurrentLocation(null);
         atHome = true;
 
         Sign sign = (Sign) spawnLocation.getBlock().getState();
@@ -191,11 +204,12 @@ public class CTFFlag {
     public void startReturnTimer() {
         final CTFFlag self = this;
         taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
-            String id = MinigameUtils.createLocationID(currentLocation);
-            if (minigame.hasDroppedFlag(id)) {
-                minigame.removeDroppedFlag(id);
+            final String locationID = MinigameUtils.createLocationID(currentLocation);
+
+            if (ctfModule.hasDroppedFlag(locationID)) {
+                ctfModule.removeDroppedFlag(locationID);
                 String newID = MinigameUtils.createLocationID(spawnLocation);
-                minigame.addDroppedFlag(newID, self);
+                ctfModule.addDroppedFlag(newID, self);
             }
             respawnFlag();
 
@@ -222,5 +236,24 @@ public class CTFFlag {
 
     public @Nullable Location getAttachedToLocation() {
         return attachedToLocation;
+    }
+
+    @Contract(pure = true)
+    public boolean isFlag (final @NotNull ItemStack item) {
+        return item.getPersistentDataContainer().has(flagKey);
+    }
+
+    public @NotNull ItemStack getAsItem() {
+        final Collection<ItemStack> drops = spawnData.getDrops(ItemStack.empty());
+
+        if (!drops.isEmpty()) {
+            final ItemStack stack = drops.iterator().next();
+
+            if (stack.editMeta(it -> it.getPersistentDataContainer().set(flagKey, PersistentDataType.BOOLEAN, Boolean.TRUE))) {
+                return stack;
+            }
+        }
+
+        return ItemStack.empty();
     }
 }

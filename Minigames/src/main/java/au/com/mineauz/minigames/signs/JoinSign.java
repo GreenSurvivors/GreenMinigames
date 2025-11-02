@@ -33,16 +33,14 @@ public class JoinSign extends AMinigameSign {
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.join";
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.join";
     }
-
-    @Override
     public boolean signCreate(@NotNull SignChangeEvent event) {
         final Sign sign = (Sign) event.getBlock().getState();
         final Minigame minigame = getMinigame(sign, event.line(2));

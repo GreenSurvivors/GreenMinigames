@@ -313,6 +313,7 @@ public class MinigamePlayerManager {
             } else {
                 mgPlayer.setCanFly(false);
             }
+
             mgPlayer.getLoadout().equipLoadout(mgPlayer);
 
             if (!minigame.isTeamGame()) {

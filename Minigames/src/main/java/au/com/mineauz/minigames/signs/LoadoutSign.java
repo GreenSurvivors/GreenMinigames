@@ -19,6 +19,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LoadoutSign extends AMinigameSign {
     private static final Minigames plugin = Minigames.getPlugin();
@@ -29,12 +30,12 @@ public class LoadoutSign extends AMinigameSign {
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.loadout";
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.loadout";
     }
 

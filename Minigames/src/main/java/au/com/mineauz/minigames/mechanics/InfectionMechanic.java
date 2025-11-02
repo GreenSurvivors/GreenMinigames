@@ -103,7 +103,7 @@ public class InfectionMechanic extends GameMechanicBase {
                             MinigameMessageType.INFO, mgPlayer);
                 } else {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_FULL);
-                    pdata.quitMinigame(mgPlayer, false);
+                    playerManager.quitMinigame(mgPlayer, false);
                 }
             }
         }
@@ -153,7 +153,7 @@ public class InfectionMechanic extends GameMechanicBase {
 
     @EventHandler(ignoreCancelled = true)
     private void playerDeath(@NotNull PlayerDeathEvent event) {
-        MinigamePlayer player = pdata.getMinigamePlayer(event.getEntity());
+        MinigamePlayer player = playerManager.getMinigamePlayer(event.getEntity());
         if (player.isInMinigame()) {
             Minigame mgm = player.getMinigame();
             if (mgm.isTeamGame() && mgm.getMechanicName().equals("infection")) {
@@ -167,7 +167,7 @@ public class InfectionMechanic extends GameMechanicBase {
                         MultiplayerType.switchTeam(mgm, player, infectedTeam);
                         infectionModule.addInfectedPlayer(player);
                         if (event.getEntity().getKiller() != null) {
-                            MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
+                            MinigamePlayer killer = playerManager.getMinigamePlayer(event.getEntity().getKiller());
                             killer.addScore();
                             mgm.setScore(killer, killer.getScore());
                         }
@@ -185,14 +185,14 @@ public class InfectionMechanic extends GameMechanicBase {
                             List<MinigamePlayer> l;
                             w = new ArrayList<>(infectedTeam.getPlayers());
                             l = new ArrayList<>();
-                            pdata.endMinigame(mgm, w, l);
+                            playerManager.endMinigame(mgm, w, l);
                         }
                     } else {
-                        pdata.quitMinigame(player, false);
+                        playerManager.quitMinigame(player, false);
                     }
                 } else {
                     if (event.getEntity().getKiller() != null) {
-                        MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
+                        MinigamePlayer killer = playerManager.getMinigamePlayer(event.getEntity().getKiller());
                         killer.addScore();
                         mgm.setScore(killer, killer.getScore());
                     }

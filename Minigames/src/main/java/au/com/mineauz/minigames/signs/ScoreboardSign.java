@@ -18,6 +18,7 @@ import org.bukkit.block.data.type.WallSign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
 
@@ -31,12 +32,12 @@ public class ScoreboardSign extends AMinigameSign {
     }
 
     @Override
-    public String getCreatePermission() {
+    public @Nullable String getCreatePermission() {
         return "minigame.sign.create.scoreboard";
     }
 
     @Override
-    public String getUsePermission() {
+    public @Nullable String getUsePermission() {
         return "minigame.sign.use.scoreboard";
     }
 
@@ -130,5 +131,4 @@ public class ScoreboardSign extends AMinigameSign {
             minigame.getScoreboardData().removeDisplay(sign.getBlock());
         }
     }
-
 }

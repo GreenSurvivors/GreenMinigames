@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.modules.*;
-import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.RegenRegionChangeResult;
@@ -41,7 +40,6 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
 public class Minigame implements ScriptObject {
     private final String name;
     private final Map<String, AFlag<?>> configFlags = new HashMap<>();
@@ -59,7 +57,7 @@ public class Minigame implements ScriptObject {
     private final RegionFlag floorDegen = new RegionFlag("sfloor", null, "sfloorpos.1", "sfloorpos.2");
     private final TimeFlag floorDegenTime = new TimeFlag("floordegentime", Minigames.getPlugin().getConfig().getLong("multiplayer.floordegenerator.time"));
     // Respawn Module
-    private final BooleanFlag respawn = new BooleanFlag("respawn", Minigames.getPlugin().getConfig().getBoolean("has-respawn"));
+    private final BooleanFlag respawn = new BooleanFlag("respawn", Minigames.getPlugin().getConfig().getBoolean("has-respawn")); // todo why is this here?
     private final LocationListFlag startLocations = new LocationListFlag("startpos", null);
     private final BooleanFlag randomizeStart = new BooleanFlag("ranndomizeStart", false);
     private final LocationFlag endLocation = new LocationFlag("endpos", null);
@@ -115,19 +113,13 @@ public class Minigame implements ScriptObject {
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final List<MinigamePlayer> spectators = new ArrayList<>();
     private final RecorderData blockRecorder = new RecorderData(this);
-    //CTF <-- todo move ctf stuff into it's mechanic
-    private final Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<>();
-    private final Map<String, CTFFlag> droppedFlag = new HashMap<>();
     private MinigameState state = MinigameState.IDLE;
     private FloorDegenerator sFloorDegen;
     private final @NotNull Scoreboard scoreboard = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
     //Multiplayer
-    @Nullable
-    private MultiplayerTimer mpTimer = null;
-    @Nullable
-    private MinigameTimer miniTimer = null;
-    @Nullable
-    private MultiplayerBets mpBets = null;
+    private @Nullable MultiplayerTimer mpTimer = null;
+    private @Nullable MinigameTimer miniTimer = null;
+    private @Nullable MultiplayerBets mpBets = null;
     private boolean playersAtStart = false;
 
     public Minigame(@NotNull String name, @NotNull MinigameType type, @NotNull Location start) {
@@ -472,7 +464,7 @@ public class Minigame implements ScriptObject {
         this.displayName.setFlag(displayName);
     }
 
-    public void setshowPlayerBroadcasts(Boolean showPlayerBroadcasts) {
+    public void setShowPlayerBroadcasts(Boolean showPlayerBroadcasts) {
         this.showPlayerBroadcasts.setFlag(showPlayerBroadcasts);
     }
 
@@ -562,8 +554,7 @@ public class Minigame implements ScriptObject {
         return !spectators.isEmpty();
     }
 
-    @NotNull
-    public List<MinigamePlayer> getSpectators() {
+    public @NotNull List<@NotNull MinigamePlayer> getSpectators() {
         return spectators;
     }
 
@@ -579,7 +570,7 @@ public class Minigame implements ScriptObject {
         return spectators.contains(player);
     }
 
-    public void setScore(@NotNull MinigamePlayer mgPlayer, int amount) {
+    public void setScore(final @NotNull MinigamePlayer mgPlayer, final int amount) {
         Objective objective = scoreboard.getObjective(getName());
         if (objective != null) {
             objective.getScore(mgPlayer.getPlayer()).setScore(amount);
@@ -728,54 +719,6 @@ public class Minigame implements ScriptObject {
 
     public void setMechanic(@NotNull GameMechanicBase gameMechanicBase) {
         this.mechanic.setFlag(gameMechanicBase.getMechanicName());
-    }
-
-    //todo move CtfFlags to CTF mechanic
-    public boolean isFlagCarrier(@Nullable MinigamePlayer mgPlayer) {
-        return flagCarriers.containsKey(mgPlayer);
-    }
-
-    public void addFlagCarrier(@NotNull MinigamePlayer mgPlayer, @NotNull CTFFlag flag) {
-        flagCarriers.put(mgPlayer, flag);
-    }
-
-    public void removeFlagCarrier(@NotNull MinigamePlayer mgPlayer) {
-        flagCarriers.remove(mgPlayer);
-    }
-
-    public @Nullable CTFFlag getCarriedFlag(@NotNull MinigamePlayer mgPlayer) {
-        return flagCarriers.get(mgPlayer);
-    }
-
-    public void resetFlags() {
-        for (CTFFlag ctfFlag : flagCarriers.values()) {
-            ctfFlag.respawnFlag();
-            ctfFlag.stopCarrierParticleEffect();
-        }
-        flagCarriers.clear();
-        for (String id : droppedFlag.keySet()) {
-            if (!getDroppedFlag(id).isAtHome()) {
-                getDroppedFlag(id).stopTimer();
-                getDroppedFlag(id).respawnFlag();
-            }
-        }
-        droppedFlag.clear();
-    }
-
-    public boolean hasDroppedFlag(String id) {
-        return droppedFlag.containsKey(id);
-    }
-
-    public void addDroppedFlag(String id, CTFFlag flag) {
-        droppedFlag.put(id, flag);
-    }
-
-    public void removeDroppedFlag(String id) {
-        droppedFlag.remove(id);
-    }
-
-    public @Nullable CTFFlag getDroppedFlag(String id) {
-        return droppedFlag.get(id);
     }
 
     public boolean hasPaintBallMode() {
@@ -977,7 +920,7 @@ public class Minigame implements ScriptObject {
         return allowThirdPartyTeleportation.getFlag();
     }
 
-    public void setThirdPartyTeleportationAllowed(boolean allowThirdPartyTeleportation) {
+    public void setThirdPartyTeleportationAllowed(final boolean allowThirdPartyTeleportation) {
         this.allowThirdPartyTeleportation.setFlag(allowThirdPartyTeleportation);
     }
 
@@ -1124,9 +1067,11 @@ public class Minigame implements ScriptObject {
         final Menu fmain = mainMenu;
         mechSettings.setClick(() -> {
             if (getMechanic().displaySettings(mgm) != null &&
-                    getMechanic().displaySettings(mgm).displayMechanicSettings(fmain))
+                    getMechanic().displaySettings(mgm).displayMechanicSettings(fmain)) {
                 return null;
-            return mechSettings.getDisplayItem();
+            } else {
+                return mechSettings.getDisplayItem();
+            }
         });
         typeDependentDisplayData.add(new TypeDependentDisplayData(mechSettings, List.of(MinigameType.MULTIPLAYER), 4));
         if (type.getFlag() == MinigameType.MULTIPLAYER) {

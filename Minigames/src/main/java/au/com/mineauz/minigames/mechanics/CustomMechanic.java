@@ -53,7 +53,7 @@ public class CustomMechanic extends GameMechanicBase {
 
     @EventHandler
     public void playerAutoBalance(@NotNull PlayerDeathEvent event) {
-        MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity());
+        MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getEntity());
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isTeamGame()) {
             Minigame mgm = mgPlayer.getMinigame();
 
