@@ -18,6 +18,7 @@ import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.signs.MinigameSign;
 import au.com.mineauz.minigames.signs.SignBase;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -52,7 +53,16 @@ public class CTFMechanic extends GameMechanicBase {
 
     @Override
     public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
-        return true;
+        TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+
+        if (teamsModule != null && teamsModule.getTeams().size() >= 2 && minigame.isTeamGame()) {
+            return true;
+
+        } else {
+            caller.sendMessage(Component.text("Capture the flag needs at least two teams!"), MinigameMessageType.ERROR);
+            return false;
+        }
+
     }
 
     @Override
