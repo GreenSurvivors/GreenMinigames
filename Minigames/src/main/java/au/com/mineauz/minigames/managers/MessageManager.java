@@ -46,7 +46,7 @@ public class MessageManager {
             locale = Locale.getDefault();
         }
 
-        Minigames.log().info("MessageManager set locale for language:" + locale.toLanguageTag());
+        Minigames.getPlugin().getComponentLogger().info("MessageManager set locale for language:" + locale.toLanguageTag());
         File file = new File(new File(Minigames.getPlugin().getDataFolder(), "lang"), "minigames.properties");
         registerCoreLanguage(file, locale);
     }

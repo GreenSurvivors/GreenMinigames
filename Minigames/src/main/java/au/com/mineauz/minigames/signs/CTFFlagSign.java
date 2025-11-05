@@ -6,7 +6,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -82,8 +81,7 @@ public class CTFFlagSign implements MinigameSign {
                     mgm.getMechanicName().equals("ctf") &&
                     !player.hasFlag(ChatColor.stripColor(sign.getLine(2))) &&
                     !player.getTeam().getDisplayName().equals(ChatColor.stripColor(sign.getLine(2) + " Team"))) {
-                TakeFlagEvent ev = new TakeFlagEvent(mgm, player, ChatColor.stripColor(sign.getLine(2)));
-                Bukkit.getPluginManager().callEvent(ev);
+                new TakeFlagEvent(mgm, player, ChatColor.stripColor(sign.getLine(2))).callEvent();
                 return true;
             }
         } else if (player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)

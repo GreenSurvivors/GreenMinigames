@@ -246,7 +246,11 @@ public class CTFFlag {
         if (!drops.isEmpty()) {
             final ItemStack stack = drops.iterator().next();
 
-            if (stack.editMeta(it -> it.getPersistentDataContainer().set(flagKey, PersistentDataType.BOOLEAN, Boolean.TRUE))) {
+            if (stack.editMeta(itemMeta -> {
+                itemMeta.getPersistentDataContainer().set(flagKey, PersistentDataType.BOOLEAN, Boolean.TRUE);
+                itemMeta.customName(Component.text().append(signText.get(2).append()).append(Component.text(" Flag")).build());
+                itemMeta.lore(List.of(Component.text("Bring this flag back home!"), Component.text("You can drop the flag by placing it.")));
+            })) {
                 return stack;
             }
         }
