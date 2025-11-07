@@ -304,8 +304,7 @@ public class CTFMechanic extends GameMechanicBase {
 
                 final PlayerInventory inventory = mgPlayer.getPlayer().getInventory();
                 if (flag.isFlag(inventory.getItemInMainHand())) {
-
-                    final @Nullable Location flagLocation = flag.spawnFlag(event.getClickedBlock().getLocation());
+                    final @Nullable Location flagLocation = flag.spawnFlag(event.getClickedBlock().getLocation(), event.getBlockFace());
 
                     if (flagLocation != null) {
                         inventory.setItemInMainHand(ItemStack.empty());
@@ -330,7 +329,7 @@ public class CTFMechanic extends GameMechanicBase {
                 final CTFFlag flag = ctfModule.getCarriedFlag(mgPlayer);
                 event.getDrops().removeIf(flag::isFlag);
 
-                doDropFlag(minigame, ctfModule, flag, mgPlayer, flag.spawnFlag(mgPlayer.getPlayer().getLocation()));
+                doDropFlag(minigame, ctfModule, flag, mgPlayer, flag.spawnFlag(mgPlayer.getPlayer().getLocation(), null));
             }
         }
     }
@@ -355,7 +354,7 @@ public class CTFMechanic extends GameMechanicBase {
 
             if (ctfModule != null) {
                 for (CTFFlag ctfFlag : ctfModule.getAllDroppedFlags()) {
-                    if (ctfFlag.getAttachedToLocation().equals(blockLocation)) {
+                    if (ctfFlag.getSpawnAttachedToLocation().equals(blockLocation)) {
                         MinigameSign mgSign = SignBase.getMinigameSignById("Flag");
 
                         if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
