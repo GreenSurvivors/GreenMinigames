@@ -6,6 +6,8 @@ import au.com.mineauz.minigames.objects.ResourcePack;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,14 +28,6 @@ public class ResourcePackManager {
                     Minigames.log().severe("Cannot create a resource directory to house resources " +
                             "- they will be unavailable");
                     enabled = false;
-                } else {
-                    if (Files.exists(path))
-                        enabled = true;
-                    else {
-                        enabled = false;
-                        Minigames.log().severe("Cannot create a resource directory to house resources " +
-                                "- they will be unavailable.");
-                    }
                 }
 
             } catch (IOException e) {
@@ -49,11 +43,11 @@ public class ResourcePackManager {
 
     private boolean loadEmptyPack() {
         try {
-            URL u = new URL("https://github.com/AddstarMC/Minigames/blob/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip");
+            URL u = new URI("https://github.com/AddstarMC/Minigames/blob/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip").parseServerAuthority().toURL();
             ResourcePack empty = new ResourcePack("empty", u);
             addResourcePack(empty);
             return true;
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException | URISyntaxException e) {
             return false;
         }
     }
@@ -115,6 +109,4 @@ public class ResourcePackManager {
     public Set<String> getResourceNames() {
         return resources.keySet();
     }
-
-
 }

@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import com.google.common.base.Charsets;
@@ -14,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -93,25 +93,27 @@ public class DebugCommand implements ICommand {
         } else {
             Minigames.getPlugin().toggleDebug();
 
-            if (Minigames.getPlugin().isDebugging())
+            if (Minigames.getPlugin().isDebugging()) {
                 sender.sendMessage(ChatColor.GRAY + "Debug mode active.");
-            else
+            } else {
                 sender.sendMessage(ChatColor.GRAY + "Deactivated debug mode.");
-            return true;
+            }
         }
-        return false;
+        return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
-        List<String> out = new ArrayList<>();
-        if (args.length == 0) {
-            out.add("NO");
-            out.add("YES");
-            out.add("PASTE");
+        if (args.length == 1) {
+            return MinigameUtils.tabCompleteMatch(List.of(
+                "ON",
+                "OFF",
+                "PASTE"
+            ), args[0]);
         }
-        return out;
+
+        return null;
     }
 
     private String getFile(Path file) {

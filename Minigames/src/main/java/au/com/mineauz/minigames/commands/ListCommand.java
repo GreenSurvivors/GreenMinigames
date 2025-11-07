@@ -51,7 +51,7 @@ public class ListCommand implements ICommand {
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
-        List<String> mglist = plugin.getConfig().getStringList("minigames");
+        List<String> mglist = plugin.getConfig().getStringList("minigames"); // todo a Minigame can fail to load but still stay in this list. Have a ponder about Minigames.getPlugin().getMinigameManager().getAllMinigames();
         StringBuilder minigames = new StringBuilder();
 
         for (int i = 0; i < mglist.size(); i++) {

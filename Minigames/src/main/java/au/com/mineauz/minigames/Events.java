@@ -48,7 +48,7 @@ import java.util.stream.Stream;
 public class Events implements Listener {
     private static final @NotNull Minigames plugin = Minigames.getPlugin();
     private final @NotNull MinigamePlayerManager playerManager = plugin.getPlayerManager();
-    private final @NotNull MinigameManager mdata = plugin.getMinigameManager();
+    private final @NotNull MinigameManager minigameManager = plugin.getMinigameManager();
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerResourcePack(PlayerResourcePackStatusEvent event) { //todo 1.20.3 + add ressource pack not set
@@ -109,7 +109,7 @@ public class Events implements Listener {
             }
 
             if (msg != null && !msg.equals("")) {
-                mdata.sendMinigameMessage(mgm, msg, MinigameMessageType.ERROR);
+                minigameManager.sendMinigameMessage(mgm, msg, MinigameMessageType.ERROR);
             }
             if (mgm.getState() == MinigameState.STARTED) {
                 if (mgm.getLives() > 0 && mgm.getLives() <= ply.getDeaths()) {
@@ -196,10 +196,10 @@ public class Events implements Listener {
         plugin.display.removeAll(event.getPlayer());
 
         if (Bukkit.getServer().getOnlinePlayers().isEmpty()) {
-            for (String mgm : mdata.getAllMinigames().keySet()) {
-                if (mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL) {
-                    if (mdata.getMinigame(mgm).getMinigameTimer() != null)
-                        mdata.getMinigame(mgm).getMinigameTimer().stopTimer();
+            for (String mgm : minigameManager.getAllMinigames().keySet()) {
+                if (minigameManager.getMinigame(mgm).getType() == MinigameType.GLOBAL) {
+                    if (minigameManager.getMinigame(mgm).getMinigameTimer() != null)
+                        minigameManager.getMinigame(mgm).getMinigameTimer().stopTimer();
                 }
             }
         }
@@ -231,7 +231,7 @@ public class Events implements Listener {
         mgPlayer.loadClaimedRewards();
 
         if (Bukkit.getServer().getOnlinePlayers().size() == 1) {
-            for (Minigame mgm : mdata.getAllMinigames().values()) {
+            for (Minigame mgm : minigameManager.getAllMinigames().values()) {
                 if (mgm != null && mgm.getType() == MinigameType.GLOBAL) {
                     if (mgm.getMinigameTimer() != null) mgm.getMinigameTimer().startTimer();
                 }
@@ -280,7 +280,7 @@ public class Events implements Listener {
                 sign.update();
                 if (event.getPlayer().hasPermission("minigame.sign.use.details")) {
                     if ((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !ply.isInMinigame()) {
-                        Minigame mgm = mdata.getMinigame(sign.getLine(2));
+                        Minigame mgm = minigameManager.getMinigame(sign.getLine(2));
                         if (mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
                             if (!mgm.isEnabled()) {
                                 event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
@@ -369,7 +369,7 @@ public class Events implements Listener {
             } else if (event.getClickedBlock() != null && (Tag.ALL_SIGNS.isTagged(event.getClickedBlock().getType()))) {
                 Sign sign = (Sign) event.getClickedBlock().getState();
                 if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")) {
-                    Minigame minigame = mdata.getMinigame(sign.getLine(2));
+                    Minigame minigame = minigameManager.getMinigame(sign.getLine(2));
                     tool.setMinigame(minigame);
                     ply.sendInfoMessage("Tools Minigame has been set to " + minigame);
                     event.setCancelled(true);
