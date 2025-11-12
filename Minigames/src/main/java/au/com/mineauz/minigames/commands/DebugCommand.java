@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import de.greensurvivors.Paste;
 import de.greensurvivors.PasteContent;
@@ -18,7 +19,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -85,25 +85,27 @@ public class DebugCommand extends ACommand {
         } else {
             Minigames.getPlugin().toggleDebug();
 
-            if (Minigames.getPlugin().isDebugging())
+            if (Minigames.getPlugin().isDebugging()) {
                 sender.sendMessage(ChatColor.GRAY + "Debug mode active.");
-            else
+            } else {
                 sender.sendMessage(ChatColor.GRAY + "Deactivated debug mode.");
-            return true;
+            }
         }
-        return false;
+        return true;
     }
 
     @Override
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
-        List<String> out = new ArrayList<>();
-        if (args.length == 0) {
-            out.add("NO");
-            out.add("YES");
-            out.add("PASTE");
+        if (args.length == 1) {
+            return MinigameUtils.tabCompleteMatch(List.of(
+                "ON",
+                "OFF",
+                "PASTE"
+            ), args[0]);
         }
-        return out;
+
+        return null;
     }
 
     private @NotNull String getFile(@NotNull Path file) {

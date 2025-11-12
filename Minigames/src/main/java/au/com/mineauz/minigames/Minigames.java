@@ -332,22 +332,24 @@ public class Minigames extends JavaPlugin {
 
         try {
             getConfig().load(getDataFolder() + File.separator + "config.yml");
-            List<String> mgs = new ArrayList<>();
+            final List<String> mgs;
             if (getConfig().contains("minigames")) {
                 mgs = getConfig().getStringList("minigames");
+            } else {
+                mgs = Collections.emptyList();
             }
+
             debug = getConfig().getBoolean("debug", false);
-            final List<String> allMGS = new ArrayList<>(mgs);
 
             if (!mgs.isEmpty()) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                    for (final String minigame : allMGS) {
-                        final Minigame game = new Minigame(minigame);
+                    for (final String minigameName : mgs) {
+                        final Minigame game = new Minigame(minigameName);
                         try {
                             game.loadMinigame();
                             minigameManager.addMinigame(game);
                         } catch (final Exception e) {
-                            getComponentLogger().error(Component.text("Failed to load \"" + minigame + "\"! The configuration file may be corrupt or missing!", NamedTextColor.RED));
+                            getComponentLogger().error(Component.text("Failed to load \"" + minigameName + "\"! The configuration file may be corrupt or missing!", NamedTextColor.RED));
                             getCmpnntLogger().error("", e);
                         }
                     }

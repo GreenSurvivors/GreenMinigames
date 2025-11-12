@@ -74,7 +74,15 @@ public class CTFMechanic extends GameMechanicBase {
 
     @Override
     public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
-        return true;
+        TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+
+        if (teamsModule != null && teamsModule.getTeams().size() >= 2 && minigame.isTeamGame()) {
+            return true;
+
+        } else {
+            caller.sendMessage(Component.text("Capture the flag needs at least two teams!"), MinigameMessageType.ERROR);
+            return false;
+        }
     }
 
     @Override
@@ -339,8 +347,7 @@ public class CTFMechanic extends GameMechanicBase {
 
                 final PlayerInventory inventory = mgPlayer.getPlayer().getInventory();
                 if (flag.isFlag(inventory.getItemInMainHand())) {
-
-                    final @Nullable Location flagLocation = flag.spawnFlag(event.getClickedBlock().getLocation());
+                    final @Nullable Location flagLocation = flag.spawnFlag(event.getClickedBlock().getLocation(), event.getBlockFace());
 
                     if (flagLocation != null) {
                         doDropFlag(minigame, ctfModule, flag, mgPlayer, flagLocation);
@@ -363,7 +370,7 @@ public class CTFMechanic extends GameMechanicBase {
                 CTFFlag flag = ctfModule.getCarriedFlag(mgPlayer);
 
                 event.getDrops().removeIf(flag::isFlag);
-                doDropFlag(minigame, ctfModule, flag, mgPlayer, flag.spawnFlag(mgPlayer.getPlayer().getLocation()));
+                doDropFlag(minigame, ctfModule, flag, mgPlayer, flag.spawnFlag(mgPlayer.getPlayer().getLocation(), null));
             }
         }
     }
@@ -388,7 +395,7 @@ public class CTFMechanic extends GameMechanicBase {
 
             if (ctfModule != null) {
                 for (CTFFlag ctfFlag : ctfModule.getAllDroppedFlags()) {
-                    if (ctfFlag.getAttachedToLocation().equals(blockLocation)) {
+                    if (ctfFlag.getSpawnAttachedToLocation().equals(blockLocation)) {
                         // new creation for easy access to permissions.
                         // I wish once again that you could define abstract static methods,
                         // so we could access static values like permissions without an object

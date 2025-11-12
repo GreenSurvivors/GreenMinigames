@@ -32,14 +32,6 @@ public class ResourcePackManager { //todo work with multiple ressource packs
                     Minigames.getCmpnntLogger().error("Cannot create a resource directory to house resources " +
                             "- they will be unavailable");
                     enabled = false;
-                } else {
-                    if (Files.exists(path))
-                        enabled = true;
-                    else {
-                        enabled = false;
-                        Minigames.getCmpnntLogger().error("Cannot create a resource directory to house resources " +
-                                "- they will be unavailable.");
-                    }
                 }
 
             } catch (IOException e) {
@@ -55,7 +47,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
 
     private boolean loadEmptyPack() {
         try {
-            URL url = new URI("https://github.com/AddstarMC/Minigames/blob/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip").toURL();
+            URL url = new URI("https://github.com/AddstarMC/Minigames/blob/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip").parseServerAuthority().toURL();
             ResourcePack empty = new ResourcePack(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME), url);
             addResourcePack(empty);
             return true;

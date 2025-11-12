@@ -77,7 +77,7 @@ public class CTFFlagSign extends AMinigameSign {
     @Override
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
         if (mgPlayer.isInMinigame()) {
-            if (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
+            if (mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
                 if (mgPlayer.getMinigame().isSpectator(mgPlayer)) {
                     return false;
                 }

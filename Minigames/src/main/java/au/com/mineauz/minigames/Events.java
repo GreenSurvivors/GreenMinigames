@@ -68,7 +68,7 @@ import java.util.stream.Stream;
 public class Events implements Listener {
     private static final @NotNull Minigames plugin = Minigames.getPlugin();
     private final @NotNull MinigamePlayerManager playerManager = plugin.getPlayerManager();
-    private final @NotNull MinigameManager mdata = plugin.getMinigameManager();
+    private final @NotNull MinigameManager minigameManager = plugin.getMinigameManager();
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerResourcePack(@NotNull PlayerResourcePackStatusEvent event) { //todo 1.20.3 + add ressource pack not set (redo with multible Ressoucepacks in mind.)
@@ -214,10 +214,10 @@ public class Events implements Listener {
         plugin.display.removeAll(event.getPlayer());
 
         if (Bukkit.getServer().getOnlinePlayers().isEmpty()) {
-            for (String mgm : mdata.getAllMinigames().keySet()) {
-                if (mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL) {
-                    if (mdata.getMinigame(mgm).getMinigameTimer() != null)
-                        mdata.getMinigame(mgm).getMinigameTimer().stopTimer();
+            for (String mgm : minigameManager.getAllMinigames().keySet()) {
+                if (minigameManager.getMinigame(mgm).getType() == MinigameType.GLOBAL) {
+                    if (minigameManager.getMinigame(mgm).getMinigameTimer() != null)
+                        minigameManager.getMinigame(mgm).getMinigameTimer().stopTimer();
                 }
             }
         }
@@ -251,7 +251,7 @@ public class Events implements Listener {
         mgPlayer.loadClaimedRewards();
 
         if (Bukkit.getServer().getOnlinePlayers().size() == 1) {
-            for (Minigame mgm : mdata.getAllMinigames().values()) {
+            for (Minigame mgm : minigameManager.getAllMinigames().values()) {
                 if (mgm.getType() == MinigameType.GLOBAL && mgm.getMinigameTimer() != null) {
                     mgm.getMinigameTimer().startTimer();
                 }
