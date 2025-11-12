@@ -30,7 +30,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -307,8 +306,6 @@ public class CTFMechanic extends GameMechanicBase {
                     final @Nullable Location flagLocation = flag.spawnFlag(event.getClickedBlock().getLocation(), event.getBlockFace());
 
                     if (flagLocation != null) {
-                        inventory.setItemInMainHand(ItemStack.empty());
-
                         doDropFlag(minigame, ctfModule, flag, mgPlayer, flagLocation);
                     }
 

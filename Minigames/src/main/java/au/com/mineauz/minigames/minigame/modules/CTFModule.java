@@ -10,6 +10,8 @@ import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,8 +78,19 @@ public class CTFModule extends MinigameModule {
         }
     }
 
-    public void removeFlagCarrier(final @NotNull MinigamePlayer ply) {
-        flagCarriers.remove(ply);
+    public void removeFlagCarrier(final @NotNull MinigamePlayer mgPlayer) {
+        final @Nullable CTFFlag flag = flagCarriers.remove(mgPlayer);
+
+        if (shouldCarryFlagAsItem() && flag != null) {
+            final PlayerInventory inventory = mgPlayer.getPlayer().getInventory();
+            final ItemStack[] items = inventory.getStorageContents();
+
+            for (int i = 0; i < items.length; i++) {
+                if (flag.isFlag(items[i])){
+                    inventory.setItem(i, ItemStack.empty());
+                }
+            }
+        }
     }
 
     public CTFFlag getCarriedFlag(final @NotNull MinigamePlayer ply) {

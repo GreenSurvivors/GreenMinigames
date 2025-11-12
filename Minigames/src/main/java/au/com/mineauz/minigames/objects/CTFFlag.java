@@ -276,8 +276,10 @@ public class CTFFlag {
         }, respawnTime * 20L);
     }
 
-    public void startCarrierParticleEffect(final Player player) {
-        cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 0), 15L, 15L);
+    public void startCarrierParticleEffect(final @NotNull Player player) {
+        cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () ->
+            player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 0), 15L, 15L
+        );
     }
 
     public void stopCarrierParticleEffect() {
