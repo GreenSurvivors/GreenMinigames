@@ -80,7 +80,10 @@ public class CTFMechanic extends GameMechanicBase {
             return true;
 
         } else {
-            caller.sendMessage(Component.text("Capture the flag needs at least two teams!"), MinigameMessageType.ERROR);
+            if (caller != null) {
+                MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_START_NOT_ENOUGH_TEAMS);
+            }
+
             return false;
         }
     }
@@ -406,7 +409,7 @@ public class CTFMechanic extends GameMechanicBase {
                             event.setCancelled(true);
                         } else { // waring: may lead to floating flags, or them maybe plopping of upon returning
                             MinigameMessageManager.sendMgMessage(Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()),
-                                MinigameMessageType.WARNING, MgMiscLangKey.SIGN_FLAG_BROKEN_SUPPORT);
+                                MinigameMessageType.WARNING, MgMiscLangKey.SIGN_CTF_FLAG_BROKEN_SUPPORT);
                         }
 
                         return;

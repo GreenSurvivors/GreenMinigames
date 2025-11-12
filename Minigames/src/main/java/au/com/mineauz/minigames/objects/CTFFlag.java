@@ -310,7 +310,7 @@ public class CTFFlag {
             if (stack.editMeta(itemMeta -> {
                 itemMeta.getPersistentDataContainer().set(flagKey, PersistentDataType.BOOLEAN, Boolean.TRUE);
                 itemMeta.customName(Component.text().append(signText.get(2).append()).append(Component.text(" Flag")).build());
-                itemMeta.lore(List.of(Component.text("Bring this flag back home!"), Component.text("You can drop the flag by placing it.")));
+                itemMeta.lore(MinigameMessageManager.getMgMessageList(MgMiscLangKey.SIGN_CTF_FLAG_DESCRIPTION));
             })) {
                 return stack;
             }

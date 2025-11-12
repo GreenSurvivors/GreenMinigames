@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import de.greensurvivors.Paste;
 import de.greensurvivors.PasteContent;
@@ -98,7 +97,7 @@ public class DebugCommand extends ACommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return MinigameUtils.tabCompleteMatch(List.of(
+            return CommandDispatcher.tabCompleteMatch(List.of(
                 "ON",
                 "OFF",
                 "PASTE"
