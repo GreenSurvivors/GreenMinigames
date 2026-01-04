@@ -4,3 +4,8 @@ target
 *.iml
 docs/build/
 .gradle/
+/Minigames/build/
+/Regions/build/
+/build/
+/run/
+/buildSrc/
