@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.managers;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
@@ -40,7 +39,6 @@ public class MinigameManager {
     private final Map<String, Minigame> minigames = new HashMap<>();
     private final Map<String, Configuration> configs = new HashMap<>();
     private final Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<>();
-    private final Map<String, PlayerLoadout> globalLoadouts = new HashMap<>();
     private final Map<String, RewardsFlag> rewardSigns = new HashMap<>();
     private final Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<>();
     private final Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<>();
@@ -227,38 +225,6 @@ public class MinigameManager {
 
     public @NotNull Set<@NotNull MinigameType> getMinigameTypes() {
         return this.minigameTypes.keySet();
-    }
-
-    public void addGlobalLoadout(final @NotNull String name) {
-        this.globalLoadouts.put(name, new PlayerLoadout(name));
-    }
-
-    public void deleteGlobalLoadout(final @NotNull String name) {
-        this.globalLoadouts.remove(name);
-    }
-
-    public @NotNull List<@NotNull PlayerLoadout> getGlobalLoadouts() {
-        return new ArrayList<>(this.globalLoadouts.values());
-    }
-
-    public @NotNull Map<@NotNull String, @NotNull PlayerLoadout> getGlobalLoadoutMap() {
-        return this.globalLoadouts;
-    }
-
-    public @Nullable PlayerLoadout getLoadout(final @NotNull String name) {
-        PlayerLoadout pl = null;
-        if (this.globalLoadouts.containsKey(name)) {
-            pl = this.globalLoadouts.get(name);
-        }
-        return pl;
-    }
-
-    public boolean hasLoadouts() {
-        return !this.globalLoadouts.isEmpty();
-    }
-
-    public boolean hasLoadout(final @NotNull String name) {
-        return this.globalLoadouts.containsKey(name);
     }
 
     public void addRewardSign(final @NotNull Location loc) {

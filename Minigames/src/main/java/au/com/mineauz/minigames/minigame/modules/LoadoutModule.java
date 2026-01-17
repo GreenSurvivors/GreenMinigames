@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -23,12 +24,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class LoadoutModule extends MinigameModule {
-    private static final @NotNull Map<@NotNull String, @NotNull LoadoutAddonFactory> registeredAddons = new HashMap<>();
+    private static final @NotNull Map<@NotNull Key, @NotNull ILoadoutAddonFactory> registeredAddons = new HashMap<>();
+    private static final @NotNull Map<String, @NotNull PlayerLoadout> globalLoadouts = new HashMap<>();
+
     private final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts = new HashMap<>();
 
     public LoadoutModule(@NotNull Minigame mgm, @NotNull String name) {
         super(mgm, name);
         PlayerLoadout defaultLoadout = new PlayerLoadout("default");
+        registeredAddons.values().forEach(defaultLoadout::registerAddon);
         defaultLoadout.setDeletable(false);
         loadouts.put("default", defaultLoadout);
     }
@@ -38,19 +42,22 @@ public class LoadoutModule extends MinigameModule {
     }
 
     /**
-     * Registers a loadout addon. This addon will be available for all loadouts on all games.
+     * Registers a loadout addonFactory. This addonFactory will be creating a new addon for all newly created loadouts on all games.
      *
-     * @param addonFactory  The addon to register
+     * @param addonFactory  The factory producing our addon to register
      */
-    public @Nullable LoadoutAddonFactory registerAddon(@NotNull LoadoutAddonFactory addonFactory) {
-        LoadoutAddonFactory replacedFactory = registeredAddons.put(addonFactory.getAddonName(), addonFactory);
+    public static @Nullable ILoadoutAddonFactory registerAddon(final @NotNull ILoadoutAddonFactory addonFactory) {
+        final @Nullable ILoadoutAddonFactory replacedFactory = registeredAddons.put(addonFactory.getKey(), addonFactory);
+        globalLoadouts.values().forEach( gl -> gl.registerAddon(addonFactory));
 
-        for (PlayerLoadout loadout : loadouts.values()) {
-            if (replacedFactory != null) {
-                loadout.unregisterAddon(replacedFactory.getAddonName());
+        for (final @NotNull Minigame minigame : Minigames.getPlugin().getMinigameManager().getAllMinigames().values()) {
+            final @Nullable LoadoutModule module = getMinigameModule(minigame);
+
+            if (module != null) {
+                for (final @NotNull PlayerLoadout loadout : module.loadouts.values()) {
+                    loadout.registerAddon(addonFactory);
+                }
             }
-
-            loadout.registerAddon(addonFactory);
         }
 
         return replacedFactory;
@@ -59,24 +66,37 @@ public class LoadoutModule extends MinigameModule {
     /**
      * Unregisters a previously registered addon
      *
-     * @param addonName The addon to unregister
+     * @param loadoutAddonKey The addon to unregister
      */
-    public void unregisterAddon(@NotNull String addonName) {
-        registeredAddons.remove(addonName);
+    public static boolean unregisterAddon(final @NotNull Key loadoutAddonKey) {
+        final ILoadoutAddonFactory removed = registeredAddons.remove(loadoutAddonKey);
+        globalLoadouts.values().forEach( gl -> gl.unregisterAddon(loadoutAddonKey));
 
-        for (PlayerLoadout loadout : loadouts.values()) {
-            loadout.unregisterAddon(addonName);
+        for (final @NotNull Minigame minigame : Minigames.getPlugin().getMinigameManager().getAllMinigames().values()) {
+            final @Nullable LoadoutModule module = getMinigameModule(minigame);
+
+            if (module != null) {
+                for (final @NotNull PlayerLoadout loadout : getMinigameModule(minigame).loadouts.values()) {
+                    loadout.unregisterAddon(loadoutAddonKey);
+                }
+            }
         }
+
+        return removed != null;
     }
 
     /**
      * Retrieves a registered addon
      *
-     * @param addonName The addon name to get the addon for
+     * @param addonKey The addon name to get the addon for
      * @return The addon or null
      */
-    public static LoadoutAddonFactory getAddonFactory(@NotNull String addonName) {
-        return registeredAddons.get(addonName);
+    public static @Nullable ILoadoutAddonFactory getAddonFactory(final @NotNull Key addonKey) {
+        return registeredAddons.get(addonKey);
+    }
+
+    public static @NotNull Collection<@NotNull ILoadoutAddonFactory> getAllAddonFactories(){
+        return registeredAddons.values();
     }
 
     @Override
@@ -85,7 +105,7 @@ public class LoadoutModule extends MinigameModule {
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+    public void save(final @NotNull FileConfiguration config, final @NotNull String path) {
         char configSeparator = config.options().pathSeparator();
         LoadoutFlag loadoutFlag;
         for (Map.Entry<String, PlayerLoadout> loadoutEntry : loadouts.entrySet()) {
@@ -95,7 +115,7 @@ public class LoadoutModule extends MinigameModule {
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+    public void load(final @NotNull FileConfiguration config, final @NotNull String path) {
         char configSeparator = config.options().pathSeparator();
         final ConfigurationSection configSection = config.getConfigurationSection(path + configSeparator + "loadouts");
         if (configSection != null) {
@@ -119,6 +139,34 @@ public class LoadoutModule extends MinigameModule {
         }
     }
 
+    public static void addGlobalLoadout(final @NotNull String name) {
+        globalLoadouts.put(name, new PlayerLoadout(name));
+    }
+
+    public static void deleteGlobalLoadout(final @NotNull String name) {
+        globalLoadouts.remove(name);
+    }
+
+    public static @NotNull List<@NotNull PlayerLoadout> getGlobalLoadouts() {
+        return new ArrayList<>(globalLoadouts.values());
+    }
+
+    public static @NotNull Map<@NotNull String, @NotNull PlayerLoadout> getGlobalLoadoutMap() {
+        return globalLoadouts;
+    }
+
+    public static @Nullable PlayerLoadout getGlobalLoadout(final @NotNull String name) {
+        return globalLoadouts.get(name);
+    }
+
+    public static boolean hasGlobalLoadouts() {
+        return !globalLoadouts.isEmpty();
+    }
+
+    public static boolean hasGlobalLoadout(final @NotNull String name) {
+        return globalLoadouts.containsKey(name);
+    }
+
     public void addLoadout(@NotNull String name) {
         loadouts.put(name, new PlayerLoadout(name));
     }
@@ -139,7 +187,7 @@ public class LoadoutModule extends MinigameModule {
         return loadouts;
     }
 
-    public @Nullable PlayerLoadout getLoadout(@NotNull String name) {
+    public @Nullable PlayerLoadout getLoadout(final @NotNull String name) {
         if (loadouts.containsKey(name)) {
             return loadouts.get(name);
         } else {
@@ -156,7 +204,7 @@ public class LoadoutModule extends MinigameModule {
         return !loadouts.isEmpty();
     }
 
-    public boolean hasLoadout(@NotNull String name) {
+    public boolean hasLoadout(final @NotNull String name) {
         if (!name.equalsIgnoreCase("default")) {
             if (loadouts.containsKey(name)) {
                 return loadouts.containsKey(name);

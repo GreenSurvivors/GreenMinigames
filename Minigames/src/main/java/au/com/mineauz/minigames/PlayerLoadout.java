@@ -4,8 +4,9 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.ALoadoutAddon;
-import au.com.mineauz.minigames.minigame.modules.LoadoutAddonFactory;
+import au.com.mineauz.minigames.minigame.modules.ILoadoutAddonFactory;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -27,9 +28,9 @@ import java.util.regex.Pattern;
 public class PlayerLoadout {
     private static final @NotNull Pattern NUMBER = Pattern.compile("[+-]?[0-9]+");
 
+    private final @NotNull Map<@NotNull Key, @NotNull ALoadoutAddon> addons = new HashMap<>();
     private final @NotNull Map<@NotNull Integer, @NotNull ItemStack> itemSlots = new HashMap<>();
     private final @NotNull List<@NotNull PotionEffect> effects = new ArrayList<>();
-    private final @NotNull Map<@NotNull String, @NotNull ALoadoutAddon> addons = new HashMap<>();
     private final @NotNull String loadoutName;
     private boolean usePermission = false;
     private boolean fallDamage = true;
@@ -160,7 +161,7 @@ public class PlayerLoadout {
         final MinigamePlayer fplayer = mgPlayer;
         Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> fplayer.getPlayer().addPotionEffects(effects));
 
-        for (ALoadoutAddon addon : addons.values()) {
+        for (final @NotNull ALoadoutAddon addon : addons.values()) {
             addon.applyLoadout(mgPlayer);
         }
 
@@ -170,7 +171,7 @@ public class PlayerLoadout {
     }
 
     public void removeLoadout(@NotNull MinigamePlayer player) {
-        for (ALoadoutAddon addon : addons.values()) {
+        for (final @NotNull ALoadoutAddon addon : addons.values()) {
             addon.clearLoadout(player);
         }
     }
@@ -387,22 +388,22 @@ public class PlayerLoadout {
      * registers an addon in this loadout
      * @param addonFactory The addonFactory
      */
-    public void registerAddon(@NotNull LoadoutAddonFactory addonFactory) {
-        addons.put(addonFactory.getAddonName(), addonFactory.makeNewLoadoutAddon());
-    }
-
-    public void addAddonMenuItems(@NotNull Menu menu) {
-        for (ALoadoutAddon addon : addons.values()) {
-            addon.addMenuOptions(menu);
-        }
+    public void registerAddon(@NotNull ILoadoutAddonFactory addonFactory) {
+        addons.put(addonFactory.getKey(), addonFactory.makeNewLoadoutAddon(this));
     }
 
     /**
      * unregisters an addon in this loadout
-     * @param name The addons name
+     * @param key The addons key
      */
-    public void unregisterAddon(@NotNull String name) {
-        addons.remove(name);
+    public void unregisterAddon(@NotNull Key key) {
+        addons.remove(key);
+    }
+
+    public void addAddonMenuItems(@NotNull Menu menu) {
+        for (final @NotNull ALoadoutAddon addon : addons.values()) {
+            addon.addMenuOptions(menu);
+        }
     }
 
     public void save(@NotNull Configuration config, @NotNull String path) {
@@ -454,7 +455,7 @@ public class PlayerLoadout {
             config.set(path + configSeparator + "allowOffhand", allowOffHand());
         }
 
-        for (ALoadoutAddon addon : addons.values()) {
+        for (final @NotNull ALoadoutAddon addon : addons.values()) {
             String subPath = path + configSeparator + "addons" + configSeparator + addon.getName().replace('.', '-');
             addon.save(config, subPath);
         }
@@ -545,7 +546,7 @@ public class PlayerLoadout {
 
         ConfigurationSection addonSection = config.getConfigurationSection(path + configSeparator + "addons");
         if (addonSection != null) {
-            for (ALoadoutAddon addon : addons.values()) {
+            for (final @NotNull ALoadoutAddon addon : addons.values()) {
                 addon.load(config, path + configSeparator + "addons");
             }
         }

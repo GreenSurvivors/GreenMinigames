@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class ALoadoutAddon {
     protected final @NotNull String name;
-    protected final PlayerLoadout loadout;
+    protected final @NotNull PlayerLoadout loadout;
 
-    public ALoadoutAddon(@NotNull String name, PlayerLoadout loadout) {
+    public ALoadoutAddon(@NotNull String name, final @NotNull PlayerLoadout loadout) {
         this.name = name;
         this.loadout = loadout;
     }

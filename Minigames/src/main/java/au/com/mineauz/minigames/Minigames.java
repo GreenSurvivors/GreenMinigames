@@ -14,6 +14,7 @@ import au.com.mineauz.minigames.managers.ResourcePackManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
 import au.com.mineauz.minigames.minigame.modules.RewardsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -147,8 +148,8 @@ public class Minigames extends JavaPlugin {
 
         final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
         Configuration globalConfig = globalLoadouts.getConfig();
-        if (minigameManager.hasLoadouts()) {
-            for (final PlayerLoadout loadout : minigameManager.getGlobalLoadouts()) {
+        if (LoadoutModule.hasGlobalLoadouts()) {
+            for (final PlayerLoadout loadout : LoadoutModule.getGlobalLoadouts()) {
                 char globalPathSeparator = globalConfig.options().pathSeparator();
 
                 for (final Integer slot : loadout.getItemSlots()) {
@@ -268,13 +269,13 @@ public class Minigames extends JavaPlugin {
 
         final Set<String> keys = globalConfig.getKeys(false);
         for (final String loadoutName : keys) {
-            minigameManager.addGlobalLoadout(loadoutName);
+            LoadoutModule.addGlobalLoadout(loadoutName);
             ConfigurationSection loadOutSection = globalConfig.getConfigurationSection(loadoutName);
             if (loadOutSection != null) {
                 final Set<String> items = loadOutSection.getKeys(false);
                 for (final String slot : items) {
                     if (COMPILE.matcher(slot).matches()) {
-                        minigameManager.getLoadout(loadoutName).addItem(globalConfig.getItemStack(loadoutName + '.' + slot), Integer.parseInt(slot));
+                        LoadoutModule.getGlobalLoadout(loadoutName).addItem(globalConfig.getItemStack(loadoutName + '.' + slot), Integer.parseInt(slot));
                     }
                 }
             }
@@ -288,13 +289,13 @@ public class Minigames extends JavaPlugin {
                             final PotionEffect effect = new PotionEffect(type,
                                     globalConfig.getInt(loadoutName + globalPathSeparator + "potions" + globalPathSeparator + eff + globalPathSeparator + "dur"),
                                     globalConfig.getInt(loadoutName + globalPathSeparator + "potions" + globalPathSeparator + eff + globalPathSeparator + "amp"));
-                            minigameManager.getLoadout(loadoutName).addPotionEffect(effect);
+                            LoadoutModule.getGlobalLoadout(loadoutName).addPotionEffect(effect);
                         }
                     }
                 }
             }
             if (globalConfig.contains(loadoutName + globalPathSeparator + "usepermissions")) {
-                minigameManager.getLoadout(loadoutName).setUsePermissions(globalConfig.getBoolean(loadoutName + globalPathSeparator + "usepermissions"));
+                LoadoutModule.getGlobalLoadout(loadoutName).setUsePermissions(globalConfig.getBoolean(loadoutName + globalPathSeparator + "usepermissions"));
             }
         }
     }

@@ -66,8 +66,8 @@ public class LoadoutSign extends AMinigameSign {
                 PlayerLoadout loadout = loadoutModule.getLoadout(loadOutName);
 
                 if (loadout == null) {
-                    //loadout module failed. try to get global loadout
-                    loadout = plugin.getMinigameManager().getLoadout(loadOutName);
+                    //loadout module of Minigame failed. try to get global loadout
+                    loadout = LoadoutModule.getGlobalLoadout(loadOutName);
                 }
 
                 if (loadout != null) {

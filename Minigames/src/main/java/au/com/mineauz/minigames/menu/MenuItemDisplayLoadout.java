@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -187,7 +186,7 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
             if (minigame != null) {
                 LoadoutModule.getMinigameModule(minigame).deleteLoadout(loadoutName);
             } else {
-                Minigames.getPlugin().getMinigameManager().deleteGlobalLoadout(loadoutName);
+                LoadoutModule.deleteGlobalLoadout(loadoutName);
             }
             getContainer().removeItem(getSlot());
             getContainer().cancelReopenTimer();

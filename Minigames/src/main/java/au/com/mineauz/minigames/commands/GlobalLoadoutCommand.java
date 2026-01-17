@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -58,7 +59,7 @@ public class GlobalLoadoutCommand extends ACommand {
         Menu globalLoadoutMenu = new Menu(6, MgMenuLangKey.MENU_GLOBALLOADOUT_NAME, player);
         List<MenuItem> menuItems = new ArrayList<>();
 
-        for (PlayerLoadout globalLoadout : mdata.getGlobalLoadouts()) {
+        for (PlayerLoadout globalLoadout : LoadoutModule.getGlobalLoadouts()) {
             Material material = Material.WHITE_STAINED_GLASS_PANE;
             if (!globalLoadout.getItemSlots().isEmpty()) {
                 material = globalLoadout.getItem((Integer) globalLoadout.getItemSlots().toArray()[0]).getType();
@@ -67,7 +68,7 @@ public class GlobalLoadoutCommand extends ACommand {
                     MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), globalLoadout));
         }
         globalLoadoutMenu.addItem(new MenuItemLoadoutAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
-                mdata.getGlobalLoadoutMap()), 53);
+            LoadoutModule.getGlobalLoadoutMap()), 53);
         globalLoadoutMenu.addItems(menuItems);
 
         globalLoadoutMenu.displayMenu(player);
