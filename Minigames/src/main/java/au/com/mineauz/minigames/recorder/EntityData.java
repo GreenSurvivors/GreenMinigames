@@ -30,12 +30,12 @@ public class EntityData {
     private final @NotNull ChangeType changeType;
 
     /**
-     * @param entity   the entity to store data of
-     * @param modifier the player who was the first one to change this entity,
-     *                 might be null in case there was no player, or the minigame will be reset at the end,
-     *                 regardless if players are joining / leaving it
-     * @param changeType  if the entity was created and therefor has to be killed to reset the minigame
-     *                 or if it was changed / killed
+     * @param entity     the entity to store data of
+     * @param modifier   the player who was the first one to change this entity,
+     *                   might be null in case there was no player, or the minigame will be reset at the end,
+     *                   regardless if players are joining / leaving it
+     * @param changeType if the entity was created and therefor has to be killed to reset the minigame
+     *                   or if it was changed / killed
      */
     public EntityData(@NotNull Entity entity, @Nullable MinigamePlayer modifier, @NotNull ChangeType changeType) {
         this.uuid = entity.getUniqueId();

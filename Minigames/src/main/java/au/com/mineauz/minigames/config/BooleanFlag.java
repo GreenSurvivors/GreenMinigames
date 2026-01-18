@@ -4,40 +4,37 @@ import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
 public class BooleanFlag extends AFlag<Boolean> {
 
-    public BooleanFlag(@NotNull String name, boolean value) {
-        super(name, value);
+    public BooleanFlag(final @NotNull String name, final Boolean defaultVal) {
+        super(name, defaultVal);
     }
 
     @Override
-    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+    public void saveValue(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.removeChild(getName());
+
         if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
-            config.set(path + config.options().pathSeparator() + getName(), getFlag());
-        } else {
-            config.set(path + config.options().pathSeparator() + getName(), null);
+            config.node(getName()).set(getFlag());
         }
     }
 
     @Override
-    public void loadValue(@NotNull Configuration config, @NotNull String path) {
-        if (config.contains(path + config.options().pathSeparator() + getName())) {
-            setFlag(config.getBoolean(path + config.options().pathSeparator() + getName()));
-        } else {
-            setFlag(getDefaultFlag());
-        }
+    public void loadValue(final @NotNull CommentedConfigurationNode config) {
+        setFlag(config.node(getName()).getBoolean(getDefaultFlag()));
     }
 
     @Override
-    public @NotNull MenuItemBoolean getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
-        return new MenuItemBoolean(displayMaterial, langKey, new Callback<>() {
+    public @NotNull MenuItemBoolean getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey) {
+        return new MenuItemBoolean(displayType, langKey, new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -52,9 +49,9 @@ public class BooleanFlag extends AFlag<Boolean> {
     }
 
     @Override
-    public @NotNull MenuItemBoolean getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                       @Nullable List<@NotNull Component> description) {
-        return new MenuItemBoolean(displayMat, name, description, new Callback<>() {
+    public @NotNull MenuItemBoolean getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
+                                                @Nullable List<@NotNull Component> description) {
+        return new MenuItemBoolean(displayType, name, description, new Callback<>() {
 
             @Override
             public Boolean getValue() {

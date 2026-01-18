@@ -54,7 +54,7 @@ public abstract class AMinigameSign {
 
     public static @Nullable Minigame getMinigame(@NotNull Sign sign) {
         Minigame result = Minigames.getPlugin().getMinigameManager().getMinigame(
-                PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(2)));
+            PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(2)));
 
         if (result == null) {
             String name = sign.getPersistentDataContainer().get(MINIGAME_NAME_KEY, PersistentDataType.STRING);
@@ -70,7 +70,7 @@ public abstract class AMinigameSign {
         Minigame result = null;
         if (changedSecondLine != null) {
             result = Minigames.getPlugin().getMinigameManager().getMinigame(
-                    PlainTextComponentSerializer.plainText().serialize(changedSecondLine));
+                PlainTextComponentSerializer.plainText().serialize(changedSecondLine));
         }
 
         if (result == null) {
@@ -104,7 +104,7 @@ public abstract class AMinigameSign {
     }
 
     protected static void setMoneyBet(final @NotNull SignChangeEvent event, final double amount) {
-        ((Sign)event.getBlock().getState()).getPersistentDataContainer().set(BET_MONEY_AMOUNT_KEY, PersistentDataType.DOUBLE, amount);
+        ((Sign) event.getBlock().getState()).getPersistentDataContainer().set(BET_MONEY_AMOUNT_KEY, PersistentDataType.DOUBLE, amount);
         event.line(3, MinigameUtils.formatMoney(amount));
     }
 }

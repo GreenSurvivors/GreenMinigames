@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.BooleanUtils;
@@ -52,7 +53,7 @@ public class SetLobbyCommand extends ASetCommand {
                              @Nullable String @Nullable [] args) {
         if (args == null) {
             if (sender instanceof Entity entity) {
-                minigame.setLobbyLocation(entity.getLocation());
+                minigame.setLobbyLocation(new SafeFullLocation(entity.getLocation()));
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_LOBBY_LOCATION,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else { // not a player

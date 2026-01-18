@@ -10,10 +10,12 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 import java.util.Random;
@@ -21,8 +23,8 @@ import java.util.Random;
 public class LightningAction extends AAction {
     private final BooleanFlag effect = new BooleanFlag("effect", false);
 
-    protected LightningAction(@NotNull String name) {
-        super(name);
+    protected LightningAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -53,54 +55,54 @@ public class LightningAction extends AAction {
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
-        Random rand = new Random();
-        double xrand = rand.nextDouble() *
-                (region.getSecondPoint().getBlockX() - region.getFirstPoint().getBlockX()) +
-                region.getFirstPoint().getBlockX();
-        double yrand = rand.nextDouble() *
-                (region.getSecondPoint().getBlockY() - region.getFirstPoint().getBlockY()) +
-                region.getFirstPoint().getBlockY();
-        double zrand = rand.nextDouble() *
-                (region.getSecondPoint().getBlockZ() - region.getFirstPoint().getBlockZ()) +
-                region.getFirstPoint().getBlockZ();
 
-        Location loc = region.getFirstPoint();
-        loc.setX(xrand);
-        loc.setY(yrand);
-        loc.setZ(zrand);
+        if (region.getWorld() == null) {
+            return;
+        }
+
+        final @NotNull Random rand = new Random();
+        final double xrand = rand.nextDouble() * region.getWidthX() + region.getMinX();
+        final double yrand = rand.nextDouble() * region.getHeight() + region.getMinY();
+        final double zrand = rand.nextDouble() * region.getWidthZ() + region.getMinZ();
+
+        final @NotNull Location loc = new Location(region.getWorld(), xrand, yrand, zrand);
 
         if (effect.getFlag()) {
-            loc.getWorld().strikeLightningEffect(loc);
+            region.getWorld().strikeLightningEffect(loc);
         } else {
-            loc.getWorld().strikeLightning(loc);
+            region.getWorld().strikeLightning(loc);
         }
     }
 
     @Override
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
+        if (node.getSafeLocation().getWorld() == null) {
+            return;
+        }
+
         if (effect.getFlag()) {
-            node.getLocation().getWorld().strikeLightningEffect(node.getLocation());
+            node.getSafeLocation().getWorld().strikeLightningEffect(node.getSafeLocation().toLocation());
         } else {
-            node.getLocation().getWorld().strikeLightning(node.getLocation());
+            node.getSafeLocation().getWorld().strikeLightning(node.getSafeLocation().toLocation());
         }
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        effect.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        effect.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        effect.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        effect.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(effect.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LIGHTNING_EFFECT_NAME)));
+        m.addItem(effect.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LIGHTNING_EFFECT_NAME)));
         m.displayMenu(mgPlayer);
         return true;
     }

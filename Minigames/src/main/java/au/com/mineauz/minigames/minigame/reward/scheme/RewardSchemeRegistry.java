@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +34,7 @@ public final class RewardSchemeRegistry {
         }
     }
 
-    public static @NotNull MenuItem newMenuItem(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<String> callback) {
-        return new MenuItemList<>(displayMat, name, callback, new ArrayList<>(definedSchemes.keySet()));
+    public static @NotNull MenuItem newMenuItem(@Nullable ItemType displayItem, @Nullable Component name, @NotNull Callback<String> callback) {
+        return new MenuItemList<>(displayItem, name, callback, new ArrayList<>(definedSchemes.keySet()));
     }
 }

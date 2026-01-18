@@ -89,7 +89,7 @@ public class LegacyExporter {
         try (ResultSet rs = handler.executeQuery(selectPlayers)) {
             while (rs.next()) {
                 callback.acceptPlayer(UUID.fromString(rs.getString("UUID")), rs.getString("Player"),
-                        MiniMessage.miniMessage().deserialize(rs.getString("Player")));
+                    MiniMessage.miniMessage().deserialize(rs.getString("Player")));
                 ++notifyCount;
                 notifyProgress();
             }

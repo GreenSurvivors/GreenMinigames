@@ -8,11 +8,11 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,13 +124,13 @@ public class Rewards {
 
         rewardMenu.setPreviousPage(parent);
 
-        rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateMaterial(),
-                MgMenuLangKey.MENU_REWARD_GROUP_ADD_NAME, this), 42);
-        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, this), 43);
-        rewardMenu.addItem(new MenuItemPage(MenuUtility.getSaveMaterial(),
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
-                        Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), name)),
-                parent), 44);
+        rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateType(),
+            MgMenuLangKey.MENU_REWARD_GROUP_ADD_NAME, this), 42);
+        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, this), 43);
+        rewardMenu.addItem(new MenuItemPage(MenuUtility.getSaveType(),
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
+                Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), name)),
+            parent), 44);
 
         List<MenuItem> mi = new ArrayList<>();
         for (ARewardType item : items) {
@@ -139,10 +139,10 @@ public class Rewards {
 
         List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_SHIFTLEFT);
         for (RewardGroup group : groups) {
-            MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST,
-                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), group.getName())),
-                    des, group, this);
+            MenuItemRewardGroup rwg = new MenuItemRewardGroup(ItemType.CHEST,
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), group.getName())),
+                des, group, this);
             mi.add(rwg);
         }
         rewardMenu.addItems(mi);
@@ -150,43 +150,44 @@ public class Rewards {
         return rewardMenu;
     }
 
-    public void save(@NotNull Configuration config, @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         int index = 0;
-        for (ARewardType item : items) {
-            config.set(path + configSeparator + index + configSeparator + "type", item.getName());
-            config.set(path + configSeparator + index + configSeparator + "rarity", item.getRarity().name());
-            item.saveReward(config, path + configSeparator + index + configSeparator + "data");
-            index++;
+        for (final @NotNull ARewardType item : items) {
+            final @NotNull CommentedConfigurationNode indexedNode = config.node(index++);
+
+            indexedNode.node("type").raw(item.getName());
+            indexedNode.node("rarity").raw(item.getRarity().name());
+            item.saveReward(indexedNode.node("data"));
         }
 
-        for (RewardGroup group : groups) {
-            group.save(config, path + configSeparator + group.getName());
+        if (!groups.isEmpty()) {
+            final @NotNull CommentedConfigurationNode groupNode = config.node("groups");
+
+            for (final @NotNull RewardGroup group : groups) {
+                group.save(groupNode.node(group.getName()));
+            }
         }
     }
 
-    public void load(@NotNull Configuration config, @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
-        ConfigurationSection section = config.getConfigurationSection(path);
-
-        if (section != null) {
-            for (String key : section.getKeys(false)) {
-                // Load reward item
-                if (section.contains(key + configSeparator + "type")) {
-                    final String rawRewardType = section.getString(key + configSeparator + "type", "");
-                    ARewardType rewardType = RewardTypes.getRewardType(rawRewardType, this);
-                    if (rewardType != null) {
-                        rewardType.loadReward(config, path + configSeparator + key + configSeparator + "data");
-                        rewardType.setRarity(RewardRarity.valueOf(config.getString(
-                                path + configSeparator + key + configSeparator + "rarity")));
-                        addReward(rewardType);
-                    } else {
-                        Minigames.getCmpnntLogger().warn("Could not load rewardType of '" +
-                                path + configSeparator + key + configSeparator + "type' with value: '" + rawRewardType + "'! Ignoring.");
-                    }
-                } else { // Load reward group
-                    groups.add(RewardGroup.load(config, path + configSeparator + key, this));
+    public void load(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        for (final @NotNull CommentedConfigurationNode rewardEntryNode : config.childrenList()) {
+            // Load reward item
+            if (rewardEntryNode.hasChild("type")) {
+                final @NotNull String rawRewardType = rewardEntryNode.node("type").getString("");
+                final @Nullable ARewardType rewardType = RewardTypes.getRewardType(rawRewardType, this);
+                if (rewardType != null) {
+                    rewardType.loadReward(rewardEntryNode.node("data"));
+                    rewardType.setRarity(RewardRarity.valueOf(rewardEntryNode.node("rarity").getString()));
+                    addReward(rewardType);
+                } else {
+                    Minigames.getPlugin().getComponentLogger().warn("Could not load rewardType of '" + rewardEntryNode.path() + "type' with value: '" + rawRewardType + "'! Ignoring.");
                 }
+            } else if (rewardEntryNode.key().equals("groups")) { // Load reward groups
+                for (final @NotNull CommentedConfigurationNode groupEntryNode : config.childrenList()) {
+                    groups.add(RewardGroup.load(groupEntryNode, groupEntryNode.key().toString(), this));
+                }
+            } else { // datafixerupper
+                groups.add(RewardGroup.load(rewardEntryNode, rewardEntryNode.key().toString(), this));
             }
         }
     }

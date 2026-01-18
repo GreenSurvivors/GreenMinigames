@@ -1,8 +1,8 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.config.BlockTypeFlag;
+import au.com.mineauz.minigames.config.BlockTypeListFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.MaterialFlag;
-import au.com.mineauz.minigames.config.MaterialListFlag;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -15,19 +15,22 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import au.com.mineauz.minigamesregions.util.RegionUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.block.BlockType;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -43,7 +46,7 @@ public class MemorySwapBlockAction extends AAction {
     /*
      * Building a blockPool to provide the blocks that could be used in the game.
      */
-    private static final ArrayList<Material> blockPool = new ArrayList<>();
+    private static final @NotNull SequencedSet<BlockType> blockPool = new LinkedHashSet<>();
 
     /*
      * Filling the block pool with blocks than can be pulled and pushed by pistons manually
@@ -56,172 +59,172 @@ public class MemorySwapBlockAction extends AAction {
          */
 
         //Resource blocks
-        blockPool.addAll(Tag.BEACON_BASE_BLOCKS.getValues());
-        blockPool.add(Material.COAL_BLOCK);
-        blockPool.add(Material.WAXED_CUT_COPPER);
-        blockPool.add(Material.WAXED_EXPOSED_COPPER);
-        blockPool.add(Material.WAXED_WEATHERED_CUT_COPPER);
-        blockPool.add(Material.WAXED_OXIDIZED_COPPER);
+        blockPool.addAll(Tag.BEACON_BASE_BLOCKS.getValues().stream().map(Material::asBlockType).toList());
+        blockPool.add(BlockType.COAL_BLOCK);
+        blockPool.add(BlockType.WAXED_CUT_COPPER);
+        blockPool.add(BlockType.WAXED_EXPOSED_COPPER);
+        blockPool.add(BlockType.WAXED_WEATHERED_CUT_COPPER);
+        blockPool.add(BlockType.WAXED_OXIDIZED_COPPER);
 
         //Concrete
-        blockPool.add(Material.WHITE_CONCRETE);
-        blockPool.add(Material.ORANGE_CONCRETE);
-        blockPool.add(Material.MAGENTA_CONCRETE);
-        blockPool.add(Material.LIGHT_BLUE_CONCRETE);
-        blockPool.add(Material.YELLOW_CONCRETE);
-        blockPool.add(Material.LIME_CONCRETE);
-        blockPool.add(Material.PINK_CONCRETE);
-        blockPool.add(Material.GRAY_CONCRETE);
-        blockPool.add(Material.LIGHT_GRAY_CONCRETE);
-        blockPool.add(Material.CYAN_CONCRETE);
-        blockPool.add(Material.PURPLE_CONCRETE);
-        blockPool.add(Material.BLUE_CONCRETE);
-        blockPool.add(Material.BROWN_CONCRETE);
-        blockPool.add(Material.GREEN_CONCRETE);
-        blockPool.add(Material.RED_CONCRETE);
-        blockPool.add(Material.BLACK_CONCRETE);
+        blockPool.add(BlockType.WHITE_CONCRETE);
+        blockPool.add(BlockType.ORANGE_CONCRETE);
+        blockPool.add(BlockType.MAGENTA_CONCRETE);
+        blockPool.add(BlockType.LIGHT_BLUE_CONCRETE);
+        blockPool.add(BlockType.YELLOW_CONCRETE);
+        blockPool.add(BlockType.LIME_CONCRETE);
+        blockPool.add(BlockType.PINK_CONCRETE);
+        blockPool.add(BlockType.GRAY_CONCRETE);
+        blockPool.add(BlockType.LIGHT_GRAY_CONCRETE);
+        blockPool.add(BlockType.CYAN_CONCRETE);
+        blockPool.add(BlockType.PURPLE_CONCRETE);
+        blockPool.add(BlockType.BLUE_CONCRETE);
+        blockPool.add(BlockType.BROWN_CONCRETE);
+        blockPool.add(BlockType.GREEN_CONCRETE);
+        blockPool.add(BlockType.RED_CONCRETE);
+        blockPool.add(BlockType.BLACK_CONCRETE);
 
         //Ore blocks
-        blockPool.addAll(Tag.DIAMOND_ORES.getValues());
-        blockPool.addAll(Tag.IRON_ORES.getValues());
-        blockPool.addAll(Tag.REDSTONE_ORES.getValues());
-        blockPool.addAll(Tag.EMERALD_ORES.getValues());
-        blockPool.addAll(Tag.GOLD_ORES.getValues());
-        blockPool.addAll(Tag.LAPIS_ORES.getValues());
-        blockPool.add(Material.NETHER_QUARTZ_ORE);
-        blockPool.add(Material.ANCIENT_DEBRIS);
+        blockPool.addAll(Tag.DIAMOND_ORES.getValues().stream().map(Material::asBlockType).toList());
+        blockPool.addAll(Tag.IRON_ORES.getValues().stream().map(Material::asBlockType).toList());
+        blockPool.addAll(Tag.REDSTONE_ORES.getValues().stream().map(Material::asBlockType).toList());
+        blockPool.addAll(Tag.EMERALD_ORES.getValues().stream().map(Material::asBlockType).toList());
+        blockPool.addAll(Tag.GOLD_ORES.getValues().stream().map(Material::asBlockType).toList());
+        blockPool.addAll(Tag.LAPIS_ORES.getValues().stream().map(Material::asBlockType).toList());
+        blockPool.add(BlockType.NETHER_QUARTZ_ORE);
+        blockPool.add(BlockType.ANCIENT_DEBRIS);
 
         //Wool blocks
-        blockPool.addAll(Tag.WOOL.getValues());
+        blockPool.addAll(Tag.WOOL.getValues().stream().map(Material::asBlockType).toList());
 
         //Logs - we explicitly don't use Tag.LOGS since the "xxx_wood" (all side bark) look a lot like "xxx_log" (annual rings on top/bottom)
-        blockPool.add(Material.OAK_LOG);
-        blockPool.add(Material.STRIPPED_OAK_LOG);
-        blockPool.add(Material.SPRUCE_LOG);
-        blockPool.add(Material.STRIPPED_SPRUCE_LOG);
-        blockPool.add(Material.BIRCH_LOG);
-        blockPool.add(Material.STRIPPED_BIRCH_LOG);
-        blockPool.add(Material.JUNGLE_LOG);
-        blockPool.add(Material.STRIPPED_JUNGLE_LOG);
-        blockPool.add(Material.ACACIA_LOG);
-        blockPool.add(Material.STRIPPED_ACACIA_LOG);
-        blockPool.add(Material.MANGROVE_LOG);
-        blockPool.add(Material.STRIPPED_MANGROVE_LOG);
-        blockPool.add(Material.DARK_OAK_LOG);
-        blockPool.add(Material.STRIPPED_DARK_OAK_LOG);
-        blockPool.add(Material.CRIMSON_STEM);
-        blockPool.add(Material.STRIPPED_CRIMSON_STEM);
-        blockPool.add(Material.WARPED_STEM);
-        blockPool.add(Material.STRIPPED_WARPED_STEM);
+        blockPool.add(BlockType.OAK_LOG);
+        blockPool.add(BlockType.STRIPPED_OAK_LOG);
+        blockPool.add(BlockType.SPRUCE_LOG);
+        blockPool.add(BlockType.STRIPPED_SPRUCE_LOG);
+        blockPool.add(BlockType.BIRCH_LOG);
+        blockPool.add(BlockType.STRIPPED_BIRCH_LOG);
+        blockPool.add(BlockType.JUNGLE_LOG);
+        blockPool.add(BlockType.STRIPPED_JUNGLE_LOG);
+        blockPool.add(BlockType.ACACIA_LOG);
+        blockPool.add(BlockType.STRIPPED_ACACIA_LOG);
+        blockPool.add(BlockType.MANGROVE_LOG);
+        blockPool.add(BlockType.STRIPPED_MANGROVE_LOG);
+        blockPool.add(BlockType.DARK_OAK_LOG);
+        blockPool.add(BlockType.STRIPPED_DARK_OAK_LOG);
+        blockPool.add(BlockType.CRIMSON_STEM);
+        blockPool.add(BlockType.STRIPPED_CRIMSON_STEM);
+        blockPool.add(BlockType.WARPED_STEM);
+        blockPool.add(BlockType.STRIPPED_WARPED_STEM);
 
         //Planks
-        blockPool.addAll(Tag.PLANKS.getValues());
+        blockPool.addAll(Tag.PLANKS.getValues().stream().map(Material::asBlockType).toList());
 
         //Stone-alike
-        blockPool.add(Material.STONE);
-        blockPool.add(Material.SMOOTH_STONE);
-        blockPool.add(Material.CHISELED_STONE_BRICKS);
-        blockPool.add(Material.COBBLESTONE);
-        blockPool.add(Material.MOSSY_COBBLESTONE);
-        blockPool.add(Material.STONE_BRICKS);
-        blockPool.add(Material.BRICKS);
-        blockPool.add(Material.BASALT);
-        blockPool.add(Material.CALCITE);
-        blockPool.add(Material.TUFF);
-        blockPool.add(Material.DRIPSTONE_BLOCK);
-        blockPool.add(Material.SMOOTH_BASALT);
-        blockPool.add(Material.POLISHED_BASALT);
-        blockPool.add(Material.POLISHED_ANDESITE);
-        blockPool.add(Material.CHISELED_DEEPSLATE);
-        blockPool.add(Material.POLISHED_DEEPSLATE);
-        blockPool.add(Material.DEEPSLATE_BRICKS);
-        blockPool.add(Material.DEEPSLATE);
-        blockPool.add(Material.DEEPSLATE_TILES);
-        blockPool.add(Material.POLISHED_BLACKSTONE);
-        blockPool.add(Material.GILDED_BLACKSTONE);
-        blockPool.add(Material.CHISELED_POLISHED_BLACKSTONE);
-        blockPool.add(Material.NETHERRACK);
-        blockPool.add(Material.NETHER_BRICKS);
-        blockPool.add(Material.RED_NETHER_BRICKS);
-        blockPool.add(Material.SMOOTH_QUARTZ);
-        blockPool.add(Material.CHISELED_QUARTZ_BLOCK);
-        blockPool.add(Material.QUARTZ_BRICKS);
-        blockPool.add(Material.QUARTZ_PILLAR);
-        blockPool.add(Material.PURPUR_BLOCK);
-        blockPool.add(Material.PURPUR_PILLAR);
-        blockPool.add(Material.END_STONE_BRICKS);
+        blockPool.add(BlockType.STONE);
+        blockPool.add(BlockType.SMOOTH_STONE);
+        blockPool.add(BlockType.CHISELED_STONE_BRICKS);
+        blockPool.add(BlockType.COBBLESTONE);
+        blockPool.add(BlockType.MOSSY_COBBLESTONE);
+        blockPool.add(BlockType.STONE_BRICKS);
+        blockPool.add(BlockType.BRICKS);
+        blockPool.add(BlockType.BASALT);
+        blockPool.add(BlockType.CALCITE);
+        blockPool.add(BlockType.TUFF);
+        blockPool.add(BlockType.DRIPSTONE_BLOCK);
+        blockPool.add(BlockType.SMOOTH_BASALT);
+        blockPool.add(BlockType.POLISHED_BASALT);
+        blockPool.add(BlockType.POLISHED_ANDESITE);
+        blockPool.add(BlockType.CHISELED_DEEPSLATE);
+        blockPool.add(BlockType.POLISHED_DEEPSLATE);
+        blockPool.add(BlockType.DEEPSLATE_BRICKS);
+        blockPool.add(BlockType.DEEPSLATE);
+        blockPool.add(BlockType.DEEPSLATE_TILES);
+        blockPool.add(BlockType.POLISHED_BLACKSTONE);
+        blockPool.add(BlockType.GILDED_BLACKSTONE);
+        blockPool.add(BlockType.CHISELED_POLISHED_BLACKSTONE);
+        blockPool.add(BlockType.NETHERRACK);
+        blockPool.add(BlockType.NETHER_BRICKS);
+        blockPool.add(BlockType.RED_NETHER_BRICKS);
+        blockPool.add(BlockType.SMOOTH_QUARTZ);
+        blockPool.add(BlockType.CHISELED_QUARTZ_BLOCK);
+        blockPool.add(BlockType.QUARTZ_BRICKS);
+        blockPool.add(BlockType.QUARTZ_PILLAR);
+        blockPool.add(BlockType.PURPUR_BLOCK);
+        blockPool.add(BlockType.PURPUR_PILLAR);
+        blockPool.add(BlockType.END_STONE_BRICKS);
 
         //dirt alike
-        blockPool.add(Material.DIRT);
-        blockPool.add(Material.MUD);
-        blockPool.add(Material.PODZOL);
-        blockPool.add(Material.CLAY);
-        blockPool.add(Material.SOUL_SAND);
-        blockPool.add(Material.SOUL_SOIL);
-        blockPool.add(Material.PACKED_MUD);
-        blockPool.add(Material.MUD_BRICKS);
-        blockPool.add(Material.SANDSTONE);
-        blockPool.add(Material.RED_SANDSTONE);
-        blockPool.add(Material.AMETHYST_BLOCK);
+        blockPool.add(BlockType.DIRT);
+        blockPool.add(BlockType.MUD);
+        blockPool.add(BlockType.PODZOL);
+        blockPool.add(BlockType.CLAY);
+        blockPool.add(BlockType.SOUL_SAND);
+        blockPool.add(BlockType.SOUL_SOIL);
+        blockPool.add(BlockType.PACKED_MUD);
+        blockPool.add(BlockType.MUD_BRICKS);
+        blockPool.add(BlockType.SANDSTONE);
+        blockPool.add(BlockType.RED_SANDSTONE);
+        blockPool.add(BlockType.AMETHYST_BLOCK);
 
         //kinda living
-        blockPool.add(Material.SCULK);
-        blockPool.add(Material.BONE_BLOCK);
-        blockPool.add(Material.NETHER_WART_BLOCK);
-        blockPool.add(Material.WARPED_WART_BLOCK);
-        blockPool.add(Material.SHROOMLIGHT);
-        blockPool.add(Material.DRIED_KELP_BLOCK);
-        blockPool.add(Material.DEAD_BRAIN_CORAL_BLOCK);
-        blockPool.add(Material.SPONGE);
-        blockPool.add(Material.HONEYCOMB_BLOCK);
-        blockPool.add(Material.OCHRE_FROGLIGHT);
-        blockPool.add(Material.VERDANT_FROGLIGHT);
-        blockPool.add(Material.PEARLESCENT_FROGLIGHT);
+        blockPool.add(BlockType.SCULK);
+        blockPool.add(BlockType.BONE_BLOCK);
+        blockPool.add(BlockType.NETHER_WART_BLOCK);
+        blockPool.add(BlockType.WARPED_WART_BLOCK);
+        blockPool.add(BlockType.SHROOMLIGHT);
+        blockPool.add(BlockType.DRIED_KELP_BLOCK);
+        blockPool.add(BlockType.DEAD_BRAIN_CORAL_BLOCK);
+        blockPool.add(BlockType.SPONGE);
+        blockPool.add(BlockType.HONEYCOMB_BLOCK);
+        blockPool.add(BlockType.OCHRE_FROGLIGHT);
+        blockPool.add(BlockType.VERDANT_FROGLIGHT);
+        blockPool.add(BlockType.PEARLESCENT_FROGLIGHT);
 
         //elements
-        blockPool.add(Material.PACKED_ICE);
-        blockPool.add(Material.BLUE_ICE);
-        blockPool.add(Material.SNOW_BLOCK);
-        blockPool.add(Material.MAGMA_BLOCK);
-        blockPool.add(Material.PRISMARINE_BRICKS);
-        blockPool.add(Material.DARK_PRISMARINE);
-        blockPool.add(Material.SEA_LANTERN);
+        blockPool.add(BlockType.PACKED_ICE);
+        blockPool.add(BlockType.BLUE_ICE);
+        blockPool.add(BlockType.SNOW_BLOCK);
+        blockPool.add(BlockType.MAGMA_BLOCK);
+        blockPool.add(BlockType.PRISMARINE_BRICKS);
+        blockPool.add(BlockType.DARK_PRISMARINE);
+        blockPool.add(BlockType.SEA_LANTERN);
 
         //usage blocks
-        blockPool.add(Material.CRAFTING_TABLE);
-        blockPool.add(Material.FLETCHING_TABLE);
-        blockPool.add(Material.SMITHING_TABLE);
-        blockPool.add(Material.BOOKSHELF);
+        blockPool.add(BlockType.CRAFTING_TABLE);
+        blockPool.add(BlockType.FLETCHING_TABLE);
+        blockPool.add(BlockType.SMITHING_TABLE);
+        blockPool.add(BlockType.BOOKSHELF);
 
         //todo config for this, also move this standard list into a ressource file
     }
 
-    private final MaterialFlag matchType = new MaterialFlag("matchtype", Material.COBBLESTONE);
-    private final MaterialListFlag wbList = new MaterialListFlag("config.blacklist", new ArrayList<>());
+    private final BlockTypeFlag matchType = new BlockTypeFlag("matchtype", BlockType.COBBLESTONE);
+    private final BlockTypeListFlag wbList = new BlockTypeListFlag("config.blacklist", new ArrayList<>());
     // is it a white or a blacklist?
     private final BooleanFlag whitelistMode = new BooleanFlag("whitelistmode", false);
 
-    protected MemorySwapBlockAction(@NotNull String name) {
-        super(name);
+    protected MemorySwapBlockAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     /**
-     * Returns an array of Material that will consist of all blocks of the block pool minus the
+     * Returns an array of BlockType that will consist of all blocks of the block pool minus the
      * ones on the blacklist. The blacklist string format is block1,block2,block4.
      *
      * @return ArrayList<PhantomBlock>
      */
-    private @NotNull ArrayList<@NotNull Material> cleanUpBlockPool() {
+    private @NotNull SequencedSet<@NotNull BlockType> cleanUpBlockPool() {
         if (wbList.getFlag().isEmpty()) {
             return blockPool;
         }
 
-        ArrayList<Material> output;
+        SequencedSet<BlockType> output;
         if (whitelistMode.getFlag()) {
-            output = blockPool.stream().filter(m -> wbList.getFlag().contains(m)).collect(Collectors.toCollection(ArrayList::new));
+            output = blockPool.stream().filter(m -> wbList.getFlag().contains(m)).collect(Collectors.toCollection(LinkedHashSet::new));
         } else {
-            output = new ArrayList<>(blockPool);
-            output.removeAll(wbList.getFlag());
+            output = new LinkedHashSet<>(blockPool);
+            wbList.getFlag().forEach(output::remove);
         }
 
         return output;
@@ -271,9 +274,8 @@ public class MemorySwapBlockAction extends AAction {
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
-        ArrayList<Material> localMatPool = cleanUpBlockPool();
-
-        ArrayList<Block> blocksToSwap = new ArrayList<>();
+        final SequencedSet<@NotNull BlockType> localBockTypePool = cleanUpBlockPool();
+        final List<@NotNull Block> blocksToSwap = new ArrayList<>();
 
         //Collects all blocks to be swapped
         for (int y = (int) region.getMinY(); y <= region.getMaxY(); y++) {
@@ -281,7 +283,7 @@ public class MemorySwapBlockAction extends AAction {
                 for (int z = (int) region.getMinZ(); z <= region.getMaxZ(); z++) {
                     Block block = region.getFirstPoint().getWorld().getBlockAt(x, y, z);
 
-                    if (block.getType() == matchType.getFlag()) {
+                    if (block.getType().asBlockType() == matchType.getFlag()) {
                         blocksToSwap.add(block);
                     }
                 }
@@ -297,23 +299,24 @@ public class MemorySwapBlockAction extends AAction {
                 RegionMessageManager.debugMessage("This game board of \"" + region.getName() + "\" has an odd amount of playing fields, there will be unmatched blocks!");
             }
         }
-        if (blocksToSwap.size() > 2 * localMatPool.size()) {
+        if (blocksToSwap.size() > 2 * localBockTypePool.size()) {
             if (mgPlayer != null) {
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
                         RegionLangKey.ACTION_MEMORYSWAPBLOCK_ERROR_TOOBIG,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(localMatPool.size())));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(localBockTypePool.size())));
             }
         }
 
         // make a random collection of used materials
-        if ((2 * localMatPool.size()) > blocksToSwap.size())
-            Collections.shuffle(localMatPool);
+        if ((2 * localBockTypePool.size()) > blocksToSwap.size()) {
+            RegionUtils.shuffle(localBockTypePool, new Random());
+        }
 
         //shuffle blocks to swap, to make picking 2 random ones easy.
         Collections.shuffle(blocksToSwap);
 
         //iterator to iterate through without an extra loop
-        Iterator<Material> matIt = localMatPool.iterator();
+        final @NotNull Iterator<BlockType> matIt = localBockTypePool.iterator();
 
         // to stop in case of uneven size
         final int max = blocksToSwap.size() - 1;
@@ -326,9 +329,9 @@ public class MemorySwapBlockAction extends AAction {
                 data.addBlock(blocksToSwap.get(i), null);
                 data.addBlock(blocksToSwap.get(i + 1), null);
 
-                Material newMat = matIt.next();
-                blocksToSwap.get(i).setType(newMat);
-                blocksToSwap.get(i + 1).setType(newMat);
+                BlockType newMat = matIt.next();
+                blocksToSwap.get(i).setType(newMat.asMaterial());
+                blocksToSwap.get(i + 1).setType(newMat.asMaterial());
             } else {
                 break;
             }
@@ -342,18 +345,18 @@ public class MemorySwapBlockAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        matchType.saveValue(config, path);
-        wbList.saveValue(config, path);
-        whitelistMode.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        matchType.saveValue(config);
+        wbList.saveValue(config);
+        whitelistMode.saveValue(config);
 
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        matchType.loadValue(config, path);
-        wbList.loadValue(config, path);
-        whitelistMode.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) throws ConfigurateException {
+        matchType.loadValue(config);
+        wbList.loadValue(config);
+        whitelistMode.loadValue(config);
 
     }
 
@@ -367,7 +370,7 @@ public class MemorySwapBlockAction extends AAction {
 
         //Menu entry for the white/blacklist entry, aka the blocks that will be only accounted for / removed from the block pool
         m.addItem(new MenuItemNewLine());
-        m.addItem(new MenuItemDisplayWhitelist(Material.BOOK, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME),
+        m.addItem(new MenuItemDisplayWhitelist(ItemType.BOOK, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_DESCRIPTION),
                 wbList.getFlag(), new Callback<>() {
 

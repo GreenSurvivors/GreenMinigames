@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.Minigames;
 import de.greensurvivors.Paste;
 import de.greensurvivors.PasteContent;
 import de.greensurvivors.Session;
@@ -58,18 +57,18 @@ public class DebugCommand extends ACommand {
         if (args.length > 0) {
             switch (args[0].toUpperCase()) { //todo
                 case "ON" -> {
-                    if (Minigames.getPlugin().isDebugging()) {
+                    if (PLUGIN.isDebugging()) {
                         sender.sendMessage(ChatColor.GRAY + "Debug mode already active.");
                     } else {
-                        Minigames.getPlugin().toggleDebug();
+                        PLUGIN.toggleDebug();
                         sender.sendMessage(ChatColor.GRAY + "Debug mode active.");
                     }
                 }
                 case "OFF" -> {
-                    if (!Minigames.getPlugin().isDebugging()) {
+                    if (!PLUGIN.isDebugging()) {
                         sender.sendMessage(ChatColor.GRAY + "Debug mode already inactive.");
                     } else {
-                        Minigames.getPlugin().toggleDebug();
+                        PLUGIN.toggleDebug();
                         sender.sendMessage(ChatColor.GRAY + "Debug mode inactive.");
                     }
                 }
@@ -82,9 +81,9 @@ public class DebugCommand extends ACommand {
                 }
             }
         } else {
-            Minigames.getPlugin().toggleDebug();
+            PLUGIN.toggleDebug();
 
-            if (Minigames.getPlugin().isDebugging()) {
+            if (PLUGIN.isDebugging()) {
                 sender.sendMessage(ChatColor.GRAY + "Debug mode active.");
             } else {
                 sender.sendMessage(ChatColor.GRAY + "Deactivated debug mode.");
@@ -118,7 +117,7 @@ public class DebugCommand extends ACommand {
     private void generatePaste(@NotNull CommandSender sender) {
         StringBuilder mainInfo = new StringBuilder();
         mainInfo.append(Bukkit.getName()).append(" version: ").append(Bukkit.getServer().getVersion()).append('\n');
-        mainInfo.append("Plugin version: ").append(Minigames.getPlugin().getPluginMeta().getVersion()).append('\n');
+        mainInfo.append("Plugin version: ").append(PLUGIN.getPluginMeta().getVersion()).append('\n');
         mainInfo.append("Java version: ").append(System.getProperty("java.version")).append('\n');
         mainInfo.append('\n');
         mainInfo.append("Plugins:\n");
@@ -127,10 +126,10 @@ public class DebugCommand extends ACommand {
             mainInfo.append("  ").append(plugin.getPluginMeta().getAuthors()).append('\n');
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () -> {
-            Path dataPath = Minigames.getPlugin().getDataFolder().toPath();
+        Bukkit.getScheduler().runTaskAsynchronously(PLUGIN, () -> {
+            Path dataPath = PLUGIN.getDataFolder().toPath();
 
-            final @Nullable String apiKey = Minigames.getPlugin().getConfig().getString("pasteApiKey", null);
+            final @Nullable String apiKey = PLUGIN.getConfig().getString("pasteApiKey", null);
 
             try (Session pastefySession = Session.newSession(apiKey)) {// default visibility is unlisted
                 PasteContent.BundledContent bundledContent = PasteContent.newBundledContent();
@@ -142,16 +141,16 @@ public class DebugCommand extends ACommand {
 
                 pastefySession.createPaste(Paste.newBuilder(bundledContent).setTitle("Minigames debug output")).thenAccept(pasteReplay -> {
                     sender.sendMessage("Debug Paste: https://pastefy.app/" + pasteReplay.getId());
-                    Minigames.getCmpnntLogger().info("Paste:  https://pastefy.app/" + pasteReplay.getId());
+                    PLUGIN.getComponentLogger().info("Paste:  https://pastefy.app/" + pasteReplay.getId());
                 }).exceptionally(throwable -> {
                     sender.sendMessage("Paste Failed with: " + throwable.getMessage());
-                    Minigames.getCmpnntLogger().warn("Couldn't create debug paste: ", throwable);
+                    PLUGIN.getComponentLogger().warn("Couldn't create debug paste: ", throwable);
 
                     return null;
                 });
             } catch (Exception e) {
                 sender.sendMessage("Paste Failed with: " + e.getMessage());
-                Minigames.getCmpnntLogger().warn("Couldn't create debug paste: ", e);
+                PLUGIN.getComponentLogger().warn("Couldn't create debug paste: ", e);
             }
         });
     }

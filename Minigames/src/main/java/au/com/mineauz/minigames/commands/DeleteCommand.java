@@ -8,13 +8,13 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,12 +52,12 @@ public class DeleteCommand extends ACommand {
             Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
             if (mgm != null) {
-                File save = new File(PLUGIN.getDataFolder() + File.separator + "minigames" + File.separator + mgm.getName());
-                if (save.exists() && save.isDirectory()) {
+                final @NotNull Path save = PLUGIN.getDataPath().resolve("minigames").resolve(mgm.getName());
+                if (Files.isDirectory(save)) {
                     try {
-                        FileUtils.deleteDirectory(save);
+                        Files.delete(save);
                     } catch (IOException e) {
-                        PLUGIN.getComponentLogger().warn("couldn't delete files for minigame " + save.getPath() + ". Still going to try to delete from config.");
+                        PLUGIN.getComponentLogger().warn("couldn't delete files for minigame " + save + ". Still going to try to delete from config.");
                     }
 
                     List<String> ls = PLUGIN.getConfig().getStringList("minigames");
@@ -66,7 +66,7 @@ public class DeleteCommand extends ACommand {
                     PLUGIN.getMinigameManager().removeMinigame(mgm.getName());
                     PLUGIN.saveConfig();
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DELETE_SUCCESS,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
                 }
             }
             return true;

@@ -9,34 +9,35 @@ import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.TriggerRegistry;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
 public class MenuItemRegionExecutorAdd extends MenuItem { // todo merge with MenuItemNodeExecutorAdd
     private final @NotNull Region region;
 
-    public MenuItemRegionExecutorAdd(@Nullable Material displayMat, @Nullable RegionLangKey langKey, @NotNull Region region) {
-        super(displayMat, RegionMessageManager.getMessage(langKey));
+    public MenuItemRegionExecutorAdd(@Nullable ItemType displayType, @Nullable RegionLangKey langKey, @NotNull Region region) {
+        super(displayType, RegionMessageManager.getMessage(langKey));
         this.region = region;
     }
 
-    public MenuItemRegionExecutorAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Region region) {
-        super(displayMat, name);
+    public MenuItemRegionExecutorAdd(@Nullable ItemType displayType, @Nullable Component name, @NotNull Region region) {
+        super(displayType, name);
         this.region = region;
     }
 
-    public MenuItemRegionExecutorAdd(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemRegionExecutorAdd(@Nullable ItemType displayType, @Nullable Component name,
                                      @Nullable List<@NotNull Component> description, @NotNull Region region) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.region = region;
     }
 
     @Override
-    public @Nullable ItemStack onClick() {
+    public @NonNull ItemStack onClick() {
         Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONEXECUTOR_ADD_TRIGGER_NAME), getContainer().getViewer());
 
         for (Trigger trig : TriggerRegistry.getAllRegionTriggers()) {
@@ -46,6 +47,6 @@ public class MenuItemRegionExecutorAdd extends MenuItem { // todo merge with Men
         menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
         menu.displayMenu(getContainer().getViewer());
 
-        return null;
+        return ItemStack.empty();
     }
 }

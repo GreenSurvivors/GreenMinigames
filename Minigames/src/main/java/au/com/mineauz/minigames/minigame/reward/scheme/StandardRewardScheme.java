@@ -10,10 +10,11 @@ import au.com.mineauz.minigames.minigame.reward.ARewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class StandardRewardScheme extends ARewardScheme {
     }
 
     @Override
-    public void awardPlayerOnLoss(@Nullable MinigamePlayer player, @Nullable StoredGameStats data, @Nullable Minigame minigame) {
+    public void awardPlayerOnLoss(final @Nullable MinigamePlayer player, final @Nullable StoredGameStats data, final @Nullable Minigame minigame) {
         // No lose awards
     }
 
@@ -71,20 +72,20 @@ public class StandardRewardScheme extends ARewardScheme {
     }
 
     @Override
-    public void load(@NotNull Configuration config, @NotNull String path) {
-        primaryRewardFlag.loadValue(config, path);
-        secondaryRewardFlag.loadValue(config, path);
+    public void load(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        primaryRewardFlag.loadValue(config);
+        secondaryRewardFlag.loadValue(config);
     }
 
     @Override
-    public void save(@NotNull Configuration config, @NotNull String path) {
-        primaryRewardFlag.loadValue(config, path);
-        secondaryRewardFlag.loadValue(config, path);
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        primaryRewardFlag.loadValue(config);
+        secondaryRewardFlag.loadValue(config);
     }
 
     @Override
     public void addMenuItems(@NotNull Menu menu) {
-        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME, primaryRewardFlag.getFlag()));
-        menu.addItem(new MenuItemDisplayRewards(Material.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME, secondaryRewardFlag.getFlag()));
+        menu.addItem(new MenuItemDisplayRewards(ItemType.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME, primaryRewardFlag.getFlag()));
+        menu.addItem(new MenuItemDisplayRewards(ItemType.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME, secondaryRewardFlag.getFlag()));
     }
 }

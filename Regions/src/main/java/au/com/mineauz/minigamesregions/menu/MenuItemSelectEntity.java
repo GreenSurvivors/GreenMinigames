@@ -18,9 +18,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntitySnapshot;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
 import java.util.List;
@@ -29,19 +31,19 @@ public class MenuItemSelectEntity extends MenuItem implements EntityConsumer {
     private static final String DESCRIPTION_TOKEN = "Entity_description";
     private final @NotNull Callback<EntitySnapshot> entitySnapshotCallback;
 
-    public MenuItemSelectEntity(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<EntitySnapshot> c) {
-        super(displayMat, name);
+    public MenuItemSelectEntity(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<EntitySnapshot> c) {
+        super(displayType, name);
         entitySnapshotCallback = c;
     }
 
-    public MenuItemSelectEntity(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemSelectEntity(@Nullable ItemType displayType, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description, @NotNull Callback<EntitySnapshot> c) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         entitySnapshotCallback = c;
     }
 
     @Override
-    public ItemStack onClickWithItem(@NotNull ItemStack item) {
+    public @NonNull ItemStack onClickWithItem(@NotNull ItemStack item) {
         if (item.getItemMeta() instanceof SpawnEggMeta spawnEggMeta) {
             final @Nullable EntitySnapshot snapshot = spawnEggMeta.getSpawnedEntity();
 
@@ -68,18 +70,18 @@ public class MenuItemSelectEntity extends MenuItem implements EntityConsumer {
     }
 
     @Override
-    public @Nullable ItemStack onDoubleClick() {
+    public @NonNull ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
-        final int reopenSeconds = 10;
+        final Duration reopenTime = Duration.ofSeconds(10);
 
         MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO,
             RegionMessageManager.getMessage(RegionLangKey.MENU_SELECT_ENTITY_CLICK_ENTITY,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
-                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds)))));
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime))));
         mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenSeconds);
+        getContainer().startReopenTimer(reopenTime);
 
 
         return super.onDoubleClick();

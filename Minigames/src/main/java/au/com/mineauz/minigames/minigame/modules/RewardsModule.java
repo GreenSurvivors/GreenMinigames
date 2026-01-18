@@ -12,23 +12,26 @@ import au.com.mineauz.minigames.minigame.reward.scheme.MgRewardSchemes;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardSchemeRegistry;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import net.kyori.adventure.key.Key;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 public class RewardsModule extends MinigameModule {
     private @NotNull ARewardScheme scheme;
 
-    public RewardsModule(@NotNull Minigame mgm, @NotNull String name) {
-        super(mgm, name);
+    public RewardsModule(final @NotNull Minigame mgm, final @NotNull Key key) {
+        super(mgm, key);
 
         // Default scheme
         scheme = MgRewardSchemes.STANDARD.makeScheme();
     }
 
     public static @Nullable RewardsModule getModule(@NotNull Minigame minigame) {
-        return (RewardsModule) minigame.getModule(MgModules.REWARDS.getName());
+        return (RewardsModule) minigame.getModule(MgModules.REWARDS.getKey());
     }
 
 
@@ -45,7 +48,7 @@ public class RewardsModule extends MinigameModule {
         scheme.awardPlayer(player, data, minigame, firstCompletion);
     }
 
-    public void awardPlayerOnLoss(@NotNull MinigamePlayer player, StoredGameStats data, Minigame minigame) {
+    public void awardPlayerOnLoss(final @NotNull MinigamePlayer player, final @NotNull StoredGameStats data, final @NotNull Minigame minigame) {
         scheme.awardPlayerOnLoss(player, data, minigame);
     }
 
@@ -55,31 +58,31 @@ public class RewardsModule extends MinigameModule {
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
-        config.set(path + config.options().pathSeparator() + "reward-scheme", scheme.getName());
-        scheme.save(config, path + config.options().pathSeparator() + "rewards");
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.node("reward-scheme").set(scheme.getName());
+        scheme.save(config.node("rewards"));
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        String name = config.getString(path + config.options().pathSeparator() + "reward-scheme", MgRewardSchemes.STANDARD.getSchemeName());
+    public void load(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        final @NotNull String name = config.node("reward-scheme").getString(MgRewardSchemes.STANDARD.getSchemeName());
 
         scheme = RewardSchemeRegistry.createScheme(name);
         if (scheme == null) {
             scheme = MgRewardSchemes.STANDARD.makeScheme();
         }
 
-        scheme.load(config, path + config.options().pathSeparator() + "rewards");
+        scheme.load(config.node("rewards"));
     }
 
     @Override
     public void addEditMenuOptions(final @NotNull Menu menu) {
-        MenuItemCustom launcher = new MenuItemCustom(Material.DIAMOND,
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME));
+        MenuItemCustom launcher = new MenuItemCustom(ItemType.DIAMOND,
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME));
         launcher.setClick(() -> {
             Menu submenu = createSubMenu(menu);
             submenu.displayMenu(menu.getViewer());
-            return null;
+            return ItemStack.empty();
         });
 
         menu.addItem(launcher);
@@ -87,24 +90,24 @@ public class RewardsModule extends MinigameModule {
 
     private @NotNull Menu createSubMenu(final @NotNull Menu parent) {
         final Menu submenu = new Menu(6,
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME), parent.getViewer());
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME), parent.getViewer());
         scheme.addMenuItems(submenu);
 
-        submenu.addItem(RewardSchemeRegistry.newMenuItem(Material.PAPER,
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SCHEME_NAME), new Callback<>() {
-                    @Override
-                    public @NotNull String getValue() {
-                        return scheme.getName();
-                    }
+        submenu.addItem(RewardSchemeRegistry.newMenuItem(ItemType.PAPER,
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SCHEME_NAME), new Callback<>() {
+                @Override
+                public @NotNull String getValue() {
+                    return scheme.getName();
+                }
 
-                    @Override
-                    public void setValue(@NotNull String value) {
-                        scheme = RewardSchemeRegistry.createScheme(value);
-                        // Update the menu
-                        Menu menu = createSubMenu(parent);
-                        menu.displayMenu(submenu.getViewer());
-                    }
-                }), submenu.getSize() - 1);
+                @Override
+                public void setValue(@NotNull String value) {
+                    scheme = RewardSchemeRegistry.createScheme(value);
+                    // Update the menu
+                    Menu menu = createSubMenu(parent);
+                    menu.displayMenu(submenu.getViewer());
+                }
+            }), submenu.getSize() - 1);
 
         submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 9);
         return submenu;

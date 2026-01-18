@@ -16,12 +16,15 @@ import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Lightable;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.time.Duration;
 import java.util.Map;
@@ -30,8 +33,8 @@ public class PulseRedstoneAction extends AAction {
     private final TimeFlag time = new TimeFlag("time", 1L); // in seconds
     private final BooleanFlag torch = new BooleanFlag("torch", false);
 
-    protected PulseRedstoneAction(@NotNull String name) {
-        super(name);
+    protected PulseRedstoneAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -70,7 +73,12 @@ public class PulseRedstoneAction extends AAction {
     @Override
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
-        BlockData bData;
+
+        if (node.getSafeLocation().getWorld() == null) {
+            return;
+        }
+
+        final @NotNull BlockData bData;
         if (torch.getFlag()) {
             bData = Material.REDSTONE_TORCH.createBlockData();
 
@@ -80,32 +88,30 @@ public class PulseRedstoneAction extends AAction {
         } else {
             bData = Material.REDSTONE_BLOCK.createBlockData();
         }
-        final BlockState last = node.getLocation().getBlock().getState();
-        node.getLocation().getBlock().setBlockData(bData);
+        final BlockState last = node.getSafeLocation().getBlockAt().getState(true);
+        node.getSafeLocation().getBlockAt().setBlockData(bData);
         Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () ->
-                last.update(true), 20L * time.getFlag());
+            last.update(true), 20L * time.getFlag());
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        time.saveValue(config, path);
-        torch.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        time.saveValue(config);
+        torch.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        time.loadValue(config, path);
-        torch.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        time.loadValue(config);
+        torch.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(time.getMenuItem(Material.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TIME_NAME), 0L, null));
-        menu.addItem(torch.getMenuItem(Material.REDSTONE_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TORCH_NAME)));
+        menu.addItem(time.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TIME_NAME), 0L, null));
+        menu.addItem(torch.getMenuItem(ItemType.REDSTONE_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TORCH_NAME)));
         menu.displayMenu(mgPlayer);
         return true;
     }

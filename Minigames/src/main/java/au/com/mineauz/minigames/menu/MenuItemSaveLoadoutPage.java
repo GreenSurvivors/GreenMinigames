@@ -8,8 +8,8 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,37 +18,39 @@ import java.util.List;
 public class MenuItemSaveLoadoutPage extends MenuItemPage {
     private final @NotNull PlayerLoadout loadout;
 
-    public MenuItemSaveLoadoutPage(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
+    public MenuItemSaveLoadoutPage(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
                                    @NotNull PlayerLoadout loadout, @NotNull Menu menu) {
-        super(displayMat, langKey, menu);
+        super(displayType, langKey, menu);
         this.loadout = loadout;
     }
 
-    public MenuItemSaveLoadoutPage(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemSaveLoadoutPage(@Nullable ItemType displayType, @Nullable Component name,
                                    @NotNull PlayerLoadout loadout, @NotNull Menu menu) {
-        super(displayMat, name, menu);
+        super(displayType, name, menu);
         this.loadout = loadout;
     }
 
-    public MenuItemSaveLoadoutPage(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemSaveLoadoutPage(@Nullable ItemType displayType, @Nullable Component name,
                                    @Nullable List<@NotNull Component> description,
                                    @NotNull PlayerLoadout loadout, @NotNull Menu menu) {
-        super(displayMat, name, description, menu);
+        super(displayType, name, description, menu);
         this.loadout = loadout;
     }
 
     @Override
-    public ItemStack onClick() {
-        ItemStack[] items = getContainer().getInventory();
+    public @NotNull ItemStack onClick() {
+        final @NotNull ItemStack @NotNull[] items = getContainer().getInventory();
         loadout.clearLoadout();
 
         for (int i = 0; i < 36; i++) {
-            if (items[i] != null)
+            if (items[i].isEmpty()) {
                 loadout.addItem(items[i], i);
+            }
         }
+
         int numOfSpecialSlots = loadout.allowOffHand() ? 41 : 40;
         for (int i = 36; i < numOfSpecialSlots; i++) {
-            if (items[i] != null) {
+            if (items[i].isEmpty()) {
                 switch (i) {
                     case 36 -> loadout.addItem(items[i], 103);
                     case 37 -> loadout.addItem(items[i], 102);
@@ -59,7 +61,7 @@ public class MenuItemSaveLoadoutPage extends MenuItemPage {
             }
         }
         MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_LOADOUT_SAVE,
-                Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName()));
+            Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName()));
 
         return super.onClick();
     }

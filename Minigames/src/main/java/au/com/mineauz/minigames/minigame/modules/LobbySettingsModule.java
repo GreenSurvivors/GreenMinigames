@@ -5,8 +5,10 @@ import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
-import org.bukkit.configuration.file.FileConfiguration;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 public class LobbySettingsModule extends MinigameModule {
     private final BooleanFlag canMovePlayerWait = new BooleanFlag("canMovePlayerWait", true);
@@ -17,12 +19,12 @@ public class LobbySettingsModule extends MinigameModule {
     private final BooleanFlag teleportOnStart = new BooleanFlag("teleportOnStart", true);
     private final TimeFlag playerWaitTime = new TimeFlag("playerWaitTime", 0L);
 
-    public LobbySettingsModule(@NotNull Minigame mgm, @NotNull String name) {
-        super(mgm, name);
+    public LobbySettingsModule(final @NotNull Minigame mgm, final @NotNull Key key) {
+        super(mgm, key);
     }
 
     public static LobbySettingsModule getMinigameModule(Minigame mgm) {
-        return ((LobbySettingsModule) mgm.getModule(MgModules.LOBBY_SETTINGS.getName()));
+        return ((LobbySettingsModule) mgm.getModule(MgModules.LOBBY_SETTINGS.getKey()));
     }
 
     @Override
@@ -31,23 +33,23 @@ public class LobbySettingsModule extends MinigameModule {
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
-        canInteractPlayerWait.saveValue(config, path);
-        canInteractStartWait.saveValue(config, path);
-        canMovePlayerWait.saveValue(config, path);
-        canMoveStartWait.saveValue(config, path);
-        teleportOnPlayerWait.saveValue(config, path);
-        playerWaitTime.saveValue(config, path);
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        canInteractPlayerWait.saveValue(config);
+        canInteractStartWait.saveValue(config);
+        canMovePlayerWait.saveValue(config);
+        canMoveStartWait.saveValue(config);
+        teleportOnPlayerWait.saveValue(config);
+        playerWaitTime.saveValue(config);
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        canInteractPlayerWait.loadValue(config, path);
-        canInteractStartWait.loadValue(config, path);
-        canMovePlayerWait.loadValue(config, path);
-        canMoveStartWait.loadValue(config, path);
-        teleportOnPlayerWait.loadValue(config, path);
-        playerWaitTime.loadValue(config, path);
+    public void load(final @NotNull CommentedConfigurationNode config) {
+        canInteractPlayerWait.loadValue(config);
+        canInteractStartWait.loadValue(config);
+        canMovePlayerWait.loadValue(config);
+        canMoveStartWait.loadValue(config);
+        teleportOnPlayerWait.loadValue(config);
+        playerWaitTime.loadValue(config);
     }
 
     public boolean canMovePlayerWait() {

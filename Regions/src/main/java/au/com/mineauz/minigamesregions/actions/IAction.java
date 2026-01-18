@@ -6,14 +6,17 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import net.kyori.adventure.text.Component;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
-public interface ActionInterface {
-    @NotNull String getName();
+public interface IAction {
+    @NotNull NamespacedKey getKey();
 
     @NotNull Component getDisplayname();
 
@@ -29,9 +32,9 @@ public interface ActionInterface {
 
     void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node);
 
-    void saveArguments(@NotNull FileConfiguration config, @NotNull String path);
+    void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException;
 
-    void loadArguments(@NotNull FileConfiguration config, @NotNull String path);
+    void loadArguments(final @NotNull CommentedConfigurationNode config) throws ConfigurateException;
 
     boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous);
 

@@ -10,10 +10,12 @@ import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import net.kyori.adventure.key.Key;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +28,12 @@ public class InfectionModule extends MinigameModule {
     //Unsaved Data
     private final List<MinigamePlayer> infected = new ArrayList<>();
 
-    public InfectionModule(@NotNull Minigame mgm, @NotNull String name) {
-        super(mgm, name);
+    public InfectionModule(final @NotNull Minigame mgm, final @NotNull Key key) {
+        super(mgm, key);
     }
 
     public static @Nullable InfectionModule getMinigameModule(@NotNull Minigame mgm) {
-        return ((InfectionModule) mgm.getModule(MgModules.INFECTION.getName()));
+        return ((InfectionModule) mgm.getModule(MgModules.INFECTION.getKey()));
     }
 
     @Override
@@ -40,17 +42,17 @@ public class InfectionModule extends MinigameModule {
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
-        infectedPercent.saveValue(config, path);
-        infectedTeam.saveValue(config, path);
-        survivorTeam.saveValue(config, path);
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        infectedPercent.saveValue(config);
+        infectedTeam.saveValue(config);
+        survivorTeam.saveValue(config);
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        infectedPercent.loadValue(config, path);
-        infectedTeam.loadValue(config, path);
-        survivorTeam.loadValue(config, path);
+    public void load(final @NotNull CommentedConfigurationNode config) {
+        infectedPercent.loadValue(config);
+        infectedTeam.loadValue(config);
+        survivorTeam.loadValue(config);
     }
 
     public @NotNull Callback<TeamColor> getInfectedTeamCallback() {
@@ -61,7 +63,8 @@ public class InfectionModule extends MinigameModule {
                     if (infectedTeam.getFlag().equals(TeamColor.NONE)) {
                         return infectedTeam.getFlag();
                     } else if (infectedTeam.getFlag() == infectedTeam.getDefaultFlag() || infectedTeam.getFlag() == survivorTeam.getDefaultFlag() ||
-                            TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(infectedTeam.getFlag())) {
+                        TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(infectedTeam.getFlag())) {
+
                         return infectedTeam.getFlag();
                     } else {
                         return infectedTeam.getDefaultFlag();
@@ -76,7 +79,7 @@ public class InfectionModule extends MinigameModule {
                 if (value == TeamColor.NONE) {
                     infectedTeam.setFlag(value);
                 } else if (value == infectedTeam.getDefaultFlag() || value == survivorTeam.getDefaultFlag() ||
-                        TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(value)) {
+                    TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(value)) {
                     infectedTeam.setFlag(value);
                 } else {
                     infectedTeam.setFlag(null);
@@ -94,7 +97,8 @@ public class InfectionModule extends MinigameModule {
                     if (survivorTeam.getFlag() == TeamColor.NONE) {
                         return survivorTeam.getFlag();
                     } else if (survivorTeam.getFlag() == infectedTeam.getDefaultFlag() || survivorTeam.getFlag() == survivorTeam.getDefaultFlag() ||
-                            TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(survivorTeam.getFlag())) {
+                        TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(survivorTeam.getFlag())) {
+
                         return survivorTeam.getFlag();
                     } else {
                         return survivorTeam.getDefaultFlag();
@@ -109,7 +113,8 @@ public class InfectionModule extends MinigameModule {
                 if (value == TeamColor.NONE) {
                     survivorTeam.setFlag(TeamColor.NONE);
                 } else if (value == infectedTeam.getDefaultFlag() || value == survivorTeam.getDefaultFlag() ||
-                        TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(value)) {
+                    TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(value)) {
+
                     survivorTeam.setFlag(value);
                 } else {
                     survivorTeam.setFlag(null);
@@ -127,8 +132,8 @@ public class InfectionModule extends MinigameModule {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_INFECTED_NAME, previous.getViewer());
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        menu.addItem(infectedPercent.getMenuItem(Material.ZOMBIE_HEAD, MgMenuLangKey.MENU_INFECTED_PERCENT_NAME,
-                MgMenuLangKey.MENU_INFECTED_PERCENT_DESCRIPTION, 1, 99));
+        menu.addItem(infectedPercent.getMenuItem(ItemType.ZOMBIE_HEAD, MgMenuLangKey.MENU_INFECTED_PERCENT_NAME,
+            MgMenuLangKey.MENU_INFECTED_PERCENT_DESCRIPTION, 1, 99));
 
         TeamsModule teamsModule = TeamsModule.getMinigameModule(getMinigame());
         List<TeamColor> teams = new ArrayList<>(teamsModule.getTeamColors().size() + 3);
@@ -141,8 +146,8 @@ public class InfectionModule extends MinigameModule {
         teams.add(infectedTeam.getDefaultFlag());
         teams.add(survivorTeam.getDefaultFlag());
         teams.add(TeamColor.NONE);
-        menu.addItem(new MenuItemList<>(Material.PAPER, MgMenuLangKey.MENU_INFECTED_TEAM_INFECTED_NAME, getInfectedTeamCallback(), teams));
-        menu.addItem(new MenuItemList<>(Material.PAPER, MgMenuLangKey.MENU_INFECTED_TEAM_SURVIVOR_NAME, getSurvivorTeamCallback(), teams));
+        menu.addItem(new MenuItemList<>(ItemType.PAPER, MgMenuLangKey.MENU_INFECTED_TEAM_INFECTED_NAME, getInfectedTeamCallback(), teams));
+        menu.addItem(new MenuItemList<>(ItemType.PAPER, MgMenuLangKey.MENU_INFECTED_TEAM_SURVIVOR_NAME, getSurvivorTeamCallback(), teams));
         menu.displayMenu(previous.getViewer());
         return true;
     }
@@ -159,7 +164,8 @@ public class InfectionModule extends MinigameModule {
         if (infectedTeam.getFlag() != null && infectedTeam.getFlag() != TeamColor.NONE) {
             TeamColor teamColor = infectedTeam.getFlag();
             if (teamColor == infectedTeam.getDefaultFlag() || teamColor == survivorTeam.getDefaultFlag() ||
-                    TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(teamColor)) {
+                TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(teamColor)) {
+
                 return teamColor;
             } else {
                 return TeamColor.NONE;
@@ -171,7 +177,8 @@ public class InfectionModule extends MinigameModule {
 
     public void setInfectedTeam(@NotNull TeamColor teamColor) {
         if (teamColor == infectedTeam.getDefaultFlag() || teamColor == survivorTeam.getDefaultFlag() ||
-                TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(teamColor)) {
+            TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(teamColor)) {
+
             this.infectedTeam.setFlag(teamColor);
         } else
             this.infectedTeam.setFlag(TeamColor.NONE);
@@ -185,7 +192,8 @@ public class InfectionModule extends MinigameModule {
         if (survivorTeam.getFlag() != null) {
             TeamColor teamColor = survivorTeam.getFlag();
             if (teamColor == infectedTeam.getDefaultFlag() || teamColor == survivorTeam.getDefaultFlag() ||
-                    TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(teamColor)) {
+                TeamsModule.getMinigameModule(getMinigame()).getTeamColors().contains(teamColor)) {
+
                 return teamColor;
             } else
                 return null;
@@ -197,8 +205,9 @@ public class InfectionModule extends MinigameModule {
         TeamsModule teamsModule = TeamsModule.getMinigameModule(getMinigame());
 
         if (survivorTeamColor == TeamColor.NONE ||
-                survivorTeamColor == infectedTeam.getDefaultFlag() || survivorTeamColor == survivorTeam.getDefaultFlag() ||
-                (teamsModule != null && teamsModule.getTeamColors().contains(survivorTeamColor))) {
+            survivorTeamColor == infectedTeam.getDefaultFlag() || survivorTeamColor == survivorTeam.getDefaultFlag() ||
+            (teamsModule != null && teamsModule.getTeamColors().contains(survivorTeamColor))) {
+
             this.survivorTeam.setFlag(survivorTeamColor);
 
             return true;

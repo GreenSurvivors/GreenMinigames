@@ -15,11 +15,13 @@ import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
@@ -28,8 +30,8 @@ public class VelocityAction extends AAction {
     private final FloatFlag y = new FloatFlag("yv", 5f);
     private final FloatFlag z = new FloatFlag("zv", 0f);
 
-    protected VelocityAction(@NotNull String name) {
-        super(name);
+    protected VelocityAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -80,26 +82,26 @@ public class VelocityAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        x.saveValue(config, path);
-        y.saveValue(config, path);
-        z.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        x.saveValue(config);
+        y.saveValue(config);
+        z.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        x.loadValue(config, path);
-        y.loadValue(config, path);
-        z.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        x.loadValue(config);
+        y.loadValue(config);
+        z.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(x.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_X_NAME), 0.5d, 1d, null, null));
-        m.addItem(y.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Y_NAME), 0.5d, 1d, null, null));
-        m.addItem(z.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Z_NAME), 0.5d, 1d, null, null));
+        m.addItem(x.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_X_NAME), 0.5d, 1d, null, null));
+        m.addItem(y.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Y_NAME), 0.5d, 1d, null, null));
+        m.addItem(z.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Z_NAME), 0.5d, 1d, null, null));
         m.displayMenu(mgPlayer);
         return true;
     }

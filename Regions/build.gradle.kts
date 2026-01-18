@@ -35,19 +35,19 @@ publishing {
                 }
                 developers {
                     developer {
-                        name.set("_Razz_")
+                        name = "_Razz_"
                     }
                     developer {
-                        name.set("Schmoller")
+                        name = "Schmoller"
                     }
                     developer {
-                        name.set("Narimm")
+                        name = "Narimm"
                     }
                     developer {
-                        name.set("Addstar")
+                        name = "Addstar"
                     }
                     developer {
-                        name.set("GreenSurvivors Team")
+                        name = "GreenSurvivors Team"
                         organizationUrl.set("https://greensurvivors.de")
                     }
                 }

@@ -1,51 +1,51 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.safelocation.SafeFineLocation;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
-import au.com.mineauz.minigamesregions.actions.ActionInterface;
+import au.com.mineauz.minigamesregions.actions.IAction;
 import au.com.mineauz.minigamesregions.actions.RegionActions;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
-import io.papermc.paper.math.Position;
+import io.papermc.paper.math.FinePosition;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Region extends MgRegion implements BaseExecutorHolder<RegionExecutor> {
+public class Region extends MgRegion implements ActionExecutorHolder {
     private static final int GAME_TICK_DELAY = 1;
-    private final @NotNull List<@NotNull RegionExecutor> executors = new ArrayList<>();
+    private final @NotNull List<@NotNull ActionExecutor> executors = new ArrayList<>();
     private final @NotNull List<@NotNull MinigamePlayer> players = new ArrayList<>();
-    private final @NotNull Minigame minigame;
+    private final @NotNull Minigame minigame; // todo how to acquire this when loaded by Configurate?
+    @Setting("tickDelay")
     private long configuredDelay = 20; //todo make ingame configurable
-    private int gameConfiguredtaskID;
-    private int gameTickTaskID;
+    private transient int gameConfiguredTaskID = -1;
+    private transient int gameTickTaskID = -1;
     private boolean enabled = true;
 
-    public Region(@NotNull Minigame minigame, @NotNull World world, @NotNull String name, @NotNull Position pos1, @NotNull Position pos2) {
-        super(world, name, pos1, pos2);
+    public Region(@NotNull Minigame minigame, @NotNull String worldName, @NotNull String name, @NotNull FinePosition pos1, @NotNull FinePosition pos2) {
+        super(worldName, name, pos1, pos2);
 
         this.minigame = minigame;
     }
 
-    public Region(@NotNull String name, @NotNull Minigame minigame, @NotNull Location loc1, @NotNull Location loc2) {
+    public Region(@NotNull String name, @NotNull Minigame minigame, @NotNull SafeFineLocation loc1, @NotNull SafeFineLocation loc2) {
         super(name, loc1, loc2);
 
         this.minigame = minigame;
@@ -59,15 +59,8 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
         return super.isInRegen(loc);
     }
 
-    public @NotNull Location getFirstPoint() {
-        return super.getLocation1();
-    }
-
-    public @NotNull Location getSecondPoint() {
-        return super.getLocation2();
-    }
-
-    public void updateRegion(@NotNull Location point1, @NotNull Location point2) {
+    @Override
+    public void updateRegion(@NotNull SafeFineLocation point1, @NotNull SafeFineLocation point2) {
         super.updateRegion(point1, point2);
         super.sortPositions();
     }
@@ -90,16 +83,18 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
 
     @Override
     public int addExecutor(@NotNull Trigger trigger) {
-        executors.add(new RegionExecutor(trigger));
+        executors.add(new ActionExecutor(trigger));
         return executors.size();
     }
 
-    public int addExecutor(final @NotNull RegionExecutor exec) {
+    @Override
+    public int addExecutor(final @NotNull ActionExecutor exec) {
         executors.add(exec);
         return executors.size();
     }
 
-    public @NotNull List<@NotNull RegionExecutor> getExecutors() {
+    @Override
+    public @NotNull List<@NotNull ActionExecutor> getExecutors() {
         return executors;
     }
 
@@ -110,14 +105,15 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
         }
     }
 
-    public void removeExecutor(@NotNull RegionExecutor executor) {
+    @Override
+    public void removeExecutor(@NotNull ActionExecutor executor) {
         executors.remove(executor);
     }
 
-    public void changeConfiguredTickDelay(long delay) {
+    public void setConfiguredTickDelay(long delay) {
         removeConfiguredTask();
         configuredDelay = delay;
-        gameConfiguredtaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
+        gameConfiguredTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), () -> {
             List<MinigamePlayer> plys = new ArrayList<>(players);
             for (MinigamePlayer player : plys) {
                 execute(MgRegTrigger.TIME_CONFIGURED, player);
@@ -130,11 +126,11 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
     }
 
     public void startConfigTimerTask() {
-        if (gameConfiguredtaskID != -1) {
+        if (gameConfiguredTaskID != -1) {
             removeConfiguredTask();
         }
 
-        gameConfiguredtaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
+        gameConfiguredTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), () -> {
             List<MinigamePlayer> plys = new ArrayList<>(players);
             for (MinigamePlayer player : plys) {
                 execute(MgRegTrigger.TIME_CONFIGURED, player);
@@ -147,13 +143,13 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
             removeGameTickTask();
         }
 
-        gameTickTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(),
+        gameTickTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(),
                 this::executeGameTick,
                 0, GAME_TICK_DELAY);
     }
 
     public void removeConfiguredTask() {
-        Bukkit.getScheduler().cancelTask(gameConfiguredtaskID);
+        Bukkit.getScheduler().cancelTask(gameConfiguredTaskID);
     }
 
     public void removeGameTickTask() {
@@ -173,20 +169,20 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
     @Override
     public void execute(@NotNull Trigger trigger, @Nullable MinigamePlayer player) {
         if (player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
-        List<RegionExecutor> toExecute = new ArrayList<>();
-        for (RegionExecutor exec : executors) {
+        List<ActionExecutor> toExecute = new ArrayList<>();
+        for (ActionExecutor exec : executors) {
             if (exec.getTrigger() == trigger) {
                 if (checkConditions(exec, player) && exec.canBeTriggered(player))
                     toExecute.add(exec);
             }
         }
-        for (RegionExecutor exec : toExecute) {
+        for (ActionExecutor exec : toExecute) {
             execute(exec, player);
         }
     }
 
     @Override
-    public boolean checkConditions(@NotNull RegionExecutor exec, @Nullable MinigamePlayer player) {
+    public boolean checkConditions(@NotNull ActionExecutor exec, @Nullable MinigamePlayer player) {
         for (ACondition con : exec.getConditions()) {
             boolean c = con.checkRegionCondition(player, this);
             if (con.isInverted())
@@ -199,9 +195,9 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
     }
 
     @Override
-    public void execute(@NotNull RegionExecutor exec, @NotNull MinigamePlayer player) {
-        for (ActionInterface act : exec.getActions()) {
-            if (!enabled && !act.getName().equalsIgnoreCase(RegionActions.SET_ENABLED.getName())) {
+    public void execute(@NotNull ActionExecutor exec, @NotNull MinigamePlayer player) {
+        for (IAction act : exec.getActions()) {
+            if (!enabled && !act.getKey().equals(RegionActions.SET_ENABLED.getKey())) {
                 continue;
             }
 
@@ -219,9 +215,9 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
             return;
         }
         // There is no condition, which is not player specific, so we can just execute all executors.
-        for (RegionExecutor exec : executors) {
-            for (ActionInterface act : exec.getActions()) {
-                if (!enabled && !act.getName().equalsIgnoreCase(RegionActions.SET_ENABLED.getName())) {
+        for (ActionExecutor exec : executors) {
+            for (IAction act : exec.getActions()) {
+                if (!enabled && !act.getKey().equals(RegionActions.SET_ENABLED.getKey())) {
                     continue;
                 }
                 try {
@@ -240,15 +236,15 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
     }
 
     @Override
-    public @Nullable ScriptReference get(@NotNull String name) {
+    public @Nullable ScriptReference resolveReference(@NotNull String name) {
         if (name.equalsIgnoreCase("name")) {
             return ScriptValue.of(name);
         } else if (name.equalsIgnoreCase("players")) {
             return ScriptCollection.of(players);
         } else if (name.equalsIgnoreCase("min")) {
-            return ScriptWrapper.wrap(super.getLocation1());
+            return ScriptWrapper.wrap(this.getFirstPoint());
         } else if (name.equalsIgnoreCase("max")) {
-            return ScriptWrapper.wrap(super.getLocation2());
+            return ScriptWrapper.wrap(this.getSecondPoint());
         }
 
         return null;
@@ -256,11 +252,11 @@ public class Region extends MgRegion implements BaseExecutorHolder<RegionExecuto
 
     @Override
     public @NotNull String getAsString() {
-        return super.getName();
+        return getName();
     }
 
     @Override
-    public @NotNull Set<@NotNull String> getKeys() {
+    public @NotNull Set<@NotNull String> getReferenceKeys() {
         return Set.of("name", "players", "min", "max");
     }
 

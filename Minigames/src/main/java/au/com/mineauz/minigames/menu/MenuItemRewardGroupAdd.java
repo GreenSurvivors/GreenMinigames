@@ -13,8 +13,8 @@ import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,34 +24,34 @@ import java.util.List;
 public class MenuItemRewardGroupAdd extends MenuItem implements StringConsumer {
     private final @NotNull Rewards rewards;
 
-    public MenuItemRewardGroupAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Rewards rewards) {
-        super(displayMat, langKey);
+    public MenuItemRewardGroupAdd(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Rewards rewards) {
+        super(displayType, langKey);
         this.rewards = rewards;
     }
 
-    public MenuItemRewardGroupAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Rewards rewards) {
-        super(displayMat, name);
+    public MenuItemRewardGroupAdd(@Nullable ItemType displayType, @Nullable Component name, @NotNull Rewards rewards) {
+        super(displayType, name);
         this.rewards = rewards;
     }
 
-    public MenuItemRewardGroupAdd(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemRewardGroupAdd(@Nullable ItemType displayType, @Nullable Component name,
                                   @Nullable List<@NotNull Component> description, @NotNull Rewards rewards) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.rewards = rewards;
     }
 
     @Override
-    public @Nullable ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
-        final int reopenSeconds = 30;
+        final @NotNull Duration reopenTime = Duration.ofSeconds(30);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_REWARD_ENTERCHAT,
-                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
         mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(reopenSeconds);
-        return null;
+        getContainer().startReopenTimer(reopenTime);
+        return ItemStack.empty();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MenuItemRewardGroupAdd extends MenuItem implements StringConsumer {
         for (RewardGroup group : rewards.getGroups()) {
             if (group.getName().equals(string)) {
                 MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
-                        MgMenuLangKey.MENU_REWARD_ERROR_GROUPEXISTS,
+                    MgMenuLangKey.MENU_REWARD_ERROR_GROUPEXISTS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
                 getContainer().displayMenu(getContainer().getViewer());
                 return;
@@ -71,9 +71,9 @@ public class MenuItemRewardGroupAdd extends MenuItem implements StringConsumer {
 
         RewardGroup group = rewards.addGroup(string, RewardRarity.NORMAL);
 
-        MenuItemRewardGroup mrg = new MenuItemRewardGroup(Material.CHEST,
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string)), group, rewards);
+        MenuItemRewardGroup mrg = new MenuItemRewardGroup(ItemType.CHEST,
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
+                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string)), group, rewards);
         getContainer().addItem(mrg);
 
         getContainer().displayMenu(getContainer().getViewer());

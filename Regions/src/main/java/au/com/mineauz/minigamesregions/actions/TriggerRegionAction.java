@@ -12,18 +12,20 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
 public class TriggerRegionAction extends AAction {
     private final StringFlag region = new StringFlag("region", "None");
 
-    protected TriggerRegionAction(@NotNull String name) {
-        super(name);
+    protected TriggerRegionAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -78,22 +80,20 @@ public class TriggerRegionAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        region.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        region.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        region.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        region.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(region.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERREGION_REGION_NAME)));
+        m.addItem(region.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERREGION_REGION_NAME)));
         m.displayMenu(mgPlayer);
         return true;
     }

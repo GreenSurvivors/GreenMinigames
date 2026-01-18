@@ -12,11 +12,12 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 import java.util.Random;
@@ -25,8 +26,8 @@ public class ExplodeAction extends AAction {
     private final FloatFlag power = new FloatFlag("power", 4f);
     private final BooleanFlag fire = new BooleanFlag("fire", false);
 
-    protected ExplodeAction(@NotNull String name) {
-        super(name);
+    protected ExplodeAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -58,55 +59,57 @@ public class ExplodeAction extends AAction {
         return true;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
                                     @NotNull Region region) {
         debug(mgPlayer, region);
+
+        if (region.getWorld() == null) {
+            return;
+        }
+
         Random rand = new Random();
         double xrand = rand.nextDouble() *
-                (region.getSecondPoint().getBlockX() - region.getFirstPoint().getBlockX()) +
-                region.getFirstPoint().getBlockX();
+                (region.getSecondPoint().blockX() - region.getFirstPoint().blockX()) +
+                region.getFirstPoint().blockX();
         double yrand = rand.nextDouble() *
-                (region.getSecondPoint().getBlockY() - region.getFirstPoint().getBlockY()) +
-                region.getFirstPoint().getBlockY();
+                (region.getSecondPoint().blockY() - region.getFirstPoint().blockY()) +
+                region.getFirstPoint().blockY();
         double zrand = rand.nextDouble() *
-                (region.getSecondPoint().getBlockZ() - region.getFirstPoint().getBlockZ()) +
-                region.getFirstPoint().getBlockZ();
+                (region.getSecondPoint().blockZ() - region.getFirstPoint().blockZ()) +
+                region.getFirstPoint().blockZ();
 
-        Location loc = region.getFirstPoint();
-        loc.setX(xrand);
-        loc.setY(yrand);
-        loc.setZ(zrand);
-        loc.getWorld().createExplosion(loc, power.getFlag(), fire.getFlag());
+        region.getWorld().createExplosion(xrand, yrand, zrand, power.getFlag(), fire.getFlag());
     }
 
     @Override
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
         debug(mgPlayer, node);
-        node.getLocation().getWorld().createExplosion(node.getLocation(), power.getFlag(), fire.getFlag());
+        if (node.getSafeLocation().getWorld() != null) {
+            node.getSafeLocation().getWorld().createExplosion(node.getSafeLocation().toLocation(), power.getFlag(), fire.getFlag());
+        }
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        power.saveValue(config, path);
-        fire.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        power.saveValue(config);
+        fire.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        power.loadValue(config, path);
-        fire.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        power.loadValue(config);
+        fire.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(power.getMenuItem(Material.TNT, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_POWER_NAME)));
-        m.addItem(fire.getMenuItem(Material.FLINT_AND_STEEL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_FIRE_NAME)));
+        m.addItem(power.getMenuItem(ItemType.TNT, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_POWER_NAME)));
+        m.addItem(fire.getMenuItem(ItemType.FLINT_AND_STEEL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_FIRE_NAME)));
         m.displayMenu(mgPlayer);
         return true;
     }

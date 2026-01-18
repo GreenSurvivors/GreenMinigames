@@ -14,21 +14,25 @@ import au.com.mineauz.minigames.minigame.reward.MoneyReward;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class SetRewardCommand extends ASetCommand { //todo allow commands
 
@@ -125,9 +129,14 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
                         }
                     } else {
-                        Material mat = Material.matchMaterial(args[0]);
+                        @Nullable ItemType itemType = null;
+                        final @Nullable Key itemKey = NamespacedKey.fromString(args[0].toLowerCase(Locale.ROOT));
 
-                        if (mat != null) {
+                        if (itemKey != null) {
+                            itemType = Registry.ITEM.get(itemKey);
+                        }
+
+                        if (itemType != null) {
                             int quantity = 1;
                             if (args.length >= 2) {
                                 if (args[1].matches("[0-9]+")) {
@@ -140,7 +149,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                 }
                             }
 
-                            ItemStack item = new ItemStack(mat, quantity);
+                            ItemStack item = itemType.createItemStack(quantity);
 
                             RewardRarity rarity;
                             if (args.length >= 3) {
@@ -159,7 +168,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                             return true;
 
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTMATERIAL,
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTITEMTYPE,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                         }
                     }

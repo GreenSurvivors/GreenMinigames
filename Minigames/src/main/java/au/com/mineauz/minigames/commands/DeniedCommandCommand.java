@@ -51,17 +51,17 @@ public class DeniedCommandCommand extends ACommand {
             if (args[0].equalsIgnoreCase("add") && args.length >= 2) {
                 PLUGIN.getPlayerManager().addDeniedCommand(args[1]);
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DENIEDCMDS_ADD_SUCCESS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.COMMAND.getKey(), args[1]));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.COMMAND.getKey(), args[1]));
                 return true;
             } else if (args[0].equalsIgnoreCase("remove") && args.length >= 2) {
                 PLUGIN.getPlayerManager().removeDeniedCommand(args[1]);
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DENIEDCMDS_REMOVE_SUCCESS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.COMMAND.getKey(), args[1]));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.COMMAND.getKey(), args[1]));
                 return true;
             } else if (args[0].equalsIgnoreCase("list")) {
                 String coms = String.join(", ", PLUGIN.getPlayerManager().getDeniedCommands());
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DENIEDCMDS_LIST_SUCCESS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), coms));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), coms));
                 return true;
             }
         }

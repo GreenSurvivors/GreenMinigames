@@ -6,14 +6,14 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.ALoadoutAddon;
 import au.com.mineauz.minigames.minigame.modules.ILoadoutAddonFactory;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import io.leangen.geantyref.TypeFactory;
+import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -21,6 +21,10 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -72,7 +76,7 @@ public class PlayerLoadout {
         displayname = name;
     }
 
-    public boolean getUsePermissions() {
+    public boolean usesPermissions() {
         return usePermission;
     }
 
@@ -406,78 +410,89 @@ public class PlayerLoadout {
         }
     }
 
-    public void save(@NotNull Configuration config, @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
-
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         for (Integer slot : getItemSlots()) {
-            config.set(path + configSeparator + "items" + configSeparator + slot, getItem(slot));
+            config.node("items", slot).set(getItem(slot).serializeAsBytes());
         }
 
-        for (PotionEffect eff : getAllPotionEffects()) {
-            config.set(path + configSeparator + "potions" + configSeparator + eff.getType().getKey() + configSeparator + "amp", eff.getAmplifier());
-            config.set(path + configSeparator + "potions" + configSeparator + eff.getType().getKey() + configSeparator + "dur", eff.getDuration());
+        final @NotNull CommentedConfigurationNode potionNode = config.node("potions");
+        for (final @NotNull PotionEffect eff : getAllPotionEffects()) {
+            final @NotNull ConfigurationNode effectNode = potionNode.node(eff.getType().getKey().asMinimalString());
+            effectNode.node("amp").raw(eff.getAmplifier());
+            effectNode.node("dur").raw(eff.getDuration());
         }
 
-        if (getUsePermissions()) {
-            config.set(path + configSeparator + "usepermissions", true);
+        if (usesPermissions()) {
+            config.node("usepermissions").set(Boolean.TRUE);
         }
 
         if (!hasFallDamage()) {
-            config.set(path + configSeparator + "falldamage", hasFallDamage());
+            config.node("falldamage").set(Boolean.FALSE);
         }
 
         if (hasHunger()) {
-            config.set(path + configSeparator + "hunger", hasHunger());
+            config.node("hunger").set(Boolean.TRUE);
         }
 
         String displayName = MiniMessage.miniMessage().serialize(getDisplayName());
         if (!loadoutName.equalsIgnoreCase(displayName)) {
-            config.set(path + configSeparator + "displayName", displayName);
+            config.node("displayName").set(displayName);
         }
 
         if (isArmourLocked()) {
-            config.set(path + configSeparator + "armourLocked", isArmourLocked());
+            config.node("armourLocked").set(Boolean.TRUE);
         }
 
         if (isInventoryLocked()) {
-            config.set(path + configSeparator + "inventoryLocked", isInventoryLocked());
+            config.node("inventoryLocked").set(Boolean.TRUE);
         }
 
         if (getTeamColor() != null) {
-            config.set(path + configSeparator + "team", getTeamColor().name());
+            config.node("team").set(getTeamColor().name());
         }
 
         if (!isDisplayedInMenu()) {
-            config.set(path + configSeparator + "displayInMenu", isDisplayedInMenu());
+            config.node("displayInMenu").set(Boolean.FALSE);
         }
 
         if (!allowOffHand()) {
-            config.set(path + configSeparator + "allowOffhand", allowOffHand());
+            config.node("allowOffhand").set(Boolean.FALSE);
         }
 
+        final @NotNull CommentedConfigurationNode addonsNode = config.node("addons"); // todo this breaks backwards compability
         for (final @NotNull ALoadoutAddon addon : addons.values()) {
-            String subPath = path + configSeparator + "addons" + configSeparator + addon.getName().replace('.', '-');
-            addon.save(config, subPath);
+            addon.save(addonsNode.node(addon.getKey().asMinimalString()));
         }
     }
 
-    public void load(@NotNull Configuration config, @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
-        ConfigurationSection itemSection = config.getConfigurationSection(path + configSeparator + "items");
-        if (itemSection != null) {
-            for (String key : itemSection.getKeys(false)) {
+    public void load(final @NotNull CommentedConfigurationNode config) throws ConfigurateException {
+        final @NotNull CommentedConfigurationNode itemNode = config.node("items");
+        if (!itemNode.virtual() && !itemNode.isNull()) {
+            for (final @NotNull Map.Entry<@NotNull Object, CommentedConfigurationNode> entry : itemNode.childrenMap().entrySet()) {
+                final @NotNull String key = entry.toString();
+
                 if (NUMBER.matcher(key).matches()) {
-                    addItem(itemSection.getItemStack(key), Integer.parseInt(key));
+
+                    final ItemStack item;
+                    if (entry.getValue().isMap()) {
+                        // datafixerupper
+                        item = ItemStack.deserialize((Map<String, Object>) entry.getValue().get(TypeFactory.parameterizedClass(Map.class, String.class, Object.class)));
+                    } else {
+                        item = ItemStack.deserializeBytes(entry.getValue().get(TypeToken.get(byte[].class)));
+                    }
+
+                    addItem(item, Integer.parseInt(key));
                 }
             }
         }
 
-        ConfigurationSection potionSection = config.getConfigurationSection(path + configSeparator + "potions");
-        if (potionSection != null) {
-            for (String effectName : potionSection.getKeys(false)) {
+        final @NotNull CommentedConfigurationNode potionsNode = config.node("potions");
+        if (potionsNode.isMap()) {
+            for (final @NotNull Map.Entry<@NotNull Object, CommentedConfigurationNode> entry : potionsNode.childrenMap().entrySet()) {
+                final @NotNull CommentedConfigurationNode effectNode = entry.getValue();
 
-                String temp = effectName.toLowerCase(Locale.ENGLISH);
-                temp = switch (temp) { // dataFixerUpper
+                @NotNull String effectKeyStr = entry.getKey().toString().toLowerCase(Locale.ENGLISH);
+                effectKeyStr = switch (effectKeyStr) { // dataFixerUpper
                     case "slow" -> "slowness";
                     case "fast_digging" -> "haste";
                     case "slow_digging" -> "mining_fatigue";
@@ -487,67 +502,72 @@ public class PlayerLoadout {
                     case "jump" -> "jump_boost";
                     case "confusion" -> "nausea";
                     case "damage_resistance" -> "resistance";
-                    default -> temp;
+                    default -> effectKeyStr;
                 };
 
-                PotionEffectType effectType = Registry.EFFECT.get(NamespacedKey.fromString(temp));
+                final @Nullable NamespacedKey key = NamespacedKey.fromString(effectKeyStr);
+                if (key != null) {
+                    final @Nullable PotionEffectType effectType = Registry.EFFECT.get(key);
 
-                if (effectType != null) {
-                    PotionEffect effect = new PotionEffect(effectType,
-                            potionSection.getInt(effectName + configSeparator + "dur"),
-                            potionSection.getInt(effectName + configSeparator + "amp")
-                    );
+                    if (effectType != null) {
+                        PotionEffect effect = new PotionEffect(effectType,
+                            effectNode.node("dur").getInt(),
+                            effectNode.node("amp").getInt()
+                        );
 
-                    addPotionEffect(effect);
-                } else {
-                    Minigames.getCmpnntLogger().error("Could not find status effect from NameSpacedKey \"" + temp + "\". " +
-                            "Loadout effect under \"" + path + configSeparator + "potions" + "\" will fail.");
+                        addPotionEffect(effect);
+
+                        continue;
+                    }
                 }
+
+                Minigames.getPlugin().getComponentLogger().error("Could not find status effect from NameSpacedKey \"" + effectKeyStr + "\". " +
+                    "Loadout effect under \"" + potionsNode.path() + "\" will fail.");
             }
         }
 
-        if (config.contains(path + configSeparator + "usepermissions")) {
-            setUsePermissions(config.getBoolean(path + configSeparator + "usepermissions"));
+        if (config.hasChild("usepermissions")) {
+            setUsePermissions(config.node("usepermissions").getBoolean());
         }
 
-        if (config.contains(path + configSeparator + "falldamage")) {
-            setHasFallDamage(config.getBoolean(path + configSeparator + "falldamage"));
+        if (config.hasChild("falldamage")) {
+            setHasFallDamage(config.node("falldamage").getBoolean(true));
         }
 
-        if (config.contains(path + configSeparator + "hunger")) {
-            setHasHunger(config.getBoolean(path + configSeparator + "hunger"));
+        if (config.hasChild("hunger")) {
+            setHasHunger(config.node("hunger").getBoolean());
         }
 
-        String rawDisplayName = config.getString(path + configSeparator + "displayName");
+        String rawDisplayName = config.node("displayName").getString();
         if (rawDisplayName != null) {
             setDisplayName(MiniMessage.miniMessage().deserialize(rawDisplayName));
         }
 
-        if (config.contains(path + configSeparator + "inventoryLocked")) {
-            setInventoryLocked(config.getBoolean(path + configSeparator + "inventoryLocked"));
+        if (config.hasChild("inventoryLocked")) {
+            setInventoryLocked(config.node("inventoryLocked").getBoolean());
         }
 
-        if (config.contains(path + configSeparator + "armourLocked")) {
-            setArmourLocked(config.getBoolean(path + configSeparator + "armourLocked"));
+        if (config.hasChild("armourLocked")) {
+            setArmourLocked(config.node("armourLocked").getBoolean());
         }
 
-        String rawTeamColor = config.getString(path + configSeparator + "team");
+        String rawTeamColor = config.node("team").getString();
         if (rawTeamColor != null) {
             setTeamColor(TeamColor.matchColor(rawTeamColor));
         }
 
-        if (config.contains(path + configSeparator + "displayInMenu")) {
-            setDisplayInMenu(config.getBoolean(path + configSeparator + "displayInMenu"));
+        if (config.hasChild("displayInMenu")) {
+            setDisplayInMenu(config.node("displayInMenu").getBoolean(true));
         }
 
-        if (config.contains(path + configSeparator + "allowOffhand")) {
-            setAllowOffHand(config.getBoolean(path + configSeparator + "allowOffhand"));
+        if (config.hasChild("allowOffhand")) {
+            setAllowOffHand(config.node("allowOffhand").getBoolean(true));
         }
 
-        ConfigurationSection addonSection = config.getConfigurationSection(path + configSeparator + "addons");
-        if (addonSection != null) {
+        final CommentedConfigurationNode addonsNode = config.node("addons");
+        if (!addonsNode.virtual()) {
             for (final @NotNull ALoadoutAddon addon : addons.values()) {
-                addon.load(config, path + configSeparator + "addons");
+                addon.load(addonsNode);
             }
         }
     }

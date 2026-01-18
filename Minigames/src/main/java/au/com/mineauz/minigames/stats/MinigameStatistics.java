@@ -6,7 +6,8 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
-import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -32,14 +33,14 @@ public final class MinigameStatistics {
     private static final Map<String, MinigameStat> stats = new HashMap<>();
 
     static {
-        registerStat0(Wins);
-        registerStat0(Losses);
-        registerStat0(Attempts);
-        registerStat0(CompletionTime);
-        registerStat0(Kills);
-        registerStat0(Deaths);
-        registerStat0(Score);
-        registerStat0(Reverts);
+        registerStatIntern(Wins);
+        registerStatIntern(Losses);
+        registerStatIntern(Attempts);
+        registerStatIntern(CompletionTime);
+        registerStatIntern(Kills);
+        registerStatIntern(Deaths);
+        registerStatIntern(Score);
+        registerStatIntern(Reverts);
     }
 
     private MinigameStatistics() {
@@ -52,10 +53,10 @@ public final class MinigameStatistics {
      * @throws IllegalArgumentException Thrown if the stat name is not unique or contains invalid characters
      */
     public static void registerStat(@NotNull DynamicMinigameStat stat) throws IllegalArgumentException {
-        registerStat0(stat);
+        registerStatIntern(stat);
     }
 
-    private static void registerStat0(@NotNull MinigameStat stat) throws IllegalArgumentException {
+    private static void registerStatIntern(@NotNull MinigameStat stat) throws IllegalArgumentException {
         String name = stat.getName().toLowerCase();
 
         // Validity tests
@@ -132,9 +133,9 @@ public final class MinigameStatistics {
     @NotNull
     public static Iterable<DynamicMinigameStat> getDynamicStats() {
         return stats.values().stream()
-                .filter(DynamicMinigameStat.class::isInstance)
-                .map(DynamicMinigameStat.class::cast)
-                .collect(Collectors.toList());
+            .filter(DynamicMinigameStat.class::isInstance)
+            .map(DynamicMinigameStat.class::cast)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -149,11 +150,11 @@ public final class MinigameStatistics {
         final Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_NAME, parent.getViewer());
 
         for (final MinigameStat stat : getAllStats().values()) {
-            MenuItemCustom item = new MenuItemCustom(Material.WRITABLE_BOOK, stat.getDisplayName());
+            MenuItemCustom item = new MenuItemCustom(ItemType.WRITABLE_BOOK, stat.getDisplayName());
             item.setClick(() -> {
                 statCallback.setValue(stat);
                 parent.displayMenu(submenu.getViewer());
-                return null;
+                return ItemStack.empty();
             });
 
             submenu.addItem(item);
@@ -176,11 +177,11 @@ public final class MinigameStatistics {
         final Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_FIELD_NAME, parent.getViewer());
 
         for (final StatisticValueField field : format.getFields()) {
-            MenuItemCustom item = new MenuItemCustom(Material.PAPER, field.getTitle());
+            MenuItemCustom item = new MenuItemCustom(ItemType.PAPER, field.getTitle());
             item.setClick(() -> {
                 callback.setValue(field);
                 parent.displayMenu(submenu.getViewer());
-                return null;
+                return ItemStack.empty();
             });
 
             submenu.addItem(item);

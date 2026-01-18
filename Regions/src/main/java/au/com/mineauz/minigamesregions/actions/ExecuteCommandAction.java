@@ -20,10 +20,12 @@ import au.com.mineauz.minigamesregions.util.NullCommandSender;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 import java.util.Set;
@@ -32,8 +34,8 @@ public class ExecuteCommandAction extends AAction {
     private final StringFlag comd = new StringFlag("command", "say Hello World!");
     private final BooleanFlag silentExecute = new BooleanFlag("silent", false);
 
-    protected ExecuteCommandAction(@NotNull String name) {
-        super(name);
+    protected ExecuteCommandAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -96,7 +98,7 @@ public class ExecuteCommandAction extends AAction {
         ScriptObject base = new ScriptObject() {
             @NotNull
             @Override
-            public Set<String> getKeys() {
+            public Set<String> getReferenceKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
@@ -107,7 +109,7 @@ public class ExecuteCommandAction extends AAction {
             }
 
             @Override
-            public @Nullable ScriptReference get(@NotNull String name) {
+            public @Nullable ScriptReference resolveReference(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -131,16 +133,16 @@ public class ExecuteCommandAction extends AAction {
         debug(mgPlayer, node);
         String command = replacePlayerTags(mgPlayer, comd.getFlag());
         command = command
-                .replace("{x}", String.valueOf(node.getLocation().getBlockX()))
-                .replace("{y}", String.valueOf(node.getLocation().getBlockY()))
-                .replace("{z}", String.valueOf(node.getLocation().getBlockZ()))
+                .replace("{x}", String.valueOf(node.getSafeLocation().blockX()))
+                .replace("{y}", String.valueOf(node.getSafeLocation().blockY()))
+                .replace("{z}", String.valueOf(node.getSafeLocation().blockZ()))
                 .replace("{node}", node.getName());
 
         // New expression system
         ScriptObject base = new ScriptObject() {
             @NotNull
             @Override
-            public Set<String> getKeys() {
+            public Set<String> getReferenceKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
@@ -151,7 +153,7 @@ public class ExecuteCommandAction extends AAction {
             }
 
             @Override
-            public @Nullable ScriptReference get(@NotNull String name) {
+            public @Nullable ScriptReference resolveReference(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -179,17 +181,15 @@ public class ExecuteCommandAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        comd.saveValue(config, path);
-        silentExecute.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        comd.saveValue(config);
+        silentExecute.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        comd.loadValue(config, path);
-        silentExecute.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        comd.loadValue(config);
+        silentExecute.loadValue(config);
     }
 
     @Override
@@ -197,7 +197,7 @@ public class ExecuteCommandAction extends AAction {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
-        m.addItem(new MenuItemString(Material.COMMAND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_COMMAND_NAME),
+        m.addItem(new MenuItemString(ItemType.COMMAND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_COMMAND_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_COMMANDACTION_COMMAND_DESCRIPTION), new Callback<>() {
 
             @Override
@@ -214,7 +214,7 @@ public class ExecuteCommandAction extends AAction {
             }
         }));
 
-        m.addItem(silentExecute.getMenuItem(Material.NOTE_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME),
+        m.addItem(silentExecute.getMenuItem(ItemType.NOTE_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_COMMANDACTION_SILENT_DESCRIPTION)));
         m.displayMenu(mgPlayer);
         return true;

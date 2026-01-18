@@ -32,8 +32,14 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
     }
 
     @Override
-    protected @NotNull Integer loadKey(@NotNull String key) {
-        int value = Integer.parseInt(key);
+    protected @NotNull Integer loadKey(final @NotNull Object key) throws IllegalArgumentException{
+        final int value;
+        if (key instanceof Number number) {
+            value = number.intValue();
+        } else {
+            value = Integer.parseInt(key.toString());
+        }
+
         if (value <= 0) {
             throw new IllegalArgumentException();
         }

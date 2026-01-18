@@ -55,10 +55,10 @@ public class SaveCommand extends ACommand {
             if (minigame != null) {
                 minigame.saveMinigame();
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgMiscLangKey.MINIGAME_SAVED,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
             return true;
         }

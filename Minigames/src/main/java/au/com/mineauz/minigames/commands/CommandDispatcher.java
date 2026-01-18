@@ -132,12 +132,12 @@ public class CommandDispatcher extends Command {
                         if (!returnValue) {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_HEADER);
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_DESCRIPTION,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), this.getDescription()));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), this.getDescription()));
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_USAGE,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), this.getUsage()));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), this.getUsage()));
                             if (cmd.getAliases() != null) {
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_ALIASES,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", this.getAliases())));
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", this.getAliases())));
                             }
                         }
                     } else {
@@ -151,9 +151,9 @@ public class CommandDispatcher extends Command {
         } else {
             MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, Component.text(plugin.getPluginMeta().getName()));
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_AUTHORS,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", plugin.getPluginMeta().getAuthors())));
+                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", plugin.getPluginMeta().getAuthors())));
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_VERSION,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), plugin.getPluginMeta().getVersion()));
+                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), plugin.getPluginMeta().getVersion()));
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_HELP);
             return true;
         }

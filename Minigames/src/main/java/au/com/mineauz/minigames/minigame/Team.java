@@ -13,29 +13,32 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ScoreHolder;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
+import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.Location;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team.Option;
 import org.bukkit.scoreboard.Team.OptionStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class Team implements ScriptObject, ScoreHolder {
+    private final @NotNull Minigames plugin = Minigames.getPlugin();
     private final @NotNull IntegerFlag maxPlayers = new IntegerFlag("maxPlayers", 0);
-    private final @NotNull List<Location> startLocations = new ArrayList<>();
+    private final @NotNull List<SafeFullLocation> startLocations = new ArrayList<>();
     private final @NotNull StringFlag playerAssignMsg = new StringFlag("assignMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM));
     private final @NotNull StringFlag joinAnnounceMsg = new StringFlag("gameAssignMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE));
     private final @NotNull StringFlag playerAutobalanceMsg = new StringFlag("autobalanceMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG));
@@ -244,7 +247,7 @@ public class Team implements ScriptObject, ScoreHolder {
         if (team != null) {
             team.removePlayer(player.getPlayer());
         }
-        player.getPlayer().setScoreboard(Minigames.getPlugin().getServer().getScoreboardManager().getMainScoreboard());
+        player.getPlayer().setScoreboard(plugin.getServer().getScoreboardManager().getMainScoreboard());
     }
 
     /**
@@ -252,7 +255,7 @@ public class Team implements ScriptObject, ScoreHolder {
      *
      * @param loc - The location to add to the team.
      */
-    public void addStartLocation(Location loc) {
+    public void addStartLocation(final @NotNull SafeFullLocation loc) {
         startLocations.add(loc);
     }
 
@@ -262,7 +265,7 @@ public class Team implements ScriptObject, ScoreHolder {
      * @param loc    - The new location
      * @param number - The number id of the original starting location (Ranging from 1 to the amount of start points [Not 0])
      */
-    public void addStartLocation(Location loc, int number) {
+    public void addStartLocation(final @NotNull SafeFullLocation loc, final int number) {
         if (startLocations.size() >= number) {
             startLocations.set(number - 1, loc);
         } else {
@@ -275,7 +278,7 @@ public class Team implements ScriptObject, ScoreHolder {
      *
      * @return The teams starting locations.
      */
-    public @NotNull List<@NotNull Location> getStartLocations() {
+    public @NotNull List<@NotNull SafeFullLocation> getStartLocations() {
         return startLocations;
     }
 
@@ -365,7 +368,7 @@ public class Team implements ScriptObject, ScoreHolder {
         if (bukkitTeam != null) {
             bukkitTeam.setAllowFriendlyFire(isEnabled);
         } else {
-            Minigames.getCmpnntLogger().warn("No team for set friendly fire call");
+            plugin.getComponentLogger().warn("No team for set friendly fire call");
         }
     }
 
@@ -375,7 +378,7 @@ public class Team implements ScriptObject, ScoreHolder {
         if (bukkitTeam != null) {
             bukkitTeam.setOption(Option.NAME_TAG_VISIBILITY, vis);
         } else {
-            Minigames.getCmpnntLogger().warn("No team set for visibility call");
+            plugin.getComponentLogger().warn("No team set for visibility call");
         }
     }
 
@@ -385,7 +388,7 @@ public class Team implements ScriptObject, ScoreHolder {
         if (bukkitTeam != null) {
             bukkitTeam.setOption(Option.COLLISION_RULE, col);
         } else {
-            Minigames.getCmpnntLogger().warn("No team set for collision rule call");
+            plugin.getComponentLogger().warn("No team set for collision rule call");
         }
     }
 
@@ -481,7 +484,7 @@ public class Team implements ScriptObject, ScoreHolder {
         if (bukkitTeam != null) {
             bukkitTeam.setCanSeeFriendlyInvisibles(seeFriendlyInvisibles);
         } else {
-            Minigames.getCmpnntLogger().warn("No team for set see friendly invisibles call");
+            plugin.getComponentLogger().warn("No team for set see friendly invisibles call");
         }
     }
 
@@ -514,7 +517,7 @@ public class Team implements ScriptObject, ScoreHolder {
     }
 
     @Override
-    public @Nullable ScriptReference get(@NotNull String name) {
+    public @Nullable ScriptReference resolveReference(@NotNull String name) {
         if (name.equalsIgnoreCase("colorname")) {
             return ScriptValue.of(getColor().name());
         } else if (name.equalsIgnoreCase("color")) {
@@ -533,7 +536,7 @@ public class Team implements ScriptObject, ScoreHolder {
     }
 
     @Override
-    public @NotNull Set<@NotNull String> getKeys() {
+    public @NotNull Set<@NotNull String> getReferenceKeys() {
         return Set.of("colorname", "color", "name", "score", "players", "minigame");
     }
 
@@ -542,18 +545,21 @@ public class Team implements ScriptObject, ScoreHolder {
         return getColor().name();
     }
 
-    public void load(@NotNull Configuration config, @NotNull String path) {
-        maxPlayers.loadValue(config, path);
-        playerAssignMsg.loadValue(config, path);
-        joinAnnounceMsg.loadValue(config, path);
-        gameAutobalanceMsg.loadValue(config, path);
-        playerAutobalanceMsg.loadValue(config, path);
-        nametagVisibility.loadValue(config, path);
-        collisionRule.loadValue(config, path);
-        friendlyFire.loadValue(config, path);
-        seeFriendlyInvisibles.loadValue(config, path);
-        showDeathMessage.loadValue(config, path);
-        autoBalance.loadValue(config, path);
+    public void load(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        setDisplayName(config.node("displayName").getString());
+        config.node("startpos").getList(TypeToken.get(SafeFullLocation.class), ArrayList::new).forEach(this::addStartLocation);
+
+        maxPlayers.loadValue(config);
+        playerAssignMsg.loadValue(config);
+        joinAnnounceMsg.loadValue(config);
+        gameAutobalanceMsg.loadValue(config);
+        playerAutobalanceMsg.loadValue(config);
+        nametagVisibility.loadValue(config);
+        collisionRule.loadValue(config);
+        friendlyFire.loadValue(config);
+        seeFriendlyInvisibles.loadValue(config);
+        showDeathMessage.loadValue(config);
+        autoBalance.loadValue(config);
 
         //dataFixerUpper
         playerAssignMsg.setFlag(playerAssignMsg.getFlag().replaceFirst("%s", "<team>"));
@@ -562,18 +568,24 @@ public class Team implements ScriptObject, ScoreHolder {
         gameAutobalanceMsg.setFlag(gameAutobalanceMsg.getFlag().replaceFirst("%s", "<player>").replaceFirst("%s", "<team>"));
     }
 
-    public void save(@NotNull Configuration config, @NotNull String path) {
-        maxPlayers.saveValue(config, path);
-        playerAssignMsg.saveValue(config, path);
-        joinAnnounceMsg.saveValue(config, path);
-        gameAutobalanceMsg.saveValue(config, path);
-        playerAutobalanceMsg.saveValue(config, path);
-        nametagVisibility.saveValue(config, path);
-        collisionRule.saveValue(config, path);
-        friendlyFire.loadValue(config, path);
-        seeFriendlyInvisibles.loadValue(config, path);
-        showDeathMessage.loadValue(config, path);
-        autoBalance.saveValue(config, path);
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.node("displayName").set(getDisplayName());
+
+        if (!getStartLocations().isEmpty()) {
+           config.node("startpos").setList(TypeToken.get(SafeFullLocation.class), getStartLocations());
+        }
+
+        maxPlayers.saveValue(config);
+        playerAssignMsg.saveValue(config);
+        joinAnnounceMsg.saveValue(config);
+        gameAutobalanceMsg.saveValue(config);
+        playerAutobalanceMsg.saveValue(config);
+        nametagVisibility.saveValue(config);
+        collisionRule.saveValue(config);
+        friendlyFire.loadValue(config);
+        seeFriendlyInvisibles.loadValue(config);
+        showDeathMessage.loadValue(config);
+        autoBalance.saveValue(config);
     }
 
 

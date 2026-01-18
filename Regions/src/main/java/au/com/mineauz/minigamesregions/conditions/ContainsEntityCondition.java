@@ -15,12 +15,13 @@ import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.util.RegionUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -102,32 +103,32 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        entityType.saveValue(config, path);
-        matchName.saveValue(config, path);
-        customName.saveValue(config, path);
-        saveInvert(config, path);
+    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        entityType.saveValue(config);
+        matchName.saveValue(config);
+        customName.saveValue(config);
+        saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        entityType.loadValue(config, path);
-        matchName.loadValue(config, path);
-        customName.loadValue(config, path);
-        loadInvert(config, path);
+    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+        entityType.loadValue(config);
+        matchName.loadValue(config);
+        customName.loadValue(config);
+        loadInvert(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu menu = new Menu(3, getDisplayName(), player);
 
-        menu.addItem(entityType.getMenuItem(Material.CHICKEN_SPAWN_EGG,
+        menu.addItem(entityType.getMenuItem(ItemType.CHICKEN_SPAWN_EGG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME)));
         menu.addItem(new MenuItemNewLine());
 
-        menu.addItem(matchName.getMenuItem(Material.NAME_TAG,
+        menu.addItem(matchName.getMenuItem(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_MATCH_CUSTOMNAME_NAME)));
-        MenuItemString menuItem = customName.getMenuItem(Material.NAME_TAG,
+        MenuItemString menuItem = customName.getMenuItem(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_CUSTOMNAME_DESCRIPTION));
         menuItem.setAllowNull(true);

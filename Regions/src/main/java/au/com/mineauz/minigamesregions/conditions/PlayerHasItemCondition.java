@@ -16,13 +16,15 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -237,71 +239,68 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        itemToSearchFor.saveValue(config, path);
-        count.saveValue(config, path);
-        where.saveValue(config, path);
-        slot.saveValue(config, path);
+    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        itemToSearchFor.saveValue(config);
+        count.saveValue(config);
+        where.saveValue(config);
+        slot.saveValue(config);
 
-        matchName.saveValue(config, path);
-        matchLore.saveValue(config, path);
-        matchEnchantments.saveValue(config, path);
-        matchExact.saveValue(config, path);
-        saveInvert(config, path);
+        matchName.saveValue(config);
+        matchLore.saveValue(config);
+        matchEnchantments.saveValue(config);
+        matchExact.saveValue(config);
+        saveInvertedStatus(config);
 
         // remove legacy
         // datafixerupper
-        char configSeparator = config.options().pathSeparator();
-        config.set(path + configSeparator + "type", null);
-        config.set(path + configSeparator + "name", null);
-        config.set(path + configSeparator + "lore", null);
+        config.removeChild("type");
+        config.removeChild("name");
+        config.removeChild("lore");
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
-        if (config.contains(path + configSeparator + "type")) { // load legacy data
-            Material flag = Material.getMaterial(config.getString(path + configSeparator + "type"));
+    public void loadArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        if (config.hasChild( "type")) { // load legacy data
+            Material flag = Material.getMaterial(config.node("type").getString(""));
 
             // datafixerupper
             if (flag != null) {
                 ItemStack legacyItem = new ItemStack(flag);
                 ItemMeta meta = legacyItem.getItemMeta();
 
-                if (config.contains(path + configSeparator + "name")) {
-                    String displayname = config.getString(path + configSeparator + "name");
+                if (config.hasChild("name")) {
+                    String displayname = config.node("name").getString();
 
                     if (displayname != null) {
                         meta.setDisplayName(displayname);
                     }
                 }
 
-                if (config.contains(path + configSeparator + "lore")) {
-                    String lore = config.getString(path + configSeparator + "lore");
+                if (config.hasChild("lore")) {
+                    String lore = config.node("lore").getString("");
 
                     meta.setLore(Arrays.stream(lore.split(";")).toList());
                 }
 
                 legacyItem.setItemMeta(meta);
-                itemToSearchFor.setFlag(legacyItem);
-
+                itemToSearchFor.setFlag(legacyItem);// datafixerupper end
             } else {
-                itemToSearchFor.loadValue(config, path);
+                itemToSearchFor.loadValue(config);
             }
         } else { // new data load system
-            itemToSearchFor.loadValue(config, path);
+            itemToSearchFor.loadValue(config);
         }
 
-        count.loadValue(config, path);
+        count.loadValue(config);
 
-        where.loadValue(config, path);
-        slot.loadValue(config, path);
+        where.loadValue(config);
+        slot.loadValue(config);
 
-        matchName.loadValue(config, path);
-        matchLore.loadValue(config, path);
-        matchEnchantments.loadValue(config, path);
-        matchExact.loadValue(config, path);
-        loadInvert(config, path);
+        matchName.loadValue(config);
+        matchLore.loadValue(config);
+        matchEnchantments.loadValue(config);
+        matchExact.loadValue(config);
+        loadInvert(config);
     }
 
     @Override
@@ -340,12 +339,12 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         });
 
         menu.addItem(itemMenuItem);
-        menu.addItem(count.getMenuItem(Material.STONE_SLAB,
+        menu.addItem(count.getMenuItem(ItemType.STONE_SLAB,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 999));
 
-        final MenuItemInteger slotMenuItem = slot.getMenuItem(Material.DIAMOND,
+        final MenuItemInteger slotMenuItem = slot.getMenuItem(ItemType.DIAMOND,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_SLOT_NAME), null, 0, 40);
-        final MenuItemEnum<PositionType> whereMenuItem = new MenuItemEnum<>(Material.COMPASS,
+        final MenuItemEnum<PositionType> whereMenuItem = new MenuItemEnum<>(ItemType.COMPASS,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_WHERE_NAME), new Callback<>() {
             @Override
             public PositionType getValue() {
@@ -368,9 +367,9 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
         menu.addItem(new MenuItemNewLine());
 
-        menu.addItem(matchName.getMenuItem(Material.NAME_TAG,
+        menu.addItem(matchName.getMenuItem(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_DISPLAYNAME_NAME)));
-        final MenuItemString nameMenuItem = new MenuItemString(Material.NAME_TAG,
+        final MenuItemString nameMenuItem = new MenuItemString(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_DESCRIPTION),
                 new Callback<>() {
@@ -392,9 +391,9 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         futureNameItem.complete(nameMenuItem);
         menu.addItem(nameMenuItem);
 
-        menu.addItem(matchLore.getMenuItem(Material.WRITTEN_BOOK,
+        menu.addItem(matchLore.getMenuItem(ItemType.WRITTEN_BOOK,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_LORE_NAME)));
-        final MenuItemString loreMenuItem = new MenuItemString(Material.BOOK,
+        final MenuItemString loreMenuItem = new MenuItemString(ItemType.BOOK,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_LORE_DESCRIPTION),
                 new Callback<>() {
@@ -423,9 +422,9 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         futureLoreItem.complete(loreMenuItem);
         menu.addItem(loreMenuItem);
 
-        menu.addItem(matchEnchantments.getMenuItem(Material.ENCHANTED_BOOK,
+        menu.addItem(matchEnchantments.getMenuItem(ItemType.ENCHANTED_BOOK,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_ENCHANTMENTS_NAME)));
-        menu.addItem(matchExact.getMenuItem(Material.BOOKSHELF,
+        menu.addItem(matchExact.getMenuItem(ItemType.BOOKSHELF,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_EXACT_NAME))); //todo with callback to turn the others on
 
         addInvertMenuItem(menu);

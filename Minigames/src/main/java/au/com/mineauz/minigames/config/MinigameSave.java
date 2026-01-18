@@ -1,81 +1,78 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.Minigames;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import au.com.mineauz.minigames.minigame.Minigame;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.UUID;
 
 public class MinigameSave {
-    private final @NotNull String path;
-    private final @Nullable String minigame;
-    private @Nullable FileConfiguration minigameSave = null;
-    private @Nullable File minigameSaveFile = null;
+    private final @MonotonicNonNull Minigames plugin = Minigames.getPlugin();
+    protected final @NotNull Path path;
+    protected final @NotNull YamlConfigurationLoader loader;
+    protected @Nullable CommentedConfigurationNode root;
 
-    public MinigameSave(@NotNull String path) {
-        this.path = path;
-        this.minigame = null;
-        reloadFile();
-        saveConfig();
+    protected MinigameSave(final @NotNull Path path) {
+        this.path = plugin.getDataPath().resolve(path.resolveSibling(path.getFileName() + ".yml"));
+        this.loader = YamlConfigurationLoader.builder().path(path).build();
     }
 
-    public MinigameSave(@NotNull String minigame, @NotNull String path) {
-        this.minigame = minigame;
-        this.path = path;
-        reloadFile();
-        saveConfig();
+    public static MinigameSave forGlobalData(final @NotNull Path subPath) {
+        return new MinigameSave(subPath);
     }
 
-    public void reloadFile() {
-        if (minigame != null) {
-            if (minigameSaveFile == null) {
-                minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + File.separator + "minigames" +
-                        File.separator + minigame + File.separator, path + ".yml");
-            }
-        } else {
-            if (minigameSaveFile == null) {
-                minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + File.separator, path + ".yml");
-            }
+    public static MinigameSave forPlayerData(final @NotNull UUID playerUUID, final @NotNull Path subPath) {
+        return new MinigameSave(Path.of("playerdata").resolve(subPath).resolve(playerUUID.toString()));
+    }
+
+    public static @NotNull MinigameSave forMinigameData(final @NotNull Minigame minigame, final @NotNull Path subPath) {
+        return new MinigameSave(Path.of("minigames", minigame.getName()).resolve(subPath));
+    }
+
+    public boolean existsOnDisk() {
+        return Files.exists(path);
+    }
+
+    public void createBackup() throws IOException {
+        if (existsOnDisk()) {
+            Files.copy(path, path.resolveSibling(path.getFileName().toString() + System.currentTimeMillis() + ".backup"));
         }
-        minigameSave = YamlConfiguration.loadConfiguration(minigameSaveFile);
     }
 
-    public FileConfiguration getConfig() {
-        if (minigameSave == null) {
-            reloadFile();
+    public @NotNull CommentedConfigurationNode getConfigRoot() throws ConfigurateException {
+        if (root == null) {
+            root = loader.load();
         }
-        return minigameSave;
+
+        return root;
     }
 
-    public void saveConfig() {
-        if (minigameSave == null || minigameSaveFile == null) {
-            if (minigame != null) {
-                Minigames.getCmpnntLogger().info("Could not save " + minigame + File.separator + path + " config file!");
-            } else {
-                Minigames.getCmpnntLogger().info("Could not save " + path + " config file!");
-            }
+    public void saveConfig() throws IOException {
+        if (root == null) {
+            plugin.getComponentLogger().info("Could not save config file" + path + "!");
             return;
         }
-        try {
-            minigameSave.save(minigameSaveFile);
-        } catch (IOException ex) {
-            if (minigame != null) {
-                Minigames.getCmpnntLogger().error("Could not save " + minigame + File.separator + path + " config file!");
-            } else {
-                Minigames.getCmpnntLogger().error("Could not save " + path + " config file!");
-            }
-        }
+
+        loader.save(root);
     }
 
     public void deleteFile() {
-        if (minigameSave == null) {
-            reloadFile();
+        if (existsOnDisk()) {
+            try {
+                Files.delete(path);
+            } catch (final @NotNull IOException e) {
+                plugin.getComponentLogger().error("Could not delete config file " + path + "!", e);
+            }
         }
-        File delfile = new File(minigameSaveFile.getPath());
-        delfile.delete();
-        minigameSaveFile = null;
+
+        root = null;
     }
 }

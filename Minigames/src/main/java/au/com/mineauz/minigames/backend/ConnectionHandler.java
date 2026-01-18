@@ -136,7 +136,7 @@ public class ConnectionHandler {
         try {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
-            Minigames.getCmpnntLogger().error("", e);
+            Minigames.getPlugin().getComponentLogger().error("", e);
         }
     }
 
@@ -145,7 +145,7 @@ public class ConnectionHandler {
             if (!connection.getAutoCommit()) connection.setAutoCommit(true);
             else connection.commit();
         } catch (SQLException e) {
-            Minigames.getCmpnntLogger().error("", e);
+            Minigames.getPlugin().getComponentLogger().error("", e);
         }
     }
 
@@ -154,7 +154,7 @@ public class ConnectionHandler {
             connection.rollback();
             connection.setAutoCommit(true);
         } catch (SQLException e) {
-            Minigames.getCmpnntLogger().error("", e);
+            Minigames.getPlugin().getComponentLogger().error("", e);
         }
     }
 }

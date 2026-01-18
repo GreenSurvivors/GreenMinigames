@@ -7,12 +7,14 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import net.kyori.adventure.key.Key;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,12 +29,12 @@ public class CTFModule extends MinigameModule {
     private final Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<>();
     private final Map<String, CTFFlag> droppedFlag = new HashMap<>();
 
-    public CTFModule(final @NotNull Minigame mgm, final @NotNull String name) {
-        super(mgm, name);
+    public CTFModule(final @NotNull Minigame mgm, final @NotNull Key key) {
+        super(mgm, key);
     }
 
     public static CTFModule getMinigameModule(final @NotNull Minigame mgm) {
-        return ((CTFModule) mgm.getModule(MgModules.INFECTION.getName()));
+        return ((CTFModule) mgm.getModule(MgModules.INFECTION.getKey()));
     }
 
     public Boolean getUseFlagAsCapturePoint() {
@@ -55,7 +57,7 @@ public class CTFModule extends MinigameModule {
         return carryFlagAsItem.getFlag();
     }
 
-    public void setCarryFlagAsItem (final boolean carryFlagAsItem) {
+    public void setCarryFlagAsItem(final boolean carryFlagAsItem) {
         this.carryFlagAsItem.setFlag(carryFlagAsItem);
     }
 
@@ -79,7 +81,7 @@ public class CTFModule extends MinigameModule {
             final ItemStack[] items = inventory.getStorageContents();
 
             for (int i = 0; i < items.length; i++) {
-                if (flag.isFlag(items[i])){
+                if (flag.isFlag(items[i])) {
                     inventory.setItem(i, ItemStack.empty());
                 }
             }
@@ -131,17 +133,17 @@ public class CTFModule extends MinigameModule {
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
-        useFlagAsCapturePoint.saveValue(config, path);
-        bringFlagBackManual.saveValue(config, path);
-        carryFlagAsItem.saveValue(config, path);
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        useFlagAsCapturePoint.saveValue(config);
+        bringFlagBackManual.saveValue(config);
+        carryFlagAsItem.saveValue(config);
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        useFlagAsCapturePoint.loadValue(config, path);
-        bringFlagBackManual.loadValue(config, path);
-        carryFlagAsItem.loadValue(config, path);
+    public void load(final @NotNull CommentedConfigurationNode config) {
+        useFlagAsCapturePoint.loadValue(config);
+        bringFlagBackManual.loadValue(config);
+        carryFlagAsItem.loadValue(config);
     }
 
     @Override
@@ -153,11 +155,11 @@ public class CTFModule extends MinigameModule {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_CTF_NAME, previous.getViewer());
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        menu.addItem(useFlagAsCapturePoint.getMenuItem(Material.BLACK_BANNER, MgMenuLangKey.MENU_CTF_CAPTUREPOINT_NAME,
-                MgMenuLangKey.MENU_CTF_CAPTUREPOINT_DESCRIPTION));
-        menu.addItem(bringFlagBackManual.getMenuItem(Material.ENDER_EYE, MgMenuLangKey.MENU_CTF_FLAGBACKMANUALLY_NAME,
-                MgMenuLangKey.MENU_CTF_FLAGBACKMANUALLY_DESCRIPTION));
-        menu.addItem(carryFlagAsItem.getMenuItem(Material.OAK_SIGN, MgMenuLangKey.MENU_CTF_CARRYFLAGASITEM_NAME,
+        menu.addItem(useFlagAsCapturePoint.getMenuItem(ItemType.BLACK_BANNER, MgMenuLangKey.MENU_CTF_CAPTUREPOINT_NAME,
+            MgMenuLangKey.MENU_CTF_CAPTUREPOINT_DESCRIPTION));
+        menu.addItem(bringFlagBackManual.getMenuItem(ItemType.ENDER_EYE, MgMenuLangKey.MENU_CTF_FLAGBACKMANUALLY_NAME,
+            MgMenuLangKey.MENU_CTF_FLAGBACKMANUALLY_DESCRIPTION));
+        menu.addItem(carryFlagAsItem.getMenuItem(ItemType.OAK_SIGN, MgMenuLangKey.MENU_CTF_CARRYFLAGASITEM_NAME,
             MgMenuLangKey.MENU_CTF_CARRYFLAGASITEM_DESCRIPTION));
         menu.displayMenu(previous.getViewer());
         return true;

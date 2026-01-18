@@ -15,15 +15,20 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.security.CodeSource;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,16 +50,17 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      */
     private static final @NotNull ConcurrentHashMap<String, ResourceBundle> propertiesHashMap = new ConcurrentHashMap<>();
     public static final Component DEBUG_PREFIX = Component.text("[Debug]", NamedTextColor.RED);
+    private static final @MonotonicNonNull Minigames PLUGIN = Minigames.getPlugin();
 
     public static void registerCoreLanguage() {
         CodeSource src = Minigames.class.getProtectionDomain().getCodeSource();
         if (src != null) {
             initLangFiles(src, BUNDLE_NAME);
         } else {
-            Minigames.getCmpnntLogger().warn("Couldn't save lang files: no CodeSource!");
+            PLUGIN.getComponentLogger().warn("Couldn't save lang files: no CodeSource!");
         }
 
-        String tag = Minigames.getPlugin().getConfig().getString("lang", Locale.getDefault().toLanguageTag()); // todo seems like this beaks on the first startup, when the config is still not saved on disk
+        String tag = PLUGIN.getConfig().getString("lang", Locale.getDefault().toLanguageTag()); // todo seems like this beaks on the first startup, when the config is still not saved on disk
         Locale locale = Locale.forLanguageTag(tag.replace("_", "-"));
 
         // fall back if locale is undefined
@@ -62,8 +68,9 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
             locale = Locale.getDefault();
         }
 
-        Minigames.getCmpnntLogger().info("MessageManager set locale for language:" + locale.toLanguageTag());
-        File file = new File(new File(Minigames.getPlugin().getDataFolder(), "lang"), "minigames.properties");
+        PLUGIN.getComponentLogger().info("MessageManager set locale for language:" + locale.toLanguageTag());
+
+        Path file = PLUGIN.getDataPath().resolve("lang").resolve("minigames.properties");
         registerCoreLanguage(file, locale);
     }
 
@@ -83,8 +90,8 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
                     if (i + 1 < theString.length()) {
                         final char bChar = theString.charAt(i + 1);
                         if (bChar == ' ' || bChar == 't' || bChar == 'n' || bChar == 'r' ||
-                                bChar == 'f' || bChar == '\\' || bChar == 'u' || bChar == '=' ||
-                                bChar == ':' || bChar == '#' || bChar == '!') {
+                            bChar == 'f' || bChar == '\\' || bChar == 'u' || bChar == '=' ||
+                            bChar == ':' || bChar == '#' || bChar == '!') {
                             // don't double escape already escaped chars
                             convertedStrBuilder.append(aChar);
                             convertedStrBuilder.append(bChar);
@@ -138,30 +145,29 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
                 String entryName = zipEntry.getName();
 
                 if (bundleFileNamePattern.matcher(entryName).matches()) {
-                    File langFile = new File(new File(Minigames.getPlugin().getDataFolder(), bundleName), entryName);
-                    if (!langFile.exists()) { // don't overwrite existing files
-                        FileUtils.copyToFile(zipStream, langFile);
+                    Path langFile = PLUGIN.getDataPath().resolve(bundleName).resolve(entryName);
+                    if (!Files.isRegularFile(langFile)) { // don't overwrite existing files
+                        Files.copy(zipStream, langFile);
                     } else { // add defaults to file to expand in case there are key-value pairs missing
                         Properties defaults = new Properties();
                         // no try with since we need to keep the ZipStream open
                         try {
                             defaults.load(new InputStreamReader(zipStream, StandardCharsets.UTF_8));
                         } catch (Exception e) {
-                            Minigames.getCmpnntLogger().warn("couldn't get default properties file for " + entryName + "!", e);
+                            PLUGIN.getComponentLogger().warn("couldn't get default properties file for " + entryName + "!", e);
                             continue;
                         }
 
                         Properties current = new Properties();
-                        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(langFile), StandardCharsets.UTF_8)) {
+                        try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(langFile), StandardCharsets.UTF_8)) {
                             current.load(reader);
                         } catch (Exception e) {
-                            Minigames.getCmpnntLogger().warn("couldn't get default properties file for " + entryName + "!", e);
+                            PLUGIN.getComponentLogger().warn("couldn't get default properties file for " + entryName + "!", e);
                             continue;
                         }
 
-                        try (FileWriter fw = new FileWriter(langFile, StandardCharsets.UTF_8, true);
-                             // we are NOT using Properties#store since it gets rid of comments and doesn't guarantee ordering
-                             BufferedWriter bw = new BufferedWriter(fw)) {
+                        // we are NOT using Properties#store since it gets rid of comments and doesn't guarantee ordering
+                        try (final @NotNull BufferedWriter bw = Files.newBufferedWriter(langFile, StandardCharsets.UTF_8, StandardOpenOption.WRITE, StandardOpenOption.APPEND, StandardOpenOption.CREATE)) {
                             boolean updated = false; // only write comment once
                             for (Map.Entry<Object, Object> translationPair : defaults.entrySet()) { //todo guarantee ordering; default Properties are backed up by hashmap!
                                 if (current.get(translationPair.getKey()) == null) {
@@ -172,7 +178,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
                                         bw.write("# New Values where added. Is everything else up to date? Time of update: " + new Date());
                                         bw.newLine();
 
-                                        Minigames.getCmpnntLogger().info("Updated langfile \"" + entryName + "\". Might want to check the new translation strings out!");
+                                        PLUGIN.getComponentLogger().info("Updated langfile \"" + entryName + "\". Might want to check the new translation strings out!");
 
                                         updated = true;
                                     }
@@ -191,29 +197,29 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
                 } // doesn't match
             } // end of elements
         } catch (IOException e) {
-            Minigames.getCmpnntLogger().warn("Couldn't save lang files", e);
+            PLUGIN.getComponentLogger().warn("Couldn't save lang files", e);
         }
     }
 
-    public static void registerCoreLanguage(@NotNull File file, @NotNull Locale locale) {
+    public static void registerCoreLanguage(@NotNull Path file, @NotNull Locale locale) {
         ResourceBundle langBundleMinigames = null;
-        if (file.exists()) {
-            try (InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
+        if (Files.isRegularFile(file)) {
+            try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(file), StandardCharsets.UTF_8)) {
                 langBundleMinigames = new PropertyResourceBundle(inputStreamReader);
             } catch (IOException e) {
-                Minigames.getCmpnntLogger().warn("couldn't get Ressource bundle from file " + file.getName(), e);
+                PLUGIN.getComponentLogger().warn("couldn't get Ressource bundle from file " + file, e);
             }
         } else {
             try {
-                langBundleMinigames = ResourceBundle.getBundle("messages", locale, Minigames.getPlugin().getClass().getClassLoader(), new UTF8ResourceBundleControl());
+                langBundleMinigames = ResourceBundle.getBundle("messages", locale, PLUGIN.getClass().getClassLoader(), new UTF8ResourceBundleControl());
             } catch (MissingResourceException e) {
-                Minigames.getCmpnntLogger().warn("couldn't get Ressource bundle for lang " + locale.toLanguageTag(), e);
+                PLUGIN.getComponentLogger().warn("couldn't get Ressource bundle for lang " + locale.toLanguageTag(), e);
             }
         }
         if (langBundleMinigames != null) {
             registerMessageFile(BUNDLE_KEY, langBundleMinigames);
         } else {
-            Minigames.getCmpnntLogger().error("No Core Language Resource Could be loaded...messaging will be broken");
+            PLUGIN.getComponentLogger().error("No Core Language Resource Could be loaded...messaging will be broken");
         }
     }
 
@@ -221,6 +227,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * Register a new Bundle
      * To load the bundle use the {@link UTF8ResourceBundleControl instance as the resource control.
      * This loads the resource with UTF8
+     *
      * @param identifier Unique identifier for your resource bundle
      * @param bundle     the ResourceBundle
      * @return true on success.
@@ -230,8 +237,8 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
             return false;
         } else {
             if (propertiesHashMap.put(identifier, bundle) == null) {
-                Minigames.getCmpnntLogger().info("Loaded and registered Resource Bundle " + bundle.getBaseBundleName()
-                        + " with Locale:" + bundle.getLocale().toLanguageTag() + " Added " + bundle.keySet().size() + " keys");
+                PLUGIN.getComponentLogger().info("Loaded and registered Resource Bundle " + bundle.getBaseBundleName()
+                    + " with Locale:" + bundle.getLocale().toLanguageTag() + " Added " + bundle.keySet().size() + " keys");
                 return true;
             } else {
                 return false;
@@ -322,11 +329,11 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
     }
 
     public static void sendClickCommandMessage(@NotNull Audience target, @NotNull String command,
-                                                 @Nullable String identifier, @NotNull LangKey key,
-                                                 @NotNull TagResolver... resolvers) {
+                                               @Nullable String identifier, @NotNull LangKey key,
+                                               @NotNull TagResolver... resolvers) {
         Component init = getPluginPrefix(MinigameMessageType.INFO);
         Component message = getMessage(identifier, key, resolvers).
-                clickEvent(ClickEvent.runCommand(command));
+            clickEvent(ClickEvent.runCommand(command));
 
         // don't use color of prefix
         message = message.colorIfAbsent(NamedTextColor.WHITE);
@@ -521,8 +528,8 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
     }
 
     public static void debugMessage(@NotNull Component message) {
-        if (Minigames.getPlugin().isDebugging()) {
-            Minigames.getCmpnntLogger().info(Component.text().append(DEBUG_PREFIX).appendSpace().append(message).asComponent());
+        if (PLUGIN.isDebugging()) {
+            PLUGIN.getComponentLogger().info(Component.text().append(DEBUG_PREFIX).appendSpace().append(message).asComponent());
         }
     }
 }

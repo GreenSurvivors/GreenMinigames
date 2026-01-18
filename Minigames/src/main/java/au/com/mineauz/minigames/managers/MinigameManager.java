@@ -24,25 +24,27 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import au.com.mineauz.minigames.recorder.RecorderData;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class MinigameManager {
-    private static final Minigames PLUGIN = Minigames.getPlugin();
-    private final Map<String, Minigame> minigames = new HashMap<>();
-    private final Map<String, Configuration> configs = new HashMap<>();
-    private final Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<>();
-    private final Map<String, RewardsFlag> rewardSigns = new HashMap<>();
-    private final Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<>();
-    private final Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<>();
-    private final Map<String, ModuleFactory> modules = new HashMap<>();
+    private final Minigames plugin = Minigames.getPlugin();
+    private final @NotNull Map<@NotNull String, @NotNull Minigame> minigames = new HashMap<>();
+    private final @NotNull Map<@NotNull MinigameType, @NotNull MinigameTypeBase> minigameTypes = new HashMap<>();
+    private final @NotNull Map<@NotNull String, @NotNull RewardsFlag> rewardSigns = new HashMap<>();
+    private final @NotNull Map<@NotNull Minigame, @NotNull List<@NotNull String>> claimedScoreSignsRed = new HashMap<>();
+    private final @NotNull Map<@NotNull Minigame, @NotNull List<@NotNull String>> claimedScoreSignsBlue = new HashMap<>();
+    private final @NotNull Map<@NotNull Key, @NotNull ModuleFactory> modules = new HashMap<>();
     private @Nullable MinigameSave rewardSignsSave;
 
     public MinigameManager() {
@@ -56,22 +58,22 @@ public class MinigameManager {
     }
 
     public void addModule(final @NotNull ModuleFactory moduleFactory) {
-        this.modules.put(moduleFactory.getName(), moduleFactory);
+        this.modules.put(moduleFactory.getKey(), moduleFactory);
     }
 
-    public void removeModule(final @NotNull String moduleName) {
+    public void removeModule(final @NotNull Key moduleKey) {
         for (final Minigame mg : this.minigames.values()) {
-            mg.removeModule(moduleName);
+            mg.removeModule(moduleKey);
         }
 
-        this.modules.remove(moduleName);
+        this.modules.remove(moduleKey);
     }
 
     public void startGlobalMinigame(final @NotNull Minigame minigame, final @Nullable MinigamePlayer caller) {
         final boolean canStart = minigame.getMechanic().checkCanStart(minigame, caller);
         if (minigame.getType() == MinigameType.GLOBAL &&
-                minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL) &&
-                canStart) {
+            minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL) &&
+            canStart) {
             final StartGlobalMinigameEvent ev = new StartGlobalMinigameEvent(minigame, caller);
             Bukkit.getPluginManager().callEvent(ev);
 
@@ -79,7 +81,7 @@ public class MinigameManager {
             final ResourcePackModule module = ResourcePackModule.getMinigameModule(minigame);
             if (module != null) {
                 if (module.isEnabled()) {
-                    final ResourcePack pack = PLUGIN.getResourceManager().getResourcePack(module.getResourcePackName());
+                    final ResourcePack pack = plugin.getResourceManager().getResourcePack(module.getResourcePackName());
                     if (pack.isValid()) {
                         for (final MinigamePlayer player : minigame.getPlayers()) {
                             player.applyResourcePack(pack);
@@ -91,23 +93,23 @@ public class MinigameManager {
             minigame.saveMinigame();
         } else if (!minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL)) {
             if (caller == null) {
-                Minigames.getCmpnntLogger().warn("The Minigame Type \"" + MinigameType.GLOBAL.getName() + "\" cannot use the selected Mechanic \"" + minigame.getMechanicName() + "\"!");
+                plugin.getComponentLogger().warn("The Minigame Type \"" + MinigameType.GLOBAL.getName() + "\" cannot use the selected Mechanic \"" + minigame.getMechanicName() + "\"!");
             } else {
                 MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_INVALIDMECHANIC,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MinigameType.GLOBAL.getName()));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MinigameType.GLOBAL.getName()));
             }
         } else if (!canStart) {
             if (caller == null) {
-                Minigames.getCmpnntLogger().warn("The Game Mechanic \"" + minigame.getMechanicName() + "\" has failed to initiate!");
+                plugin.getComponentLogger().warn("The Game Mechanic \"" + minigame.getMechanicName() + "\" has failed to initiate!");
             } else {
                 MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
             }
         }
     }
 
-    public void stopGlobalMinigame(final @NotNull Minigame minigame, final Audience caller) {
+    public void stopGlobalMinigame(final @NotNull Minigame minigame, final @NotNull Audience caller) {
         if (minigame.getType() == MinigameType.GLOBAL) {
             final StopGlobalMinigameEvent ev = new StopGlobalMinigameEvent(minigame, caller);
             Bukkit.getPluginManager().callEvent(ev);
@@ -118,7 +120,7 @@ public class MinigameManager {
             final ResourcePackModule module = ResourcePackModule.getMinigameModule(minigame);
             if (module != null) {
                 if (module.isEnabled()) {
-                    final ResourcePack pack = PLUGIN.getResourceManager().getResourcePack("empty");
+                    final ResourcePack pack = plugin.getResourceManager().getResourcePack("empty");
                     if (pack.isValid()) {
                         for (final MinigamePlayer player : minigame.getPlayers()) {
                             player.applyResourcePack(pack);
@@ -132,8 +134,8 @@ public class MinigameManager {
 
     public void addMinigame(final @NotNull Minigame game) {
         this.minigames.put(game.getName(), game);
-        if (Minigames.getPlugin().includesPapi()) {
-            Minigames.getPlugin().getPlaceHolderManager().addGameIdentifiers(game);
+        if (plugin.includesPlaceholderAPI()) {
+            plugin.getPlaceHolderManager().addGameIdentifiers(game);
         }
     }
 
@@ -170,25 +172,6 @@ public class MinigameManager {
 
     public void removeMinigame(final @NotNull String minigame) {
         this.minigames.remove(minigame);
-    }
-
-    public void addConfigurationFile(final @NotNull String filename, final Configuration config) {
-        this.configs.put(filename, config);
-    }
-
-    public @Nullable Configuration getConfigurationFile(final @NotNull String filename) {
-        if (this.configs.containsKey(filename)) {
-            return this.configs.get(filename);
-        }
-        return null;
-    }
-
-    public boolean hasConfigurationFile(final @NotNull String filename) {
-        return this.configs.containsKey(filename);
-    }
-
-    public void removeConfigurationFile(final @NotNull String filename) {
-        this.configs.remove(filename);
     }
 
     public void addRegenDataToRecorder(final @NotNull Minigame minigame) {
@@ -228,32 +211,32 @@ public class MinigameManager {
     }
 
     public void addRewardSign(final @NotNull Location loc) {
-        final RewardsFlag flag = new RewardsFlag(MinigameUtils.createLocationID(loc), new Rewards());
-        this.rewardSigns.put(MinigameUtils.createLocationID(loc), flag);
+        final RewardsFlag flag = new RewardsFlag(MinigameUtils.createBlockLocationID(loc), new Rewards());
+        this.rewardSigns.put(MinigameUtils.createBlockLocationID(loc), flag);
     }
 
     public @Nullable Rewards getRewardsRewardSign(final @NotNull Location loc) {
-        return this.rewardSigns.get(MinigameUtils.createLocationID(loc)).getFlag();
+        return this.rewardSigns.get(MinigameUtils.createBlockLocationID(loc)).getFlag();
     }
 
     public boolean hasRewardSign(final @NotNull Location loc) {
-        return this.rewardSigns.containsKey(MinigameUtils.createLocationID(loc));
+        return this.rewardSigns.containsKey(MinigameUtils.createBlockLocationID(loc));
     }
 
-    public void removeRewardSign(final @NotNull Location loc) {
-        final String locid = MinigameUtils.createLocationID(loc);
+    public void removeRewardSign(final @NotNull Location loc) throws IOException {
+        final String locid = MinigameUtils.createBlockLocationID(loc);
         if (this.rewardSigns.containsKey(locid)) {
             this.rewardSigns.remove(locid);
             if (this.rewardSignsSave == null) {
                 this.loadRewardSignsFile();
             }
-            this.rewardSignsSave.getConfig().set(locid, null);
+            this.rewardSignsSave.getConfigRoot().removeChild(locid);
             this.rewardSignsSave.saveConfig();
             this.rewardSignsSave = null;
         }
     }
 
-    public void saveRewardSigns() {
+    public void saveRewardSigns() throws IOException {
         for (final String rew : this.rewardSigns.keySet()) {
             this.saveRewardSign(rew, false);
         }
@@ -263,40 +246,39 @@ public class MinigameManager {
         }
     }
 
-    public void saveRewardSign(final @NotNull String id, final boolean save) {
-        final RewardsFlag reward = this.rewardSigns.get(id);
+    public void saveRewardSign(final @NotNull String id, final boolean saveFile) throws IOException {
+        final @NotNull RewardsFlag reward = this.rewardSigns.get(id);
         if (this.rewardSignsSave == null) {
             this.loadRewardSignsFile();
         }
-        final FileConfiguration cfg = this.rewardSignsSave.getConfig();
-        cfg.set(id, null);
-        reward.saveValue(cfg, "");
-        if (save) {
+        final @NotNull CommentedConfigurationNode cfg = this.rewardSignsSave.getConfigRoot();
+        reward.saveValue(cfg);
+        if (saveFile) {
             this.rewardSignsSave.saveConfig();
             this.rewardSignsSave = null;
         }
     }
 
     public void loadRewardSignsFile() {
-        this.rewardSignsSave = new MinigameSave("rewardSigns");
+        this.rewardSignsSave = MinigameSave.forGlobalData(Path.of("rewardSigns"));
     }
 
-    public void loadRewardSigns() {
+    public void loadRewardSigns() throws ConfigurateException {
         if (this.rewardSignsSave == null) {
             this.loadRewardSignsFile();
         }
-        final FileConfiguration cfg = this.rewardSignsSave.getConfig();
-        final Set<String> keys = cfg.getKeys(false);
-        for (final String id : keys) {
-            final RewardsFlag rew = new RewardsFlag(id, new Rewards());
-            rew.loadValue(cfg, "");
+        final @NotNull CommentedConfigurationNode cfg = this.rewardSignsSave.getConfigRoot();
+        for (final @NotNull Map.Entry<@NotNull Object, @NotNull CommentedConfigurationNode> entry : cfg.childrenMap().entrySet()) {
+            final @NotNull String id = entry.getKey().toString();
+            final @NotNull RewardsFlag rew = new RewardsFlag(id, new Rewards());
+            rew.loadValue(cfg); // note: the entry.value will get fetched by the flag. Looks stupid here but this just stays in line with the other config flags caring about their own nodes via their names
 
             this.rewardSigns.put(id, rew);
         }
     }
 
     public boolean hasClaimedScore(final @NotNull Minigame mg, final @NotNull Location loc, final int team) {
-        final String id = MinigameUtils.createLocationID(loc);
+        final String id = MinigameUtils.createBlockLocationID(loc);
         if (team == 0) {
             return this.claimedScoreSignsRed.containsKey(mg) && this.claimedScoreSignsRed.get(mg).contains(id);
         } else {
@@ -305,7 +287,7 @@ public class MinigameManager {
     }
 
     public void addClaimedScore(final @NotNull Minigame mg, final @NotNull Location loc, final int team) {
-        final String id = MinigameUtils.createLocationID(loc);
+        final String id = MinigameUtils.createBlockLocationID(loc);
         if (team == 0) {
             if (!this.claimedScoreSignsRed.containsKey(mg)) {
                 this.claimedScoreSignsRed.put(mg, new ArrayList<>());
@@ -334,7 +316,7 @@ public class MinigameManager {
             return false;
         } else if (!this.minigameMechanicCheck(minigame, mgPlayer)) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
+                Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
             return false;
         } else if (minigame.getState() == MinigameState.REGENERATING) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_REGENERATING);
@@ -360,7 +342,7 @@ public class MinigameManager {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_INVALIDTYPE);
             return false;
         } else if (minigame.getStartLocations().isEmpty() ||
-                minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()) {
+            minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOSTARTLOC);
             return false;
         }
@@ -369,7 +351,7 @@ public class MinigameManager {
 
     public boolean teleportPlayerOnJoin(final @NotNull Minigame minigame, final @NotNull MinigamePlayer mgPlayer) {
         if (this.minigameType(minigame.getType()) == null) {
-            Minigames.getCmpnntLogger().warn("The Minigame \"" + minigame.getName() + "\" failed the start-up checks for its Type");
+            plugin.getComponentLogger().warn("The Minigame \"" + minigame.getName() + "\" failed the start-up checks for its Type");
         }
         return this.minigameType(minigame.getType()).teleportOnJoin(mgPlayer, minigame);
     }

@@ -3,8 +3,11 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.bukkit.configuration.Configuration;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 /**
  * Represents a custom loadout element.
@@ -12,23 +15,23 @@ import org.jetbrains.annotations.NotNull;
  * or commands.
  */
 public abstract class ALoadoutAddon {
-    protected final @NotNull String name;
+    protected final @NotNull Key key;
     protected final @NotNull PlayerLoadout loadout;
 
-    public ALoadoutAddon(@NotNull String name, final @NotNull PlayerLoadout loadout) {
-        this.name = name;
+    public ALoadoutAddon(final @NotNull Key key, final @NotNull PlayerLoadout loadout) {
+        this.key = key;
         this.loadout = loadout;
     }
 
-    public @NotNull String getName() {
-        return name;
+    public @NotNull Key getKey() {
+        return key;
     }
 
     public abstract void addMenuOptions(@NotNull Menu menu);
 
-    public abstract void save(@NotNull Configuration config, @NotNull String path);
+    public abstract void save(final @NotNull CommentedConfigurationNode config) throws SerializationException;
 
-    public abstract void load(@NotNull Configuration config, @NotNull String path);
+    public abstract void load(final @NotNull CommentedConfigurationNode config) throws ConfigurateException;
 
     public abstract void applyLoadout(@NotNull MinigamePlayer player);
 

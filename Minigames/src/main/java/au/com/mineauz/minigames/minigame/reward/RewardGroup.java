@@ -1,16 +1,16 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RewardGroup {
     private final String groupName;
-    private final List<ARewardType> items = new ArrayList<>();
+    private final @NotNull List<@NotNull ARewardType> items = new ArrayList<>();
     private RewardRarity rarity;
 
     public RewardGroup(String groupName, RewardRarity rarity) {
@@ -18,30 +18,20 @@ public class RewardGroup {
         this.rarity = rarity;
     }
 
-    public static @Nullable RewardGroup load(@NotNull Configuration config, @NotNull String path, @NotNull Rewards container) {
-        char configSeparator = config.options().pathSeparator();
-        ConfigurationSection section = config.getConfigurationSection(path);
-        if (section != null) {
-            RewardRarity rarity = RewardRarity.valueOf(config.getString(path + configSeparator + "rarity"));
-
-            int index = path.lastIndexOf(configSeparator);
-            String groupName;
-            if (index > 0) {
-                groupName = path.substring(index + 1);
-            } else {
-                groupName = path;
-            }
-            RewardGroup group = new RewardGroup(groupName, rarity);
+    public static @Nullable RewardGroup load(final @NotNull CommentedConfigurationNode config, final @NotNull String groupName, final @NotNull Rewards container) throws SerializationException {
+        if (!config.virtual() && !config.isNull()) {
+            final @NotNull RewardRarity rarity = RewardRarity.valueOf(config.node("rarity").getString());
+            final @NotNull RewardGroup group = new RewardGroup(groupName, rarity);
 
             // Load contents
-            for (String key : section.getKeys(false)) {
-                if (key.equals("rarity")) {
+            for (final @NotNull CommentedConfigurationNode rewardEntry : config.childrenList()) {
+                if (rewardEntry.key().toString().equals("rarity")) {
                     continue;
                 }
 
-                ARewardType rew = RewardTypes.getRewardType(config.getString(path + configSeparator + key + "type"), container);
-                rew.loadReward(config, path + key + configSeparator + "data");
-                group.addItem(rew);
+                final @NotNull ARewardType type = RewardTypes.getRewardType(rewardEntry.node("type").getString(), container);
+                type.loadReward(rewardEntry.node("data"));
+                group.addItem(type);
             }
 
             return group;
@@ -78,15 +68,15 @@ public class RewardGroup {
         items.clear();
     }
 
-    public void save(@NotNull Configuration config, @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         int index = 0;
-        for (ARewardType item : items) {
-            config.set(path + configSeparator + index + configSeparator + "type", item.getName());
-            item.saveReward(config, path + configSeparator + index + configSeparator + "data");
-            index++;
+        for (final @NotNull ARewardType item : items) {
+            final @NotNull CommentedConfigurationNode indexedNode = config.node(index++);
+
+            indexedNode.node("type").raw(item.getName());
+            item.saveReward(indexedNode.node("data"));
         }
 
-        config.set(path + configSeparator + "rarity", rarity.name());
+        config.node("rarity").set(rarity);
     }
 }

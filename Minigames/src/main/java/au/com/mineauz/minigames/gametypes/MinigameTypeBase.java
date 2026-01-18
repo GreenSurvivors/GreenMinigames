@@ -6,9 +6,10 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.bukkit.Location;
+import au.com.mineauz.minigames.objects.safelocation.ASafeLocation;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -48,7 +49,7 @@ public abstract class MinigameTypeBase implements Listener {
                                      @NotNull List<@NotNull MinigamePlayer> losers, @NotNull Minigame mgm);
 
     public void callGeneralQuit(@NotNull MinigamePlayer player, @NotNull Minigame minigame) {
-        Location location;
+        final @Nullable ASafeLocation location;
         if (minigame.getQuitLocation() == null) {
             location = minigame.getEndLocation();
         } else {
@@ -58,7 +59,8 @@ public abstract class MinigameTypeBase implements Listener {
         if (!player.getPlayer().isDead()) {
             if (location != null) {
                 if (player.getPlayer().getWorld() != location.getWorld() && player.getPlayer().hasPermission("minigame.set.quit") &&
-                        plugin.getConfig().getBoolean("warnings")) {
+                    plugin.getConfig().getBoolean("warnings")) {
+
                     MinigameMessageManager.sendMgMessage(player, MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
                 }
 

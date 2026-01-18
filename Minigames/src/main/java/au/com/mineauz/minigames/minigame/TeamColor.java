@@ -5,7 +5,7 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.Material;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,32 +14,33 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("UnstableApiUsage") // shutup Itemtype
 public enum TeamColor {
-    BLACK(NamedTextColor.BLACK, Material.BLACK_WOOL),
-    BLUE(NamedTextColor.BLUE, Material.BLUE_WOOL),
-    CYAN(NamedTextColor.DARK_AQUA, Material.CYAN_WOOL),
-    DARK_BLUE(NamedTextColor.DARK_BLUE, Material.BLUE_CONCRETE),
-    DARK_GRAY(NamedTextColor.DARK_GRAY, Material.GRAY_CONCRETE),
-    DARK_GREEN(NamedTextColor.DARK_GREEN, Material.GREEN_CONCRETE),
-    DARK_PURPLE(NamedTextColor.DARK_PURPLE, Material.PURPLE_CONCRETE),
-    DARK_RED(NamedTextColor.DARK_RED, Material.RED_CONCRETE),
-    GRAY(NamedTextColor.GRAY, Material.GRAY_WOOL),
-    GREEN(NamedTextColor.GREEN, Material.GREEN_WOOL),
-    LIGHT_BLUE(NamedTextColor.AQUA, Material.LIGHT_BLUE_WOOL),
-    ORANGE(NamedTextColor.GOLD, Material.ORANGE_WOOL),
-    PURPLE(NamedTextColor.LIGHT_PURPLE, Material.PURPLE_WOOL),
-    RED(NamedTextColor.RED, Material.RED_WOOL),
-    WHITE(NamedTextColor.WHITE, Material.WHITE_WOOL),
-    YELLOW(NamedTextColor.YELLOW, Material.YELLOW_WOOL),
+    BLACK(NamedTextColor.BLACK, ItemType.BLACK_WOOL),
+    BLUE(NamedTextColor.BLUE, ItemType.BLUE_WOOL),
+    CYAN(NamedTextColor.DARK_AQUA, ItemType.CYAN_WOOL),
+    DARK_BLUE(NamedTextColor.DARK_BLUE, ItemType.BLUE_CONCRETE),
+    DARK_GRAY(NamedTextColor.DARK_GRAY, ItemType.GRAY_CONCRETE),
+    DARK_GREEN(NamedTextColor.DARK_GREEN, ItemType.GREEN_CONCRETE),
+    DARK_PURPLE(NamedTextColor.DARK_PURPLE, ItemType.PURPLE_CONCRETE),
+    DARK_RED(NamedTextColor.DARK_RED, ItemType.RED_CONCRETE),
+    GRAY(NamedTextColor.GRAY, ItemType.GRAY_WOOL),
+    GREEN(NamedTextColor.GREEN, ItemType.GREEN_WOOL),
+    LIGHT_BLUE(NamedTextColor.AQUA, ItemType.LIGHT_BLUE_WOOL),
+    ORANGE(NamedTextColor.GOLD, ItemType.ORANGE_WOOL),
+    PURPLE(NamedTextColor.LIGHT_PURPLE, ItemType.PURPLE_WOOL),
+    RED(NamedTextColor.RED, ItemType.RED_WOOL),
+    WHITE(NamedTextColor.WHITE, ItemType.WHITE_WOOL),
+    YELLOW(NamedTextColor.YELLOW, ItemType.YELLOW_WOOL),
 
-    NONE(NamedTextColor.DARK_RED, Material.BARRIER);
+    NONE(NamedTextColor.DARK_RED, ItemType.BARRIER);
 
     private final @NotNull NamedTextColor color;
-    private final @NotNull Material displaMaterial;
+    private final @NotNull ItemType displayType;
 
-    TeamColor(@NotNull NamedTextColor color, @NotNull Material displaMaterial) {
+    TeamColor(@NotNull NamedTextColor color, @NotNull ItemType displayType) {
         this.color = color;
-        this.displaMaterial = displaMaterial;
+        this.displayType = displayType;
     }
 
     public static @Nullable TeamColor matchColor(@NotNull String colorName) {
@@ -78,7 +79,7 @@ public enum TeamColor {
         return color;
     }
 
-    public @NotNull Material getDisplaMaterial() {
-        return displaMaterial;
+    public @NotNull ItemType getDisplayType() {
+        return displayType;
     }
 }

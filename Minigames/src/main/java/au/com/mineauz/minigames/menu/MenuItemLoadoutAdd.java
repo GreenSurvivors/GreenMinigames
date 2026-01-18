@@ -12,8 +12,8 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,59 +25,59 @@ public class MenuItemLoadoutAdd extends MenuItem implements StringConsumer {
     private final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts;
     private @Nullable Minigame minigame = null;
 
-    public MenuItemLoadoutAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Map<@NotNull String,
-            @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
-        super(displayMat, langKey);
+    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Map<@NotNull String,
+                              @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
+        super(displayType, langKey);
         this.loadouts = loadouts;
         this.minigame = mgm;
     }
 
-    public MenuItemLoadoutAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Map<@NotNull String,
-            @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
-        super(displayMat, name);
+    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @Nullable Component name, @NotNull Map<@NotNull String,
+                              @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
+        super(displayType, name);
         this.loadouts = loadouts;
         this.minigame = mgm;
     }
 
-    public MenuItemLoadoutAdd(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @Nullable Component name,
                               @Nullable List<@NotNull Component> description,
                               @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.loadouts = loadouts;
         this.minigame = mgm;
     }
 
-    public MenuItemLoadoutAdd(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @Nullable Component name,
                               @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
-        super(displayMat, name);
+        super(displayType, name);
         this.loadouts = loadouts;
     }
 
-    public MenuItemLoadoutAdd(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @Nullable Component name,
                               @Nullable List<@NotNull Component> description,
                               @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.loadouts = loadouts;
     }
 
-    public MenuItemLoadoutAdd(@Nullable Material displayMat, @NotNull MgMenuLangKey langKey,
+    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @NotNull MgMenuLangKey langKey,
                               @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
-        super(displayMat, langKey);
+        super(displayType, langKey);
         this.loadouts = loadouts;
     }
 
     @Override
-    public @Nullable ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
-        final int reopenSeconds = 30;
+        final @NotNull Duration reopenTime = Duration.ofSeconds(30);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LOADOUT_ADD_ENTERCHAT,
-                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
         mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(reopenSeconds);
-        return null;
+        getContainer().startReopenTimer(reopenTime);
+        return ItemStack.empty();
     }
 
     @Override
@@ -91,9 +91,9 @@ public class MenuItemLoadoutAdd extends MenuItem implements StringConsumer {
                     List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
 
                     if (minigame != null) {
-                        getContainer().addItem(new MenuItemDisplayLoadout(Material.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout, minigame), i);
+                        getContainer().addItem(new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout, minigame), i);
                     } else {
-                        getContainer().addItem(new MenuItemDisplayLoadout(Material.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout), i);
+                        getContainer().addItem(new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout), i);
                     }
                     break;
                 }

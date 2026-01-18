@@ -6,13 +6,14 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.mechanics.GameMechanicBase;
+import au.com.mineauz.minigames.mechanics.AGameMechanic;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.RegenRegionChangeResult;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import au.com.mineauz.minigames.recorder.RecorderData;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
@@ -21,27 +22,35 @@ import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.*;
+import org.bukkit.block.BlockType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("UnstableApiUsage") // shut up ItemType.Typed, we aren't even using the experimental part
 public class Minigame implements ScriptObject {
-    private final String name;
+    private final Minigames plugin = Minigames.getPlugin();
+
+    private final @NotNull String name;
     private final Map<String, AFlag<?>> configFlags = new HashMap<>();
     private final ComponentFlag displayName = new ComponentFlag("displayName", null);
     private final ComponentFlag objective = new ComponentFlag("objective", null);
@@ -55,15 +64,13 @@ public class Minigame implements ScriptObject {
     private final EnumFlag<FloorDegenerator.DegeneratorType> degenType = new EnumFlag<>("degentype", FloorDegenerator.DegeneratorType.INWARD);
     private final IntegerFlag degenRandomChance = new IntegerFlag("degenrandom", 15);
     private final RegionFlag floorDegen = new RegionFlag("sfloor", null, "sfloorpos.1", "sfloorpos.2");
-    private final TimeFlag floorDegenTime = new TimeFlag("floordegentime", Minigames.getPlugin().getConfig().getLong("multiplayer.floordegenerator.time"));
-    // Respawn Module
-    private final BooleanFlag respawn = new BooleanFlag("respawn", Minigames.getPlugin().getConfig().getBoolean("has-respawn")); // todo why is this here?
-    private final LocationListFlag startLocations = new LocationListFlag("startpos", null);
+    private final TimeFlag floorDegenTime = new TimeFlag("floordegentime", plugin.getConfig().getLong("multiplayer.floordegenerator.time"));
+    private final LocationListFlag<SafeFullLocation> startLocations = new LocationListFlag<>("startpos", null, SafeFullLocation.class);
     private final BooleanFlag randomizeStart = new BooleanFlag("ranndomizeStart", false);
-    private final LocationFlag endLocation = new LocationFlag("endpos", null);
-    private final LocationFlag quitLocation = new LocationFlag("quitpos", null);
-    private final LocationFlag lobbyLocation = new LocationFlag("lobbypos", null);
-    private final LocationFlag spectatorPosition = new LocationFlag("spectatorpos", null);
+    private final LocationFlag<SafeFullLocation> endLocation = new LocationFlag<>("endpos", null, SafeFullLocation.class);
+    private final LocationFlag<SafeFullLocation> quitLocation = new LocationFlag<>("quitpos", null, SafeFullLocation.class);
+    private final LocationFlag<SafeFullLocation> lobbyLocation = new LocationFlag<>("lobbypos", null, SafeFullLocation.class);
+    private final LocationFlag<SafeFullLocation> spectatorPosition = new LocationFlag<>("spectatorpos", null, SafeFullLocation.class);
     private final BooleanFlag usePermissions = new BooleanFlag("usepermissions", false);
     private final TimeFlag timer = new TimeFlag("timer", 0L);
     private final EnumFlag<MinigameTimer.DisplayType> timerDisplayType = new EnumFlag<>("timerDisplayType", MinigameTimer.DisplayType.XP_BAR);
@@ -87,7 +94,7 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag keepInventory = new BooleanFlag("keepInventory", false);
     private final BooleanFlag friendlyFireSplashPotions = new BooleanFlag("friendlyFireSplashPotions", true);
     private final BooleanFlag friendlyFireLingeringPotions = new BooleanFlag("friendlyFireLingeringPotions", true);
-    private final StringFlag mechanic = new StringFlag("scoretype", "custom");
+    private final StringFlag mechanic = new StringFlag("scoretype", "custom"); // todo rename and create a datafixerupper
     private final BooleanFlag paintBallMode = new BooleanFlag("paintball", false);
     private final IntegerFlag paintBallDamage = new IntegerFlag("paintballdmg", 2);
     private final BooleanFlag unlimitedAmmo = new BooleanFlag("unlimitedammo", false);
@@ -95,10 +102,10 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag lateJoin = new BooleanFlag("latejoin", false);
     // just to stay backwards compatible we have to save this int as a float
     private final FloatFlag lives = new FloatFlag("lives", 0F);
-    private final RegionMapFlag regenRegions = new RegionMapFlag("regenRegions", new HashMap<>(), "regenarea.1", "regenarea.2");
+    private final RegionListFlag regenRegions = new RegionListFlag("regenRegions", new ArrayList<>(), "regenarea.1", "regenarea.2");
     private final TimeFlag regenDelay = new TimeFlag("regenDelay", 0L);
     private final IntegerFlag maxBlocksRegenRegions = new IntegerFlag("maxBlocksRegenRegions", 300000);
-    private final @NotNull Map<@NotNull String, @NotNull MinigameModule> modules = new HashMap<>();
+    private final @NotNull Map<@NotNull Key, @NotNull MinigameModule> modules = new HashMap<>();
     private final IntegerFlag minScore = new IntegerFlag("minscore", 5);
     private final IntegerFlag maxScore = new IntegerFlag("maxscore", 10);
     private final BooleanFlag displayScoreboard = new BooleanFlag("displayScoreboard", true);
@@ -106,28 +113,28 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag randomizeChests = new BooleanFlag("randomizechests", false);
     private final IntegerFlag minChestRandom = new IntegerFlag("minchestrandom", 5);
     private final IntegerFlag maxChestRandom = new IntegerFlag("maxchestrandom", 10);
-    private final @NotNull ScoreboardData sbData = new ScoreboardData();
+    private final @NotNull ScoreboardDisplayManger sbData = new ScoreboardDisplayManger();
     private final Map<MinigameStat, StatSettings> statSettings = new HashMap<>();
-    private final BooleanFlag activatePlayerRecorder = new BooleanFlag("activatePlayerRecorder", true);
+    private final BooleanFlag PlayerRecorderactivate = new BooleanFlag("activatePlayerRecorder", true);
     //Unsaved data
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final List<MinigamePlayer> spectators = new ArrayList<>();
     private final RecorderData blockRecorder = new RecorderData(this);
     private MinigameState state = MinigameState.IDLE;
     private FloorDegenerator sFloorDegen;
-    private final @NotNull Scoreboard scoreboard = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
+    private final @NotNull Scoreboard scoreboard = plugin.getServer().getScoreboardManager().getNewScoreboard();
     //Multiplayer
     private @Nullable MultiplayerTimer mpTimer = null;
     private @Nullable MinigameTimer miniTimer = null;
     private @Nullable MultiplayerBets mpBets = null;
     private boolean playersAtStart = false;
 
-    public Minigame(@NotNull String name, @NotNull MinigameType type, @NotNull Location start) {
+    public Minigame(final @NotNull String name, final @NotNull MinigameType type, final @NotNull SafeFullLocation start) {
         this.name = name;
         setup(type, start);
     }
 
-    public Minigame(String name) {
+    public Minigame(final @NotNull String name) {
         this.name = name;
         setup(MinigameType.SINGLEPLAYER, null);
     }
@@ -140,22 +147,23 @@ public class Minigame implements ScriptObject {
         this.playersAtStart = playersAtStart;
     }
 
-    private void setup(@NotNull MinigameType minigameType, @Nullable Location start) {
+    private void setup(@NotNull MinigameType minigameType, @Nullable SafeFullLocation start) {
         this.type.setFlag(minigameType);
         startLocations.setFlag(new ArrayList<>());
 
-        if (start != null)
+        if (start != null) {
             startLocations.getFlag().add(start);
+        }
         Objective newObjective = scoreboard.registerNewObjective(this.name, Criteria.DUMMY, Component.text(this.name));
         newObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        for (ModuleFactory factory : Minigames.getPlugin().getMinigameManager().getModules()) {
+        for (ModuleFactory factory : plugin.getMinigameManager().getModules()) {
             addModule(factory);
         }
 
         SinglePlayerFlags.setFlag(new ArrayList<>());
 
-        addConfigFlag(activatePlayerRecorder);
+        addConfigFlag(PlayerRecorderactivate);
         addConfigFlag(allowEnderPearls);
         addConfigFlag(allowThirdPartyTeleportation);
         addConfigFlag(allowFlight);
@@ -237,23 +245,22 @@ public class Minigame implements ScriptObject {
      * returns the old module registed with the same name or null if there wasn't one.
      */
     public @Nullable MinigameModule addModule(@NotNull ModuleFactory factory) {
-        return modules.put(factory.getName(), factory.makeNewModule(this));
+        return modules.put(factory.getKey(), factory.makeNewModule(this));
     }
 
-    public void removeModule(String moduleName) {
-        modules.remove(moduleName);
+    public void removeModule(final @NotNull Key moduleKey) {
+        modules.remove(moduleKey);
     }
 
-    @NotNull
-    public List<MinigameModule> getModules() {
+    public @NotNull List<@NotNull MinigameModule> getModules() {
         return new ArrayList<>(modules.values());
     }
 
     /**
      * Please use the Modules getMinigameModule() methode whenever possible - simply because its less error-prone.
      */
-    public @Nullable MinigameModule getModule(@NotNull String name) {
-        return modules.get(name);
+    public @Nullable MinigameModule getModule(final @NotNull Key key) {
+        return modules.get(key);
     }
 
     public boolean isTeamGame() {
@@ -285,7 +292,7 @@ public class Minigame implements ScriptObject {
         return false;
     }
 
-    public void setStartLocation(Location loc) {
+    public void setStartLocation(SafeFullLocation loc) {
         if (startLocations.getFlag().isEmpty()) {
             startLocations.getFlag().add(loc);
         } else {
@@ -293,11 +300,11 @@ public class Minigame implements ScriptObject {
         }
     }
 
-    public void addStartLocation(Location loc) {
+    public void addStartLocation(SafeFullLocation loc) {
         startLocations.getFlag().add(loc);
     }
 
-    public void addStartLocation(Location loc, int number) {
+    public void addStartLocation(SafeFullLocation loc, int number) {
         if (startLocations.getFlag().size() >= number) {
             startLocations.getFlag().set(number - 1, loc);
         } else {
@@ -305,7 +312,7 @@ public class Minigame implements ScriptObject {
         }
     }
 
-    public List<Location> getStartLocations() {
+    public List<SafeFullLocation> getStartLocations() {
         return startLocations.getFlag();
     }
 
@@ -325,11 +332,11 @@ public class Minigame implements ScriptObject {
         randomizeStart.setFlag(bool);
     }
 
-    public Location getSpectatorLocation() {
+    public SafeFullLocation getSpectatorLocation() {
         return spectatorPosition.getFlag();
     }
 
-    public void setSpectatorLocation(Location loc) {
+    public void setSpectatorLocation(SafeFullLocation loc) {
         spectatorPosition.setFlag(loc);
     }
 
@@ -391,7 +398,8 @@ public class Minigame implements ScriptObject {
 
     public boolean isGameFull() {
         if ((getType() == MinigameType.SINGLEPLAYER && isSpMaxPlayers()) ||
-                getType() == MinigameType.MULTIPLAYER) {
+            getType() == MinigameType.MULTIPLAYER) {
+
             return getPlayers().size() >= getMaxPlayers();
         }
         return false;
@@ -425,31 +433,31 @@ public class Minigame implements ScriptObject {
         this.degenRandomChance.setFlag(degenRandomChance);
     }
 
-    public @Nullable Location getEndLocation() {
+    public @Nullable SafeFullLocation getEndLocation() {
         return endLocation.getFlag();
     }
 
-    public void setEndLocation(Location endLocation) {
+    public void setEndLocation(SafeFullLocation endLocation) {
         this.endLocation.setFlag(endLocation);
     }
 
-    public @Nullable Location getQuitLocation() {
+    public @Nullable SafeFullLocation getQuitLocation() {
         return quitLocation.getFlag();
     }
 
-    public void setQuitLocation(Location quitLocation) {
+    public void setQuitLocation(SafeFullLocation quitLocation) {
         this.quitLocation.setFlag(quitLocation);
     }
 
-    public @Nullable Location getLobbyLocation() {
+    public @Nullable SafeFullLocation getLobbyLocation() {
         return lobbyLocation.getFlag();
     }
 
-    public void setLobbyLocation(Location lobbyLocation) {
+    public void setLobbyLocation(SafeFullLocation lobbyLocation) {
         this.lobbyLocation.setFlag(lobbyLocation);
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
@@ -708,16 +716,15 @@ public class Minigame implements ScriptObject {
         this.blocksDrop.setFlag(blocksDrop);
     }
 
-    public String getMechanicName() {
+    public @NotNull String getMechanicName() {
         return mechanic.getFlag();
     }
 
-    @Nullable
-    public GameMechanicBase getMechanic() {
+    public @Nullable AGameMechanic getMechanic() {
         return GameMechanics.getGameMechanic(mechanic.getFlag());
     }
 
-    public void setMechanic(@NotNull GameMechanicBase gameMechanicBase) {
+    public void setMechanic(@NotNull AGameMechanic gameMechanicBase) {
         this.mechanic.setFlag(gameMechanicBase.getMechanicName());
     }
 
@@ -808,29 +815,32 @@ public class Minigame implements ScriptObject {
         return maxChestRandom.getFlag();
     }
 
-    public boolean getActivatePlayerRecorder() {
-        return activatePlayerRecorder.getFlag();
+    public boolean isPlayerRecorderActivate() {
+        return PlayerRecorderactivate.getFlag();
     }
 
-    public void setActivatePlayerRecorder(boolean activatePlayerRecorder) {
-        this.activatePlayerRecorder.setFlag(activatePlayerRecorder);
+    public void setPlayerRecorderActivate(boolean playerRecorderActivate) {
+        this.PlayerRecorderactivate.setFlag(playerRecorderActivate);
     }
 
-    @NotNull
-    public Collection<MgRegion> getRegenRegions() {
-        return regenRegions.getFlag().values();
+    public @NotNull @UnmodifiableView List<@NotNull MgRegion> getRegenRegions() {
+        return Collections.unmodifiableList(regenRegions.getFlag());
     }
 
-    public MgRegion getRegenRegion(String name) {
-        return regenRegions.getFlag().get(name);
+    public @Nullable MgRegion getRegenRegion(final @NotNull String name) {
+        for (final @NotNull MgRegion region : regenRegions.getFlag()) {
+            if (region.getName().equals(name)) {
+                return region;
+            }
+        }
+        return null;
     }
 
-    @NotNull
-    public RegenRegionChangeResult removeRegenRegion(String name) {
-        boolean removed = regenRegions.getFlag().remove(name) != null;
+    public @NotNull RegenRegionChangeResult removeRegenRegion(final @NotNull String name) {
+        boolean removed = regenRegions.getFlag().removeIf(it -> it.getName().equals(name));
 
         long numOfBlocksTotal = 0;
-        for (MgRegion region : regenRegions.getFlag().values()) {
+        for (MgRegion region : regenRegions.getFlag()) {
             numOfBlocksTotal += (long) Math.ceil(region.getVolume());
         }
 
@@ -851,12 +861,12 @@ public class Minigame implements ScriptObject {
     public RegenRegionChangeResult setRegenRegion(@NotNull MgRegion newRegenRegion) {
         long numOfBlocksTotal = (long) Math.ceil(newRegenRegion.getVolume());
 
-        for (MgRegion region : regenRegions.getFlag().values()) {
+        for (MgRegion region : regenRegions.getFlag()) {
             numOfBlocksTotal += (long) Math.ceil(region.getVolume());
         }
 
         if (numOfBlocksTotal <= maxBlocksRegenRegions.getFlag()) {
-            regenRegions.getFlag().put(newRegenRegion.getName(), newRegenRegion);
+            regenRegions.getFlag().add(newRegenRegion);
             return new RegenRegionChangeResult(true, numOfBlocksTotal);
         } else {
             return new RegenRegionChangeResult(false, numOfBlocksTotal);
@@ -872,7 +882,7 @@ public class Minigame implements ScriptObject {
     }
 
     public boolean isInRegenArea(@NotNull Location location) {
-        for (MgRegion region : regenRegions.getFlag().values()) {
+        for (MgRegion region : regenRegions.getFlag()) {
             if (region.isInRegen(location)) {
                 return true;
             }
@@ -916,7 +926,7 @@ public class Minigame implements ScriptObject {
         this.allowEnderPearls.setFlag(allowEnderPearls);
     }
 
-    public boolean areThirdPartyTeleportationAllowed () {
+    public boolean areThirdPartyTeleportationAllowed() {
         return allowThirdPartyTeleportation.getFlag();
     }
 
@@ -1008,18 +1018,18 @@ public class Minigame implements ScriptObject {
         return settings;
     }
 
-    public void displayMenu(@NotNull MinigamePlayer player) {
+    public void displayMenu(final @NotNull MinigamePlayer player) {
         Menu mainMenu = new Menu(6, getDisplayName(), player);
         Menu playerMenu = new Menu(6, getDisplayName(), player);
         Menu loadouts = new Menu(6, getDisplayName(), player);
         Menu flags = new Menu(6, getDisplayName(), player);
-        Menu lobby = new Menu(6, getDisplayName(), player);
+        //Menu lobby = new Menu(6, getDisplayName(), player);
 
-        mainMenu.addItem(enabled.getMenuItem(Material.PAPER, MgMenuLangKey.MENU_MINIGAME_ENABLED_NAME), 0);
-        mainMenu.addItem(usePermissions.getMenuItem(Material.PAPER, MgMenuLangKey.MENU_MINIGAME_USEPERNS_NAME), 1);
+        mainMenu.addItem(enabled.getMenuItem(ItemType.PAPER, MgMenuLangKey.MENU_MINIGAME_ENABLED_NAME), 0);
+        mainMenu.addItem(usePermissions.getMenuItem(ItemType.PAPER, MgMenuLangKey.MENU_MINIGAME_USEPERNS_NAME), 1);
 
         List<TypeDependentDisplayData> typeDependentDisplayData = new ArrayList<>();
-        mainMenu.addItem(new MenuItemEnum<>(Material.PAPER, MgMenuLangKey.MENU_MINIGAME_TYPE_NAME, new Callback<>() {
+        mainMenu.addItem(new MenuItemEnum<>(ItemType.PAPER, MgMenuLangKey.MENU_MINIGAME_TYPE_NAME, new Callback<>() {
 
             @Override
             public MinigameType getValue() {
@@ -1040,12 +1050,12 @@ public class Minigame implements ScriptObject {
             }
         }, MinigameType.class), 2);
 
-        List<String> scoreTypes = new ArrayList<>();
-        for (GameMechanicBase val : GameMechanics.getGameMechanics()) {
-            scoreTypes.add(WordUtils.capitalizeFully(val.getMechanicName()));
+        List<String> mechanicNames = new ArrayList<>();
+        for (AGameMechanic val : GameMechanics.getGameMechanics()) {
+            mechanicNames.add(WordUtils.capitalizeFully(val.getMechanicName()));
         }
-        final MenuItemList<String> mechanicMenuItem = new MenuItemList<>(Material.ROTTEN_FLESH,
-                MgMenuLangKey.MENU_MINIGAME_MECHANIC_NAME, new Callback<>() {
+        final MenuItemList<String> mechanicMenuItem = new MenuItemList<>(ItemType.ROTTEN_FLESH,
+            MgMenuLangKey.MENU_MINIGAME_MECHANIC_NAME, new Callback<>() {
 
             @Override
             public String getValue() {
@@ -1056,19 +1066,19 @@ public class Minigame implements ScriptObject {
             public void setValue(@NotNull String value) {
                 mechanic.setFlag(value.toLowerCase());
             }
-        }, scoreTypes);
+        }, mechanicNames);
         typeDependentDisplayData.add(new TypeDependentDisplayData(mechanicMenuItem, List.of(MinigameType.MULTIPLAYER), 3));
         if (type.getFlag() == MinigameType.MULTIPLAYER) {
             mainMenu.addItem(mechanicMenuItem, 3);
         }
 
-        final MenuItemCustom mechSettings = new MenuItemCustom(Material.PAPER, MgMenuLangKey.MENU_MINIGAME_MECHANIC_SETTINGS_NAME);
+        final MenuItemCustom mechSettings = new MenuItemCustom(ItemType.PAPER, MgMenuLangKey.MENU_MINIGAME_MECHANIC_SETTINGS_NAME);
         final Minigame mgm = this;
         final Menu fmain = mainMenu;
         mechSettings.setClick(() -> {
             if (getMechanic().displaySettings(mgm) != null &&
-                    getMechanic().displaySettings(mgm).displayMechanicSettings(fmain)) {
-                return null;
+                getMechanic().displaySettings(mgm).displayMechanicSettings(fmain)) {
+                return ItemStack.empty();
             } else {
                 return mechSettings.getDisplayItem();
             }
@@ -1078,55 +1088,55 @@ public class Minigame implements ScriptObject {
             mainMenu.addItem(mechSettings, 4);
         }
 
-        MenuItemComponent cmpntItem = (MenuItemComponent) objective.getMenuItem(Material.DIAMOND,
-                MgMenuLangKey.MENU_MINIGAME_OBJECTIVEDESCRIPTION_NAME);
+        MenuItemComponent cmpntItem = (MenuItemComponent) objective.getMenuItem(ItemType.DIAMOND,
+            MgMenuLangKey.MENU_MINIGAME_OBJECTIVEDESCRIPTION_NAME);
         cmpntItem.setAllowNull(true);
         mainMenu.addItem(cmpntItem, 5);
 
-        cmpntItem = (MenuItemComponent) gameTypeName.getMenuItem(Material.WRITTEN_BOOK, MgMenuLangKey.MENU_MINIGAME_TYPEDESCRIPTION_NAME);
+        cmpntItem = (MenuItemComponent) gameTypeName.getMenuItem(ItemType.WRITTEN_BOOK, MgMenuLangKey.MENU_MINIGAME_TYPEDESCRIPTION_NAME);
         cmpntItem.setAllowNull(true);
         mainMenu.addItem(cmpntItem, 6);
 
-        cmpntItem = (MenuItemComponent) displayName.getMenuItem(Material.OAK_SIGN, MgMenuLangKey.MENU_DISPLAYNAME_NAME);
+        cmpntItem = (MenuItemComponent) displayName.getMenuItem(ItemType.OAK_SIGN, MgMenuLangKey.MENU_DISPLAYNAME_NAME);
         cmpntItem.setAllowNull(true);
         mainMenu.addItem(cmpntItem, 7);
 
         mainMenu.addItem(new MenuItemNewLine(), 8);
 
-        final MenuItem scoreMinMenuItem = minScore.getMenuItem(Material.STONE_SLAB, MgMenuLangKey.MENU_MINIGAME_SCORE_MIN_NAME);
+        final MenuItem scoreMinMenuItem = minScore.getMenuItem(ItemType.STONE_SLAB, MgMenuLangKey.MENU_MINIGAME_SCORE_MIN_NAME);
         typeDependentDisplayData.add(new TypeDependentDisplayData(scoreMinMenuItem, List.of(MinigameType.MULTIPLAYER), 9));
         if (type.getFlag() == MinigameType.MULTIPLAYER) {
             mainMenu.addItem(scoreMinMenuItem, 9);
         }
 
-        final MenuItem scoreMaxMenuItem = maxScore.getMenuItem(Material.STONE, MgMenuLangKey.MENU_MINIGAME_SCORE_MAX_NAME);
+        final MenuItem scoreMaxMenuItem = maxScore.getMenuItem(ItemType.STONE, MgMenuLangKey.MENU_MINIGAME_SCORE_MAX_NAME);
         typeDependentDisplayData.add(new TypeDependentDisplayData(scoreMaxMenuItem, List.of(MinigameType.MULTIPLAYER), 10));
         if (type.getFlag() == MinigameType.MULTIPLAYER) {
             mainMenu.addItem(scoreMaxMenuItem, 10);
         }
 
-        final MenuItem minPlayersMenuItem = minPlayers.getMenuItem(Material.STONE_SLAB, MgMenuLangKey.MENU_MINIGAME_PLAYERS_MIN_NAME);
+        final MenuItem minPlayersMenuItem = minPlayers.getMenuItem(ItemType.STONE_SLAB, MgMenuLangKey.MENU_MINIGAME_PLAYERS_MIN_NAME);
         typeDependentDisplayData.add(new TypeDependentDisplayData(minPlayersMenuItem, List.of(MinigameType.MULTIPLAYER), 11));
         if (type.getFlag() == MinigameType.MULTIPLAYER) {
             mainMenu.addItem(minPlayersMenuItem, 11);
         }
 
-        final MenuItem maxPlayersMenuItem = maxPlayers.getMenuItem(Material.STONE, MgMenuLangKey.MENU_MINIGAME_PLAYERS_MAX_NAME);
+        final MenuItem maxPlayersMenuItem = maxPlayers.getMenuItem(ItemType.STONE, MgMenuLangKey.MENU_MINIGAME_PLAYERS_MAX_NAME);
         typeDependentDisplayData.add(new TypeDependentDisplayData(maxPlayersMenuItem, List.of(MinigameType.MULTIPLAYER), 12));
         if (type.getFlag() == MinigameType.MULTIPLAYER) {
             mainMenu.addItem(maxPlayersMenuItem, 12);
         }
 
-        final MenuItemBoolean SinglePlayerAmountCappedMenuItem = spMaxPlayers.getMenuItem(Material.IRON_BARS,
-                MgMenuLangKey.MENU_MINIGAME_PLAYERS_SINGLEPLAYER_CAPPED_NAME);
+        final MenuItemBoolean SinglePlayerAmountCappedMenuItem = spMaxPlayers.getMenuItem(ItemType.IRON_BARS,
+            MgMenuLangKey.MENU_MINIGAME_PLAYERS_SINGLEPLAYER_CAPPED_NAME);
         typeDependentDisplayData.add(new TypeDependentDisplayData(maxPlayersMenuItem, List.of(MinigameType.SINGLEPLAYER), 13));
         if (type.getFlag() == MinigameType.SINGLEPLAYER) {
             mainMenu.addItem(SinglePlayerAmountCappedMenuItem, 13);
         }
 
-        mainMenu.addItem(displayScoreboard.getMenuItem(Material.OAK_SIGN, MgMenuLangKey.MENU_MINIGAME_SCOREBOARD_DISPLAY_NAME), 14);
+        mainMenu.addItem(displayScoreboard.getMenuItem(ItemType.OAK_SIGN, MgMenuLangKey.MENU_MINIGAME_SCOREBOARD_DISPLAY_NAME), 14);
 
-        final MenuItemPage lobbySettingsMenuItemPage = new MenuItemPage(Material.OAK_DOOR, MgMenuLangKey.MENU_MINIGAME_LOBBY_SETTINGS_NAME, lobby);
+        final MenuItemPage lobbySettingsMenuItemPage = new MenuItemPage(ItemType.OAK_DOOR, MgMenuLangKey.MENU_MINIGAME_LOBBY_SETTINGS_NAME, lobby);
         typeDependentDisplayData.add(new TypeDependentDisplayData(lobbySettingsMenuItemPage, List.of(MinigameType.MULTIPLAYER), 14));
         if (type.getFlag() == MinigameType.MULTIPLAYER) {
             mainMenu.addItem(lobbySettingsMenuItemPage, 14);
@@ -1134,45 +1144,45 @@ public class Minigame implements ScriptObject {
 
         mainMenu.addItem(new MenuItemNewLine(), 15);
 
-        final MenuItemTime gamLengthMenuItem = timer.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_MINIGAME_TIME_GAMELENGTH_NAME, 0L, null);
+        final MenuItemTime gamLengthMenuItem = timer.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_MINIGAME_TIME_GAMELENGTH_NAME, 0L, null);
         typeDependentDisplayData.add(new TypeDependentDisplayData(gamLengthMenuItem, List.of(MinigameType.MULTIPLAYER), 18));
         if (type.getFlag() == MinigameType.MULTIPLAYER) {
             mainMenu.addItem(gamLengthMenuItem, 18);
         }
 
-        mainMenu.addItem(timerDisplayType.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_MINIGAME_TIME_DISPLAYTYPE_NAME), 19);
+        mainMenu.addItem(timerDisplayType.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_MINIGAME_TIME_DISPLAYTYPE_NAME), 19);
 
-        final MenuItemTime startWaitTimeMenuItem = startWaitTime.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_MINIGAME_TIME_STARTWAIT_NAME, 3L, null);
+        final MenuItemTime startWaitTimeMenuItem = startWaitTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_MINIGAME_TIME_STARTWAIT_NAME, 3L, null);
         typeDependentDisplayData.add(new TypeDependentDisplayData(startWaitTimeMenuItem, List.of(MinigameType.MULTIPLAYER), 19));
         if (type.getFlag() == MinigameType.MULTIPLAYER) {
             mainMenu.addItem(startWaitTimeMenuItem, 19);
         }
 
-        mainMenu.addItem(showCompletionTime.getMenuItem(Material.PAPER, MgMenuLangKey.MENU_MINIGAME_TIME_SHOWCOMPLETION_NAME), 20);
+        mainMenu.addItem(showCompletionTime.getMenuItem(ItemType.PAPER, MgMenuLangKey.MENU_MINIGAME_TIME_SHOWCOMPLETION_NAME), 20);
 
-        final MenuItem allowLateJoinMenuItem = lateJoin.getMenuItem(Material.DEAD_BUSH, MgMenuLangKey.MENU_MINIGAME_ALLOWLATEJOIN_NAME);
+        final MenuItem allowLateJoinMenuItem = lateJoin.getMenuItem(ItemType.DEAD_BUSH, MgMenuLangKey.MENU_MINIGAME_ALLOWLATEJOIN_NAME);
         typeDependentDisplayData.add(new TypeDependentDisplayData(allowLateJoinMenuItem, List.of(MinigameType.MULTIPLAYER), 21));
         if (type.getFlag() == MinigameType.MULTIPLAYER) {
             mainMenu.addItem(allowLateJoinMenuItem, 21);
         }
 
-        mainMenu.addItem(randomizeStart.getMenuItem(Material.LIGHT_BLUE_GLAZED_TERRACOTTA, MgMenuLangKey.MENU_MINIGAME_STARTPOINT_RANDOMIZE_NAME,
-                MgMenuLangKey.MENU_MINIGAME_STARTPOINT_RANDOMIZE_DESCRIPTION), 22);
+        mainMenu.addItem(randomizeStart.getMenuItem(ItemType.LIGHT_BLUE_GLAZED_TERRACOTTA, MgMenuLangKey.MENU_MINIGAME_STARTPOINT_RANDOMIZE_NAME,
+            MgMenuLangKey.MENU_MINIGAME_STARTPOINT_RANDOMIZE_DESCRIPTION), 22);
 
-        mainMenu.addItem(new MenuItemDisplayWhitelist(Material.CHEST,
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME), // Block Whitelist/Blacklist
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_DESCRIPTION_MAIN),
-                getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback(),
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_DESCRIPTION_SECOND)), 23);
+        mainMenu.addItem(new MenuItemDisplayWhitelist(ItemType.CHEST,
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME), // Block Whitelist/Blacklist
+            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_DESCRIPTION_MAIN),
+            getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback(),
+            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_DESCRIPTION_SECOND)), 23);
 
         mainMenu.addItem(new MenuItemNewLine(), 24);
 
         // double pack, since the type shows / hides random chance percent
-        final MenuItemInteger randomFloorDegenChanceMenuItem = degenRandomChance.getMenuItem(Material.SNOW,
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_DEGEN_RANDOMCHANCE_NAME),
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_DEGEN_RANDOMCHANCE_DESCRIPTION), 1, 100);
-        mainMenu.addItem(new MenuItemList<>(Material.SNOW_BLOCK, MgMenuLangKey.MENU_MINIGAME_DEGEN_TYPE_NAME,
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_DEGEN_TYPE_DESCRIPTION), new Callback<>() {
+        final MenuItemInteger randomFloorDegenChanceMenuItem = degenRandomChance.getMenuItem(ItemType.SNOW,
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_DEGEN_RANDOMCHANCE_NAME),
+            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_DEGEN_RANDOMCHANCE_DESCRIPTION), 1, 100);
+        mainMenu.addItem(new MenuItemList<>(ItemType.SNOW_BLOCK, MgMenuLangKey.MENU_MINIGAME_DEGEN_TYPE_NAME,
+            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_DEGEN_TYPE_DESCRIPTION), new Callback<>() {
 
             @Override
             public FloorDegenerator.DegeneratorType getValue() {
@@ -1195,70 +1205,70 @@ public class Minigame implements ScriptObject {
             mainMenu.addItem(randomFloorDegenChanceMenuItem, 28);
         }
 
-        mainMenu.addItem(floorDegenTime.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_MINIGAME_DEGEN_DELAY_NAME, 1L, null));
+        mainMenu.addItem(floorDegenTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_MINIGAME_DEGEN_DELAY_NAME, 1L, null));
 
 
-        mainMenu.addItem(regenDelay.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_MINIGAME_REGENDELAY_NAME,
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_REGENDELAY_DESCRIPTION), 0L, null));
+        mainMenu.addItem(regenDelay.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_MINIGAME_REGENDELAY_NAME,
+            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_REGENDELAY_DESCRIPTION), 0L, null));
 
         mainMenu.addItem(new MenuItemNewLine());
 
-        mainMenu.addItem(new MenuItemPage(Material.SKELETON_SKULL, MgMenuLangKey.MENU_PLAYERSETTINGS_NAME, playerMenu));
+        mainMenu.addItem(new MenuItemPage(ItemType.SKELETON_SKULL, MgMenuLangKey.MENU_PLAYERSETTINGS_NAME, playerMenu));
 
 //        List<String> thDes = new ArrayList<>();
 //        thDes.add("Treasure hunt related<newline>settings.");
-//        itemsMain.add(new MenuItemPage(Material.CHEST, "Treasure Hunt Settings", thDes, treasureHunt));
-//        MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
+//        itemsMain.add(new MenuItemPage(ItemType.CHEST, "Treasure Hunt Settings", thDes, treasureHunt));
+//        MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, "Default Loadout", LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
 //        defLoad.setAllowDelete(false);
 //        itemsMain.add(defLoad);
 
-        mainMenu.addItem(new MenuItemPage(Material.CHEST, MgMenuLangKey.MENU_MINIGAME_LOADOUTS_NAME, loadouts));
+        mainMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_MINIGAME_LOADOUTS_NAME, loadouts));
 
-        mainMenu.addItem(canSpectateFly.getMenuItem(Material.FEATHER, MgMenuLangKey.MENU_MINIGAME_ALLOWSPECTATORFLY_NAME));
+        mainMenu.addItem(canSpectateFly.getMenuItem(ItemType.FEATHER, MgMenuLangKey.MENU_MINIGAME_ALLOWSPECTATORFLY_NAME));
 
-        mainMenu.addItem(randomizeChests.getMenuItem(Material.CHEST, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_NAME,
-                MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_DESCRIPTION));
+        mainMenu.addItem(randomizeChests.getMenuItem(ItemType.CHEST, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_NAME,
+            MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_DESCRIPTION));
 
-        mainMenu.addItem(minChestRandom.getMenuItem(Material.OAK_STAIRS, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MIN_NAME,
-                MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MIN_DESCRIPTION, 0, null));
+        mainMenu.addItem(minChestRandom.getMenuItem(ItemType.OAK_STAIRS, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MIN_NAME,
+            MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MIN_DESCRIPTION, 0, null));
 
-        mainMenu.addItem(maxChestRandom.getMenuItem(Material.STONE, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MAX_NAME,
-                MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MAX_DESCRIPTION, 0, null));
+        mainMenu.addItem(maxChestRandom.getMenuItem(ItemType.STONE, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MAX_NAME,
+            MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MAX_DESCRIPTION, 0, null));
 
-        mainMenu.addItem(new MenuItemStatisticsSettings(Material.WRITABLE_BOOK, MgMenuLangKey.MENU_MINIGAME_STATISTIC_NAME, this));
-        mainMenu.addItem(activatePlayerRecorder.getMenuItem(Material.COMMAND_BLOCK, MgMenuLangKey.MENU_PLAYER_BLOCK_RECORDER));
+        mainMenu.addItem(new MenuItemStatisticsSettings(ItemType.WRITABLE_BOOK, MgMenuLangKey.MENU_MINIGAME_STATISTIC_NAME, this));
+        mainMenu.addItem(PlayerRecorderactivate.getMenuItem(ItemType.COMMAND_BLOCK, MgMenuLangKey.MENU_PLAYER_BLOCK_RECORDER));
 
         mainMenu.addItem(new MenuItemNewLine());
 
-        mainMenu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(),
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
-                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), getDisplayName())),
-                this), mainMenu.getSize() - 1);
+        mainMenu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveType(),
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
+                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), getDisplayName())),
+            this), mainMenu.getSize() - 1);
 
         //--------------//
         //Loadout Settings
         //--------------//
-        List<MenuItem> mi = new ArrayList<>();
+        final @NotNull List<@NotNull MenuItem> mi = new ArrayList<>();
 
         LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(this);
         if (loadoutModule != null) {
 
             for (PlayerLoadout playerLoadout : loadoutModule.getLoadouts()) {
-                Material material = Material.GLASS_PANE;
+                @NotNull ItemType itemType = ItemType.GLASS_PANE;
 
                 if (!playerLoadout.getItemSlots().isEmpty()) {
-                    material = playerLoadout.getItem((Integer) playerLoadout.getItemSlots().toArray()[0]).getType();
+                    itemType = playerLoadout.getItem((Integer) playerLoadout.getItemSlots().toArray()[0]).getType().asItemType();
                 }
                 if (playerLoadout.isDeletable()) {
-                    mi.add(new MenuItemDisplayLoadout(material, playerLoadout.getDisplayName(),
-                            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), playerLoadout, this));
+                    mi.add(new MenuItemDisplayLoadout(itemType, playerLoadout.getDisplayName(),
+                        MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), playerLoadout, this));
                 } else {
-                    mi.add(new MenuItemDisplayLoadout(material, playerLoadout.getDisplayName(), playerLoadout, this));
+                    mi.add(new MenuItemDisplayLoadout(itemType, playerLoadout.getDisplayName(), playerLoadout, this));
                 }
             }
 
-            loadouts.addItem(new MenuItemLoadoutAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
-                    loadoutModule.getLoadoutMap(), this), 53);
+            loadouts.addItem(new MenuItemLoadoutAdd(MenuUtility.getCreateType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+                loadoutModule.getLoadoutMap(), this), 53);
             loadouts.addItem(new MenuItemBack(mainMenu), loadouts.getSize() - 9);
             loadouts.addItems(mi);
         }
@@ -1267,39 +1277,39 @@ public class Minigame implements ScriptObject {
         //Minigame Player Settings
         //----------------------//
         List<MenuItem> itemsPlayer = new ArrayList<>(20);
-        itemsPlayer.add(defaultGamemode.getMenuItem(Material.CRAFTING_TABLE, MgMenuLangKey.MENU_PLAYERSETTINGS_GAMEMODE_NAME));
-        itemsPlayer.add(allowEnderPearls.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_PLAYERSETTINGS_ENDERPERLS_NAME));
-        itemsPlayer.add(allowThirdPartyTeleportation.getMenuItem(Material.COMMAND_BLOCK, MgMenuLangKey.MENU_PLAYERSETTINGS_THIRDPARTY_TELEPORTATION_NAME));
-        itemsPlayer.add(itemDrops.getMenuItem(Material.DIAMOND_SWORD, MgMenuLangKey.MENU_PLAYERSETTINGS_DROP_ITEM_NAME));
-        itemsPlayer.add(deathDrops.getMenuItem(Material.SKELETON_SKULL, MgMenuLangKey.MENU_PLAYERSETTINGS_DROP_DEATH_NAME));
-        itemsPlayer.add(itemPickup.getMenuItem(Material.DIAMOND, MgMenuLangKey.MENU_PLAYERSETTINGS_ITEMPICKUP_NAME));
-        itemsPlayer.add(blockBreak.getMenuItem(Material.DIAMOND_PICKAXE, MgMenuLangKey.MENU_PLAYERSETTINGS_BLOCK_BREAK_NAME));
-        itemsPlayer.add(blockPlace.getMenuItem(Material.STONE, MgMenuLangKey.MENU_PLAYERSETTINGS_BLOCK_PLACE_NAME));
-        itemsPlayer.add(blocksDrop.getMenuItem(Material.COBBLESTONE, MgMenuLangKey.MENU_PLAYERSETTINGS_BLOCK_DROPS_NAME));
-        itemsPlayer.add(lives.getMenuItem(Material.APPLE, MgMenuLangKey.MENU_PLAYERSETTINGS_LIVES_NAME));
-        itemsPlayer.add(paintBallMode.getMenuItem(Material.SNOWBALL, MgMenuLangKey.MENU_PLAYERSETTINGS_PAINTBALL_MODE_NAME));
-        itemsPlayer.add(paintBallDamage.getMenuItem(Material.ARROW, MgMenuLangKey.MENU_PLAYERSETTINGS_PAINTBALL_DAMAGE_NAME, 1, null));
-        itemsPlayer.add(unlimitedAmmo.getMenuItem(Material.SNOW_BLOCK, MgMenuLangKey.MENU_PLAYERSETTINGS_UNLIMITEDAMMO_NAME));
-        itemsPlayer.add(allowMPCheckpoints.getMenuItem(Material.OAK_SIGN, MgMenuLangKey.MENU_PLAYERSETTINGS_CHECKPOINT_MULTIPLAYER_NAME,
-                MgMenuLangKey.MENU_MINIGAME_MULTIPLAYERONLY_DESCRIPTION)); // todo hide if not multiplayer
-        itemsPlayer.add(saveCheckpoints.getMenuItem(Material.OAK_SIGN, MgMenuLangKey.MENU_PLAYERSETTINGS_CHECKPOINT_SAVE_NAME,
-                MgMenuLangKey.MENU_MINIGAME_SINGLEPLAYERONLY_DESCRIPTION)); // todo hide if not SinglePlayer
-        itemsPlayer.add(new MenuItemPage(Material.OAK_SIGN, MgMenuLangKey.MENU_PLAYERSETTINGS_SINGLEPLAYERFLAG_NAME,
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_SINGLEPLAYERONLY_DESCRIPTION), flags)); // todo hide if not SinglePlayer
-        itemsPlayer.add(allowFlight.getMenuItem(Material.FEATHER, MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_NAME,
-                MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_DESCRIPTION));
-        itemsPlayer.add(enableFlight.getMenuItem(Material.FEATHER, MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ENABLE_NAME,
-                MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ENABLE_DESCRIPTION));
-        itemsPlayer.add(allowDragonEggTeleport.getMenuItem(Material.DRAGON_EGG, MgMenuLangKey.MENU_PLAYERSETTINGS_DRAGONEGGTELEPORT_NAME));
-        itemsPlayer.add(showPlayerBroadcasts.getMenuItem(Material.PAPER, MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_JOINEXIT_NAME,
-                MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_JOINEXIT_DESCRIPTION)); // todo hide if not multiplayer
-        itemsPlayer.add(showCTFBroadcasts.getMenuItem(Material.PAPER, MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_CTF_NAME,
-                MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_CTF_DESCRIPTION)); //todo hide if not ctf
-        itemsPlayer.add(keepInventory.getMenuItem(Material.ZOMBIE_HEAD, MgMenuLangKey.MENU_PLAYERSETTINGS_KEEPINVENTORY_NAME));
-        itemsPlayer.add(friendlyFireSplashPotions.getMenuItem(Material.SPLASH_POTION,
-                MgMenuLangKey.MENU_PLAYERSETTINGS_FRIENDLYFIRE_SPLASH_NAME)); // todo hide if not multiplayer
-        itemsPlayer.add(friendlyFireLingeringPotions.getMenuItem(Material.LINGERING_POTION,
-                MgMenuLangKey.MENU_PLAYERSETTINGS_FRIENDLYFIRE_LINGERING_NAME)); // todo hide if not multiplayer
+        itemsPlayer.add(defaultGamemode.getMenuItem(ItemType.CRAFTING_TABLE, MgMenuLangKey.MENU_PLAYERSETTINGS_GAMEMODE_NAME));
+        itemsPlayer.add(allowEnderPearls.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_PLAYERSETTINGS_ENDERPERLS_NAME));
+        itemsPlayer.add(allowThirdPartyTeleportation.getMenuItem(ItemType.COMMAND_BLOCK, MgMenuLangKey.MENU_PLAYERSETTINGS_THIRDPARTY_TELEPORTATION_NAME));
+        itemsPlayer.add(itemDrops.getMenuItem(ItemType.DIAMOND_SWORD, MgMenuLangKey.MENU_PLAYERSETTINGS_DROP_ITEM_NAME));
+        itemsPlayer.add(deathDrops.getMenuItem(ItemType.SKELETON_SKULL, MgMenuLangKey.MENU_PLAYERSETTINGS_DROP_DEATH_NAME));
+        itemsPlayer.add(itemPickup.getMenuItem(ItemType.DIAMOND, MgMenuLangKey.MENU_PLAYERSETTINGS_ITEMPICKUP_NAME));
+        itemsPlayer.add(blockBreak.getMenuItem(ItemType.DIAMOND_PICKAXE, MgMenuLangKey.MENU_PLAYERSETTINGS_BLOCK_BREAK_NAME));
+        itemsPlayer.add(blockPlace.getMenuItem(ItemType.STONE, MgMenuLangKey.MENU_PLAYERSETTINGS_BLOCK_PLACE_NAME));
+        itemsPlayer.add(blocksDrop.getMenuItem(ItemType.COBBLESTONE, MgMenuLangKey.MENU_PLAYERSETTINGS_BLOCK_DROPS_NAME));
+        itemsPlayer.add(lives.getMenuItem(ItemType.APPLE, MgMenuLangKey.MENU_PLAYERSETTINGS_LIVES_NAME));
+        itemsPlayer.add(paintBallMode.getMenuItem(ItemType.SNOWBALL, MgMenuLangKey.MENU_PLAYERSETTINGS_PAINTBALL_MODE_NAME));
+        itemsPlayer.add(paintBallDamage.getMenuItem(ItemType.ARROW, MgMenuLangKey.MENU_PLAYERSETTINGS_PAINTBALL_DAMAGE_NAME, 1, null));
+        itemsPlayer.add(unlimitedAmmo.getMenuItem(ItemType.SNOW_BLOCK, MgMenuLangKey.MENU_PLAYERSETTINGS_UNLIMITEDAMMO_NAME));
+        itemsPlayer.add(allowMPCheckpoints.getMenuItem(ItemType.OAK_SIGN, MgMenuLangKey.MENU_PLAYERSETTINGS_CHECKPOINT_MULTIPLAYER_NAME,
+            MgMenuLangKey.MENU_MINIGAME_MULTIPLAYERONLY_DESCRIPTION)); // todo hide if not multiplayer
+        itemsPlayer.add(saveCheckpoints.getMenuItem(ItemType.OAK_SIGN, MgMenuLangKey.MENU_PLAYERSETTINGS_CHECKPOINT_SAVE_NAME,
+            MgMenuLangKey.MENU_MINIGAME_SINGLEPLAYERONLY_DESCRIPTION)); // todo hide if not SinglePlayer
+        itemsPlayer.add(new MenuItemPage(ItemType.OAK_SIGN, MgMenuLangKey.MENU_PLAYERSETTINGS_SINGLEPLAYERFLAG_NAME,
+            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_SINGLEPLAYERONLY_DESCRIPTION), flags)); // todo hide if not SinglePlayer
+        itemsPlayer.add(allowFlight.getMenuItem(ItemType.FEATHER, MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_NAME,
+            MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_DESCRIPTION));
+        itemsPlayer.add(enableFlight.getMenuItem(ItemType.FEATHER, MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ENABLE_NAME,
+            MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ENABLE_DESCRIPTION));
+        itemsPlayer.add(allowDragonEggTeleport.getMenuItem(ItemType.DRAGON_EGG, MgMenuLangKey.MENU_PLAYERSETTINGS_DRAGONEGGTELEPORT_NAME));
+        itemsPlayer.add(showPlayerBroadcasts.getMenuItem(ItemType.PAPER, MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_JOINEXIT_NAME,
+            MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_JOINEXIT_DESCRIPTION)); // todo hide if not multiplayer
+        itemsPlayer.add(showCTFBroadcasts.getMenuItem(ItemType.PAPER, MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_CTF_NAME,
+            MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_CTF_DESCRIPTION)); //todo hide if not ctf
+        itemsPlayer.add(keepInventory.getMenuItem(ItemType.ZOMBIE_HEAD, MgMenuLangKey.MENU_PLAYERSETTINGS_KEEPINVENTORY_NAME));
+        itemsPlayer.add(friendlyFireSplashPotions.getMenuItem(ItemType.SPLASH_POTION,
+            MgMenuLangKey.MENU_PLAYERSETTINGS_FRIENDLYFIRE_SPLASH_NAME)); // todo hide if not multiplayer
+        itemsPlayer.add(friendlyFireLingeringPotions.getMenuItem(ItemType.LINGERING_POTION,
+            MgMenuLangKey.MENU_PLAYERSETTINGS_FRIENDLYFIRE_LINGERING_NAME)); // todo hide if not multiplayer
         playerMenu.addItems(itemsPlayer);
         playerMenu.addItem(new MenuItemBack(mainMenu), mainMenu.getSize() - 9);
 
@@ -1308,11 +1318,11 @@ public class Minigame implements ScriptObject {
         //--------------//
         List<MenuItem> itemsFlags = new ArrayList<>(getSinglePlayerFlags().size());
         for (String flag : getSinglePlayerFlags()) {
-            itemsFlags.add(new MenuItemFlag(Material.OAK_SIGN, flag, getSinglePlayerFlags()));
+            itemsFlags.add(new MenuItemFlag(ItemType.OAK_SIGN, flag, getSinglePlayerFlags()));
         }
         flags.addItem(new MenuItemBack(playerMenu), flags.getSize() - 9);
-        flags.addItem(new MenuItemAddFlag(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_FLAGADD_NAME,
-                this), flags.getSize() - 1);
+        flags.addItem(new MenuItemAddFlag(MenuUtility.getCreateType(), MgMenuLangKey.MENU_FLAGADD_NAME,
+            this), flags.getSize() - 1);
         flags.addItems(itemsFlags);
 
         //--------------//
@@ -1322,28 +1332,28 @@ public class Minigame implements ScriptObject {
         if (lobbySettingsModule != null) {
             List<MenuItem> itemsLobby = new ArrayList<>(4);
 
-            itemsLobby.add(new MenuItemBoolean(Material.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_INTERACT_NAME,
-                    lobbySettingsModule.getCanInteractPlayerWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean(Material.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_START_INTERACT_NAME,
-                    lobbySettingsModule.getCanInteractStartWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean(Material.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_MOVE_NAME,
-                    lobbySettingsModule.getCanMovePlayerWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean(Material.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_START_MOVE_NAME,
-                    lobbySettingsModule.getCanMoveStartWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean(Material.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TELEPORT_NAME,
-                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TELEPORT_DESCRIPTION),
-                    lobbySettingsModule.getTeleportOnPlayerWaitCallback()));
-            itemsLobby.add(new MenuItemBoolean(Material.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_NAME,
-                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_DESCRIPTION),
-                    lobbySettingsModule.getTeleportOnStartCallback()));
-            itemsLobby.add(new MenuItemTime(Material.CLOCK, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_NAME,
-                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_DESCRIPTION),
-                    lobbySettingsModule.getPlayerWaitTimeCallback(), 0L, Long.MAX_VALUE));
+            itemsLobby.add(new MenuItemBoolean(ItemType.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_INTERACT_NAME,
+                lobbySettingsModule.getCanInteractPlayerWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(ItemType.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_START_INTERACT_NAME,
+                lobbySettingsModule.getCanInteractStartWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(ItemType.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_MOVE_NAME,
+                lobbySettingsModule.getCanMovePlayerWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(ItemType.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_START_MOVE_NAME,
+                lobbySettingsModule.getCanMoveStartWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TELEPORT_NAME,
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TELEPORT_DESCRIPTION),
+                lobbySettingsModule.getTeleportOnPlayerWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_NAME,
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_DESCRIPTION),
+                lobbySettingsModule.getTeleportOnStartCallback()));
+            itemsLobby.add(new MenuItemTime(ItemType.CLOCK, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_NAME,
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_DESCRIPTION),
+                lobbySettingsModule.getPlayerWaitTimeCallback(), 0L, Long.MAX_VALUE));
             lobby.addItems(itemsLobby);
             lobby.addItem(new MenuItemBack(mainMenu), lobby.getSize() - 9);
         }
 
-        for (MinigameModule mod : getModules()) {
+        for (final @NotNull MinigameModule mod : getModules()) {
             mod.addEditMenuOptions(mainMenu);
         }
 
@@ -1351,135 +1361,247 @@ public class Minigame implements ScriptObject {
     }
 
     @NotNull
-    public ScoreboardData getScoreboardData() {
+    public ScoreboardDisplayManger getScoreboardData() {
         return sbData;
     }
 
-    public void saveMinigame() {
-        MinigameSave minigame = new MinigameSave(name, "config");
-        FileConfiguration cfg = minigame.getConfig();
-        char configSeparator = cfg.options().pathSeparator();
-        cfg.set(name, null);
-        cfg.createSection(name);
+    public boolean saveMinigame() {
+        final @NotNull MinigameSave minigameSave = MinigameSave.forMinigameData(this, Path.of("config"));
+        final @NotNull CommentedConfigurationNode minigameSaveRoot;
+        try {
+            minigameSaveRoot = minigameSave.getConfigRoot();
+        } catch (final @NotNull ConfigurateException e) {
+            plugin.getComponentLogger().error("Couldn't obtain Minigames config file of " + getName() + "to safe it. Data loss is imminent!", e);
+            return false;
+        }
+        // I hate this, since it erases potentially data when failing.
+        // however, at the same time we shouldn't keep broken data
+        // also this erases comments!
+        // todo come back to this and investigate if we can do anything about this issue
+        minigameSaveRoot.removeChild(name);
 
-        for (MinigameModule module : getModules()) {
+        boolean allSuccess = true;
+
+        final @NotNull CommentedConfigurationNode cfg = minigameSaveRoot.node(name);
+        for (final @NotNull MinigameModule module : getModules()) {
             if (!module.useSeparateConfig()) {
-                module.save(cfg, name);
-
+                try {
+                    module.save(cfg);
+                } catch (final @NotNull SerializationException e) {
+                    plugin.getComponentLogger().error("Couldn't save module " + module.key() + " of Minigame " + getName() + ". Data loss is imminent!", e);
+                    allSuccess = false; // we failed. Let's try to save the other modules anyway to keep data loss as small as possible!
+                }
             } else {
-                MinigameSave modsave = new MinigameSave("minigames" + File.separator + name + File.separator + module.getName().toLowerCase());
-                modsave.getConfig().set(name, null);
-                modsave.getConfig().createSection(name);
-                module.save(modsave.getConfig(), name);
+                final @NotNull Key moduleKey = module.key();
+                final @NotNull Path modulePath;
+                if (moduleKey.namespace().equals(plugin.namespace())) {
+                    modulePath = Path.of(moduleKey.value());
+                } else {
+                    modulePath = Path.of(moduleKey.namespace(), moduleKey.value());
+                }
 
-                modsave.saveConfig();
+                final @NotNull MinigameSave moduleSave = MinigameSave.forMinigameData(this, modulePath);
+                final @NotNull CommentedConfigurationNode moduleSaveRoot;
+                try {
+                    moduleSaveRoot = moduleSave.getConfigRoot();
+                } catch (final @NotNull ConfigurateException e) {
+                    plugin.getComponentLogger().error("Couldn't obtain Module config file of " + module.key() + " for Minigame " + getName() + "to safe it. Data loss is imminent!", e);
+                    allSuccess = false; // we failed. Let's try to save the other modules anyway to keep data loss as small as possible!
+                    continue;
+                }
+
+                moduleSaveRoot.removeChild(name);
+                try {
+                    module.save(moduleSaveRoot.node(name));
+                    moduleSave.saveConfig();
+                } catch (final @NotNull IOException e) {
+                    plugin.getComponentLogger().error("Couldn't save separate config file for module " + module.key() + " of Minigame " + getName() + " located at " + modulePath + ". Data loss is imminent!", e);
+                    allSuccess = false; // we failed. Let's try to save the other modules anyway to keep data loss as small as possible!
+                }
             }
         }
 
-        for (String configOpt : configFlags.keySet()) {
-            if (configFlags.get(configOpt).getFlag() != null &&
-                    (configFlags.get(configOpt).getDefaultFlag() == null ||
-                            !configFlags.get(configOpt).getDefaultFlag().equals(configFlags.get(configOpt).getFlag())))
-                configFlags.get(configOpt).saveValue(cfg, name);
-        }
-
-        //dataFixerUpper
-        if (cfg.contains(name + configSeparator + "useXPBarTimer")) {
-            cfg.set(name + configSeparator + "useXPBarTimer", null);
+        for (final @NotNull AFlag<?> configFlag : configFlags.values()) {
+            if (configFlag.getDefaultFlag() == null || !configFlag.getDefaultFlag().equals(configFlag.getFlag())) {
+                try {
+                    configFlag.saveValue(cfg);
+                } catch (final @NotNull SerializationException e) {
+                    plugin.getComponentLogger().error("Couldn't save config flag " + configFlag.getName() + " of Minigame " + getName() + ". Data loss is imminent!", e);
+                    allSuccess = false; // we failed. Let's try to save the other flags anyway to keep data loss as small as possible!
+                }
+            }
         }
 
         if (!getRecorderData().getWBBlocks().isEmpty()) {
-            List<String> blocklist = new ArrayList<>();
-            for (Material mat : getRecorderData().getWBBlocks()) {
-                blocklist.add(mat.toString());
+            final @NotNull List<@NotNull String> blocklist = new ArrayList<>();
+            for (final @NotNull BlockType blockType : getRecorderData().getWBBlocks()) {
+                blocklist.add(blockType.key().asMinimalString());
             }
-            minigame.getConfig().set(name + configSeparator + "whitelistblocks", blocklist);
+            try {
+                cfg.node("whitelistblocks").setList(String.class, blocklist);
+            } catch (final @NotNull SerializationException e) {
+                plugin.getComponentLogger().error("Couldn't save config flag whitelistblocks of Minigame " + getName() + ". Data loss is imminent!", e);
+                allSuccess = false; // we failed. Let's try to save the other data anyway to keep data loss as small as possible!
+            }
         }
 
         if (getRecorderData().getWhitelistMode()) {
-            minigame.getConfig().set(name + configSeparator + "whitelistmode", getRecorderData().getWhitelistMode());
+            cfg.node("whitelistmode").raw(getRecorderData().getWhitelistMode());
         }
 
-        getScoreboardData().saveDisplays(minigame, name);
+        try {
+            getScoreboardData().saveDisplays(cfg);
+        } catch (final @NotNull SerializationException e) {
+            plugin.getComponentLogger().error("Couldn't save scoreboard displays of Minigame " + getName() + ". Data loss is imminent!", e);
+            allSuccess = false; // we failed. Let's try to save the other data anyway to keep data loss as small as possible!
+        }
         getScoreboardData().refreshDisplays();
-        Minigames.getPlugin().getBackend().saveStatSettings(this, statSettings.values());
 
-        minigame.saveConfig();
-    }
+        plugin.getBackend().saveStatSettings(this, statSettings.values());
 
-    public void loadMinigame() {
-        MinigameSave minigame = new MinigameSave(name, "config");
-        FileConfiguration cfg = minigame.getConfig();
-        char configSeparator = cfg.options().pathSeparator();
-        for (MinigameModule module : getModules()) {
-            if (!module.useSeparateConfig()) {
-                module.load(cfg, name);
-            } else {
-                MinigameSave modsave = new MinigameSave("minigames" + File.separator + name + File.separator + module.getName().toLowerCase());
-                module.load(modsave.getConfig(), name);
+        if (!allSuccess) {
+            try {
+                minigameSave.createBackup();
+            } catch (final @NotNull IOException e) {
+                // uh oh. fascism has hit the fan.
+                // Yes this is a political statement in the code, how unprofessional. deal with it. fascism I mean, go out and try to solve it! I would recomment perchloric acid
+                plugin.getComponentLogger().error("Couldn't back up config of Minigame " + getName() + " after failure. Data loss is doubly imminent! Abandoning to overwrite the original file.", e);
+
+                // refrain from damaging the original data since something has horrible wrong
+                return false;
             }
         }
 
-        for (String flag : configFlags.keySet()) {
-            if (cfg.contains(name + configSeparator + flag)) {
-                configFlags.get(flag).loadValue(cfg, name);
+        try {
+            minigameSave.saveConfig();
+        } catch (final @NotNull IOException e) {
+            plugin.getComponentLogger().error("Couldn't save config of Minigame " + getName() + ". Data loss is imminent!", e);
+            allSuccess = false; // we failed.
+        }
+
+        return allSuccess;
+    }
+
+    public boolean loadMinigame() {
+        final @NotNull MinigameSave minigameSave = MinigameSave.forMinigameData(this, Path.of("config"));
+        final @NotNull CommentedConfigurationNode cfg;
+        try {
+            cfg = minigameSave.getConfigRoot().node(name);
+        } catch (ConfigurateException e) {
+            plugin.getComponentLogger().error("Couldn't obtain Minigames config file of " + getName() + "to load it. Data loss is imminent!", e);
+
+            return false;
+        }
+
+        boolean allSuccess = true;
+
+        for (final @NotNull MinigameModule module : getModules()) {
+            if (!module.useSeparateConfig()) {
+                try {
+                    module.load(cfg);
+                } catch (ConfigurateException e) {
+                    plugin.getComponentLogger().error("Couldn't load Minigames config file of module " + module.key() + " for minigame " + getName() + ". Some thinks may stop working.", e);
+                    allSuccess = false;
+                }
+            } else {
+                final @NotNull Key moduleKey = module.key();
+                final @NotNull Path modulePath;
+                if (moduleKey.namespace().equals(plugin.namespace())) {
+                    modulePath = Path.of(moduleKey.value());
+                } else {
+                    modulePath = Path.of(moduleKey.namespace(), moduleKey.value());
+                }
+
+                final @NotNull MinigameSave modsave = MinigameSave.forMinigameData(this, modulePath);
+                try {
+                    module.load(modsave.getConfigRoot().node(name));
+                } catch (final @NotNull ConfigurateException e) {
+                    plugin.getComponentLogger().error("Couldn't load Minigames config file of module " + module.key() + " for minigame " + getName() + ". Some thinks may stop working.", e);
+                    allSuccess = false;
+                }
+            }
+        }
+
+        for (final @NotNull String flagName : configFlags.keySet()) {
+            if (cfg.hasChild(flagName)) {
+                try {
+                    configFlags.get(flagName).loadValue(cfg);
+                } catch (final @NotNull ConfigurateException e) {
+                    plugin.getComponentLogger().warn("Couldn't load config flag: " + flagName + " did not match any block type. for minigame " + getName() + ". Some thinks may stop working.", e);
+                    allSuccess = false;
+                }
             }
         }
 
         //dataFixerUpper
-        if (cfg.contains(name + configSeparator + "useXPBarTimer")) {
-            if (cfg.getBoolean(name + configSeparator + "useXPBarTimer")) {
+        if (cfg.hasChild("useXPBarTimer")) {
+            if (cfg.node("useXPBarTimer").getBoolean()) {
                 timerDisplayType.setFlag(MinigameTimer.DisplayType.XP_BAR);
             } else {
                 timerDisplayType.setFlag(MinigameTimer.DisplayType.NONE);
             }
         }
 
-        if (minigame.getConfig().contains(name + configSeparator + "whitelistmode")) {
-            getRecorderData().setWhitelistMode(minigame.getConfig().getBoolean(name + configSeparator + "whitelistmode"));
+        // todo when moving whitelisting anywhere else where it does make more sense than the recorder, also integrate config loading there, to stay in line with everything else
+        if (cfg.hasChild("whitelistmode")) {
+            getRecorderData().setWhitelistMode(cfg.node("whitelistmode").getBoolean());
         }
 
-        if (minigame.getConfig().contains(name + configSeparator + "whitelistblocks")) {
-            List<String> blocklist = minigame.getConfig().getStringList(name + configSeparator + "whitelistblocks");
-            for (String block : blocklist) {
-                Material material = Material.matchMaterial(block);
-                if (material == null) {
-                    material = Material.matchMaterial(block, true);
-                    if (material == null) {
-                        Minigames.getCmpnntLogger().info(" Failed to match config material.");
-                        Minigames.getCmpnntLogger().info(block + " did not match a material please update config: " + this.name);
-                    } else {
-                        Minigames.getCmpnntLogger().info(block + " is a legacy material please review the config we will attempt to auto update..but you may want to add newer materials GAME: " + this.name);
-                        getRecorderData().addWBBlock(material);
+        if (cfg.hasChild("whitelistblocks")) {
+            try {
+                final @NotNull List<@NotNull String> blocklist = cfg.node("whitelistblocks").getList(String.class, List.of());
+
+                for (final @NotNull String blockKeyStr : blocklist) {
+                    final @Nullable Key key = NamespacedKey.fromString(blockKeyStr.toLowerCase(Locale.ROOT));
+
+                    if (key != null) {
+                        final @Nullable BlockType blockType = Registry.BLOCK.get(key);
+                        if (blockType != null) {
+                            getRecorderData().addWBBlock(blockType);
+                        } else {
+                            plugin.getComponentLogger().warn("Failed to match config block type: " + key.asMinimalString() + " did not match any block type. Please update config: " + getName());
+                            allSuccess = false;
+                        }
+                    } else { // todo
+                        plugin.getComponentLogger().warn(blockKeyStr + " in config file of Minigame " + getName() + " is not a valid Key.");
+                        allSuccess = false;
                     }
-                } else {
-                    getRecorderData().addWBBlock(material);
                 }
+            } catch (final @NotNull SerializationException e) {
+                plugin.getComponentLogger().error("Couldn't get \"whitelistblocks\" from Minigames config of " + getName() + ". Some thinks may stop working.", e);
+                allSuccess = false;
             }
         }
 
-        final Minigame mgm = this;
-
         if (getType() == MinigameType.GLOBAL && isEnabled()) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> Minigames.getPlugin().getMinigameManager().startGlobalMinigame(mgm, null));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.getMinigameManager().startGlobalMinigame(this, null));
         }
 
-        getScoreboardData().loadDisplays(minigame, this);
+        try {
+            getScoreboardData().loadDisplays(cfg, this);
+        } catch (final @NotNull SerializationException e) {
+            plugin.getComponentLogger().error("Couldn't load scoreboard displays from Minigames config of " + getName() + ". They may stop working.", e);
+            allSuccess = false;
+        }
 
-        CompletableFuture<Map<MinigameStat, StatSettings>> settingsFuture = Minigames.getPlugin().getBackend().loadStatSettings(this);
+        CompletableFuture<Map<MinigameStat, StatSettings>> settingsFuture = plugin.getBackend().loadStatSettings(this);
         // as far as I know it isn't defined what thread will run thenApply,
         // so we pull it back on the main thread with the BukkitScheduler
-        settingsFuture.thenApply(result -> Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> {
+        settingsFuture.thenApply(result -> Bukkit.getScheduler().runTask(plugin, () -> {
             statSettings.clear();
             statSettings.putAll(result);
 
             getScoreboardData().reload();
         })).exceptionally(t -> {
-            Minigames.getCmpnntLogger().error("", t);
+            plugin.getComponentLogger().error("", t);
             return null;
         });
 
-        saveMinigame();
+        if (allSuccess) {
+            saveMinigame();
+        }
+
+        return allSuccess;
     }
 
     @Override
@@ -1490,7 +1612,7 @@ public class Minigame implements ScriptObject {
 
     @Nullable
     @Override
-    public ScriptReference get(@NotNull String name) {
+    public ScriptReference resolveReference(final @NotNull String name) {
         if (name.equalsIgnoreCase("players")) {
             return ScriptCollection.of(players);
         } else if (name.equalsIgnoreCase("teams")) {
@@ -1509,12 +1631,12 @@ public class Minigame implements ScriptObject {
 
     @NotNull
     @Override
-    public Set<String> getKeys() {
+    public Set<String> getReferenceKeys() {
         return Set.of("players", "teams", "name", "displayname");
     }
 
     @Override
-    public String getAsString() {
+    public @NotNull String getAsString() {
         return getName();
     }
 

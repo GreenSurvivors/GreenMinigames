@@ -12,10 +12,11 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
@@ -77,25 +78,25 @@ public class TeamPlayerCountRangeCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        min.saveValue(config, path);
-        max.saveValue(config, path);
-        saveInvert(config, path);
+    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        min.saveValue(config);
+        max.saveValue(config);
+        saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        min.loadValue(config, path);
-        max.saveValue(config, path);
-        loadInvert(config, path);
+    public void loadArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        min.loadValue(config);
+        max.saveValue(config);
+        loadInvert(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu m = new Menu(3, getDisplayName(), player);
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(min.getMenuItem(Material.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 1, null));
-        m.addItem(max.getMenuItem(Material.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 1, null));
+        m.addItem(min.getMenuItem(ItemType.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 1, null));
+        m.addItem(max.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 1, null));
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

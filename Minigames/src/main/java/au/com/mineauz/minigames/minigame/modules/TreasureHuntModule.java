@@ -15,14 +15,16 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.time.Duration;
 import java.util.*;
@@ -41,12 +43,12 @@ public class TreasureHuntModule extends MinigameModule {
     private @Nullable Location treasureLocation = null;
     private boolean treasureFound = false;
 
-    public TreasureHuntModule(@NotNull Minigame mgm, @NotNull String name) {
-        super(mgm, name);
+    public TreasureHuntModule(final @NotNull Minigame mgm, final @NotNull Key key) {
+        super(mgm, key);
     }
 
     public static @Nullable TreasureHuntModule getMinigameModule(@NotNull Minigame mgm) {
-        return ((TreasureHuntModule) mgm.getModule(MgModules.TREASURE_HUNT.getName()));
+        return ((TreasureHuntModule) mgm.getModule(MgModules.TREASURE_HUNT.getKey()));
     }
 
     @Override
@@ -55,23 +57,23 @@ public class TreasureHuntModule extends MinigameModule {
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
-        location.saveValue(config, path);
-        maxRadius.saveValue(config, path);
-        minTreasure.saveValue(config, path);
-        maxTreasure.saveValue(config, path);
-        treasureWaitTime.saveValue(config, path);
-        hintWaitTime.saveValue(config, path);
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        location.saveValue(config);
+        maxRadius.saveValue(config);
+        minTreasure.saveValue(config);
+        maxTreasure.saveValue(config);
+        treasureWaitTime.saveValue(config);
+        hintWaitTime.saveValue(config);
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        location.loadValue(config, path);
-        maxRadius.loadValue(config, path);
-        minTreasure.loadValue(config, path);
-        maxTreasure.loadValue(config, path);
-        treasureWaitTime.loadValue(config, path);
-        hintWaitTime.loadValue(config, path);
+    public void load(final @NotNull CommentedConfigurationNode config) {
+        location.loadValue(config);
+        maxRadius.loadValue(config);
+        minTreasure.loadValue(config);
+        maxTreasure.loadValue(config);
+        treasureWaitTime.loadValue(config);
+        hintWaitTime.loadValue(config);
     }
 
     @Override
@@ -79,22 +81,23 @@ public class TreasureHuntModule extends MinigameModule {
 
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public boolean displayMechanicSettings(@NotNull Menu previous) {
         Menu treasureHunt = new Menu(6, getMinigame().getDisplayName(), previous.getViewer());
 
         List<MenuItem> itemsTreasureHunt = new ArrayList<>(5);
-        itemsTreasureHunt.add(location.getMenuItem(Material.WHITE_BED, MgMenuLangKey.MENU_TREASUREHUNT_LOCATION_NAME,
+        itemsTreasureHunt.add(location.getMenuItem(ItemType.WHITE_BED, MgMenuLangKey.MENU_TREASUREHUNT_LOCATION_NAME,
                 MgMenuLangKey.MENU_TREASUREHUNT_LOCATION_DESCRIPTION));
-        itemsTreasureHunt.add(maxRadius.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_TREASUREHUNT_MAX_RADIUS_NAME, 10, null));
-        itemsTreasureHunt.add(maxHeight.getMenuItem(Material.BEACON, MgMenuLangKey.MENU_TREASUREHUNT_MAX_HEIGHT_NAME,
+        itemsTreasureHunt.add(maxRadius.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_TREASUREHUNT_MAX_RADIUS_NAME, 10, null));
+        itemsTreasureHunt.add(maxHeight.getMenuItem(ItemType.BEACON, MgMenuLangKey.MENU_TREASUREHUNT_MAX_HEIGHT_NAME,
                 MgMenuLangKey.MENU_TREASUREHUNT_MAX_HEIGHT_DESCRIPTION, 1, 256));
-        itemsTreasureHunt.add(minTreasure.getMenuItem(Material.STONE_SLAB, MgMenuLangKey.MENU_TREASUREHUNT_MIN_ITEMS_NAME,
+        itemsTreasureHunt.add(minTreasure.getMenuItem(ItemType.STONE_SLAB, MgMenuLangKey.MENU_TREASUREHUNT_MIN_ITEMS_NAME,
                 MgMenuLangKey.MENU_TREASUREHUNT_MIN_ITEMS_DESCRIPTION, 0, 27));
-        itemsTreasureHunt.add(maxTreasure.getMenuItem(Material.STONE, MgMenuLangKey.MENU_TREASUREHUNT_MAX_ITEMS_NAME,
+        itemsTreasureHunt.add(maxTreasure.getMenuItem(ItemType.STONE, MgMenuLangKey.MENU_TREASUREHUNT_MAX_ITEMS_NAME,
                 MgMenuLangKey.MENU_TREASUREHUNT_MAX_ITEMS_DESCRIPTION, 0, 27));
-        itemsTreasureHunt.add(treasureWaitTime.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_TREASUREHUNT_DELAY_RESTART_NAME, 0L, null));
-        itemsTreasureHunt.add(hintWaitTime.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_TREASUREHUNT_DELAY_HINT_NAME, 0L, null));
+        itemsTreasureHunt.add(treasureWaitTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TREASUREHUNT_DELAY_RESTART_NAME, 0L, null));
+        itemsTreasureHunt.add(hintWaitTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TREASUREHUNT_DELAY_HINT_NAME, 0L, null));
         treasureHunt.addItems(itemsTreasureHunt);
         treasureHunt.addItem(new MenuItemBack(previous), treasureHunt.getSize() - 9);
         treasureHunt.displayMenu(treasureHunt.getViewer());

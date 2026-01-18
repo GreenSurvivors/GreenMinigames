@@ -7,8 +7,8 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,14 +17,14 @@ import java.util.List;
 public class MenuItemSaveMinigame extends MenuItem {
     private final @NotNull Minigame mgm;
 
-    public MenuItemSaveMinigame(@Nullable Material displayMat, @Nullable Component name, @NotNull Minigame minigame) {
-        super(displayMat, name);
+    public MenuItemSaveMinigame(@Nullable ItemType displayType, @Nullable Component name, @NotNull Minigame minigame) {
+        super(displayType, name);
         mgm = minigame;
     }
 
-    public MenuItemSaveMinigame(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemSaveMinigame(@Nullable ItemType displayType, @Nullable Component name,
                                 @Nullable List<@NotNull Component> description, @NotNull Minigame minigame) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         mgm = minigame;
     }
 
@@ -32,8 +32,8 @@ public class MenuItemSaveMinigame extends MenuItem {
     public @NotNull ItemStack onClick() {
         mgm.saveMinigame();
         MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.SUCCESS,
-                MgMiscLangKey.MINIGAME_SAVED,
-                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
+            MgMiscLangKey.MINIGAME_SAVED,
+            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
         return getDisplayItem();
     }
 }

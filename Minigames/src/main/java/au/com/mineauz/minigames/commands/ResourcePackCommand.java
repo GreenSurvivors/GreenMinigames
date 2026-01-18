@@ -76,7 +76,7 @@ public class ResourcePackCommand extends ACommand {
 
                         if (mgPlayer == null) {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]));
                             return true;
                         }
                     }
@@ -139,8 +139,8 @@ public class ResourcePackCommand extends ACommand {
     private void sendList(@NotNull CommandSender sender) {
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_RESSOUCEPACK_LIST_HEADER);
         MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
-                Component.join(JoinConfiguration.commas(true),
-                        PLUGIN.getResourceManager().getResourcePacks().stream().map(ResourcePack::getDisplayName).toList()));
+            Component.join(JoinConfiguration.commas(true),
+                PLUGIN.getResourceManager().getResourcePacks().stream().map(ResourcePack::getDisplayName).toList()));
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_DIVIDER_LARGE);
     }
 

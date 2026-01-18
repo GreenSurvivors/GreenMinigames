@@ -60,14 +60,14 @@ public class DisableAllCommand extends ACommand {
                 minigames.remove(excluded);
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), arg));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), arg));
             }
         }
         for (Minigame mg : minigames) {
             mg.setEnabled(false);
         }
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_DISABLEALL_SUCCESS,
-                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(minigames.size())));
+            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(minigames.size())));
         return true;
     }
 

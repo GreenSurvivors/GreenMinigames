@@ -12,8 +12,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,36 +29,36 @@ public class MenuItemInteger extends MenuItem implements StringConsumer {
     private final @Nullable Integer min; // inclusive
     private final @Nullable Integer max; // inclusive
 
-    public MenuItemInteger(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<Integer> value,
+    public MenuItemInteger(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<Integer> value,
                            @Nullable Integer min, @Nullable Integer max) {
-        super(displayMat, langKey);
+        super(displayType, langKey);
         this.value = value;
         this.min = min;
         this.max = max;
         updateDescription();
     }
 
-    public MenuItemInteger(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Integer> value,
+    public MenuItemInteger(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<Integer> value,
                            @Nullable Integer min, @Nullable Integer max) {
-        super(displayMat, name);
+        super(displayType, name);
         this.value = value;
         this.min = min;
         this.max = max;
         updateDescription();
     }
 
-    public MenuItemInteger(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @Nullable List<Component> description,
+    public MenuItemInteger(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @Nullable List<Component> description,
                            @NotNull Callback<Integer> value, @Nullable Integer min, @Nullable Integer max) {
-        super(displayMat, langKey, description);
+        super(displayType, langKey, description);
         this.value = value;
         this.min = min;
         this.max = max;
         updateDescription();
     }
 
-    public MenuItemInteger(@Nullable Material displayMat, @Nullable Component name, @Nullable List<Component> description,
+    public MenuItemInteger(@Nullable ItemType displayType, @Nullable Component name, @Nullable List<Component> description,
                            @NotNull Callback<Integer> value, @Nullable Integer min, @Nullable Integer max) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.value = value;
         this.min = min;
         this.max = max;
@@ -130,22 +130,22 @@ public class MenuItemInteger extends MenuItem implements StringConsumer {
     }
 
     @Override
-    public @Nullable ItemStack onDoubleClick() {
+    public @NotNull ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
 
-        final int reopenSeconds = 10;
+        final @NotNull Duration reopenTime = Duration.ofSeconds(10);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,
-                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
-                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))),
-                Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()), //todo don't hardcode N/A
-                Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), this.max == null ? "N/A" : this.max.toString()));
+            Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)),
+            Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()), //todo don't hardcode N/A
+            Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), this.max == null ? "N/A" : this.max.toString()));
 
         mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenSeconds);
+        getContainer().startReopenTimer(reopenTime);
 
-        return null;
+        return ItemStack.empty();
     }
 
     @Override
@@ -158,13 +158,13 @@ public class MenuItemInteger extends MenuItem implements StringConsumer {
 
             } else {
                 MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
-                        MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), this.max == null ? "N/A" : this.max.toString()));
+                    MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), this.max == null ? "N/A" : this.max.toString()));
             }
         } else {
             MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
-                    MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
         }
 

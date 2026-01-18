@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public abstract class GameMechanicBase implements Listener {
+public abstract class AGameMechanic implements Listener {
     protected static final @NotNull Minigames plugin = Minigames.getPlugin();
     protected final @NotNull MinigamePlayerManager playerManager;
     protected final @NotNull MinigameManager minigameManager;
 
-    public GameMechanicBase() {
+    public AGameMechanic() {
         playerManager = plugin.getPlayerManager();
         minigameManager = plugin.getMinigameManager();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -83,7 +83,7 @@ public abstract class GameMechanicBase implements Listener {
                     Team teamToJoin = null;
                     for (Team teamToCheck : TeamsModule.getMinigameModule(minigame).getTeams()) {
                         if (teamToJoin == null || (teamToCheck.getPlayers().size() < teamToJoin.getPlayers().size() &&
-                                (teamToCheck.getMaxPlayers() == 0 || teamToCheck.getPlayers().size() != teamToCheck.getMaxPlayers())))
+                            (teamToCheck.getMaxPlayers() == 0 || teamToCheck.getPlayers().size() != teamToCheck.getMaxPlayers())))
                             teamToJoin = teamToCheck;
                     }
                     if (teamToJoin == null) {
@@ -124,14 +124,14 @@ public abstract class GameMechanicBase implements Listener {
 
     private void broadcastAutobalance(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer, @NotNull Team teamToJoin) {
         MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(
-                teamToJoin.getAutobalanceMessage(),
-                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor())))); //todo is NOT backwards compatible!!
+            teamToJoin.getAutobalanceMessage(),
+            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor())))); //todo is NOT backwards compatible!!
 
         MinigameMessageManager.sendMinigameMessage(minigame,
-                MiniMessage.miniMessage().deserialize(teamToJoin.getGameAutobalanceMessage(),
-                        Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
-                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor()))) //todo is NOT backwards compatible!!
-                , null, mgPlayer);
+            MiniMessage.miniMessage().deserialize(teamToJoin.getGameAutobalanceMessage(),
+                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
+                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor()))) //todo is NOT backwards compatible!!
+            , null, mgPlayer);
     }
 
     void autoBalanceOnDeath(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {

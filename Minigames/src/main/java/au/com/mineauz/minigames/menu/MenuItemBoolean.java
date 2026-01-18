@@ -4,8 +4,8 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,30 +15,30 @@ public class MenuItemBoolean extends MenuItem {
     private static final String DESCRIPTION_TOKEN = "Boolean_description";
     private final @NotNull Callback<@NotNull Boolean> toggle;
 
-    public MenuItemBoolean(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
+    public MenuItemBoolean(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
                            @NotNull Callback<@NotNull Boolean> toggle) {
-        super(displayMat, langKey);
+        super(displayType, langKey);
         this.toggle = toggle;
         update();
     }
 
-    public MenuItemBoolean(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemBoolean(@Nullable ItemType displayType, @Nullable Component name,
                            @NotNull Callback<@NotNull Boolean> toggle) {
-        super(displayMat, name);
+        super(displayType, name);
         this.toggle = toggle;
         update();
     }
 
-    public MenuItemBoolean(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @Nullable List<@NotNull Component> description,
+    public MenuItemBoolean(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @Nullable List<@NotNull Component> description,
                            @NotNull Callback<@NotNull Boolean> toggle) {
-        super(displayMat, langKey, description);
+        super(displayType, langKey, description);
         this.toggle = toggle;
         update();
     }
 
-    public MenuItemBoolean(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description,
+    public MenuItemBoolean(@Nullable ItemType displayType, @Nullable Component name, @Nullable List<@NotNull Component> description,
                            @NotNull Callback<@NotNull Boolean> toggle) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.toggle = toggle;
         update();
     }

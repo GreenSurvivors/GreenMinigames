@@ -78,8 +78,8 @@ public class DependencyManager {
                 BlockVector3 pos1 = cuboidRegion.getPos1();
                 BlockVector3 pos2 = cuboidRegion.getPos2();
                 return new SelectedRegionStatusWrapper(SelectedRegionStatus.SUCCESS,
-                        new Location(player.getWorld(), pos1.x(), pos1.y(), pos1.z()),
-                        new Location(player.getWorld(), pos2.x(), pos2.y(), pos2.z()));
+                    new Location(player.getWorld(), pos1.x(), pos1.y(), pos1.z()),
+                    new Location(player.getWorld(), pos2.x(), pos2.y(), pos2.z()));
             } else {
                 return new SelectedRegionStatusWrapper(SelectedRegionStatus.INCOMPLETE, null, null);
             }

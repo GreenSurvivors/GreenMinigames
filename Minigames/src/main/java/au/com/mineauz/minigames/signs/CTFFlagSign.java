@@ -12,7 +12,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -62,7 +61,7 @@ public class CTFFlagSign extends AMinigameSign {
             } else {
                 event.getBlock().breakNaturally();
                 MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_TEAM_INVALIDFORMAT,
-                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), MinigameMessageManager.getMgMessage(MgSignLangKey.TEAM_NEUTRAL)));
+                    Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), MinigameMessageManager.getMgMessage(MgSignLangKey.TEAM_NEUTRAL)));
                 return false;
             }
         }

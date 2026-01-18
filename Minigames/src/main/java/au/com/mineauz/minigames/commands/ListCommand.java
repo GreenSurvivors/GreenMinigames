@@ -46,31 +46,31 @@ public class ListCommand extends ACommand {
     public boolean onCommand(@NotNull CommandSender sender,
                              @NotNull String @NotNull [] args) {
         Component result = Component.join(JoinConfiguration.commas(true),
-                PLUGIN.getMinigameManager().getAllMinigames().values().stream().
-                        //filter permission
-                                filter(mgm -> (!mgm.getUsePermissions() ||
-                                sender.hasPermission("minigame.join." + mgm.getName().toLowerCase()))).
-                        // map to name
-                                map(mgm -> {
-                            Component name = mgm.getDisplayName();
+            PLUGIN.getMinigameManager().getAllMinigames().values().stream().
+                //filter permission
+                filter(mgm -> (!mgm.getUsePermissions() ||
+                    sender.hasPermission("minigame.join." + mgm.getName().toLowerCase()))).
+                    // map to name
+                map(mgm -> {
+                    Component name = mgm.getDisplayName();
 
-                            // color indicates status of minigame
-                            if (!mgm.isEnabled()) {
-                                return name.color(NamedTextColor.GRAY);
-                            } else if (mgm.getType() == MinigameType.GLOBAL) {
-                                return name.color(NamedTextColor.DARK_GREEN);
-                            } else {
-                                return switch (mgm.getState()) {
-                                    case ENDED, IDLE -> name.color(NamedTextColor.GREEN);
-                                    case WAITING -> name.color(NamedTextColor.BLUE);
-                                    case STARTED -> name.color(NamedTextColor.DARK_GREEN);
-                                    case ENDING, STARTING, REGENERATING, OCCUPIED -> name.color(NamedTextColor.GOLD);
-                                };
-                            }
-                        }).toList());
+                    // color indicates status of minigame
+                    if (!mgm.isEnabled()) {
+                        return name.color(NamedTextColor.GRAY);
+                    } else if (mgm.getType() == MinigameType.GLOBAL) {
+                        return name.color(NamedTextColor.DARK_GREEN);
+                    } else {
+                        return switch (mgm.getState()) {
+                            case ENDED, IDLE -> name.color(NamedTextColor.GREEN);
+                            case WAITING -> name.color(NamedTextColor.BLUE);
+                            case STARTED -> name.color(NamedTextColor.DARK_GREEN);
+                            case ENDING, STARTING, REGENERATING, OCCUPIED -> name.color(NamedTextColor.GOLD);
+                        };
+                    }
+                }).toList());
 
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_LIST_LIST,
-                Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), result));
+            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), result));
         return true;
     }
 

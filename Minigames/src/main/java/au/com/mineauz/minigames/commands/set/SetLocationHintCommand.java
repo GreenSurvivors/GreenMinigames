@@ -63,7 +63,7 @@ public class SetLocationHintCommand extends ASetCommand { //todo i feel like thi
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TREASURE_HUNT.getName()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TREASURE_HUNT.getKey().value()));
             }
             return true;
         }

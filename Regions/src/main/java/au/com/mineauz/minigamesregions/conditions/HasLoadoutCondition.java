@@ -12,10 +12,11 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
@@ -70,23 +71,23 @@ public class HasLoadoutCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        loadOutName.saveValue(config, path);
-        saveInvert(config, path);
+    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        loadOutName.saveValue(config);
+        saveInvertedStatus(config);
 
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        loadOutName.loadValue(config, path);
-        loadInvert(config, path);
+    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+        loadOutName.loadValue(config);
+        loadInvert(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu prev) {
         Menu menu = new Menu(3, getDisplayName(), mgPlayer);
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
-        menu.addItem(new MenuItemString(Material.DIAMOND_SWORD, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASLOADOUT_LOADOUT_NAME), new Callback<>() { //todo this to list and use loadouts of minigame
+        menu.addItem(new MenuItemString(ItemType.DIAMOND_SWORD, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASLOADOUT_LOADOUT_NAME), new Callback<>() { //todo this to list and use loadouts of minigame
 
             @Override
             public String getValue() {

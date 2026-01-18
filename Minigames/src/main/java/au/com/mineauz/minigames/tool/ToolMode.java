@@ -4,8 +4,8 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +23,7 @@ public interface ToolMode {
      */
     @NotNull List<@NotNull Component> getDescription();
 
-    @NotNull Material getIcon();
+    @NotNull ItemType getIcon();
 
     void onSetMode(@NotNull MinigamePlayer player, @NotNull MinigameTool tool);
 

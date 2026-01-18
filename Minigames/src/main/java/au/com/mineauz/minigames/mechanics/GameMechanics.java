@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class GameMechanics {
-    private static final Map<@NotNull String, @NotNull GameMechanicBase> gameMechanics = new HashMap<>();
+    private static final @NotNull Map<@NotNull String, @NotNull AGameMechanic> gameMechanics = new HashMap<>();
 
     static {
         addGameMechanic(new CustomMechanic());
@@ -19,7 +19,7 @@ public class GameMechanics {
      *
      * @param mechanic A game mechanic extending GameMechanicBase
      */
-    public static void addGameMechanic(@NotNull GameMechanicBase mechanic) {
+    public static void addGameMechanic(@NotNull AGameMechanic mechanic) {
         gameMechanics.put(mechanic.getMechanicName(), mechanic);
     }
 
@@ -27,14 +27,15 @@ public class GameMechanics {
      * Removes an existing game mechanic from Minigames
      *
      * @param mechanic The name of the mechanic to be removed
-     * @throws NullPointerException if the mechanic cannot be found.
+     * @throws IllegalArgumentException if the mechanic cannot be found.
      */
-    public static void removeGameMechanic(@NotNull String mechanic) {
+    public static void removeGameMechanic(@NotNull String mechanic) throws IllegalArgumentException {
         if (gameMechanics.containsKey(mechanic)) {
             HandlerList.unregisterAll(gameMechanics.get(mechanic));
             gameMechanics.remove(mechanic);
-        } else
-            throw new NullPointerException("No GameMechanic of that name has been added!");
+        } else {
+            throw new IllegalArgumentException("No GameMechanic of that name has been added!");
+        }
     }
 
     /**
@@ -43,7 +44,7 @@ public class GameMechanics {
      * @param mechanic The name of the mechanic
      * @return A game mechanic extending GameMechanicBase or Null if none found.
      */
-    public static @Nullable GameMechanicBase getGameMechanic(@NotNull String mechanic) {
+    public static @Nullable AGameMechanic getGameMechanic(final @NotNull String mechanic) {
         if (gameMechanics.containsKey(mechanic)) {
             return gameMechanics.get(mechanic);
         }
@@ -55,12 +56,12 @@ public class GameMechanics {
      *
      * @return a Set containing the game mechanics
      */
-    public static @NotNull Set<@NotNull GameMechanicBase> getGameMechanics() {
+    public static @NotNull Set<@NotNull AGameMechanic> getGameMechanics() {
         return new HashSet<>(gameMechanics.values());
     }
 
-    public static @Nullable GameMechanicBase matchGameMechanic(@NotNull String name) {
-        for (Map.Entry<String, GameMechanicBase> entry : gameMechanics.entrySet()) {
+    public static @Nullable AGameMechanic matchGameMechanic(@NotNull String name) {
+        for (Map.Entry<String, AGameMechanic> entry : gameMechanics.entrySet()) {
             if (entry.getKey().equalsIgnoreCase(name)) {
                 return entry.getValue();
             }
@@ -77,13 +78,13 @@ public class GameMechanics {
         LIVES(new LivesMechanic()),
         JUGGERNAUT(new JuggernautMechanic());
 
-        private final GameMechanicBase mechanic;
+        private final AGameMechanic mechanic;
 
-        MgMechanics(GameMechanicBase mechanic) {
+        MgMechanics(AGameMechanic mechanic) {
             this.mechanic = mechanic;
         }
 
-        public GameMechanicBase getMechanic() {
+        public AGameMechanic getMechanic() {
             return this.mechanic;
         }
 

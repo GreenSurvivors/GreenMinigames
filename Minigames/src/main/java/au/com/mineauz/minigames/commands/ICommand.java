@@ -54,7 +54,7 @@ public interface ICommand {
     boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String @Nullable [] args);
 
     /**
-     * @param args     might be null for all set commands, else wise shouldn't be
+     * @param args might be null for all set commands, else wise shouldn't be
      */
     @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, @NotNull String[] args);
 }

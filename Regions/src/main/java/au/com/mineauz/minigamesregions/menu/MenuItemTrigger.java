@@ -2,15 +2,15 @@ package au.com.mineauz.minigamesregions.menu;
 
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 public class MenuItemTrigger extends MenuItem {
     private final @NotNull Trigger trigger;
@@ -19,32 +19,30 @@ public class MenuItemTrigger extends MenuItem {
     private @Nullable Node node;
 
     public MenuItemTrigger(@NotNull Trigger trigger, @NotNull Region region, @NotNull Menu previous) {
-        super(Material.LEVER, trigger.getDisplayName());
+        super(ItemType.LEVER, trigger.getDisplayName());
         this.trigger = trigger;
         this.region = region;
         this.previous = previous;
     }
 
     public MenuItemTrigger(@NotNull Trigger trigger, @NotNull Node node, @NotNull Menu previous) {
-        super(Material.LEVER, trigger.getDisplayName());
+        super(ItemType.LEVER, trigger.getDisplayName());
         this.trigger = trigger;
         this.node = node;
         this.previous = previous;
     }
 
     @Override
-    public @Nullable ItemStack onClick() {
+    public @NonNull ItemStack onClick() {
+        final @NotNull ActionExecutor exec = new ActionExecutor(trigger);
         if (region != null) {
-            RegionExecutor exec = new RegionExecutor(trigger);
             region.addExecutor(exec);
             previous.addItem(new MenuItemRegionExecutor(region, exec));
-            previous.displayMenu(getContainer().getViewer());
         } else {
-            NodeExecutor exec = new NodeExecutor(trigger);
             node.addExecutor(exec);
             previous.addItem(new MenuItemNodeExecutor(node, exec));
-            previous.displayMenu(getContainer().getViewer());
         }
-        return null;
+        previous.displayMenu(getContainer().getViewer());
+        return ItemStack.empty();
     }
 }

@@ -48,18 +48,18 @@ public class PartyModeCommand extends ACommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         if (args.length > 0) {
-            Boolean bool = BooleanUtils.toBooleanObject(args[0]);
+            final @Nullable Boolean bool = BooleanUtils.toBooleanObject(args[0]);
 
             if (bool != null) {
                 PLUGIN.getPlayerManager().setPartyMode(bool);
 
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_PARTYMODE_SUCCESS,
-                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
-                                bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
+                    Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                        bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                 return true;
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
         }
         return false;

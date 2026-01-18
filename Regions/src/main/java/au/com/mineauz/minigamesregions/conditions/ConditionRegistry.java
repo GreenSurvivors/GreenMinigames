@@ -4,12 +4,12 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigamesregions.executors.BaseExecutor;
+import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.menu.MenuItemCondition;
 import au.com.mineauz.minigamesregions.menu.MenuItemConditionAdd;
-import org.bukkit.Material;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +30,7 @@ public class ConditionRegistry {
     public static void addCondition(@NotNull ConditionFactory conditionFactory) {
         conditions.put(conditionFactory.getName(), conditionFactory);
 
-        // data fixer upper
+        // datafixerupper
         if (conditionFactory.getOldName() != null) {
             conditions.put(conditionFactory.getOldName(), conditionFactory);
         }
@@ -45,14 +45,14 @@ public class ConditionRegistry {
         return conditions.values().stream().map(ConditionFactory::makeNewCondition).collect(Collectors.toSet());
     }
 
-    public static void displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull BaseExecutor exec, @NotNull Menu prev) {
+    public static void displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull ActionExecutor exec, @NotNull Menu prev) {
         Menu m = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), mgPlayer);
         m.setPreviousPage(prev);
         for (ACondition con : exec.getConditions()) {
-            m.addItem(new MenuItemCondition(Material.PAPER, con.getDisplayName(), exec, con));
+            m.addItem(new MenuItemCondition(ItemType.PAPER, con.getDisplayName(), exec, con));
         }
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(new MenuItemConditionAdd(MenuUtility.getCreateMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_ADD_NAME), exec), m.getSize() - 1);
+        m.addItem(new MenuItemConditionAdd(MenuUtility.getCreateType(), RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_ADD_NAME), exec), m.getSize() - 1);
         m.displayMenu(mgPlayer);
     }
 }

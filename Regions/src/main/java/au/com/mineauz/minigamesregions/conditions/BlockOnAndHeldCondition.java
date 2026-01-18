@@ -11,10 +11,10 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.Map;
 
@@ -88,11 +88,11 @@ public class BlockOnAndHeldCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
+    public void saveArguments(@NotNull CommentedConfigurationNode config) {
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
+    public void loadArguments(@NotNull CommentedConfigurationNode config) {
     }
 
     @Override

@@ -57,16 +57,16 @@ public class ListPlaceholder extends ACommand {
 
         // get sublist just containing the page
         final List<String> placeholdersOfPage = placeholders.subList(PLACEHOLDERS_PER_SITE * (pageNumber - 1),
-                Math.min(placeholders.size(), pageNumber * PLACEHOLDERS_PER_SITE));
+            Math.min(placeholders.size(), pageNumber * PLACEHOLDERS_PER_SITE));
 
         // make page
         final Component pageCore = Component.join(JoinConfiguration.commas(true), placeholdersOfPage.stream().
-                map(pHolder -> Component.text("%" + PLUGIN.getName() + "_" + pHolder + "%")).toList());
+            map(pHolder -> Component.text("%" + PLUGIN.getName() + "_" + pHolder + "%")).toList());
 
         // footer / header
         final Component header = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_LISTPLACEHOLDERS_HEADER,
-                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(pageNumber)),
-                Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(numPages)));
+            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(pageNumber)),
+            Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(numPages)));
         final Component footer = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DIVIDER_LARGE); //todo clickable next/back buttons on footer
 
         return header.appendNewline().append(pageCore).appendNewline().append(footer);

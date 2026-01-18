@@ -7,31 +7,31 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStatistics;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MenuItemStatisticsSettings extends MenuItem {
     private final @NotNull Minigame minigame;
 
-    public MenuItemStatisticsSettings(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Minigame minigame) {
-        super(displayMat, langKey);
+    public MenuItemStatisticsSettings(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Minigame minigame) {
+        super(displayType, langKey);
         this.minigame = minigame;
     }
 
-    public MenuItemStatisticsSettings(@Nullable Material displayMat, @Nullable Component name, @NotNull Minigame minigame) {
-        super(displayMat, name);
+    public MenuItemStatisticsSettings(@Nullable ItemType displayType, @Nullable Component name, @NotNull Minigame minigame) {
+        super(displayType, name);
         this.minigame = minigame;
     }
 
     @Override
-    public ItemStack onClick() {
-        Menu subMenu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_SETTINGS_NAME),
-                getContainer().getViewer());
+    public @NotNull ItemStack onClick() {
+        final @NotNull Menu subMenu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_SETTINGS_NAME),
+            getContainer().getViewer());
 
         for (MinigameStat stat : MinigameStatistics.getAllStats().values()) {
-            subMenu.addItem(new MenuItemModifyStatSetting(Material.WRITABLE_BOOK, minigame, stat));
+            subMenu.addItem(new MenuItemModifyStatSetting(ItemType.WRITABLE_BOOK, minigame, stat));
         }
 
         subMenu.addItem(new MenuItemBack(getContainer()), subMenu.getSize() - 9);

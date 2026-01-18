@@ -8,37 +8,38 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBlockData;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
 public class BlockDataFlag extends AFlag<BlockData> {
 
-    public BlockDataFlag(@NotNull String name, @NotNull BlockData value) {
-        super(name, value);
+    public BlockDataFlag(final @NotNull String name, final BlockData defaultVal) {
+        super(name, defaultVal);
     }
 
     @Override
-    public void saveValue(@NotNull Configuration config, @NotNull String path) {
-        if (getFlag() != getDefaultFlag()) {
-            config.set(path + config.options().pathSeparator() + getName(), getFlag().getAsString());
-        } else {
-            config.set(path + config.options().pathSeparator() + getName(), null);
+    public void saveValue(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.removeChild(getName());
+
+        if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
+            config.node(getName()).set(getFlag().getAsString());
         }
     }
 
     @Override
-    public void loadValue(@NotNull Configuration config, @NotNull String path) {
-        String obj = config.getString(path + config.options().pathSeparator() + getName(), "");
+    public void loadValue(final @NotNull CommentedConfigurationNode config) {
+        final String str = config.node(getName()).getString("");
         BlockData data = null;
         try {
-            data = Bukkit.createBlockData(obj);
+            data = Bukkit.createBlockData(str);
         } catch (NullPointerException | IllegalArgumentException e) {
-            Minigames.getCmpnntLogger().warn("couldn't load Blockdata flag. Legacy data loading was removed.", e);
+            Minigames.getPlugin().getComponentLogger().warn("couldn't load Blockdata flag. Legacy data loading was removed.", e);
         }
 
         if (data != null) {
@@ -53,7 +54,7 @@ public class BlockDataFlag extends AFlag<BlockData> {
      */
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey) {
         return getMenuItem(MinigameMessageManager.getMgMessage(langKey));
     }
 
@@ -66,7 +67,7 @@ public class BlockDataFlag extends AFlag<BlockData> {
      */
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMaterial, @Nullable Component name) {
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
         return getMenuItem(name);
     }
 
@@ -75,7 +76,7 @@ public class BlockDataFlag extends AFlag<BlockData> {
      */
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description) {
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name, @Nullable List<@NotNull Component> description) {
         return getMenuItem(name);
     }
 
@@ -84,13 +85,13 @@ public class BlockDataFlag extends AFlag<BlockData> {
      */
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey nameLangKey,
-                                @NotNull MinigameLangKey descriptionLangKey) {
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey nameLangKey,
+                                         @NotNull MinigameLangKey descriptionLangKey) {
         return getMenuItem(MinigameMessageManager.getMgMessage(nameLangKey));
     }
 
     public @NotNull MenuItem getMenuItem(@Nullable Component name) {
-        return new MenuItemBlockData(getFlag().getMaterial(), name, new Callback<>() {
+        return new MenuItemBlockData(getFlag().getPlacementMaterial().asItemType(), name, new Callback<>() {
             @Override
             public BlockData getValue() {
                 return getFlag();

@@ -5,10 +5,9 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
@@ -42,13 +41,13 @@ public class CheckpointSign extends AMinigameSign {
 
     @Override
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        if ((mgPlayer.isInMinigame() || (!mgPlayer.isInMinigame() && sign.getLine(2).equals(ChatColor.BLUE + "Global")))
-                && mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
+        if ((mgPlayer.isInMinigame() || (!mgPlayer.isInMinigame() && sign.getLine(2).equals(ChatColor.BLUE + "Global"))) &&
+            mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
             if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isSpectator(mgPlayer)) {
                 return false;
             }
             if (mgPlayer.getPlayer().isOnGround()) { // todo why? if really necessary use something working
-                Location newloc = mgPlayer.getPlayer().getLocation();
+                final @NotNull SafeFullLocation newloc = new SafeFullLocation(mgPlayer.getPlayer().getLocation());
                 if (!sign.getLine(2).equals(ChatColor.BLUE + "Global")) {
                     mgPlayer.setCheckpoint(newloc);
                 } else {

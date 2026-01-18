@@ -111,7 +111,7 @@ public class SetGameOverCommand extends ASetCommand {
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.GAME_OVER.getName()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.GAME_OVER.getKey().value()));
             }
 
         }
@@ -134,5 +134,4 @@ public class SetGameOverCommand extends ASetCommand {
         }
         return null;
     }
-
 }

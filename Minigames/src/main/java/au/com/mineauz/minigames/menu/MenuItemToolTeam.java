@@ -4,8 +4,8 @@ import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,9 +14,9 @@ import java.util.List;
 public class MenuItemToolTeam extends MenuItemList<TeamColor> {
     private final @NotNull Callback<TeamColor> value;
 
-    public MenuItemToolTeam(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<TeamColor> value,
+    public MenuItemToolTeam(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<TeamColor> value,
                             @NotNull List<@NotNull TeamColor> options) {
-        super(displayMat, langKey, value, options);
+        super(displayType, langKey, value, options);
         this.value = value;
     }
 

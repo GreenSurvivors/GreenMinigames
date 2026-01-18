@@ -16,10 +16,12 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,8 @@ public class SetTeamScoreAction extends AScoreAction { // todo merge with setSco
     private final IntegerFlag score = new IntegerFlag("amount", 1);
     private final EnumFlag<TeamColor> team = new EnumFlag<>("team", TeamColor.NONE);
 
-    protected SetTeamScoreAction(@NotNull String name) {
-        super(name);
+    protected SetTeamScoreAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -92,28 +94,26 @@ public class SetTeamScoreAction extends AScoreAction { // todo merge with setSco
 
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        score.saveValue(config, path);
-        team.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        score.saveValue(config);
+        team.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        score.loadValue(config, path);
-        team.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        score.loadValue(config);
+        team.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(score.getMenuItem(Material.STONE, MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME),
+        m.addItem(score.getMenuItem(ItemType.STONE, MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME),
                 null, null));
 
         List<TeamColor> teams = new ArrayList<>(TeamColor.validColors());
-        m.addItem(new MenuItemList<>(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME),
+        m.addItem(new MenuItemList<>(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_TEAM_DESCRIPTION), new Callback<>() {
 
             @Override

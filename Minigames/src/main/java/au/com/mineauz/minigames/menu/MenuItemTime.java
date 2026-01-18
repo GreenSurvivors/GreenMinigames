@@ -9,7 +9,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,19 +19,19 @@ import java.util.List;
 public class MenuItemTime extends MenuItemLong {
     private static final String DESCRIPTION_TOKEN = "Time_description";
 
-    public MenuItemTime(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Long> value,
+    public MenuItemTime(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<Long> value,
                         @Nullable Long min, @Nullable Long max) {
-        super(displayMat, name, value, min, max);
+        super(displayType, name, value, min, max);
     }
 
-    public MenuItemTime(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @Nullable List<@NotNull Component> description,
+    public MenuItemTime(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @Nullable List<@NotNull Component> description,
                         @NotNull Callback<Long> value, @Nullable Long min, @Nullable Long max) {
-        super(displayMat, langKey, description, value, min, max);
+        super(displayType, langKey, description, value, min, max);
     }
 
-    public MenuItemTime(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description,
+    public MenuItemTime(@Nullable ItemType displayType, @Nullable Component name, @Nullable List<@NotNull Component> description,
                         @NotNull Callback<Long> value, @Nullable Long min, @Nullable Long max) {
-        super(displayMat, name, description, value, min, max);
+        super(displayType, name, description, value, min, max);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class MenuItemTime extends MenuItemLong {
             getContainer().displayMenu(getContainer().getViewer());
 
             MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
-                    MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
         }
     }

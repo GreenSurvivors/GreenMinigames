@@ -41,8 +41,7 @@ public class SetPresetCommand extends ASetCommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args.length == 1) {
                 PresetLoader.loadPreset(args[0], minigame, sender);

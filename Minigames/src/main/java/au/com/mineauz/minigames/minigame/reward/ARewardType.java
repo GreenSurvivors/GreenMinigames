@@ -2,8 +2,9 @@ package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 public abstract class ARewardType {
     private final @NotNull Rewards rewards;
@@ -33,7 +34,7 @@ public abstract class ARewardType {
 
     public abstract @NotNull MenuItem getMenuItem();
 
-    public abstract void saveReward(@NotNull Configuration config, @NotNull String path);
+    public abstract void saveReward(final @NotNull CommentedConfigurationNode config) throws SerializationException;
 
-    public abstract void loadReward(@NotNull Configuration config, @NotNull String path);
+    public abstract void loadReward(final @NotNull CommentedConfigurationNode config) throws SerializationException;
 }

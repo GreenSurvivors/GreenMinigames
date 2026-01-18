@@ -1,10 +1,11 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 
 public interface ModuleFactory {
     @NotNull MinigameModule makeNewModule(Minigame minigame);
 
-    @NotNull String getName();
+    @NotNull Key getKey();
 }

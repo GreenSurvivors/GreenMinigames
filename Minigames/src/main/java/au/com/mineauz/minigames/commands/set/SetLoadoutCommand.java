@@ -17,9 +17,9 @@ import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,20 +64,20 @@ public class SetLoadoutCommand extends ASetCommand {
             LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);
 
             if (mod != null) {
-                Material material;
-                for (PlayerLoadout ld : mod.getLoadouts()) {
-                    material = Material.WHITE_STAINED_GLASS_PANE;
-                    if (!ld.getItemSlots().isEmpty()) {
-                        material = ld.getItem((Integer) ld.getItemSlots().toArray()[0]).getType();
+                ItemType displayType;
+                for (final @NotNull PlayerLoadout loadout : mod.getLoadouts()) {
+                    displayType = ItemType.WHITE_STAINED_GLASS_PANE;
+                    if (!loadout.getItemSlots().isEmpty()) {
+                        displayType = loadout.getItem((Integer) loadout.getItemSlots().toArray()[0]).getType().asItemType();
                     }
 
-                    MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(material, ld.getDisplayName(),
-                            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), ld, minigame);
+                    MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(displayType, loadout.getDisplayName(),
+                            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), loadout, minigame);
 
-                    mil.setAllowDelete(ld.isDeletable());
+                    mil.setAllowDelete(loadout.isDeletable());
                     mi.add(mil);
                 }
-                loadoutMenu.addItem(new MenuItemLoadoutAdd(Material.ITEM_FRAME, MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+                loadoutMenu.addItem(new MenuItemLoadoutAdd(ItemType.ITEM_FRAME, MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
                         mod.getLoadoutMap(), minigame), 53);
                 loadoutMenu.addItems(mi);
 
@@ -85,7 +85,7 @@ public class SetLoadoutCommand extends ASetCommand {
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.LOADOUT.getName()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.LOADOUT.getKey().value()));
             }
         } else {
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);

@@ -10,10 +10,10 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -90,14 +90,13 @@ public class SetStartCommand extends ASetCommand {
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getName()));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getKey().value()));
                 return false;
             }
         } else if (sender instanceof Player player) {
             int number;
-            TeamColor teamColor = null;
-            Location startLocation = player.getLocation();
-            TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+            @Nullable TeamColor teamColor = null;
+            final @Nullable TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
             if (args == null) {
                 number = 1;
             } else if (args.length == 1) {
@@ -117,7 +116,7 @@ public class SetStartCommand extends ASetCommand {
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getName()));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getKey().value()));
                         return true;
                     }
                 }
@@ -142,13 +141,13 @@ public class SetStartCommand extends ASetCommand {
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getName()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getKey().value()));
                 return true;
             }
 
             if (number > 0) {
                 if (teamColor == null) {
-                    minigame.addStartLocation(startLocation, number);
+                    minigame.addStartLocation(new SafeFullLocation(player.getLocation()), number);
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_START_ADD_SINGLE,
                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(number)));
@@ -156,7 +155,7 @@ public class SetStartCommand extends ASetCommand {
                     Team team = teamsModule.getTeam(teamColor);
 
                     if (team != null) {
-                        team.addStartLocation(startLocation, number);
+                        team.addStartLocation(new SafeFullLocation(player.getLocation()), number);
 
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_START_ADD_TEAM,
                                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()),

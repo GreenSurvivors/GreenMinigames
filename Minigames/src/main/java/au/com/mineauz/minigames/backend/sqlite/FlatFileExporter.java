@@ -2,26 +2,25 @@ package au.com.mineauz.minigames.backend.sqlite;
 
 import au.com.mineauz.minigames.backend.BackendImportCallback;
 import au.com.mineauz.minigames.backend.Notifier;
+import au.com.mineauz.minigames.config.MinigameSave;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class FlatFileExporter {
-    private final @NotNull File file;
-    private final @NotNull FileConfiguration config;
+    private final @NotNull MinigameSave save;
     private final @NotNull Notifier notifier;
     private final @NotNull BackendImportCallback callback;
-    private final @NotNull Map<@NotNull String, @NotNull Integer> minigameIds;
+    private final @NotNull Map<@NotNull String, @NotNull Integer> minigameIds = new HashMap<>();
     private SetMultimap<String, UUID> completions;
     private int nextMinigameId;
 
@@ -29,21 +28,15 @@ public class FlatFileExporter {
     private int notifyCount;
     private long notifyTime;
 
-    public FlatFileExporter(@NotNull File file, @NotNull BackendImportCallback callback, @NotNull Notifier notifier) {
-        this.file = file;
+    public FlatFileExporter(final @NotNull Path subPath, @NotNull BackendImportCallback callback, @NotNull Notifier notifier) {
         this.callback = callback;
         this.notifier = notifier;
-
-        config = new YamlConfiguration();
-        minigameIds = new HashMap<>();
+        this.save = MinigameSave.forGlobalData(subPath);
     }
 
     public boolean doExport() {
         try {
             callback.begin();
-
-            config.load(file);
-
             loadCompletions();
 
             exportPlayers();
@@ -56,21 +49,26 @@ public class FlatFileExporter {
             notifier.onComplete();
 
             return true;
-        } catch (InvalidConfigurationException | IOException e) {
+        } catch (final @NotNull IOException | IllegalArgumentException e) {
             notifier.onError(e, notifyState, notifyCount);
             return false;
         }
     }
 
-    private void loadCompletions() {
+    private void loadCompletions() throws IOException, IllegalArgumentException {
         completions = HashMultimap.create();
 
-        for (String minigame : config.getKeys(false)) {
-            List<String> rawIds = config.getStringList(minigame);
+        final @NotNull CommentedConfigurationNode root = save.getConfigRoot();
 
-            for (String rawPlayerId : rawIds) {
-                UUID playerId = UUID.fromString(rawPlayerId.replace('_', '-'));
-                completions.put(minigame, playerId);
+        for (final @NotNull Map.Entry<@NotNull Object, @NotNull CommentedConfigurationNode> entry : root.childrenMap().entrySet()) {
+            final @Nullable List<@NotNull String> rawIds = entry.getValue().getList(String.class);
+
+            if (rawIds != null) {
+                for (final @NotNull String rawPlayerId : rawIds) {
+                    final @NotNull UUID playerId = UUID.fromString(rawPlayerId.replace('_', '-'));
+                    final String minigameName = entry.getKey().toString();
+                    completions.put(minigameName, playerId);
+                }
             }
         }
     }
@@ -96,7 +94,7 @@ public class FlatFileExporter {
     private void exportMinigames() {
         notifyNext("Exporting minigames...");
 
-        for (String minigame : completions.keySet()) {
+        for (final @NotNull String minigame : completions.keySet()) {
             int id = nextMinigameId++;
             minigameIds.put(minigame, id);
 
@@ -110,7 +108,7 @@ public class FlatFileExporter {
     private void exportStats() {
         notifyNext("Exporting stats...");
 
-        for (String minigame : completions.keySet()) {
+        for (final @NotNull String minigame : completions.keySet()) {
             int id = minigameIds.get(minigame);
 
             for (UUID playerId : completions.get(minigame)) {

@@ -2,23 +2,23 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.Map;
 
 public class ResetTriggerCountAction extends AAction {
 
-    protected ResetTriggerCountAction(@NotNull String name) {
-        super(name);
+    protected ResetTriggerCountAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -49,24 +49,24 @@ public class ResetTriggerCountAction extends AAction {
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
-        for (RegionExecutor ex : region.getExecutors())
+        for (ActionExecutor ex : region.getExecutors())
             ex.setTriggerCount(0);
     }
 
     @Override
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
-        for (NodeExecutor ex : node.getExecutors()) {
+        for (ActionExecutor ex : node.getExecutors()) {
             ex.setTriggerCount(0);
         }
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override

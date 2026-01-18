@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
+import io.papermc.paper.math.FinePosition;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -29,13 +30,24 @@ public class RegionDisplayManager {
         nameDisplay = new IdentityHashMap<>();
     }
 
-    private void showInfo(@NotNull Region region, @NotNull MinigamePlayer player) {
+    private void showInfo(final @NotNull Region region, final @NotNull MinigamePlayer player) {
+        if (region.getWorld() == null) {
+            return;
+        }
+
         activeWatchers.put(region, player);
 
         ArmorStand stand = nameDisplay.get(region);
         if (stand == null) {
-            Location midPoint = region.getFirstPoint().clone().add(region.getSecondPoint()).add(1, 1, 1).multiply(0.5).subtract(0, 1.4, 0);
-            stand = region.getFirstPoint().getWorld().spawn(midPoint, ArmorStand.class);
+            final @NotNull FinePosition max = region.getMax();
+            final @NotNull FinePosition min = region.getMin();
+
+            // the +1 is offset of block coordinates. About the 1.4 Idk. magic value.
+            final double x = (min.x() + max.x() + 1) * 0.5;
+            final double y = (min.y() + max.y() + 1) * 0.5 + 1.4;
+            final double z = (min.z() + max.z() + 1) * 0.5;
+
+            stand = region.getWorld().spawn(new Location(region.getWorld(), x, y, z), ArmorStand.class);
             stand.setGravity(false);
             stand.setSmall(true);
             stand.setVisible(false);
@@ -55,9 +67,13 @@ public class RegionDisplayManager {
     private void showInfo(@NotNull Node node, @NotNull MinigamePlayer player) {
         activeWatchers.put(node, player);
 
+        if (node.getSafeLocation().getWorld() == null) {
+            return;
+        }
+
         ArmorStand stand = nameDisplay.get(node);
         if (stand == null) {
-            stand = node.getLocation().getWorld().spawn(node.getLocation().clone().subtract(0, 0.75, 0), ArmorStand.class);
+            stand = node.getSafeLocation().getWorld().spawn(node.getSafeLocation().offset(0, -0.75, 0).toLocation(), ArmorStand.class);
             stand.setGravity(false);
             stand.setSmall(true);
             stand.setVisible(false);
@@ -85,7 +101,7 @@ public class RegionDisplayManager {
     public void show(@NotNull Region region, @NotNull MinigamePlayer player) {
         Map<Region, IDisplayObject> regions = regionDisplays.computeIfAbsent(player.getPlayer(), k -> new IdentityHashMap<>());
 
-        IDisplayObject display = Minigames.getPlugin().display.displayCuboid(player.getPlayer(), region.getFirstPoint(), region.getSecondPoint().clone().add(1, 1, 1));
+        IDisplayObject display = Minigames.getPlugin().getDisplayManager().displayCuboid(player.getPlayer(), region);
         display.show();
         regions.put(region, display);
 
@@ -95,7 +111,7 @@ public class RegionDisplayManager {
     public void show(@NotNull Node node, @NotNull MinigamePlayer player) {
         Map<Node, IDisplayObject> nodes = nodeDisplays.computeIfAbsent(player.getPlayer(), k -> new IdentityHashMap<>());
 
-        IDisplayObject display = Minigames.getPlugin().display.displayPoint(player.getPlayer(), node.getLocation(), true);
+        IDisplayObject display = Minigames.getPlugin().getDisplayManager().displayPoint(player.getPlayer(), node.getSafeLocation(), true);
         display.show();
         nodes.put(node, display);
 

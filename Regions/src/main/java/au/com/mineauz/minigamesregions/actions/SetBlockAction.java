@@ -11,12 +11,14 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
@@ -24,8 +26,8 @@ public class SetBlockAction extends AAction {
     private final BlockDataFlag blockDataFlag = new BlockDataFlag("type", Material.STONE.createBlockData());
     private final BooleanFlag useBlockData = new BooleanFlag("usedur", false);//todo rename flag
 
-    protected SetBlockAction(@NotNull String name) {
-        super(name);
+    protected SetBlockAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -62,15 +64,16 @@ public class SetBlockAction extends AAction {
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
-        Location temp = region.getFirstPoint();
-        for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
-            temp.setY(y);
-            for (int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++) {
-                temp.setX(x);
-                for (int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++) {
-                    temp.setZ(z);
 
-                    BlockState bs = temp.getBlock().getState();
+        if (region.getWorld() == null) {
+            return;
+        }
+
+        for (int y = region.getFirstPoint().blockY(); y <= region.getSecondPoint().blockY(); y++) {
+            for (int x = region.getFirstPoint().blockX(); x <= region.getSecondPoint().blockX(); x++) {
+                for (int z = region.getFirstPoint().blockZ(); z <= region.getSecondPoint().blockZ(); z++) {
+
+                    final @NotNull BlockState bs = region.getWorld().getBlockAt(x, y, z).getState();
                     if (useBlockData.getFlag()) {
                         bs.setBlockData(blockDataFlag.getFlag());
                     } else {
@@ -86,7 +89,11 @@ public class SetBlockAction extends AAction {
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
                                   @NotNull Node node) {
         debug(mgPlayer, node);
-        BlockState bs = node.getLocation().getBlock().getState();
+        if (node.getSafeLocation().getBlockAt() == null) {
+            return;
+        }
+
+        BlockState bs = node.getSafeLocation().getBlockAt().getState();
         if (useBlockData.getFlag()) {
             bs.setBlockData(blockDataFlag.getFlag());
         } else {
@@ -96,17 +103,15 @@ public class SetBlockAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        blockDataFlag.saveValue(config, path);
-        useBlockData.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        blockDataFlag.saveValue(config);
+        useBlockData.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        blockDataFlag.loadValue(config, path);
-        useBlockData.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        blockDataFlag.loadValue(config);
+        useBlockData.loadValue(config);
     }
 
     @Override
@@ -114,7 +119,7 @@ public class SetBlockAction extends AAction {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(blockDataFlag.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME)));
-        menu.addItem(useBlockData.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME)));
+        menu.addItem(useBlockData.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME)));
         menu.displayMenu(mgPlayer);
         return true;
     }

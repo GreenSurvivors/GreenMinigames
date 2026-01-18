@@ -13,12 +13,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public class MoneyReward extends ARewardType {
         if (economy != null) {
             economy.depositPlayer(mgPlayer.getPlayer().getPlayer(), money);
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WIN, MgMiscLangKey.REWARD_MONEY,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), economy.format(money)));
+                Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), economy.format(money)));
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_WARNING_NOVAULT);
         }
@@ -66,13 +66,13 @@ public class MoneyReward extends ARewardType {
     }
 
     @Override
-    public void saveReward(@NotNull Configuration config, @NotNull String path) {
-        config.set(path, money);
+    public void saveReward(@NotNull CommentedConfigurationNode config) {
+        config.raw(money);
     }
 
     @Override
-    public void loadReward(@NotNull Configuration config, @NotNull String path) {
-        money = config.getDouble(path);
+    public void loadReward(@NotNull CommentedConfigurationNode config) {
+        money = config.getDouble();
     }
 
     public double getRewardMoney() {
@@ -88,7 +88,7 @@ public class MoneyReward extends ARewardType {
         private final @NotNull List<@NotNull RewardRarity> options = new ArrayList<>();
 
         public MenuItemReward(@NotNull MoneyReward reward) {
-            super(Material.PAPER, MinigameUtils.formatMoney(money));
+            super(ItemType.PAPER, MinigameUtils.formatMoney(money));
             options.addAll(Arrays.asList(RewardRarity.values()));
             this.reward = reward;
             updateDescription();
@@ -143,42 +143,42 @@ public class MoneyReward extends ARewardType {
         }
 
         @Override
-        public @Nullable ItemStack onShiftClick() {
+        public @NotNull ItemStack onShiftClick() {
             Menu m = new Menu(3, MgMenuLangKey.MENU_MONEYREWARD_MENU_NAME, getContainer().getViewer());
-            MenuItemDecimal dec = new MenuItemDecimal(Material.PAPER,
-                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MONEYREWARD_ITEM_NAME),
-                    new Callback<>() {
-                        @Override
-                        public @NotNull Double getValue() {
-                            return reward.money;
+            MenuItemDecimal dec = new MenuItemDecimal(ItemType.PAPER,
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MONEYREWARD_ITEM_NAME),
+                new Callback<>() {
+                    @Override
+                    public @NotNull Double getValue() {
+                        return reward.money;
+                    }
+
+                    @Override
+                    public void setValue(@NotNull Double value) {
+                        reward.money = value;
+
+                        ItemMeta meta = getDisplayItem().getItemMeta();
+                        Economy economy = PLUGIN.getEconomy();
+                        if (economy != null) {
+                            meta.displayName(Component.text(economy.format(value)));
+                        } else {
+                            meta.displayName(MinigameUtils.formatMoney(value));
                         }
 
-                        @Override
-                        public void setValue(@NotNull Double value) {
-                            reward.money = value;
-
-                            ItemMeta meta = getDisplayItem().getItemMeta();
-                            Economy economy = PLUGIN.getEconomy();
-                            if (economy != null) {
-                                meta.displayName(Component.text(economy.format(value)));
-                            } else {
-                                meta.displayName(MinigameUtils.formatMoney(value));
-                            }
-
-                            getDisplayItem().setItemMeta(meta);
-                        }
-                    }, 50d, 100d, 1d, null);
+                        getDisplayItem().setItemMeta(meta);
+                    }
+                }, 50d, 100d, 1d, null);
             m.addItem(dec);
             m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
             m.displayMenu(getContainer().getViewer());
-            return null;
+            return ItemStack.empty();
         }
 
         @Override
-        public @Nullable ItemStack onShiftRightClick() {
+        public @NotNull ItemStack onShiftRightClick() {
             getRewards().removeReward(reward);
             getContainer().removeItem(getSlot());
-            return null;
+            return ItemStack.empty();
         }
     }
 }

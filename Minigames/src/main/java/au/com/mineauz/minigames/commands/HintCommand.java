@@ -56,17 +56,17 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
             Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
             if (mgm != null && mgm.getMinigameTimer() != null && mgm.getType() == MinigameType.GLOBAL &&
-                    mgm.getMechanicName().equals(GameMechanics.MgMechanics.TREASUREHUNT.getMechanic().getMechanicName())) {
+                mgm.getMechanicName().equals(GameMechanics.MgMechanics.TREASUREHUNT.getMechanic().getMechanicName())) {
                 TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
                 if (thm != null && thm.hasTreasureLocation() && !thm.isTreasureFound()) {
                     thm.getHints(player);
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
                 }
             } else if (mgm == null || mgm.getType() != MinigameType.GLOBAL) {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NOTTREASUREHUNT,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
         } else {
             List<Minigame> mgs = new ArrayList<>();
@@ -78,8 +78,8 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
             if (!mgs.isEmpty()) {
                 if (mgs.size() > 1) {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_HINT_LISTHUNTS,
-                            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(),
-                                    Component.join(JoinConfiguration.commas(true), mgs.stream().map(Minigame::getDisplayName).toList())));
+                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(),
+                            Component.join(JoinConfiguration.commas(true), mgs.stream().map(Minigame::getDisplayName).toList())));
 
                 } else {
                     TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgs.getFirst());
@@ -87,7 +87,7 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
                         thm.getHints(player);
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgs.getFirst().getName()));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgs.getFirst().getName()));
                     }
                 }
             } else {

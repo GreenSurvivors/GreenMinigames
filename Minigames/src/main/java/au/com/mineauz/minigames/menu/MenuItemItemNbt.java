@@ -1,9 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
 import net.kyori.adventure.text.Component;
-import org.apache.commons.text.WordUtils;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,13 +33,13 @@ public class MenuItemItemNbt extends MenuItem {
      **/
     private final @NotNull Callback<ItemStack> itemCallback;
 
-    public MenuItemItemNbt(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<ItemStack> c) {
-        super(displayMat, name);
+    public MenuItemItemNbt(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<ItemStack> c) {
+        super(displayType, name);
         itemCallback = c;
     }
 
-    public MenuItemItemNbt(@Nullable Material displayMat, @Nullable Component name, List<Component> description, @NotNull Callback<ItemStack> c) {
-        super(displayMat, name, description);
+    public MenuItemItemNbt(@Nullable ItemType displayType, @Nullable Component name, List<Component> description, @NotNull Callback<ItemStack> c) {
+        super(displayType, name, description);
         itemCallback = c;
     }
 
@@ -52,7 +51,7 @@ public class MenuItemItemNbt extends MenuItem {
     }
 
     @Override
-    public ItemStack onClickWithItem(@NotNull ItemStack item) {
+    public @NotNull ItemStack onClickWithItem(@NotNull ItemStack item) {
         // better make a copy, we don't know what happens with the item later
         itemCallback.setValue(item.clone());
 
@@ -69,11 +68,11 @@ public class MenuItemItemNbt extends MenuItem {
     }
 
     @Override
-    public ItemStack onShiftRightClick() {
+    public @NotNull ItemStack onShiftRightClick() {
         // note: this was done so display item and value do NOT share the same reference.
         // the display item gets changed by MenuItem!
-        setDisplayItem(new ItemStack(Material.STONE));
-        itemCallback.setValue(new ItemStack(Material.STONE));
+        setDisplayItem(ItemType.STONE.createItemStack());
+        itemCallback.setValue(ItemType.STONE.createItemStack());
         return super.onShiftRightClick();
     }
 
@@ -83,25 +82,25 @@ public class MenuItemItemNbt extends MenuItem {
 
     public void processNewName(@NotNull Component newName) {
         ItemStack oldData = itemCallback.getValue();
-        setDescriptionPart(DESCRIPTION_TOKEN, createDescription(oldData.getType(), newName, oldData.lore()));
+        setDescriptionPart(DESCRIPTION_TOKEN, createDescription(oldData.getType().asItemType(), newName, oldData.lore()));
     }
 
     public void processNewLore(@Nullable List<@NotNull Component> newLore) {
         ItemStack oldData = itemCallback.getValue();
-        setDescriptionPart(DESCRIPTION_TOKEN, createDescription(oldData.getType(), oldData.displayName(), newLore));
+        setDescriptionPart(DESCRIPTION_TOKEN, createDescription(oldData.getType().asItemType(), oldData.displayName(), newLore));
     }
 
     private @NotNull List<@NotNull Component> createDescription(@NotNull ItemStack itemStack) {
         ItemMeta meta = itemStack.getItemMeta();
-        return createDescription(itemStack.getType(), meta.displayName(), meta.lore());
+        return createDescription(itemStack.getType().asItemType(), meta.displayName(), meta.lore());
     }
 
-    private @NotNull List<@NotNull Component> createDescription(@NotNull Material type, @Nullable Component displayName, @Nullable List<@NotNull Component> lore) {
+    private @NotNull List<@NotNull Component> createDescription(@NotNull ItemType type, @Nullable Component displayName, @Nullable List<@NotNull Component> lore) {
         List<Component> result = new ArrayList<>();
         if (displayName != null) {
             result.add(Component.text("Name: ").append(displayName));
         }
-        result.add(Component.text("Material: " + WordUtils.capitalizeFully(type.name())));
+        result.add(Component.text("Item type: ").append(Component.translatable(type.translationKey())));
 
         if (lore != null) {
             result.add(Component.text("lore: "));

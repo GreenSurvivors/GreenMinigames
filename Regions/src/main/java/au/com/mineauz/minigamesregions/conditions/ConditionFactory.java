@@ -8,7 +8,8 @@ public interface ConditionFactory {
 
     @NotNull String getName();
 
-    default @Deprecated(forRemoval = true) @Nullable String getOldName() { // data fixer upper
+    @Deprecated(forRemoval = true)
+    default  @Nullable String getOldName() { // datafixerupper
         return null;
     }
 }

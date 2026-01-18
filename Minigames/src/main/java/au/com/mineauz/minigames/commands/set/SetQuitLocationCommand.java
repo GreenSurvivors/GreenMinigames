@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
@@ -45,7 +46,7 @@ public class SetQuitLocationCommand extends ASetCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String @Nullable [] args) {
         if (sender instanceof Entity entity) {
-            minigame.setQuitLocation(entity.getLocation());
+            minigame.setQuitLocation(new SafeFullLocation(entity.getLocation()));
             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_QUIT_SUCCESS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {

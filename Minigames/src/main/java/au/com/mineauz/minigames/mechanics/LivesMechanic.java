@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 
-public class LivesMechanic extends GameMechanicBase {
+public class LivesMechanic extends AGameMechanic {
 
     protected LivesMechanic() {
     }
@@ -39,7 +39,7 @@ public class LivesMechanic extends GameMechanicBase {
         }
 
         if (caller == null) {
-            Minigames.getCmpnntLogger().warn("The Minigame \"" + minigame.getName() + "\" must have more than 0 lives to use this type");
+            Minigames.getPlugin().getComponentLogger().warn("The Minigame \"" + minigame.getName() + "\" must have more than 0 lives to use this type");
         } else {
             MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_LIVES_ERROR_NOLIVES);
         }

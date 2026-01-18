@@ -3,10 +3,12 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemEnum;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.Scalars;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
@@ -14,36 +16,28 @@ public class EnumFlag<T extends Enum<T>> extends AFlag<T> {
     private final @NotNull Class<T> enumClass;
 
     @SuppressWarnings("unchecked")
-    public EnumFlag(@NotNull String name, @NotNull T value) {
-        super(name, value);
-        enumClass = (Class<T>) value.getClass();
+    public EnumFlag(@NotNull String name, @NotNull T defaultVal) {
+        super(name, defaultVal);
+        enumClass = (Class<T>) defaultVal.getClass();
     }
 
     @Override
-    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+    public void saveValue(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.removeChild(getName());
+
         if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
-            config.set(path + config.options().pathSeparator() + getName(), getFlag().name());
-        } else {
-            config.set(path + config.options().pathSeparator() + getName(), null);
+            config.node(getName()).set(getFlag());
         }
     }
 
     @Override
-    public void loadValue(@NotNull Configuration config, @NotNull String path) {
-        String configStr = config.getString(path + config.options().pathSeparator() + getName());
-        boolean notFound = true;
+    public void loadValue(final @NotNull CommentedConfigurationNode config) {
+        final @Nullable T loadedValue = (T) Scalars.ENUM.tryDeserialize(config.node(getName()).rawScalar());
 
-        // case-insensitive loading
-        for (T value : enumClass.getEnumConstants()) {
-            if (value.name().equalsIgnoreCase(configStr)) {
-                notFound = false;
-                setFlag(value);
-                break;
-            }
-        }
-
-        if (notFound) {
+        if (loadedValue == null) {
             setFlag(getDefaultFlag());
+        } else {
+            setFlag(loadedValue);
         }
     }
 
@@ -51,9 +45,9 @@ public class EnumFlag<T extends Enum<T>> extends AFlag<T> {
      * @param description will get ignored
      */
     @Override
-    public @NotNull MenuItemEnum<T> getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                       @Nullable List<@NotNull Component> description) {
-        return new MenuItemEnum<>(displayMat, name, new Callback<>() {
+    public @NotNull MenuItemEnum<T> getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
+                                                @Nullable List<@NotNull Component> description) {
+        return new MenuItemEnum<>(displayType, name, new Callback<>() {
 
             @Override
             public T getValue() {

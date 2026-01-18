@@ -35,7 +35,7 @@ public class Main extends JavaPlugin {
         for (Minigame mg : minigames.getMinigameManager().getAllMinigames().values()) {
             mg.saveMinigame();
         }
-        minigames.getMinigameManager().removeModule(RegionModule.getFactory().getName());
+        minigames.getMinigameManager().removeModule(RegionModule.getFactory().getKey());
 
         ToolModes.removeToolMode("REGION");
         ToolModes.removeToolMode("NODE");
@@ -78,7 +78,7 @@ public class Main extends JavaPlugin {
         } catch (Exception e) {
             plugin = null;
             minigames = null;
-            Minigames.getCmpnntLogger().error("Failed to enable Minigames Regions " + getPluginMeta().getVersion() + ": ", e);
+            getComponentLogger().error("Failed to enable Minigames Regions " + getPluginMeta().getVersion() + ": ", e);
             Bukkit.getPluginManager().disablePlugin(this);
         }
     }

@@ -9,15 +9,20 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -31,8 +36,8 @@ public class TakeItemAction extends AAction { // todo make material match option
     private final BooleanFlag matchEnchantments = new BooleanFlag("matchEnchantments", false);
     private final BooleanFlag matchExact = new BooleanFlag("matchExact", false);
 
-    protected TakeItemAction(@NotNull String name) {
-        super(name);
+    protected TakeItemAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -153,31 +158,33 @@ public class TakeItemAction extends AAction { // todo make material match option
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         //datafixerupper
-        char configSeparator = config.options().pathSeparator();
-        if (config.contains(path + configSeparator + "type")) {
-            config.set(path + configSeparator + "type", null);
-        }
-        itemToSearchFor.saveValue(config, path);
-        count.saveValue(config, path);
+        config.removeChild("type");
+
+        itemToSearchFor.saveValue(config);
+        count.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         // datafixerupper
-        char configSeparator = config.options().pathSeparator();
-        if (config.contains(path + configSeparator + "type")) {
-            Material legacy = Material.matchMaterial(config.getString(path + configSeparator + "type", ""));
+        if (config.hasChild("type")) {
+            @Nullable ItemType legacy = null;
+            final @Nullable Key itemKey = NamespacedKey.fromString(config.node("type").getString("").toLowerCase(Locale.ROOT));
+
+            if (itemKey != null) {
+                legacy = Registry.ITEM.get(itemKey);
+            }
             if (legacy != null) {
-                itemToSearchFor.setFlag(new ItemStack(legacy));
+                itemToSearchFor.setFlag(legacy.createItemStack());
             } else {
-                itemToSearchFor.loadValue(config, path);
+                itemToSearchFor.loadValue(config);
             }
         } else {
-            itemToSearchFor.loadValue(config, path);
+            itemToSearchFor.loadValue(config);
         }
-        count.loadValue(config, path);
+        count.loadValue(config);
     }
 
     @Override
@@ -216,12 +223,12 @@ public class TakeItemAction extends AAction { // todo make material match option
         });
 
         menu.addItem(itemMenuItem);
-        menu.addItem(count.getMenuItem(Material.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 999));
+        menu.addItem(count.getMenuItem(ItemType.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 999));
 
         menu.addItem(new MenuItemNewLine());
 
-        menu.addItem(matchName.getMenuItem(Material.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_NAME_NAME)));
-        final MenuItemString nameMenuItem = new MenuItemString(Material.NAME_TAG,
+        menu.addItem(matchName.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_NAME_NAME)));
+        final MenuItemString nameMenuItem = new MenuItemString(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TAKEITEM_NAME_DESCRIPTION), new Callback<>() {
             private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();
@@ -242,8 +249,8 @@ public class TakeItemAction extends AAction { // todo make material match option
         futureNameItem.complete(nameMenuItem);
         menu.addItem(nameMenuItem);
 
-        menu.addItem(matchLore.getMenuItem(Material.BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_LORE_NAME)));
-        final MenuItemString loreMenuItem = new MenuItemString(Material.BOOK,
+        menu.addItem(matchLore.getMenuItem(ItemType.BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_LORE_NAME)));
+        final MenuItemString loreMenuItem = new MenuItemString(ItemType.BOOK,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TAKEITEM_LORE_DESCRIPTION), new Callback<>() {
             private @Nullable String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
@@ -271,9 +278,9 @@ public class TakeItemAction extends AAction { // todo make material match option
         futureLoreItem.complete(loreMenuItem);
         menu.addItem(loreMenuItem);
 
-        menu.addItem(matchEnchantments.getMenuItem(Material.ENCHANTED_BOOK,
+        menu.addItem(matchEnchantments.getMenuItem(ItemType.ENCHANTED_BOOK,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_ENCHANTMENTS_NAME)));
-        menu.addItem(matchExact.getMenuItem(Material.BOOKSHELF,
+        menu.addItem(matchExact.getMenuItem(ItemType.BOOKSHELF,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_EXACT_NAME))); //todo with callback to turn the others on/off
 
         menu.displayMenu(mgPlayer);

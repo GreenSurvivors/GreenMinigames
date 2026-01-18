@@ -3,48 +3,49 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemDecimal;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
 public class FloatFlag extends AFlag<Float> {
 
-    public FloatFlag(@NotNull String name, float value) {
-        super(name, value);
+    public FloatFlag(final @NotNull String name, final Float defaultVal) {
+        super(name, defaultVal);
     }
 
     @Override
-    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+    public void saveValue(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.removeChild(getName());
+
         if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
-            config.set(path + config.options().pathSeparator() + getName(), getFlag().doubleValue());
-        } else {
-            config.set(path + config.options().pathSeparator() + getName(), null);
+            config.node(getName()).set(getFlag());
         }
     }
 
     @Override
-    public void loadValue(@NotNull Configuration config, @NotNull String path) {
-        setFlag(((Double) config.getDouble(path + config.options().pathSeparator() + getName(), getDefaultFlag())).floatValue());
+    public void loadValue(final @NotNull CommentedConfigurationNode config) {
+        setFlag(config.node(getName()).getFloat(getDefaultFlag()));
     }
 
     @Override
-    public @NotNull MenuItemDecimal getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                       @Nullable List<@NotNull Component> description) {
-        return this.getMenuItem(displayMat, name, description, 1d, 1d, 0d, Double.POSITIVE_INFINITY);
+    public @NotNull MenuItemDecimal getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
+                                                @Nullable List<@NotNull Component> description) {
+        return this.getMenuItem(displayType, name, description, 1d, 1d, 0d, Double.POSITIVE_INFINITY);
     }
 
-    public @NotNull MenuItemDecimal getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                       double lowerinc, double upperinc, @Nullable Double min, @Nullable Double max) {
-        return this.getMenuItem(displayMat, name, null, lowerinc, upperinc, min, max);
+    public @NotNull MenuItemDecimal getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
+                                                double lowerinc, double upperinc, @Nullable Double min, @Nullable Double max) {
+        return this.getMenuItem(displayType, name, null, lowerinc, upperinc, min, max);
     }
 
-    public @NotNull MenuItemDecimal getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                       @Nullable List<@NotNull Component> description,
-                                       double lowerinc, double upperinc, @Nullable Double min, @Nullable Double max) {
-        return new MenuItemDecimal(displayMat, name, description, new Callback<>() {
+    public @NotNull MenuItemDecimal getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
+                                                @Nullable List<@NotNull Component> description,
+                                                double lowerinc, double upperinc, @Nullable Double min, @Nullable Double max) {
+        return new MenuItemDecimal(displayType, name, description, new Callback<>() {
 
             @Override
             public @NotNull Double getValue() {

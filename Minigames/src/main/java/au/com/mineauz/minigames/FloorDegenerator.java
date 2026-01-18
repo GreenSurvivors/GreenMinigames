@@ -2,28 +2,32 @@ package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
+import au.com.mineauz.minigames.objects.safelocation.SafeBlockLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.block.BlockType;
+import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
+@SuppressWarnings({"LoggingSimilarMessage", // it's fine. we don't need to know the code line to know the world was unloaded...
+    "UnstableApiUsage"}) // shutup Position!
 public class FloorDegenerator {
     private static final Minigames plugin = Minigames.getPlugin();
-    private final @NotNull Location topCorner;
-    private final @NotNull Location bottomCorner;
-    private final @NotNull Location xSideNeg1;
-    private final @NotNull Location xSidePos1;
-    private final @NotNull Location zSideNeg1;
-    private final @NotNull Location zSidePos1;
-    private final @NotNull Location xSideNeg2;
-    private final @NotNull Location xSidePos2;
-    private final @NotNull Location zSideNeg2;
-    private final @NotNull Location zSidePos2;
+    private final @NotNull SafeBlockLocation topCorner;
+    private final @NotNull SafeBlockLocation bottomCorner;
+    private @NotNull SafeBlockLocation xSideNeg1;
+    private @NotNull SafeBlockLocation xSidePos1;
+    private @NotNull SafeBlockLocation zSideNeg1;
+    private @NotNull SafeBlockLocation zSidePos1;
+    private @NotNull SafeBlockLocation xSideNeg2;
+    private @NotNull SafeBlockLocation xSidePos2;
+    private @NotNull SafeBlockLocation zSideNeg2;
+    private @NotNull SafeBlockLocation zSidePos2;
     private final @NotNull Minigame mgm;
-    private long timeDelay;
+    private final long timeDelay;
     private int taskID = -1;
 
     private int radiusModifier = 0;
@@ -32,17 +36,17 @@ public class FloorDegenerator {
         timeDelay = mgm.getFloorDegenTime();
         this.mgm = mgm;
 
-        topCorner = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMaxZ());
-        bottomCorner = new Location(region.getWorld(), region.getMinX(), region.getMaxY(), region.getMinZ());
+        topCorner = new SafeBlockLocation(region.getWorldName(), region.getMax());
+        bottomCorner = new SafeBlockLocation(region.getWorldName(), region.getMin());
 
-        xSideNeg1 = new Location(region.getWorld(), region.getMinX(), region.getMinY(), region.getMinZ());
-        xSideNeg2 = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMinZ());
-        zSideNeg1 = new Location(region.getWorld(), region.getMinX(), region.getMinY(), region.getMinZ());
-        zSideNeg2 = new Location(region.getWorld(), region.getMinX(), region.getMaxY(), region.getMaxZ());
-        xSidePos1 = new Location(region.getWorld(), region.getMinX(), region.getMinY(), region.getMaxZ());
-        xSidePos2 = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMaxZ());
-        zSidePos1 = new Location(region.getWorld(), region.getMaxX(), region.getMinY(), region.getMinZ());
-        zSidePos2 = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMaxZ());
+        xSideNeg1 = new SafeBlockLocation(region.getWorldName(), region.getMin());
+        xSideNeg2 = new SafeBlockLocation(region.getWorldName(), NumberConversions.floor(region.getMaxX()), NumberConversions.floor(region.getMaxY()), NumberConversions.floor(region.getMinZ()));
+        zSideNeg1 = new SafeBlockLocation(region.getWorldName(), NumberConversions.floor(region.getMinX()), NumberConversions.floor(region.getMinY()), NumberConversions.floor(region.getMinZ()));
+        zSideNeg2 = new SafeBlockLocation(region.getWorldName(), NumberConversions.floor(region.getMinX()), NumberConversions.floor(region.getMaxY()), NumberConversions.floor(region.getMaxZ()));
+        xSidePos1 = new SafeBlockLocation(region.getWorldName(), NumberConversions.floor(region.getMinX()), NumberConversions.floor(region.getMinY()), NumberConversions.floor(region.getMaxZ()));
+        xSidePos2 = new SafeBlockLocation(region.getWorldName(), NumberConversions.floor(region.getMaxX()), NumberConversions.floor(region.getMaxY()), NumberConversions.floor(region.getMaxZ()));
+        zSidePos1 = new SafeBlockLocation(region.getWorldName(), NumberConversions.floor(region.getMaxX()), NumberConversions.floor(region.getMinY()), NumberConversions.floor(region.getMinZ()));
+        zSidePos2 = new SafeBlockLocation(region.getWorldName(), region.getMax());
     }
 
     public void startDegeneration() {
@@ -54,7 +58,7 @@ public class FloorDegenerator {
                     degenerateSide(zSideNeg1, zSideNeg2);
                     degenerateSide(zSidePos1, zSidePos2);
                     incrementSide();
-                    if (xSideNeg1.getZ() >= xSidePos1.getZ() || zSideNeg1.getX() >= zSidePos1.getX()) {
+                    if (xSideNeg1.z() >= xSidePos1.z() || zSideNeg1.x() >= zSidePos1.x()) {
                         stopDegenerator();
                     }
                 }
@@ -65,30 +69,36 @@ public class FloorDegenerator {
     }
 
     private void incrementSide() {
-        xSideNeg1.setZ(xSideNeg1.getZ() + 1);
-        xSideNeg2.setZ(xSideNeg2.getZ() + 1);
-        xSidePos1.setZ(xSidePos1.getZ() - 1);
-        xSidePos2.setZ(xSidePos2.getZ() - 1);
-        zSideNeg1.setX(zSideNeg1.getX() + 1);
-        zSideNeg2.setX(zSideNeg2.getX() + 1);
-        zSidePos1.setX(zSidePos1.getX() - 1);
-        zSidePos2.setX(zSidePos2.getX() - 1);
+        xSideNeg1 = xSideNeg1.offset(0, 0, xSideNeg1.blockZ() + 1);
+        xSideNeg2 = xSideNeg2.offset(0, 0, xSideNeg2.blockZ() + 1);
+        xSidePos1 = xSidePos1.offset(0, 0, xSidePos1.blockZ() - 1);
+        xSidePos2 = xSidePos2.offset(0, 0, xSidePos2.blockZ() - 1);
+        zSideNeg1 = zSideNeg1.offset(zSideNeg1.blockX() + 1, 0, 0);
+        zSideNeg2 = zSideNeg2.offset(zSideNeg2.blockX() + 1, 0, 0);
+        zSidePos1 = zSidePos1.offset(zSidePos1.blockX() - 1, 0, 0);
+        zSidePos2 = zSidePos2.offset(zSidePos2.blockX() - 1, 0, 0);
     }
 
-    private void degenerateSide(@NotNull Location loc1, @NotNull Location loc2) {
-        Location curblock = loc1.clone();
-        int x = curblock.getBlockX();
-        int z = curblock.getBlockZ();
+    private void degenerateSide(final @NotNull SafeBlockLocation loc1, final @NotNull SafeBlockLocation loc2) {
+        if (loc1.getWorld() == null) {
+            plugin.getComponentLogger().error("Couldn't degenenerate block for minigame " + mgm.getName() + " in world " + loc1.getWorldName() + ", because the world wasn't loaded! Stopping degen process.");
+            stopDegenerator();
+            return;
+        }
+
+        final @NotNull Location curblock = loc1.toLocation();
+        final int x = curblock.getBlockX();
+        final int z = curblock.getBlockZ();
         int y = curblock.getBlockY();
         do {
             curblock.setZ(z);
             curblock.setX(x);
             curblock.setY(y);
-            for (int i = loc1.getBlockX(); i <= loc2.getBlockX() + 1; i++) {
-                for (int k = loc1.getBlockZ(); k <= loc2.getBlockZ() + 1; k++) {
-                    if (curblock.getBlock().getType() != Material.AIR) {
+            for (int i = loc1.blockX(); i <= loc2.blockX() + 1; i++) {
+                for (int k = loc1.blockZ(); k <= loc2.blockZ() + 1; k++) {
+                    if (curblock.getBlock().getType().isAir()) {
                         mgm.getRecorderData().addBlock(curblock.getBlock(), null);
-                        curblock.getBlock().setType(Material.AIR);
+                        curblock.getBlock().setBlockData(BlockType.AIR.createBlockData());
                     }
                     curblock.setZ(k);
                 }
@@ -96,24 +106,30 @@ public class FloorDegenerator {
                 curblock.setZ(z);
             }
             y++;
-        } while (y <= loc2.getBlockY());
+        } while (y <= loc2.blockZ());
     }
 
-    private void degenerateRandom(@NotNull Location lowest, @NotNull Location highest, int chance) {
-        Location curblock = lowest.clone();
-        int x = curblock.getBlockX();
-        int z = curblock.getBlockZ();
+    private void degenerateRandom(final @NotNull SafeBlockLocation lowest, final @NotNull SafeBlockLocation highest, final int chance) {
+        if (lowest.getWorld() == null) {
+            plugin.getComponentLogger().error("Couldn't degenenerate block for minigame " + mgm.getName() + " in world " + lowest.getWorldName() + ", because the world wasn't loaded! Stopping degen process.");
+            stopDegenerator();
+            return;
+        }
+
+        final @NotNull Location curblock = lowest.toLocation();
+        final int x = curblock.getBlockX();
+        final int z = curblock.getBlockZ();
         int y = curblock.getBlockY();
-        Random random = new Random();
+        final @NotNull Random random = new Random();
         do {
             curblock.setZ(z);
             curblock.setX(x);
             curblock.setY(y);
-            for (int i = lowest.getBlockX(); i <= highest.getBlockX() + 1; i++) {
-                for (int k = lowest.getBlockZ(); k <= highest.getBlockZ() + 1; k++) {
-                    if (curblock.getBlock().getType() != Material.AIR && random.nextInt(100) < chance) {
+            for (int i = lowest.blockX(); i <= highest.blockX() + 1; i++) {
+                for (int k = lowest.blockZ(); k <= highest.blockZ() + 1; k++) {
+                    if (curblock.getBlock().getType().isAir() && random.nextInt(100) < chance) {
                         mgm.getRecorderData().addBlock(curblock.getBlock(), null);
-                        curblock.getBlock().setType(Material.AIR);
+                        curblock.getBlock().setBlockData(BlockType.AIR.createBlockData());
                     }
                     curblock.setZ(k);
                 }
@@ -121,29 +137,35 @@ public class FloorDegenerator {
                 curblock.setZ(z);
             }
             y++;
-        } while (y <= highest.getBlockY());
+        } while (y <= highest.blockY());
     }
 
-    private void degenerateCircle(@NotNull Location lowest, @NotNull Location highest) {
-        int middledist = (int) Math.abs(Math.floor((double) (highest.getBlockX() - lowest.getBlockX()) / 2));
-        int radius = middledist - radiusModifier;
-        Location centerBlock = lowest.clone();
+    private void degenerateCircle(final @NotNull SafeBlockLocation lowest, final @NotNull SafeBlockLocation highest) {
+        if (lowest.getWorld() == null) {
+            plugin.getComponentLogger().error("Couldn't degenenerate block for minigame " + mgm.getName() + " in world " + lowest.getWorldName() + ", because the world wasn't loaded! Stopping degen process.");
+            stopDegenerator();
+            return;
+        }
+
+        final int middledist = (int) Math.abs(Math.floor((double) (highest.blockX() - lowest.blockX()) / 2));
+        final int radius = middledist - radiusModifier;
+        Location centerBlock = lowest.toLocation();
         centerBlock.setX(centerBlock.getX() + middledist);
         centerBlock.setZ(centerBlock.getZ() + middledist);
         Location curBlock = centerBlock.clone();
 
-        int size = (int) Math.pow(radius, 3) + 8;
+        final int size = (int) Math.pow(radius, 3) + 8;
 
         for (int i = 0; i < size; i++) {
-            double cirPoint = 2 * Math.PI * i / size;
-            double cx = centerBlock.getX() - 0.5 + Math.round(radius * Math.cos(cirPoint));
-            double cz = centerBlock.getZ() - 0.5 + Math.round(radius * Math.sin(cirPoint));
+            final double cirPoint = 2 * Math.PI * i / size;
+            final double cx = centerBlock.getX() - 0.5 + Math.round(radius * Math.cos(cirPoint));
+            final double cz = centerBlock.getZ() - 0.5 + Math.round(radius * Math.sin(cirPoint));
             curBlock.setX(cx);
             curBlock.setZ(cz);
-            for (int k = lowest.getBlockY(); k <= highest.getBlockY(); k++) {
+            for (int k = lowest.blockY(); k <= highest.blockY(); k++) {
                 curBlock.setY(k);
                 mgm.getRecorderData().addBlock(curBlock.getBlock(), null);
-                curBlock.getBlock().setType(Material.AIR);
+                curBlock.getBlock().setBlockData(BlockType.AIR.createBlockData());
             }
         }
 
@@ -165,8 +187,8 @@ public class FloorDegenerator {
         RANDOM,
         CIRCLE;
 
-        public static @Nullable DegeneratorType matchType(@NotNull String str) {
-            for (DegeneratorType value : DegeneratorType.values()) {
+        public static @Nullable DegeneratorType matchType(final @NotNull String str) {
+            for (final @NotNull DegeneratorType value : DegeneratorType.values()) {
                 if (value.name().equalsIgnoreCase(str)) {
                     return value;
                 }

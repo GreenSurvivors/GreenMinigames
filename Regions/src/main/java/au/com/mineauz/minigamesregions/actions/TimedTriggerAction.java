@@ -18,13 +18,15 @@ import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -49,8 +51,8 @@ public class TimedTriggerAction extends AAction implements Listener {
      */
     private static final @NotNull Map<@NotNull Minigame, @NotNull Collection<BukkitTask>> globalTasks = new HashMap<>();
 
-    protected TimedTriggerAction(@NotNull String name) {
-        super(name);
+    protected TimedTriggerAction(final @NotNull NamespacedKey key) {
+        super(key);
 
         Bukkit.getPluginManager().registerEvents(this, Main.getPlugin());
     }
@@ -123,26 +125,26 @@ public class TimedTriggerAction extends AAction implements Listener {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        toTrigger.saveValue(config, path);
-        isRegion.saveValue(config, path);
-        delay.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        toTrigger.saveValue(config);
+        isRegion.saveValue(config);
+        delay.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        toTrigger.loadValue(config, path);
-        isRegion.loadValue(config, path);
-        delay.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        toTrigger.loadValue(config);
+        isRegion.loadValue(config);
+        delay.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(toTrigger.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME)));
-        m.addItem(isRegion.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME)));
-        m.addItem(delay.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME), 0L, null));
+        m.addItem(toTrigger.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME)));
+        m.addItem(isRegion.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME)));
+        m.addItem(delay.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME), 0L, null));
         m.displayMenu(mgPlayer);
         return true;
     }

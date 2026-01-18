@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.config.LoadoutFlag;
+import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
@@ -12,25 +13,37 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import io.leangen.geantyref.TypeFactory;
+import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class LoadoutModule extends MinigameModule {
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("-?[0-9]+");
     private static final @NotNull Map<@NotNull Key, @NotNull ILoadoutAddonFactory> registeredAddons = new HashMap<>();
     private static final @NotNull Map<String, @NotNull PlayerLoadout> globalLoadouts = new HashMap<>();
 
     private final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts = new HashMap<>();
 
-    public LoadoutModule(@NotNull Minigame mgm, @NotNull String name) {
-        super(mgm, name);
+    public LoadoutModule(final @NotNull Minigame mgm, final @NotNull Key key) {
+        super(mgm, key);
         PlayerLoadout defaultLoadout = new PlayerLoadout("default");
         registeredAddons.values().forEach(defaultLoadout::registerAddon);
         defaultLoadout.setDeletable(false);
@@ -38,7 +51,7 @@ public class LoadoutModule extends MinigameModule {
     }
 
     public static @Nullable LoadoutModule getMinigameModule(@NotNull Minigame mgm) {
-        return ((LoadoutModule) mgm.getModule(MgModules.LOADOUT.getName()));
+        return ((LoadoutModule) mgm.getModule(MgModules.LOADOUT.getKey()));
     }
 
     /**
@@ -95,7 +108,7 @@ public class LoadoutModule extends MinigameModule {
         return registeredAddons.get(addonKey);
     }
 
-    public static @NotNull Collection<@NotNull ILoadoutAddonFactory> getAllAddonFactories(){
+    public static @NotNull Collection<@NotNull ILoadoutAddonFactory> getAllAddonFactories() {
         return registeredAddons.values();
     }
 
@@ -105,42 +118,126 @@ public class LoadoutModule extends MinigameModule {
     }
 
     @Override
-    public void save(final @NotNull FileConfiguration config, final @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         LoadoutFlag loadoutFlag;
         for (Map.Entry<String, PlayerLoadout> loadoutEntry : loadouts.entrySet()) {
             loadoutFlag = new LoadoutFlag(loadoutEntry.getKey(), loadoutEntry.getValue());
-            loadoutFlag.saveValue(config, path + configSeparator + "loadouts");
+            loadoutFlag.saveValue(config.node("loadouts"));
         }
     }
 
     @Override
-    public void load(final @NotNull FileConfiguration config, final @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
-        final ConfigurationSection configSection = config.getConfigurationSection(path + configSeparator + "loadouts");
-        if (configSection != null) {
+    public void load(final @NotNull CommentedConfigurationNode config) throws ConfigurateException {
+        final @NotNull CommentedConfigurationNode loadOutsNode = config.node("loadouts");
+        if (!loadOutsNode.virtual() && !loadOutsNode.isNull()) {
             LoadoutFlag loadoutFlag;
 
-            for (String loadout : configSection.getKeys(false)) {
-                loadoutFlag = new LoadoutFlag(loadout, new PlayerLoadout(loadout));
-                if (loadout.equals("default")) {
+            for (final @NotNull CommentedConfigurationNode loadoutNode : loadOutsNode.childrenList()) {
+                final @NotNull String loadoutName = loadoutNode.key().toString();
+                loadoutFlag = new LoadoutFlag(loadoutName, new PlayerLoadout(loadoutName));
+                if (loadoutName.equals("default")) {
                     loadoutFlag.getFlag().setDeletable(false);
                 }
-                loadoutFlag.loadValue(config, path + configSeparator + getName().toLowerCase());
+                loadoutFlag.loadValue(loadoutNode);
                 loadouts.put(loadoutFlag.getName(), loadoutFlag.getFlag());
             }
         }
 
-        if (config.contains(path + configSeparator + configSeparator + "loadout")) {
-            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + path + configSeparator + "loadout");
+        if (config.hasChild("loadout")) {
+            Minigames.getPlugin().getLogger().warning(config.path() + " contains unsupported configurations: \"loadout\"");
         }
-        if (config.contains(path + configSeparator + "extraloadouts")) {
-            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + path + configSeparator + "extraloadouts");
+        if (config.hasChild("extraloadouts")) {
+            Minigames.getPlugin().getLogger().warning(config.path() + " contains unsupported configurations: \"extraloadouts\"");
         }
     }
 
-    public static void addGlobalLoadout(final @NotNull String name) {
-        globalLoadouts.put(name, new PlayerLoadout(name));
+    public static void setupGlobalLoadOuts(final @NotNull Minigames plugin) {
+        final @NotNull MinigameSave globalLoadoutsSSave = MinigameSave.forGlobalData(Path.of("globalLoadouts"));
+        final @NotNull ConfigurationNode configRoot;
+        try {
+            configRoot = globalLoadoutsSSave.getConfigRoot();
+        } catch (final @NotNull ConfigurateException e) {
+            plugin.getComponentLogger().error("Couldn't load global loadouts!", e);
+            return;
+        }
+
+        globalLoadouts.clear();
+
+        for (final @NotNull ConfigurationNode loadoutNode : configRoot.childrenList()) {
+            final @NotNull String loadoutName = loadoutNode.key().toString();
+            final @NotNull PlayerLoadout loadout = new PlayerLoadout(loadoutName);
+
+            for (final @NotNull ConfigurationNode loadoutEntryNode : loadoutNode.childrenList()) {
+                final @NotNull String loadoutEntryKey = loadoutEntryNode.key().toString();
+                if (NUMBER_PATTERN.matcher(loadoutEntryKey).matches()) {
+                    if (loadoutEntryNode.isMap()) {
+                        // datafixerupper
+                        try {
+                            loadout.addItem(
+                                ItemStack.deserialize((Map<String, Object>) loadoutEntryNode.get(TypeFactory.parameterizedClass(Map.class, String.class, Object.class))),
+                                Integer.parseInt(loadoutEntryKey));
+                        } catch (final @NotNull SerializationException e) {
+                            plugin.getComponentLogger().error("Couldn't load global loadout " + loadoutEntryNode.path() + " ignoring.", e);
+                        }
+                    } else {
+                        try {
+                            loadout.addItem(
+                                ItemStack.deserializeBytes(loadoutEntryNode.get(TypeToken.get(byte[].class))),
+                                Integer.parseInt(loadoutEntryKey));
+                        } catch (final @NotNull SerializationException e) {
+                            plugin.getComponentLogger().error("Couldn't load global loadout " + loadoutEntryNode.path() + " ignoring.", e);
+                        }
+                    }
+                } else if (loadoutEntryKey.equals("potions")) {
+                    for (final @NotNull ConfigurationNode potionEntryNode : loadoutNode.childrenList()) {
+                        final @Nullable PotionEffectType type = Registry.EFFECT.get(NamespacedKey.fromString(potionEntryNode.key().toString().toLowerCase(Locale.ROOT))); // todo what if null
+                        final @NotNull PotionEffect effect = new PotionEffect(type,
+                            potionEntryNode.node("dur").getInt(),
+                            potionEntryNode.node("amp").getInt());
+
+                        loadout.addPotionEffect(effect);
+                    }
+                } else if (loadoutEntryKey.equals("usepermissions")) {
+                    loadout.setUsePermissions(loadoutEntryNode.getBoolean(false));
+                }
+            }
+
+            addGlobalLoadout(loadout);
+        }
+    }
+
+    public static void saveGlobalLoadouts() throws IOException {
+        final @NotNull MinigameSave globalLoadouts = MinigameSave.forGlobalData(Path.of("globalLoadouts"));
+        final @NotNull ConfigurationNode rootNode = globalLoadouts.getConfigRoot();
+        if (LoadoutModule.hasGlobalLoadouts()) {
+            for (final PlayerLoadout loadout : LoadoutModule.getGlobalLoadouts()) {
+                final @NotNull ConfigurationNode loadoutNode = rootNode.node(loadout.getName());
+
+                for (final int slot : loadout.getItemSlots()) {
+                    loadoutNode.node(slot).set(loadout.getItem(slot).serializeAsBytes()); // todo datafixerupper
+                }
+
+                loadoutNode.removeChild("potions");
+
+                for (final PotionEffect eff : loadout.getAllPotionEffects()) {
+                    final @NotNull ConfigurationNode effectNode = loadoutNode.node("potions", eff.getType().getKey().getKey());
+                    effectNode.node("amp").set(eff.getAmplifier());
+                    effectNode.node("dur").set(eff.getDuration());
+                }
+                if (loadout.usesPermissions()) {
+                    loadoutNode.node("usepermissions").set(true);
+                } else {
+                    loadoutNode.removeChild("usepermissions");
+                }
+            }
+        } else {
+            rootNode.set(null);
+        }
+        globalLoadouts.saveConfig();
+    }
+
+    public static void addGlobalLoadout(final @NotNull PlayerLoadout loadout) {
+        globalLoadouts.put(loadout.getName(), loadout);
     }
 
     public static void deleteGlobalLoadout(final @NotNull String name) {
@@ -222,37 +319,38 @@ public class LoadoutModule extends MinigameModule {
     }
 
     public void displaySelectionMenu(final @NotNull MinigamePlayer mgPlayer, final boolean equip) {
-        Menu m = new Menu(6, MgMenuLangKey.MENU_LOADOUT_SELECT_NAME, mgPlayer);
+        Menu menu = new Menu(6, MgMenuLangKey.MENU_LOADOUT_SELECT_NAME, mgPlayer);
 
         for (final PlayerLoadout loadout : loadouts.values()) {
             if (loadout.isDisplayedInMenu()) {
-                if (!loadout.getUsePermissions() || mgPlayer.getPlayer().hasPermission("minigame.loadout." + loadout.getName().toLowerCase())) {
+                if (!loadout.usesPermissions() || mgPlayer.getPlayer().hasPermission("minigame.loadout." + loadout.getName().toLowerCase())) {
                     if (mgPlayer.isInMinigame() && !mgPlayer.getMinigame().isTeamGame() || loadout.getTeamColor() == null ||
-                            mgPlayer.getTeam().getColor() == loadout.getTeamColor()) {
-                        MenuItemCustom c = new MenuItemCustom(Material.GLASS, loadout.getDisplayName());
+                        mgPlayer.getTeam().getColor() == loadout.getTeamColor()) {
+
+                        final @NotNull MenuItemCustom loadoutItem = new MenuItemCustom(ItemType.GLASS, loadout.getDisplayName());
                         if (!loadout.getItemSlots().isEmpty()) {
                             ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItemSlots()).getFirst());
-                            c.setDisplayItem(item);
+                            loadoutItem.setDisplayItem(item);
                         }
-                        c.setClick(() -> {
+                        loadoutItem.setClick(() -> {
                             mgPlayer.setLoadout(loadout);
                             mgPlayer.getPlayer().closeInventory();
                             if (!equip) {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
-                                        Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
+                                    Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
                             } else {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_EQUIPPED,
-                                        Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
+                                    Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
                                 loadout.equipLoadout(mgPlayer);
                             }
-                            return null;
+                            return ItemStack.empty();
                         });
-                        m.addItem(c);
+                        menu.addItem(loadoutItem);
                     }
                 }
             }
         }
-        m.displayMenu(mgPlayer);
+        menu.displayMenu(mgPlayer);
     }
 
     @Override

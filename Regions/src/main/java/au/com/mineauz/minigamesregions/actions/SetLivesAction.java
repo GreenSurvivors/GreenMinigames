@@ -9,10 +9,12 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
@@ -23,8 +25,8 @@ import java.util.Map;
 public class SetLivesAction extends AAction { //todo unused!
     private final IntegerFlag amount = new IntegerFlag("amount", 1);
 
-    protected SetLivesAction(@NotNull String name) {
-        super(name);
+    protected SetLivesAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -73,20 +75,20 @@ public class SetLivesAction extends AAction { //todo unused!
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        amount.saveValue(config, path);
+    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        amount.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        amount.loadValue(config, path);
+    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+        amount.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) { // todo description that a player can't have more lives than the minigame (minigame#getLives()) can support
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(amount.getMenuItem(Material.TOTEM_OF_UNDYING, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETLIVES_NAME), 0, null));
+        menu.addItem(amount.getMenuItem(ItemType.TOTEM_OF_UNDYING, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETLIVES_NAME), 0, null));
         menu.displayMenu(mgPlayer);
 
         return true;

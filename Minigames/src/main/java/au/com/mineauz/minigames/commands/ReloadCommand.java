@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -9,9 +8,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,31 +41,20 @@ public class ReloadCommand extends ACommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull String @NotNull [] args) {
+                             @NotNull String @NotNull [] args) { // todo just abstract the process of enabling the plugin
         for (Player p : PLUGIN.getServer().getOnlinePlayers()) {
             if (PLUGIN.getPlayerManager().getMinigamePlayer(p).isInMinigame()) {
                 PLUGIN.getPlayerManager().quitMinigame(PLUGIN.getPlayerManager().getMinigamePlayer(p), true);
             }
         }
 
-        Minigames.getPlugin().getMinigameManager().getAllMinigames().clear();
+        PLUGIN.getMinigameManager().getAllMinigames().clear();
 
-        try {
-            PLUGIN.getConfig().load(PLUGIN.getDataFolder() + File.separator + "config.yml");
-        } catch (FileNotFoundException ex) {
-            PLUGIN.getLogger().info("Failed to load config, creating one.");
-            try {
-                PLUGIN.getConfig().save(PLUGIN.getDataFolder() + File.separator + "config.yml");
-            } catch (IOException e) {
-                Minigames.getCmpnntLogger().error("Could not save config.yml!", e);
-            }
-        } catch (Exception e) {
-            Minigames.getCmpnntLogger().error("Failed to load config!", e);
-        }
+        PLUGIN.saveDefaultConfig();
 
         List<String> mgs = new ArrayList<>();
-        if (Minigames.getPlugin().getConfig().contains("minigames")) {
-            mgs = Minigames.getPlugin().getConfig().getStringList("minigames");
+        if (PLUGIN.getConfig().contains("minigames")) {
+            mgs = PLUGIN.getConfig().getStringList("minigames");
         }
         final List<String> allMGS = new ArrayList<>(mgs);
 
@@ -77,7 +62,7 @@ public class ReloadCommand extends ACommand {
             for (String mgm : allMGS) {
                 Minigame game = new Minigame(mgm);
                 game.loadMinigame();
-                Minigames.getPlugin().getMinigameManager().addMinigame(game);
+                PLUGIN.getMinigameManager().addMinigame(game);
             }
         }
 

@@ -1,28 +1,35 @@
 package au.com.mineauz.minigames.display;
 
+import io.papermc.paper.math.Position;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
+import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("UnstableApiUsage") // shut up position
 public class DisplayPoint extends AbstractDisplayObject implements INonPersistentDisplay, IDisplayObject {
-    private static final Location temp = new Location(null, 0, 0, 0);
-
-    private final @NotNull Vector position;
+    private final @NotNull Position position;
     private final boolean showDirection;
     private final float yaw;
     private final float pitch;
 
-    public DisplayPoint(@NotNull DisplayManager manager, @NotNull Player player, @NotNull Vector position, float yaw, float pitch, boolean showDirection) {
-        this(manager, player.getWorld(), position, yaw, pitch, showDirection);
-        this.player = player;
+    public DisplayPoint(final @NotNull DisplayManager manager, final @NotNull World world,
+                        final @NotNull Position position,
+                        final float yaw, final float pitch, final boolean showDirection) {
+        super(manager, world);
+        this.position = position;
+        this.showDirection = showDirection;
+        this.yaw = yaw;
+        this.pitch = pitch;
     }
 
-    public DisplayPoint(@NotNull DisplayManager manager, @NotNull World world, @NotNull Vector position, float yaw, float pitch, boolean showDirection) {
-        super(manager, world);
 
+    public DisplayPoint(final @NotNull DisplayManager manager, final @NotNull Player player,
+                        final @NotNull Position position,
+                        final float yaw, final float pitch, final boolean showDirection) {
+        super(manager, player);
         this.position = position;
         this.showDirection = showDirection;
         this.yaw = yaw;
@@ -48,38 +55,46 @@ public class DisplayPoint extends AbstractDisplayObject implements INonPersisten
 
         double dist = 0.25;
 
-        placeEffect(position.getX() - dist, position.getY() - dist, position.getZ() - dist, Particle.FLAME);
-        placeEffect(position.getX() + dist, position.getY() - dist, position.getZ() - dist, Particle.FLAME);
-        placeEffect(position.getX() - dist, position.getY() + dist, position.getZ() - dist, Particle.FLAME);
-        placeEffect(position.getX() + dist, position.getY() + dist, position.getZ() - dist, Particle.FLAME);
-        placeEffect(position.getX() - dist, position.getY() - dist, position.getZ() + dist, Particle.FLAME);
-        placeEffect(position.getX() + dist, position.getY() - dist, position.getZ() + dist, Particle.FLAME);
-        placeEffect(position.getX() - dist, position.getY() + dist, position.getZ() + dist, Particle.FLAME);
-        placeEffect(position.getX() + dist, position.getY() + dist, position.getZ() + dist, Particle.FLAME);
+        placeEffect(position.x() - dist, position.y() - dist, position.z() - dist);
+        placeEffect(position.x() + dist, position.y() - dist, position.z() - dist);
+        placeEffect(position.x() - dist, position.y() + dist, position.z() - dist);
+        placeEffect(position.x() + dist, position.y() + dist, position.z() - dist);
+        placeEffect(position.x() - dist, position.y() - dist, position.z() + dist);
+        placeEffect(position.x() + dist, position.y() - dist, position.z() + dist);
+        placeEffect(position.x() - dist, position.y() + dist, position.z() + dist);
+        placeEffect(position.x() + dist, position.y() + dist, position.z() + dist);
 
         if (showDirection) {
-            temp.setYaw(yaw);
-            temp.setPitch(pitch);
-            Vector start = position.clone();
-            Vector dir = temp.getDirection().normalize();
+            double xz = Math.cos(Math.toRadians(pitch));
+
+            double x = -xz * Math.sin(Math.toRadians(yaw));
+            double y = -Math.sin(Math.toRadians(pitch));
+            double z = xz * Math.cos(Math.toRadians(yaw));
+
+            double length = Math.sqrt(NumberConversions.square(x) + NumberConversions.square(y) + NumberConversions.square(z));
+
+            x /= length;
+            y /= length;
+            z /= length;
 
             for (double p = 0; p <= 1; p += 0.25) {
-                Vector point = start.clone().add(dir.clone().multiply(p));
-                placeEffect(point.getX(), point.getY(), point.getZ(), Particle.FLAME);
+                Position point = position.offset(x * p, y * p, z * p);
+                placeEffect(point.x(), point.y(), point.z());
             }
         }
     }
 
-    private void placeEffect(double x, double y, double z, @NotNull Particle effect) {
-        temp.setWorld(getWorld());
-        temp.setX(x);
-        temp.setY(y);
-        temp.setZ(z);
+    private void placeEffect(final double x, final double y, final double z) {
+        if (getWorld() != null) {
+            final @NotNull Location temp = new Location(getWorld(), x, y, z);
 
-        if (player != null) {
-            player.getWorld().spawnParticle(effect, temp, 1, 0, 0, 0);
+            if (player != null) {
+                player.spawnParticle(Particle.FLAME, temp, 1);
+            } else {
+                getWorld().spawnParticle(Particle.FLAME, temp, 1);
+            }
         } else {
-            getWorld().spawnParticle(effect, temp, 1, 0, 0, 0);
+            remove();
         }
     }
 }

@@ -17,14 +17,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.storage.TagValueInput;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntitySnapshot;
 import org.bukkit.craftbukkit.entity.CraftEntityType;
@@ -32,11 +30,17 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntitySnapshot;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Zombie;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SpawnEntityAction extends AAction {
     private static final @NotNull NamespacedKey MINIGAME_ENTITY_KEY = new NamespacedKey(Main.getPlugin(), "minigame");
@@ -46,13 +50,8 @@ public class SpawnEntityAction extends AAction {
         return Bukkit.getWorlds().getFirst().createEntity(new Location(Bukkit.getWorlds().getFirst(), 0, 0, 0), Zombie.class).createSnapshot();
     }
 
-    protected SpawnEntityAction(@NotNull String name) {
-        super(name);
-    }
-
-    @Override
-    public @NotNull String getName() {
-        return "SPAWN_ENTITY";
+    protected SpawnEntityAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -84,7 +83,7 @@ public class SpawnEntityAction extends AAction {
                 ccc = switch (var10000) {
                     case DataResult.Success<net.minecraft.network.chat.Component> success -> success.value();
                     case DataResult.Error<net.minecraft.network.chat.Component> error -> {
-                        new ProblemReporter.ScopedCollector(Minigames.getCmpnntLogger()).report(new TagValueInput.DecodeFromFieldFailedProblem("CustomName", tag, error));
+                        new ProblemReporter.ScopedCollector(Minigames.getPlugin().getComponentLogger()).report(new TagValueInput.DecodeFromFieldFailedProblem("CustomName", tag, error));
                         yield error.partialValue().get();
                     }
                 };
@@ -122,22 +121,24 @@ public class SpawnEntityAction extends AAction {
         }
         debug(mgPlayer, node);
 
-        Entity entity = entitySnapshotFlag.getFlagOrDefault().createEntity(node.getLocation());
+        if (node.getSafeLocation().getWorld() == null) {
+            return;
+        }
+
+        Entity entity = entitySnapshotFlag.getFlagOrDefault().createEntity(node.getSafeLocation().toLocation());
         entity.getPersistentDataContainer().set(MINIGAME_ENTITY_KEY, PersistentDataType.STRING, node.getMinigame().getName()); //todo use in recorder to despawn + add parameter for specific Minigame
 
         mgPlayer.getMinigame().getRecorderData().addEntity(entity, mgPlayer, EntityData.ChangeType.CREATED);
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        entitySnapshotFlag.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        entitySnapshotFlag.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        entitySnapshotFlag.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        entitySnapshotFlag.loadValue(config);
     }
 
     @Override
@@ -145,7 +146,7 @@ public class SpawnEntityAction extends AAction {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        final MenuItem entitySelector = entitySnapshotFlag.getMenuItem(Material.SPAWNER, RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_SELECT_NAME));
+        final MenuItem entitySelector = entitySnapshotFlag.getMenuItem(ItemType.SPAWNER, RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_SELECT_NAME));
         entitySelector.update();
 
         final EntityType[] entityTypes = EntityType.values();
@@ -155,7 +156,7 @@ public class SpawnEntityAction extends AAction {
                 options.add(type);
             }
         }
-        menu.addItem(new MenuItemList<>(Material.SKELETON_SKULL, RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME), new Callback<>() {
+        menu.addItem(new MenuItemList<>(ItemType.SKELETON_SKULL, RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME), new Callback<>() {
             @Override
             public EntityType getValue() {
                 return entitySnapshotFlag.getFlagOrDefault().getEntityType();
@@ -166,7 +167,7 @@ public class SpawnEntityAction extends AAction {
                 final @NotNull CompoundTag nbt = ((CraftEntitySnapshot) entitySnapshotFlag.getFlagOrDefault()).getData();
 
                 net.minecraft.world.entity.EntityType<?> entitytypes = CraftEntityType.bukkitToMinecraft(value);
-                ResourceLocation minecraftkey = net.minecraft.world.entity.EntityType.getKey(entitytypes);
+                Identifier minecraftkey = net.minecraft.world.entity.EntityType.getKey(entitytypes);
                 String StringID = entitytypes.canSerialize() && minecraftkey != null ? minecraftkey.toString() : null;
 
                 if (StringID != null) {

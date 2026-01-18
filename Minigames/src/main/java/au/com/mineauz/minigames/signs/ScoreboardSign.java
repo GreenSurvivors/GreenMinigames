@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.safelocation.SafeBlockLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -42,11 +43,11 @@ public class ScoreboardSign extends AMinigameSign {
     }
 
     @Override
-    public boolean signCreate(@NotNull SignChangeEvent event) {
+    public boolean signCreate(final @NotNull SignChangeEvent event) {
         if (event.getBlock().getState().getBlockData() instanceof WallSign signData) {
             // Parse minigame
-            Sign signState = (Sign) event.getBlock().getState();
-            Minigame minigame = getMinigame(signState, event.line(2));
+            final @NotNull Sign signState = (Sign) event.getBlock().getState();
+            final @Nullable Minigame minigame = getMinigame(signState, event.line(2));
 
             if (minigame != null) {
                 // Parse size
@@ -54,7 +55,7 @@ public class ScoreboardSign extends AMinigameSign {
                 final int height;
 
                 if (event.line(3) != null) {
-                    final String line3 = PlainTextComponentSerializer.plainText().serialize(event.line(3));
+                    final @NotNull String line3 = PlainTextComponentSerializer.plainText().serialize(event.line(3));
 
                     if (!line3.isEmpty()) {
                         if (SIZE_PATTERN.matcher(line3).matches()) {
@@ -66,12 +67,12 @@ public class ScoreboardSign extends AMinigameSign {
                             return false;
                         }
                     } else {
-                        width = ScoreboardDisplay.defaultWidth;
-                        height = ScoreboardDisplay.defaultHeight;
+                        width = ScoreboardDisplay.DEFAULT_WIDTH;
+                        height = ScoreboardDisplay.DEFAULT_HEIGHT;
                     }
                 } else {
-                    width = ScoreboardDisplay.defaultWidth;
-                    height = ScoreboardDisplay.defaultHeight;
+                    width = ScoreboardDisplay.DEFAULT_WIDTH;
+                    height = ScoreboardDisplay.DEFAULT_HEIGHT;
                 }
 
                 // So we don't have to deal with even size scoreboards
@@ -80,11 +81,11 @@ public class ScoreboardSign extends AMinigameSign {
                     return false;
                 }
 
-                BlockFace facing = signData.getFacing();
+                final @NotNull BlockFace facing = signData.getFacing();
 
                 // Add our display
-                ScoreboardDisplay display = new ScoreboardDisplay(minigame, width, height,
-                        event.getBlock().getLocation(), facing);
+                final @NotNull ScoreboardDisplay display = new ScoreboardDisplay(minigame, width, height,
+                    new SafeBlockLocation(event.getBlock().getLocation()), facing);
                 display.placeSigns(signData.getMaterial());
 
                 minigame.getScoreboardData().addDisplay(display);
@@ -108,13 +109,13 @@ public class ScoreboardSign extends AMinigameSign {
     }
 
     @Override
-    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
+    public boolean signUse(final @NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
         Minigame minigame = getMinigame(sign);
         if (minigame == null) {
             return false;
         }
 
-        ScoreboardDisplay display = minigame.getScoreboardData().getDisplay(sign.getBlock());
+        ScoreboardDisplay display = minigame.getScoreboardData().getDisplay(sign);
         if (display == null) {
             return false;
         }

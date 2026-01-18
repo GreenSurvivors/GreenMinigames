@@ -7,18 +7,19 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,8 +30,8 @@ public class TriggerRandomAction extends AAction {
     private final IntegerFlag timesTriggered = new IntegerFlag("timesTriggered", 1);
     private final BooleanFlag allowSameTrigger = new BooleanFlag("randomPerTrigger", false); // todo datafixerupper rename
 
-    protected TriggerRandomAction(@NotNull String name) {
-        super(name);
+    protected TriggerRandomAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -64,8 +65,8 @@ public class TriggerRandomAction extends AAction {
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
-        List<RegionExecutor> exs = new ArrayList<>();
-        for (RegionExecutor ex : region.getExecutors()) {
+        List<ActionExecutor> exs = new ArrayList<>();
+        for (ActionExecutor ex : region.getExecutors()) {
             if (ex.getTrigger() == MgRegTrigger.RANDOM) {
                 exs.add(ex);
             }
@@ -96,8 +97,8 @@ public class TriggerRandomAction extends AAction {
     @Override
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) { //todo regions and nodes need another interface, so this can be one methode.
         debug(mgPlayer, node);
-        List<NodeExecutor> exs = new ArrayList<>();
-        for (NodeExecutor ex : node.getExecutors()) {
+        List<ActionExecutor> exs = new ArrayList<>();
+        for (ActionExecutor ex : node.getExecutors()) {
             if (ex.getTrigger() == MgRegTrigger.RANDOM) {
                 exs.add(ex);
             }
@@ -126,23 +127,23 @@ public class TriggerRandomAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        timesTriggered.saveValue(config, path);
-        allowSameTrigger.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        timesTriggered.saveValue(config);
+        allowSameTrigger.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        timesTriggered.loadValue(config, path);
-        allowSameTrigger.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        timesTriggered.loadValue(config);
+        allowSameTrigger.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(timesTriggered.getMenuItem(Material.COMMAND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_TIMES_NAME), 1, null));
-        m.addItem(allowSameTrigger.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_NAME),
+        m.addItem(timesTriggered.getMenuItem(ItemType.COMMAND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_TIMES_NAME), 1, null));
+        m.addItem(allowSameTrigger.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_DESCRIPTION)));
         m.displayMenu(mgPlayer);
         return true;

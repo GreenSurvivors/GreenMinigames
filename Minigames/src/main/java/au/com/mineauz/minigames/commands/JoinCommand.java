@@ -51,7 +51,7 @@ public class JoinCommand extends ACommand {
                 if (!PLUGIN.getPlayerManager().getMinigamePlayer(player).isInMinigame()) {
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JOIN_JOINING,
-                            Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()));
+                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()));
                     PLUGIN.getPlayerManager().joinMinigame(mgm, PLUGIN.getPlayerManager().getMinigamePlayer(player), false, 0.0);
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_JOIN_ERROR_ALREADYPLAYING);
@@ -60,7 +60,7 @@ public class JoinCommand extends ACommand {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
             return true;
         }
@@ -73,9 +73,9 @@ public class JoinCommand extends ACommand {
         if (args.length == 1 && sender instanceof Player) {
             // filter all minigames by permission
             List<String> mgs = PLUGIN.getMinigameManager().getAllMinigames().values().stream().
-                    filter(mgm -> (!mgm.getUsePermissions() ||
-                            sender.hasPermission("minigame.join." + mgm.getName().toLowerCase()))).
-                    map(Minigame::getName).toList();
+                filter(mgm -> (!mgm.getUsePermissions() ||
+                    sender.hasPermission("minigame.join." + mgm.getName().toLowerCase()))).
+                map(Minigame::getName).toList();
 
             return CommandDispatcher.tabCompleteMatch(mgs, args[args.length - 1]);
         }

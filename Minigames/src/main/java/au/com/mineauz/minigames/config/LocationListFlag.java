@@ -1,63 +1,49 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.objects.safelocation.ASafeLocation;
+import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-public class LocationListFlag extends AFlag<List<Location>> {
+public class LocationListFlag<T extends @NotNull ASafeLocation> extends AFlag<List<T>> {// todo replace with GENERIC<T> list flag AFlag<List<AFlag<T>>>
+    protected final @NotNull TypeToken<T> typeToken;
 
-    public LocationListFlag(@NotNull String name, List<Location> value) { // todo replace with GENERIC<T> list flag AFlag<List<AFlag<T>>>
-        super(name, value, new ArrayList<>()); // default flag - saving tests if the flag is equal to their default
+    public LocationListFlag(@NotNull String name, List<T> value, @NotNull Class<T> clazz) {
+        super(name, new ArrayList<>(), value); // default flag - saving tests if the flag is equal to their default
+        typeToken = TypeToken.get(clazz);
     }
 
     @Override
-    public void saveValue(@NotNull Configuration config, @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
+    public void saveValue(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.removeChild(getName());
 
-        if (!getFlag().isEmpty()) {
-            LocationFlag locf;
-            for (int i = 0; i < getFlag().size(); i++) {
-                locf = new LocationFlag(getName() + configSeparator + i, null);
-                locf.setFlag(getFlag().get(i));
-                locf.saveValue(config, path);
-            }
-        } else {
-            config.set(path + configSeparator + getName(), null);
+        if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
+            config.node(getName()).setList(typeToken, getFlag());
         }
     }
 
     @Override
-    public void loadValue(@NotNull Configuration config, @NotNull String path) {
-        List<Location> locs = new ArrayList<>();
-        char configSeparator = config.options().pathSeparator();
-        Set<String> ids = config.getConfigurationSection(path + configSeparator + getName()).getKeys(false);
-        LocationFlag locf;
-
-        for (int i = 0; i < ids.size(); i++) {
-            locf = new LocationFlag(getName() + configSeparator + i, null);
-            locf.loadValue(config, path);
-            locs.add(locf.getFlag());
-        }
-        setFlag(locs);
+    public void loadValue(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        setFlag(config.node(getName()).getList(typeToken, getDefaultFlag()));
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
-        return getMenuItem(displayMat, name, null);
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
+        return getMenuItem(displayType, name, null);
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
                                          @Nullable List<@NotNull Component> description) {
         return null; // todo
     }

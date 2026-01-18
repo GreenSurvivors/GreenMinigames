@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
-import au.com.mineauz.minigames.mechanics.GameMechanicBase;
+import au.com.mineauz.minigames.mechanics.AGameMechanic;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
@@ -52,7 +52,7 @@ public class SetGameMechanicCommand extends ASetCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String @Nullable [] args) {
         if (args != null) {
-            GameMechanicBase gameMechanicBase = GameMechanics.matchGameMechanic(args[0]);
+            AGameMechanic gameMechanicBase = GameMechanics.matchGameMechanic(args[0]);
 
             if (gameMechanicBase != null) {
                 minigame.setMechanic(gameMechanicBase);
@@ -73,7 +73,7 @@ public class SetGameMechanicCommand extends ASetCommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return CommandDispatcher.tabCompleteMatch(GameMechanics.getGameMechanics().stream().map(GameMechanicBase::getMechanicName).toList(), args[0]);
+            return CommandDispatcher.tabCompleteMatch(GameMechanics.getGameMechanics().stream().map(AGameMechanic::getMechanicName).toList(), args[0]);
         }
         return null;
     }

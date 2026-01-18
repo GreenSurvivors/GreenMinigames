@@ -29,14 +29,18 @@ public class ScoreRewardScheme extends HierarchyRewardScheme<Integer> {
     }
 
     @Override
-    protected @NotNull Integer loadKey(@NotNull String key) throws NumberFormatException {
-        return Integer.valueOf(key);
+    protected @NotNull Integer loadKey(final @NotNull Object key) {
+        if (key instanceof Number number) {
+            return number.intValue();
+        }
+
+        return Integer.valueOf(key.toString());
     }
 
     @Override
     protected @NotNull Component getMenuItemDescName(@NotNull Integer value) {
         return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SCORE_DESCRIPTION,
-                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(value)));
+            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(value)));
     }
 
     @Override

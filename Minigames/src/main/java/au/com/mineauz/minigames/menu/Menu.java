@@ -7,16 +7,13 @@ import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
+import java.time.Duration;
+import java.util.*;
 
 public class Menu {
     private final int rows;
@@ -76,13 +73,14 @@ public class Menu {
 
     public void addItem(@NotNull MenuItem item) {
         int inc = 0;
-        Menu menu = this;
+        @NotNull Menu menu = this;
         int maxItems = 9 * (rows - 1);
 
         while (true) {
             if (inc >= maxItems) {
-                if (menu.getNextPage() == null)
+                if (menu.getNextPage() == null) {
                     menu.addPage();
+                }
 
                 menu = menu.getNextPage();
                 inc = 0;
@@ -127,10 +125,10 @@ public class Menu {
 
     protected void addPage() {
         Menu nextPage = new Menu(rows, name, viewer);
-        addItem(new MenuItemPage(MenuUtility.getBackMaterial(), MgMenuLangKey.MENU_PAGE_NEXT, nextPage), 9 * (rows - 1) + 5);
+        addItem(new MenuItemPage(MenuUtility.getBackType(), MgMenuLangKey.MENU_PAGE_NEXT, nextPage), 9 * (rows - 1) + 5);
         setNextPage(nextPage);
         nextPage.setPreviousPage(this);
-        nextPage.addItem(new MenuItemPage(MenuUtility.getBackMaterial(), MgMenuLangKey.MENU_PAGE_PREVIOUS, this), 9 * (rows - 1) + 3);
+        nextPage.addItem(new MenuItemPage(MenuUtility.getBackType(), MgMenuLangKey.MENU_PAGE_PREVIOUS, this), 9 * (rows - 1) + 3);
         for (int j = 9 * (rows - 1) + 6; j < 9 * rows; j++) {
             if (getMenuItem(j) != null)
                 nextPage.addItem(getMenuItem(j), j);
@@ -172,16 +170,14 @@ public class Menu {
     }
 
     public void displayMenu(final @NotNull MinigamePlayer mgPlayer) {
-        Menu t = this;
-        Player player = mgPlayer.getPlayer();
         updateAll();
         populateMenu();
-        inv = Bukkit.createInventory(player, rows * 9, name);
+        inv = Bukkit.createInventory(mgPlayer.getPlayer(), rows * 9, name);
         inv.setContents(pageView);
         // Some calls of displayMenu are async, which is not allowed.
         Minigames.getPlugin().getServer().getScheduler().runTask(Minigames.getPlugin(), () -> {
             mgPlayer.getPlayer().openInventory(inv);
-            mgPlayer.setMenu(t);
+            mgPlayer.setMenu(this);
         });
     }
 
@@ -209,7 +205,7 @@ public class Menu {
         return nextPage;
     }
 
-    public void setNextPage(@Nullable Menu page) {
+    public void setNextPage(final @Nullable Menu page) {
         nextPage = page;
     }
 
@@ -233,12 +229,12 @@ public class Menu {
         return viewer;
     }
 
-    public void startReopenTimer(int time) {
+    public void startReopenTimer(final @NotNull Duration time) {
         reopenTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
             viewer.setNoClose(false);
             viewer.setManualEntry(null);
             displayMenu(viewer);
-        }, time * 20L);
+        }, time.toSeconds() * 20L);
     }
 
     public void cancelReopenTimer() {
@@ -249,19 +245,27 @@ public class Menu {
         }
     }
 
-    public ItemStack @NotNull [] getInventory() {
-        ItemStack[] inv = new ItemStack[getSize()];
+    public @NotNull ItemStack @NotNull [] getInventory() {
+        final @NotNull ItemStack @NotNull [] result = new ItemStack[getSize()];
+        Arrays.fill(result, ItemStack.empty());
 
-        for (int i = 0; i < this.inv.getContents().length; i++) {
+        for (int i = 0; i < inv.getContents().length; i++) {
             if (!pageMap.containsKey(i)) {
-                inv[i] = this.inv.getContents()[i];
+                final @Nullable ItemStack itemStack = inv.getContents()[i];
+
+                if (itemStack != null) {
+                    result[i] = itemStack;
+                }
             }
         }
 
-        return inv;
+        return result;
     }
 
     public @NotNull Set<@NotNull Integer> getUsedSlots() {
         return pageMap.keySet();
+    }
+
+    public record AddMenuItemResult (@NotNull Menu menuPage, int slot) {
     }
 }

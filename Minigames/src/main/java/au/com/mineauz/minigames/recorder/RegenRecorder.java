@@ -91,7 +91,8 @@ public class RegenRecorder implements Listener {
 
                 for (Block bl : blocks) {
                     if ((recorderData.getWhitelistMode() && recorderData.getWBBlocks().contains(bl.getType())) ||
-                            (!recorderData.getWhitelistMode() && !recorderData.getWBBlocks().contains(bl.getType()))) {
+                        (!recorderData.getWhitelistMode() && !recorderData.getWBBlocks().contains(bl.getType()))) {
+
                         recorderData.addBlock(bl, null);
                     } else {
                         // don't allow exploding blocks that anre not on

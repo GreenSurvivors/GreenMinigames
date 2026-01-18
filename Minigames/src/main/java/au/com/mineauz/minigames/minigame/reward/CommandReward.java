@@ -12,12 +12,13 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -57,13 +58,13 @@ public class CommandReward extends ARewardType {
     }
 
     @Override
-    public void saveReward(@NotNull Configuration config, @NotNull String path) {
-        config.set(path, command);
+    public void saveReward(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.set(command);
     }
 
     @Override
-    public void loadReward(@NotNull Configuration config, @NotNull String path) {
-        command = config.getString(path);
+    public void loadReward(@NotNull CommentedConfigurationNode config) {
+        command = config.getString();
     }
 
     private class CommandRewardItem extends MenuItem implements StringConsumer {
@@ -71,7 +72,7 @@ public class CommandReward extends ARewardType {
         private final CommandReward reward;
 
         public CommandRewardItem(CommandReward reward) {
-            super(Material.COMMAND_BLOCK, Component.text("/" + command));
+            super(ItemType.COMMAND_BLOCK, Component.text("/" + command));
 
             this.reward = reward;
             updateDescription();
@@ -137,26 +138,26 @@ public class CommandReward extends ARewardType {
         }
 
         @Override
-        public @Nullable ItemStack onShiftRightClick() {
+        public @NotNull ItemStack onShiftRightClick() {
             getRewards().removeReward(reward);
             getContainer().removeItem(getSlot());
-            return null;
+            return ItemStack.empty();
         }
 
         @Override
-        public @Nullable ItemStack onShiftClick() {
+        public @NotNull ItemStack onShiftClick() {
             MinigamePlayer mgPlayer = getContainer().getViewer();
             mgPlayer.setNoClose(true);
             mgPlayer.getPlayer().closeInventory();
-            final int reopenSeconds = 40;
+            final @NotNull Duration reopenTime = Duration.ofSeconds(40);
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
-                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
-                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
             mgPlayer.setManualEntry(this);
-            getContainer().startReopenTimer(reopenSeconds);
+            getContainer().startReopenTimer(reopenTime);
 
-            return null;
+            return ItemStack.empty();
         }
 
         @Override

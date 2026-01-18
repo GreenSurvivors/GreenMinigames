@@ -4,20 +4,24 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.bstats.charts.CustomChart;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
-public abstract class MinigameModule {
+public abstract class MinigameModule implements Keyed {
     private static @Nullable ComparableVersion minRequired = null;
-    protected final @NotNull String name;
+    protected final @NotNull Key moduleKey;
     private final @NotNull Minigame mgm;
 
-    protected MinigameModule(@NotNull Minigame mgm, @NotNull String name) {
+    protected MinigameModule(final @NotNull Minigame mgm, final @NotNull Key moduleKey) {
         this.mgm = mgm;
-        this.name = name;
+        this.moduleKey = moduleKey;
     }
 
     public static void setVersion(@Nullable ComparableVersion version) {
@@ -31,7 +35,7 @@ public abstract class MinigameModule {
      * @return true if the version exceeds your version
      */
     public static boolean checkVersion() {
-        return minRequired == null || !(minRequired.compareTo(Minigames.getVERSION()) > 0);
+        return minRequired == null || !(minRequired.compareTo(Minigames.getPlugin().getVersion()) > 0);
     }
 
     public static void addMetricChart(CustomChart chart) {
@@ -42,8 +46,9 @@ public abstract class MinigameModule {
         return minRequired;
     }
 
-    public @NotNull String getName() {
-        return name;
+    @Override
+    public @NotNull Key key() {
+        return moduleKey;
     }
 
     public @NotNull Minigame getMinigame() {
@@ -52,13 +57,13 @@ public abstract class MinigameModule {
 
     public abstract boolean useSeparateConfig();
 
-    public abstract void save(@NotNull FileConfiguration config, @NotNull String path);
+    public abstract void save(final @NotNull CommentedConfigurationNode config) throws SerializationException;
 
-    public abstract void load(@NotNull FileConfiguration config, @NotNull String path);
+    public abstract void load(final @NotNull CommentedConfigurationNode config) throws ConfigurateException;
 
-    public abstract void addEditMenuOptions(@NotNull Menu menu);
+    public abstract void addEditMenuOptions(final @NotNull Menu menu);
 
-    public abstract boolean displayMechanicSettings(@NotNull Menu previous);
+    public abstract boolean displayMechanicSettings(final @NotNull Menu previous);
 
     /**
      * You should override this method if the module should provide more placeholders for a game it services.

@@ -4,8 +4,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,14 +14,14 @@ import java.util.List;
 public class MenuItemToolMode extends MenuItem {
     private final @NotNull ToolMode mode;
 
-    public MenuItemToolMode(@Nullable Material displayMat, @Nullable Component name, @NotNull ToolMode mode) {
-        super(displayMat, name);
+    public MenuItemToolMode(@Nullable ItemType displayType, @Nullable Component name, @NotNull ToolMode mode) {
+        super(displayType, name);
         this.mode = mode;
     }
 
-    public MenuItemToolMode(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemToolMode(@Nullable ItemType displayType, @Nullable Component name,
                             @Nullable List<@NotNull Component> description, @NotNull ToolMode mode) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.mode = mode;
     }
 

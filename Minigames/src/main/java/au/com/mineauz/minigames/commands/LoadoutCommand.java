@@ -55,18 +55,18 @@ public class LoadoutCommand extends ACommand {
                             mgPlayer.setLoadout(module.getLoadout(loadoutName));
 
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
                         } else {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_ERROR_NOLOADOUT,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
                         }
                     } else {
                         module.displaySelectionMenu(mgPlayer, false);
                     }
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
-                            Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getDisplayName()),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.LOADOUT.getName()));
+                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getDisplayName()),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.LOADOUT.getKey().value()));
                 }
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_SELF);

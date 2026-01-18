@@ -1,37 +1,38 @@
 package au.com.mineauz.minigames.menu;
 
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
+import org.jetbrains.annotations.NotNull;
 
 public class MenuItemNewLine extends MenuItem {
 
     public MenuItemNewLine() {
-        super((Material) null, Component.text("NL")); // since it will never be visible anyway we can hardcode the name
+        super((ItemType) null, Component.text("NL")); // since it will never be visible anyway we can hardcode the name
     }
 
     @Override
-    public ItemStack onClick() {
-        return null;
+    public @NotNull ItemStack onClick() {
+        return ItemStack.empty();
     }
 
     @Override
-    public ItemStack onRightClick() {
-        return null;
+    public @NotNull ItemStack onRightClick() {
+        return ItemStack.empty();
     }
 
     @Override
-    public ItemStack onShiftClick() {
-        return null;
+    public @NotNull ItemStack onShiftClick() {
+        return ItemStack.empty();
     }
 
     @Override
-    public ItemStack onShiftRightClick() {
-        return null;
+    public @NotNull ItemStack onShiftRightClick() {
+        return ItemStack.empty();
     }
 
     @Override
-    public ItemStack onDoubleClick() {
-        return null;
+    public @NotNull ItemStack onDoubleClick() {
+        return ItemStack.empty();
     }
 }

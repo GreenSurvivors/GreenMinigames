@@ -11,13 +11,15 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.ResourcePack;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 public class ResourcePackModule extends MinigameModule { //todo rework to work with multiple ressource packs
     private final @NotNull BooleanFlag enabled = new BooleanFlag("resourcePackEnabled", false);
@@ -25,12 +27,12 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
     private final @NotNull BooleanFlag forced = new BooleanFlag("forceResourcePack", false);
     private @NotNull String resourcePackName = PlainTextComponentSerializer.plainText().serialize(resourcePackDisplayName.getFlag());
 
-    public ResourcePackModule(@NotNull Minigame mgm, @NotNull String name) {
-        super(mgm, name);
+    public ResourcePackModule(final @NotNull Minigame mgm, final @NotNull Key key) {
+        super(mgm, key);
     }
 
-    public static @Nullable ResourcePackModule getMinigameModule(@NotNull Minigame mgm) {
-        return ((ResourcePackModule) mgm.getModule(MgModules.RESOURCEPACK.getName()));
+    public static @Nullable ResourcePackModule getMinigameModule(final @NotNull Minigame mgm) {
+        return ((ResourcePackModule) mgm.getModule(MgModules.RESOURCEPACK.getKey()));
     }
 
     public boolean isEnabled() {
@@ -63,37 +65,37 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
-        enabled.saveValue(config, path);
-        resourcePackDisplayName.saveValue(config, path);
-        forced.saveValue(config, path);
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        enabled.saveValue(config);
+        resourcePackDisplayName.saveValue(config);
+        forced.saveValue(config);
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        enabled.loadValue(config, path);
-        resourcePackDisplayName.loadValue(config, path);
-        forced.loadValue(config, path);
+    public void load(final @NotNull CommentedConfigurationNode config) {
+        enabled.loadValue(config);
+        resourcePackDisplayName.loadValue(config);
+        forced.loadValue(config);
     }
 
     @Override
     public void addEditMenuOptions(@NotNull Menu previousMenu) {
         Menu menu = new Menu(3, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_NAME, previousMenu.getViewer());
         menu.setPreviousPage(previousMenu);
-        menu.addItem(enabled.getMenuItem(Material.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_ENABLE_NAME));
-        MenuItemComponent item = new MenuItemComponent(Material.PAPER, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_DISPLAYNAME_NAME,
-                new Callback<>() {
-                    @Override
-                    public @NotNull Component getValue() {
-                        return resourcePackDisplayName.getFlag();
-                    }
+        menu.addItem(enabled.getMenuItem(ItemType.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_ENABLE_NAME));
+        MenuItemComponent item = new MenuItemComponent(ItemType.PAPER, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_DISPLAYNAME_NAME,
+            new Callback<>() {
+                @Override
+                public @NotNull Component getValue() {
+                    return resourcePackDisplayName.getFlag();
+                }
 
-                    @Override
-                    public void setValue(@NotNull Component value) {
-                        resourcePackDisplayName.setFlag(value);
-                        resourcePackName = PlainTextComponentSerializer.plainText().serialize(value);
-                    }
-                }) {
+                @Override
+                public void setValue(@NotNull Component value) {
+                    resourcePackDisplayName.setFlag(value);
+                    resourcePackName = PlainTextComponentSerializer.plainText().serialize(value);
+                }
+            }) {
             @Override
             public void acceptString(@NotNull String string) {
                 if (string.isEmpty()) {
@@ -105,7 +107,7 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
                     getContainer().cancelReopenTimer();
                     getContainer().displayMenu(getContainer().getViewer());
                     MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
-                            MgMiscLangKey.MINIGAME_RESSOURCEPACK_NORESSOURCEPACK,
+                        MgMiscLangKey.MINIGAME_RESSOURCEPACK_NORESSOURCEPACK,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
                 } else {
                     super.acceptString(string);
@@ -113,8 +115,8 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
             }
         };
         menu.addItem(item);
-        menu.addItem(forced.getMenuItem(Material.SKELETON_SKULL, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_FORCE_NAME));
-        MenuItemPage previousMenuItem = new MenuItemPage(Material.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_NAME, menu);
+        menu.addItem(forced.getMenuItem(ItemType.SKELETON_SKULL, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_FORCE_NAME));
+        MenuItemPage previousMenuItem = new MenuItemPage(ItemType.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_NAME, menu);
         menu.addItem(new MenuItemBack(previousMenu), menu.getSize() - 9);
         previousMenu.addItem(previousMenuItem);
     }

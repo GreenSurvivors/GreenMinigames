@@ -68,7 +68,7 @@ public class EndCommand extends ACommand {
 
                 if (playerToEnd != null) {
                     forceEndForPlayer(playerToEnd, sender, MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_PLAYER,
-                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), playerToEnd.displayName())));
+                        Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), playerToEnd.displayName())));
                 } else { // first argument was not a player. is it a minigame?
                     Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
@@ -88,15 +88,15 @@ public class EndCommand extends ACommand {
                                             forceEndForTeam(sender, teamToWin, minigame);
                                         } else {
                                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTEAM,
-                                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), args[1]));
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                                                Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), args[1]));
                                             return false;
                                         }
                                     } else { // default winners
                                         ((MultiplayerType) type).endMinigameFindWinner(minigame);
 
                                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_END_SUCCESS_MINIGAME,
-                                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                                     }
                                 } else {
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_ISEMPTY);
@@ -113,7 +113,7 @@ public class EndCommand extends ACommand {
                                     }
 
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_END_SUCCESS_MINIGAME,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                                 } else {
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_ISEMPTY);
                                 }
@@ -121,7 +121,7 @@ public class EndCommand extends ACommand {
                         } // switch
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
                         return false;
                     }
                 } // end else first argument type
@@ -170,13 +170,13 @@ public class EndCommand extends ACommand {
 
                         PLUGIN.getPlayerManager().endMinigame(minigame, winners, loosers);
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_END_SUCCESS_WINNER,
-                                Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), mgPlayer.displayName()));
+                            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), mgPlayer.displayName()));
                     }
                 }
                 case SINGLEPLAYER -> {
                     PLUGIN.getPlayerManager().endMinigame(mgPlayer);
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_END_SUCCESS_WINNER,
-                            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), mgPlayer.displayName()));
+                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), mgPlayer.displayName()));
                 }
             }
         } else {
@@ -199,7 +199,7 @@ public class EndCommand extends ACommand {
         }
         PLUGIN.getPlayerManager().endMinigame(minigame, winners, losers);
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_END_SUCCESS_WINNER,
-                Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamToWin.getColor().getCompName()));
+            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), teamToWin.getColor().getCompName()));
     }
 
     private void forceEndForGlobal(@NotNull CommandSender sender, @NotNull Minigame minigame) {
@@ -208,7 +208,7 @@ public class EndCommand extends ACommand {
                 PLUGIN.getMinigameManager().stopGlobalMinigame(minigame, sender);
 
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_END_SUCCESS_MINIGAME,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED);
             }
@@ -223,9 +223,9 @@ public class EndCommand extends ACommand {
         if (args.length == 1) {
             // players in minigames
             List<String> result = PLUGIN.getServer().getOnlinePlayers().stream().
-                    filter(player -> PLUGIN.getPlayerManager().getMinigamePlayer(player).isInMinigame()).
-                    map(Player::getName).
-                    collect(Collectors.toCollection(ArrayList::new));
+                filter(player -> PLUGIN.getPlayerManager().getMinigamePlayer(player).isInMinigame()).
+                map(Player::getName).
+                collect(Collectors.toCollection(ArrayList::new));
             // minigames
             result.addAll(PLUGIN.getMinigameManager().getAllMinigames().keySet());
 

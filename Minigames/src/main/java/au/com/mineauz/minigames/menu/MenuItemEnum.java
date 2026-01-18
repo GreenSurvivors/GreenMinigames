@@ -6,8 +6,8 @@ import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,26 +20,26 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
     private final @NotNull List<T> enumList;
     private final @NotNull Callback<T> callback;
 
-    public MenuItemEnum(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemEnum(@Nullable ItemType displayType, @Nullable Component name,
                         @Nullable List<@NotNull Component> description, @NotNull Callback<T> callback,
                         @NotNull Class<T> enumClass) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.callback = callback;
         enumList = new ArrayList<>(EnumSet.allOf(enumClass));
         updateDescription();
     }
 
-    public MenuItemEnum(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<T> callback,
+    public MenuItemEnum(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<T> callback,
                         @NotNull Class<T> enumClass) {
-        super(displayMat, name);
+        super(displayType, name);
         this.callback = callback;
         enumList = new ArrayList<>(EnumSet.allOf(enumClass));
         updateDescription();
     }
 
-    public MenuItemEnum(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<T> callback,
+    public MenuItemEnum(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<T> callback,
                         @NotNull Class<T> enumClass) {
-        super(displayMat, langKey);
+        super(displayType, langKey);
         this.callback = callback;
         enumList = new ArrayList<>(EnumSet.allOf(enumClass));
         updateDescription();
@@ -53,7 +53,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
         int position = enumList.indexOf(callback.getValue());
         if (position == -1) {
             setDescriptionPart(DESCRIPTION_VALUE_TOKEN, List.of(
-                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ERROR_UNKNOWN)));
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ERROR_UNKNOWN)));
         } else {
             int last = position - 1;
             int next = position + 1;

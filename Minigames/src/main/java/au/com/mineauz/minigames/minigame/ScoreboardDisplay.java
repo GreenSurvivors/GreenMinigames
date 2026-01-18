@@ -5,34 +5,42 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.safelocation.SafeBlockLocation;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.base.Preconditions;
+import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
+import org.bukkit.block.*;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.sign.Side;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
+import org.bukkit.persistence.PersistentDataHolder;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.NumberConversions;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ScoreboardDisplay {
-    public static final int defaultWidth = 3;
-    public static final int defaultHeight = 3;
-    private final @NotNull Location rootBlock;
+    public static final int DEFAULT_WIDTH = 3;
+    public static final int DEFAULT_HEIGHT = 3;
+    protected static final @NotNull NamespacedKey SCOREBOARD_MINIGAME_KEY = new NamespacedKey(Minigames.getPlugin(), "scoreboard_minigame");
+    private final @NotNull SafeBlockLocation rootBlock;
+    private final @MonotonicNonNull Minigames plugin = Minigames.getPlugin();
     private final @NotNull Minigame minigame;
     private final int width;
     private final int height;
@@ -46,7 +54,7 @@ public class ScoreboardDisplay {
 
     private boolean needsLoad;
 
-    public ScoreboardDisplay(@NotNull Minigame minigame, int width, int height, @NotNull Location rootBlock, @NotNull BlockFace facing) {
+    public ScoreboardDisplay(final @NotNull Minigame minigame, final int width, final int height, final @NotNull SafeBlockLocation rootBlock, final @NotNull BlockFace facing) {
         this.minigame = minigame;
         this.width = width;
         this.height = height;
@@ -62,32 +70,38 @@ public class ScoreboardDisplay {
         needsLoad = true;
     }
 
-    public static @Nullable ScoreboardDisplay load(@NotNull Minigame minigame, @NotNull Configuration config, @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
-
-        int width = config.getInt(path + configSeparator + "width");
-        int height = config.getInt(path + configSeparator + "height");
-        Location location = MinigameUtils.loadShortLocation(config.getConfigurationSection(path + configSeparator + "location"));
-        BlockFace facing = BlockFace.valueOf(config.getString(path + configSeparator + "dir"));
+    public static @Nullable ScoreboardDisplay load(final @NotNull Minigame minigame, final @NotNull CommentedConfigurationNode node) throws SerializationException {
+        final int width = node.node("width").getInt();
+        final int height = node.node("height").getInt();
+        final @Nullable SafeBlockLocation location = node.node("location").get(TypeToken.get(SafeBlockLocation.class));
+        final @Nullable BlockFace facing = BlockFace.valueOf(node.node("dir").getString());
 
         // from invalid world
-        if (location == null) {
+        if (location == null || location.getWorld() == null) {
             return null;
         }
 
         ScoreboardDisplay display = new ScoreboardDisplay(minigame, width, height, location, facing);
-        display.setOrder(ScoreboardOrder.valueOf(config.getString(path + configSeparator + "order")));
-        MinigameStat stat = MinigameStatistics.getStat(config.getString(path + configSeparator + "stat", "wins"));
-        StatisticValueField field = StatisticValueField.valueOf(config.getString(path + configSeparator + "field", "Total"));
+        display.setOrder(node.node("order").get(TypeToken.get(ScoreboardOrder.class)));
+        MinigameStat stat = MinigameStatistics.getStat(node.node("stat").getString("wins"));
+        StatisticValueField field = node.node("field").get(TypeToken.get(StatisticValueField.class), StatisticValueField.Total);
         display.setStat(stat, field);
-        Block block = location.getBlock();
-        block.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
-        block.setMetadata("Minigame", new FixedMetadataValue(Minigames.getPlugin(), minigame));
+
+        final @Nullable Block block = location.getBlockAt(); // should never be null, since we are checking the existence of the world right above
+
+        // this is a datafixerupper. In the future this just will get set whenever the sign gets placed.
+        if (block != null && block.getState(false) instanceof PersistentDataHolder persistentDataHolder) {
+            persistentDataHolder.getPersistentDataContainer().set(SCOREBOARD_MINIGAME_KEY, PersistentDataType.STRING, minigame.getName());
+        }
 
         return display;
     }
 
-    public @NotNull Location getRoot() {
+    public static @Nullable String getMinigameOfScoreboardString(final @NotNull Sign sign) {
+        return sign.getPersistentDataContainer().get(SCOREBOARD_MINIGAME_KEY, PersistentDataType.STRING);
+    }
+
+    public @NotNull SafeBlockLocation getRoot() {
         return rootBlock;
     }
 
@@ -144,20 +158,19 @@ public class ScoreboardDisplay {
             default -> throw new AssertionError("Invalid facing " + facing);
         };
 
-        List<Block> blocks = new ArrayList<>(width * height);
+        final @NotNull List<@NotNull Block> blocks = new ArrayList<>(width * height);
 
         // Find the corner that is the top left part of the scoreboard
-        Location min = rootBlock.clone();
-        min.add(-horizontal.getModX() * ((double) width / 2.0D), -1, -horizontal.getModZ() * ((double) width / 2.0D));
+        SafeBlockLocation min = rootBlock.offset(NumberConversions.floor(-horizontal.getModX() * ((double) width / 2.0D)), -1, NumberConversions.floor(-horizontal.getModZ() * ((double) width / 2.0D)));
 
         // Grab each sign of the scoreboards in order
-        Block block = min.getBlock();
+        Block block = min.getBlockAt();
 
         for (int y = 0; y < height; ++y) {
             Block start = block;
             for (int x = 0; x < width; ++x) {
                 // Only add signs
-                if (Tag.WALL_SIGNS.isTagged(block.getType()) || (!onlySigns && block.getType() == Material.AIR)) {
+                if (Tag.WALL_SIGNS.isTagged(block.getType()) || !onlySigns && block.getType().isAir()) {
                     blocks.add(block);
                 }
 
@@ -214,11 +227,11 @@ public class ScoreboardDisplay {
         final Menu setupMenu = new Menu(3, MgMenuLangKey.MENU_SCOREBOARD_SETUP_NAME, player);
 
         StatSettings settings = minigame.getSettings(stat);
-        final MenuItemCustom statisticChoice = new MenuItemCustom(Material.WRITABLE_BOOK, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_NAME,
-                List.of(settings.getDisplayName().color(NamedTextColor.GREEN)));
+        final MenuItemCustom statisticChoice = new MenuItemCustom(ItemType.WRITABLE_BOOK, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_NAME,
+            List.of(settings.getDisplayName().color(NamedTextColor.GREEN)));
 
-        final MenuItemCustom fieldChoice = new MenuItemCustom(Material.PAPER, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_FIELD_NAME,
-                List.of(field.getTitle().color(NamedTextColor.GREEN)));
+        final MenuItemCustom fieldChoice = new MenuItemCustom(ItemType.PAPER, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_FIELD_NAME,
+            List.of(field.getTitle().color(NamedTextColor.GREEN)));
 
         statisticChoice.setClick(() -> {
             Menu childMenu = MinigameStatistics.createStatSelectMenu(setupMenu, new Callback<>() {
@@ -256,7 +269,7 @@ public class ScoreboardDisplay {
             });
 
             childMenu.displayMenu(setupMenu.getViewer());
-            return null;
+            return ItemStack.empty();
         });
 
         fieldChoice.setClick(() -> {
@@ -275,13 +288,13 @@ public class ScoreboardDisplay {
             });
 
             childMenu.displayMenu(setupMenu.getViewer());
-            return null;
+            return ItemStack.empty();
         });
 
         setupMenu.addItem(statisticChoice);
         setupMenu.addItem(fieldChoice);
 
-        setupMenu.addItem(new MenuItemEnum<>(Material.ENDER_PEARL, MgMenuLangKey.MENU_SCOREBOARD_ORDER_NAME, new Callback<>() {
+        setupMenu.addItem(new MenuItemEnum<>(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_SCOREBOARD_ORDER_NAME, new Callback<>() {
 
             @Override
             public @NotNull ScoreboardOrder getValue() {
@@ -294,8 +307,8 @@ public class ScoreboardDisplay {
             }
         }, ScoreboardOrder.class));
 
-        setupMenu.addItem(new MenuItemScoreboardSave(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_SCOREBOARD_CREATE_NAME, this),
-                setupMenu.getSize() - 1);
+        setupMenu.addItem(new MenuItemScoreboardSave(MenuUtility.getCreateType(), MgMenuLangKey.MENU_SCOREBOARD_CREATE_NAME, this),
+            setupMenu.getSize() - 1);
         setupMenu.displayMenu(player);
     }
 
@@ -312,11 +325,11 @@ public class ScoreboardDisplay {
         List<Block> blocks = getSignBlocks(true);
 
         for (Block block : blocks) {
-            block.setType(Material.AIR);
+            block.setBlockData(BlockType.AIR.createBlockData());
         }
     }
 
-    public void placeSigns(@NotNull Material material) throws IllegalArgumentException{
+    public void placeSigns(@NotNull Material material) throws IllegalArgumentException {
         if (!Tag.WALL_SIGNS.isTagged(material)) {
             throw new IllegalArgumentException("Wrong material for ScoreboardDisplay! (expected some kind of (wall) sign, got: " + material);
         }
@@ -331,16 +344,14 @@ public class ScoreboardDisplay {
         }
     }
 
-    public void save(@NotNull Configuration config, @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
-
-        config.set(path + configSeparator + "height", height);
-        config.set(path + configSeparator + "width", width);
-        config.set(path + configSeparator + "dir", facing.name());
-        config.set(path + configSeparator + "stat", stat.getName());
-        config.set(path + configSeparator + "field", field.name());
-        config.set(path + configSeparator + "order", order.name());
-        MinigameUtils.saveShortLocation(config, path + configSeparator + "location", rootBlock);
+    public void save(final @NotNull ConfigurationNode config) throws SerializationException {
+        config.node("height").set(height);
+        config.node("width").set(width);
+        config.node("dir").set(facing.name());
+        config.node("stat").set(stat.getName());
+        config.node("field").set(field.name());
+        config.node("order").set(order.name());
+        config.node("location").set(rootBlock);
     }
 
     public void placeRootSign() {
@@ -349,38 +360,41 @@ public class ScoreboardDisplay {
             settings = minigame.getSettings(stat);
         }
 
-        Block root = rootBlock.getBlock();
-        if (Tag.ALL_SIGNS.isTagged(root.getType())) {
-            BlockState state = root.getState();
-            if (state instanceof Sign sign) {
-                sign.getSide(Side.FRONT).line(0, minigame.getDisplayName().color(NamedTextColor.BLUE));
-                sign.getSide(Side.FRONT).line(1, settings.getDisplayName().color(NamedTextColor.GREEN));
-                sign.getSide(Side.FRONT).line(2, field.getTitle().color(NamedTextColor.GREEN));
-                sign.getSide(Side.FRONT).line(3, Component.text("(" + WordUtils.capitalizeFully(order.toString()) + ")"));
-                sign.update();
+        Block root = rootBlock.getBlockAt();
+        if (root != null) {
+            if (Tag.ALL_SIGNS.isTagged(root.getType())) {
+                BlockState state = root.getState(false);
+                if (state instanceof Sign sign) {
+                    sign.getSide(Side.FRONT).line(0, minigame.getDisplayName().color(NamedTextColor.BLUE));
+                    sign.getSide(Side.FRONT).line(1, settings.getDisplayName().color(NamedTextColor.GREEN));
+                    sign.getSide(Side.FRONT).line(2, field.getTitle().color(NamedTextColor.GREEN));
+                    sign.getSide(Side.FRONT).line(3, Component.text("(" + WordUtils.capitalizeFully(order.toString()) + ")"));
+                    sign.getPersistentDataContainer().set(SCOREBOARD_MINIGAME_KEY, PersistentDataType.STRING, minigame.getName());
+                    sign.update();
 
-                sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
-                sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.getPlugin(), minigame));
+                } else {
+                    plugin.getComponentLogger().warn("No Root Sign Block at: " + root.getLocation());
+                }
             } else {
-                Minigames.getCmpnntLogger().warn("No Root Sign Block at: " + root.getLocation());
+                plugin.getComponentLogger().warn("No Root Sign Block at: " + root.getLocation());
             }
         } else {
-            Minigames.getCmpnntLogger().warn("No Root Sign Block at: " + root.getLocation());
+            plugin.getComponentLogger().warn("World " + rootBlock.getWorldName() + " for ScoreboardDisplay of Minigame " + minigame.getName() + " wasn't loaded and I couldn't place the root sign!");
         }
     }
 
     public void reload() {
         needsLoad = false;
-        CompletableFuture<List<StoredStat>> future = Minigames.getPlugin().getBackend().loadStats(minigame, stat, field, order, 0, width * height * 2);
+        final @NotNull CompletableFuture<List<StoredStat>> future = plugin.getBackend().loadStats(minigame, stat, field, order, 0, width * height * 2);
 
         // The update callback to be provided to the future. MUST be executed on the bukkit server thread
-        future.handle((result, exp) -> Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> {
+        future.handle((result, exp) -> Bukkit.getScheduler().runTask(plugin, () -> {
             if (exp == null) {
                 stats = result;
                 needsLoad = false;
                 updateSigns();
             } else {
-                Minigames.getCmpnntLogger().error("Error when loading scoreboard " + stat.getDisplayName() + " for minigame " + minigame.getName(), exp);
+                plugin.getComponentLogger().error("Error when loading scoreboard " + stat.getDisplayName() + " for minigame " + minigame.getName(), exp);
                 stats = List.of();
                 needsLoad = true;
             }

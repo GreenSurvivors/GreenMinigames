@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,9 +10,9 @@ import java.util.*;
 
 public class MultiplayerBets {
     private final @NotNull Map<@NotNull MinigamePlayer, @NotNull ItemStack> itemBet = new HashMap<>();
-    private final Map<MinigamePlayer, Double> moneyBet = new HashMap<>();
+    private final @NotNull Map<@NotNull MinigamePlayer, @NotNull Double> moneyBet = new HashMap<>();
     private double greatestMoneyBet = 0;
-    private @NotNull ItemStack greatestItemBet = new ItemStack(Material.AIR);
+    private @NotNull ItemStack greatestItemBet = ItemStack.empty();
 
     public MultiplayerBets() {
     }
@@ -77,24 +77,29 @@ public class MultiplayerBets {
     }
 
     public @NotNull Double claimMoneyBets() {
-        Double money = 0d;
+        double money = 0d;
         for (Double mon : moneyBet.values()) {
             money += mon;
         }
         return money;
     }
 
-    public int betValueMaterial(@NotNull Material material) {
-        return switch (material) {
-            case DIAMOND -> 3;
-            case GOLD_INGOT -> 2;
-            case IRON_INGOT -> 1;
-            default -> 0;
-        };
+    public int betValueMaterial(@NotNull ItemType itemType) { // todo make configurable
+        if (itemType == ItemType.NETHERITE_INGOT) {
+            return 5;
+        } else if (itemType == ItemType.DIAMOND) {
+            return 3; // in what world is gold 2/3 as valuable as diamond and more valuable than iron?
+        } else if (itemType == ItemType.GOLD_INGOT) {
+            return 2;
+        } else if (itemType == ItemType.IRON_INGOT) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     public int betValueItem(@NotNull ItemStack item) {
-        return betValueMaterial(item.getType()) * item.getAmount();
+        return betValueMaterial(item.getType().asItemType()) * item.getAmount();
     }
 
     public @Nullable ItemStack getPlayersItemBet(MinigamePlayer player) {

@@ -2,16 +2,22 @@ package au.com.mineauz.minigames.objects;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.MinigameSave;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
+import io.leangen.geantyref.TypeFactory;
+import io.leangen.geantyref.TypeToken;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -20,19 +26,19 @@ import java.util.UUID;
 public class OfflineMinigamePlayer {
     private final @NotNull UUID uuid;
     private final @Nullable ItemStack @NotNull [] storedItems;
-    private final @Nullable ItemStack @NotNull [] storedArmour;
+    private final @Nullable ItemStack @NotNull [] storedArmour; // todo armour is redundant, as it is already included in inventory
     private final int food;
     private final double health;
     private final float saturation;
     private final float exp;
     private final int level;
     private final @NotNull GameMode lastGM;
-    private @Nullable Location loginLocation;
+    private @Nullable SafeFullLocation loginLocation;
 
     public OfflineMinigamePlayer(@NotNull UUID uuid, @Nullable ItemStack @NotNull [] items,
                                  @Nullable ItemStack @NotNull [] armour, int food, double health,
                                  float saturation, @NotNull GameMode lastGM, float exp, int level,
-                                 final @Nullable Location loginLocation) {
+                                 final @Nullable SafeFullLocation loginLocation) {
         this.uuid = uuid;
         storedItems = items;
         storedArmour = armour;
@@ -42,13 +48,13 @@ public class OfflineMinigamePlayer {
         this.lastGM = lastGM;
         this.exp = exp;
         this.level = level;
-        if (loginLocation != null && loginLocation.getWorld() == null) {
-            this.loginLocation = Bukkit.getWorlds().getFirst().getSpawnLocation();
-        } else {
-            this.loginLocation = loginLocation;
-        }
+        this.loginLocation = loginLocation;
         if (Minigames.getPlugin().getConfig().getBoolean("saveInventory")) {
-            savePlayerData();
+            try {
+                savePlayerData();
+            } catch (final @NotNull IOException e) {
+                Minigames.getPlugin().getComponentLogger().error("Couldn't save player data for player with uuid " + uuid, e);
+            }
         }
     }
 
@@ -57,40 +63,45 @@ public class OfflineMinigamePlayer {
      *
      * @param uuid the uuid of the user to load
      */
-    public OfflineMinigamePlayer(final @NotNull UUID uuid) {
-        MinigameSave save = new MinigameSave("playerdata" + File.separator + "inventories" + File.separator + uuid);
-        FileConfiguration config = save.getConfig();
-        char configSeparator = config.options().pathSeparator();
+    public OfflineMinigamePlayer(final @NotNull UUID uuid) throws ConfigurateException {
+        final @Nullable CommentedConfigurationNode configRoot = MinigameSave.forPlayerData(uuid, Path.of("inventories")).getConfigRoot();
         this.uuid = uuid;
-        food = config.getInt("food", 20);
-        health = config.getDouble("health", 20);
-        saturation = config.getInt("saturation", 15);
-        lastGM = GameMode.valueOf(config.getString("gamemode"));
-        exp = ((Double) config.getDouble("exp", 0)).floatValue();
-        level = config.getInt("level", 0);
-        if (config.contains("location")) {
-            loginLocation = new Location(Minigames.getPlugin().getServer().getWorld(config.getString("location.world", "")),
-                    config.getDouble("location" + configSeparator + "x"),
-                    config.getDouble("location" + configSeparator + "y"),
-                    config.getDouble("location" + configSeparator + "z"),
-                    (float) config.getDouble("location" + configSeparator + "yaw"),
-                    (float) config.getDouble("location" + configSeparator + "pitch"));
-            if (loginLocation.getWorld() == null) {
-                loginLocation = Bukkit.getWorlds().getFirst().getSpawnLocation();
+        food = configRoot.node("food").getInt(20);
+        health = configRoot.node("health").getDouble(20);
+        saturation = configRoot.node("saturation").getInt(15);
+        lastGM = configRoot.node("gamemode").get(GameMode.class);
+        exp = configRoot.node("exp").getFloat(0);
+        level = configRoot.node("level").getInt(0);
+        if (configRoot.hasChild("location")) {
+            loginLocation = configRoot.node("location").get(SafeFullLocation.class);
+            if (loginLocation == null) {
+                loginLocation = new SafeFullLocation(Bukkit.getWorlds().getFirst().getSpawnLocation());
             }
         } else {
-            loginLocation = Bukkit.getWorlds().getFirst().getSpawnLocation();
+            loginLocation = new SafeFullLocation(Bukkit.getWorlds().getFirst().getSpawnLocation()); // todo use Bukkits spawn location....
         }
 
-        ItemStack[] items = Minigames.getPlugin().getServer().createInventory(null, InventoryType.PLAYER).getContents();
-        ItemStack[] armour = new ItemStack[4];
+        final @NotNull ItemStack @NotNull [] items = new ItemStack[InventoryType.PLAYER.getDefaultSize()];
+        final @NotNull ItemStack[] armour = new ItemStack[4];
         for (int i = 0; i < items.length; i++) {
-            if (config.contains("items" + configSeparator + i)) {
-                items[i] = config.getItemStack("items" + configSeparator + i);
+            final @NotNull ConfigurationNode itemNode = configRoot.node("items", i);
+            if (!itemNode.virtual() && !itemNode.isNull()) {
+                if (itemNode.isMap()) { // datafixerupper
+                    items[i] = ItemStack.deserialize((Map<String, Object>) itemNode.get(TypeFactory.parameterizedClass(Map.class, String.class, Object.class)));
+                } else {
+                    items[i] = ItemStack.deserializeBytes(itemNode.get(TypeToken.get(byte[].class)));
+                }
             }
         }
         for (int i = 0; i < 4; i++) {
-            armour[i] = config.getItemStack("armour" + configSeparator + i);
+            final @NotNull ConfigurationNode armourNode = configRoot.node("armour", i);
+            if (!armourNode.virtual() && !armourNode.isNull()) {
+                if (armourNode.isMap()) { // datafixerupper
+                    armour[i] = ItemStack.deserialize((Map<String, Object>) armourNode.get(TypeFactory.parameterizedClass(Map.class, String.class, Object.class)));
+                } else {
+                    armour[i] = ItemStack.deserializeBytes(armourNode.get(TypeToken.get(byte[].class)));
+                }
+            }
         }
         storedItems = items;
         storedArmour = armour;
@@ -124,11 +135,11 @@ public class OfflineMinigamePlayer {
         return lastGM;
     }
 
-    public @Nullable Location getLoginLocation() {
+    public @Nullable SafeFullLocation getLoginLocation() {
         return loginLocation;
     }
 
-    public void setLoginLocation(@Nullable Location loc) {
+    public void setLoginLocation(@Nullable SafeFullLocation loc) {
         loginLocation = loc;
     }
 
@@ -140,47 +151,38 @@ public class OfflineMinigamePlayer {
         return level;
     }
 
-    public void savePlayerData() {
-        MinigameSave save = new MinigameSave("playerdata" + File.separator + "inventories" + File.separator + uuid);
-        FileConfiguration config = save.getConfig();
-        char configSeparator = config.options().pathSeparator();
+    public void savePlayerData() throws IOException {
+        final @NotNull MinigameSave save = MinigameSave.forPlayerData(uuid, Path.of("inventories"));
+        final @NotNull ConfigurationNode configRoot = save.getConfigRoot();
 
-        int num = 0;
+        int slot = 0;
         for (ItemStack item : storedItems) {
             if (item != null) {
-                config.set("items" + configSeparator + num, item);
+                configRoot.node("items", slot++).set(item.serializeAsBytes());
             }
-            num++;
         }
 
-        num = 0;
+        slot = 0;
         for (ItemStack item : storedArmour) {
             if (item != null) {
-                config.set("armour" + configSeparator + num, item);
+                configRoot.node("armour", slot++).set(item.serializeAsBytes());
             }
-            num++;
         }
 
-
-        config.set("food", food);
-        config.set("saturation", saturation);
-        config.set("health", health);
-        config.set("gamemode", lastGM.toString());
-        config.set("exp", exp);
-        config.set("level", level);
+        configRoot.node("food").raw(food);
+        configRoot.node("saturation").raw(saturation);
+        configRoot.node("health").raw(health);
+        configRoot.node("gamemode").set(lastGM);
+        configRoot.node("exp").raw(exp);
+        configRoot.node("level").raw(level);
         if (loginLocation != null) {
-            config.set("location" + configSeparator + "x", loginLocation.getBlockX());
-            config.set("location" + configSeparator + "y", loginLocation.getBlockY());
-            config.set("location" + configSeparator + "z", loginLocation.getBlockZ());
-            config.set("location" + configSeparator + "yaw", loginLocation.getYaw());
-            config.set("location" + configSeparator + "pitch", loginLocation.getPitch());
-            config.set("location" + configSeparator + "world", loginLocation.getWorld().getName());
+            configRoot.node("location").set(loginLocation);
         }
         save.saveConfig();
     }
 
     public void deletePlayerData() {
-        MinigameSave save = new MinigameSave("playerdata" + File.separator + "inventories" + File.separator + uuid);
+        MinigameSave save = MinigameSave.forPlayerData(uuid, Path.of("inventories"));
         save.deleteFile();
     }
 }

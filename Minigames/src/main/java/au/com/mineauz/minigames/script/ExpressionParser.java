@@ -20,10 +20,10 @@ public class ExpressionParser {
      * @throws NoSuchElementException   Thrown if the objects referenced in the path cannot be resolved
      */
     public static @NotNull ScriptReference resolveObject(@NotNull String pathString, @NotNull ScriptObject root) throws IllegalArgumentException, NoSuchElementException {
-        String[] segments = pathString.split("\\.");
+        @NotNull String @NotNull [] segments = pathString.split("\\.");
 
         if (segments.length == 0) {
-            segments = new String[] {pathString};
+            segments = new String[]{pathString};
         }
 
         ScriptReference lastRef = null;
@@ -45,7 +45,7 @@ public class ExpressionParser {
 
             if (matcher.matches()) {
                 String objectName = matcher.group(1);
-                ScriptReference ref = current.get(objectName.toLowerCase());
+                ScriptReference ref = current.resolveReference(objectName.toLowerCase());
 
                 if (ref == null) {
                     throw new NoSuchElementException("Unknown object " + objectName + " at '" + pathToCurrent + "'");

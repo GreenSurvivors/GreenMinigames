@@ -1,8 +1,8 @@
-package au.com.mineauz.minigamesregions.executors;
+package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigamesregions.actions.ActionInterface;
+import au.com.mineauz.minigamesregions.actions.IAction;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import org.jetbrains.annotations.NotNull;
@@ -12,15 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BaseExecutor {
+public class ActionExecutor {
     private final @NotNull Trigger trigger;
     private final @NotNull List<@NotNull ACondition> conditions = new ArrayList<>();
-    private final @NotNull List<@NotNull ActionInterface> actions = new ArrayList<>();
+    private final @NotNull List<@NotNull IAction> actions = new ArrayList<>();
     private final @NotNull Map<@NotNull String, @NotNull Integer> triggers = new HashMap<>();
     private boolean triggerPerPlayer = false;
     private int triggerCount = 0;
 
-    public BaseExecutor(@NotNull Trigger trigger) {
+    public ActionExecutor(@NotNull Trigger trigger) {
         this.trigger = trigger;
     }
 
@@ -40,15 +40,15 @@ public class BaseExecutor {
         conditions.remove(condition);
     }
 
-    public @NotNull List<@NotNull ActionInterface> getActions() {
+    public @NotNull List<@NotNull IAction> getActions() {
         return actions;
     }
 
-    public void addAction(@NotNull ActionInterface action) {
+    public void addAction(@NotNull IAction action) {
         actions.add(action);
     }
 
-    public void removeAction(ActionInterface action) {
+    public void removeAction(@NotNull IAction action) {
         actions.remove(action);
     }
 
@@ -99,8 +99,9 @@ public class BaseExecutor {
     }
 
     public void addPublicTrigger() {
-        if (!triggers.containsKey("public"))
+        if (!triggers.containsKey("public")) {
             triggers.put("public", 0);
+        }
         triggers.put("public", triggers.get("public") + 1);
     }
 

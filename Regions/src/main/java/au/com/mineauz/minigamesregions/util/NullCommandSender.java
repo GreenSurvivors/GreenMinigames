@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 import java.util.UUID;
 
+@SuppressWarnings("removal") // will remove once super removes it.
 public class NullCommandSender implements ConsoleCommandSender {
     @Override
     public void sendMessage(@NotNull String message) {

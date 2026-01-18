@@ -3,32 +3,34 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.menu.MenuItem;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
 public class LoadoutFlag extends AFlag<PlayerLoadout> {
 
-    public LoadoutFlag(@NotNull String name, PlayerLoadout value) {
+    public LoadoutFlag(final @NotNull String name, final PlayerLoadout value) {
         super(name, null, value); // todo why force null default?
     }
 
     @Override
-    public void saveValue(@NotNull Configuration config, @NotNull String path) {
-        if (getFlag() != null) {
-            getFlag().save(config, path + config.options().pathSeparator() + getName());
-        } else {
-            config.set(path + config.options().pathSeparator() + getName(), null);
+    public void saveValue(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.removeChild(getName());
+
+        if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
+            getFlag().save(config.node(getName()));
         }
     }
 
     @Override
-    public void loadValue(@NotNull Configuration config, @NotNull String path) {
+    public void loadValue(final @NotNull CommentedConfigurationNode config) throws ConfigurateException {
         if (getFlag() != null) {
-            getFlag().load(config, path + config.options().pathSeparator() + getName());
+            getFlag().load(config.node(getName()));
         } else {
             setFlag(getDefaultFlag());
         }
@@ -36,13 +38,13 @@ public class LoadoutFlag extends AFlag<PlayerLoadout> {
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
-        return getMenuItem(displayMat, name, null);
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
+        return getMenuItem(displayType, name, null);
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
                                          @Nullable List<@NotNull Component> description) {
         return null; //TODO: Menu item easy access for loadouts.
     }

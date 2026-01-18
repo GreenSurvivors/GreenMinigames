@@ -11,7 +11,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
@@ -58,7 +57,7 @@ public class BetSign extends AMinigameSign {
             return true;
         } else {
             MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
+                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
             return false;
         }
     }
@@ -89,14 +88,14 @@ public class BetSign extends AMinigameSign {
                 }
 
                 for (ItemStack item : mgPlayer.getPlayer().getInventory().getArmorContents()) {
-                    if (item != null && item.getType() != Material.AIR) {
+                    if (item != null && !item.isEmpty()) {
                         invOk = false;
                         break;
                     }
                 }
             } else {
                 fullInv = false;
-                invOk = (isMoneyBet == (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR));
+                invOk = (isMoneyBet == (mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()));
             }
 
             if (invOk) {
@@ -121,7 +120,7 @@ public class BetSign extends AMinigameSign {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
                 }
             } else if (!isMoneyBet) {
-                if (fullInv && mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
+                if (fullInv && !mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_FULLINV);
                 } else {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_BET_ERROR_NOBET);
@@ -135,7 +134,7 @@ public class BetSign extends AMinigameSign {
             }
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), sign.getSide(Side.FRONT).line(2)));
+                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), sign.getSide(Side.FRONT).line(2)));
         }
         return false;
     }

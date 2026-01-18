@@ -7,17 +7,19 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
+import org.bukkit.Keyed;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AAction implements ActionInterface {
-    protected final @NotNull String name;
+public abstract class AAction implements IAction, Keyed {
+    protected final @NotNull NamespacedKey key;
 
-    protected AAction(@NotNull String name) {
-        this.name = name;
+    protected AAction(final @NotNull NamespacedKey key) {
+        this.key = key;
     }
 
     /**
@@ -35,8 +37,8 @@ public abstract class AAction implements ActionInterface {
     }
 
     @Override
-    public @NotNull String getName() {
-        return name;
+    public @NotNull NamespacedKey getKey() {
+        return key;
     }
 
     /**

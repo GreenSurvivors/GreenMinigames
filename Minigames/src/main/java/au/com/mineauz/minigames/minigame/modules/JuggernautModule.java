@@ -7,21 +7,22 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 public class JuggernautModule extends MinigameModule {
     private @Nullable MinigamePlayer juggernaut = null;
 
-    public JuggernautModule(@NotNull Minigame mgm, @NotNull String name) {
-        super(mgm, name);
+    public JuggernautModule(final @NotNull Minigame mgm, final @NotNull Key key) {
+        super(mgm, key);
     }
 
     public static JuggernautModule getMinigameModule(@NotNull Minigame mgm) {
-        return ((JuggernautModule) mgm.getModule(MgModules.JUGGERNAUT.getName()));
+        return ((JuggernautModule) mgm.getModule(MgModules.JUGGERNAUT.getKey()));
     }
 
     @Override
@@ -30,11 +31,11 @@ public class JuggernautModule extends MinigameModule {
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
+    public void save(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+    public void load(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override
@@ -64,7 +65,7 @@ public class JuggernautModule extends MinigameModule {
 
             MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
             MinigameMessageManager.sendMinigameMessage(getMinigame(), MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
-                    Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.displayName())
+                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.displayName())
             ), MinigameMessageType.INFO, juggernaut);
 
             LoadoutModule lm = LoadoutModule.getMinigameModule(getMinigame());

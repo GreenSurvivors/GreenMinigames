@@ -99,7 +99,7 @@ public class MinigameTimer {
         if (msgTimes.contains(timeLeft) && broadcastTime) {
             PlayMGSound.playSound(minigame, MGSounds.TIMER_TICK.getSound());
             MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_TIMELEFT,
-                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(timeLeft)))));
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(timeLeft)))));
         }
 
         if (timeLeft <= 0) {

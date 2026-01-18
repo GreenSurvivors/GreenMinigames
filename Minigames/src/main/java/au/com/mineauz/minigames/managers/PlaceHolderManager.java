@@ -63,7 +63,7 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
 
     @Override
     public @NotNull String getVersion() {
-        return Minigames.getVERSION().toString();
+        return Minigames.getPlugin().getVersion().toString();
     }
 
     @Override
@@ -125,7 +125,7 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
                     plugin.getLogger().warning("Error processing PAPI:" + identifier);
                     plugin.getLogger().warning(e.getMessage());
                     if (plugin.isDebugging()) {
-                        Minigames.getCmpnntLogger().error("", e);
+                        Minigames.getPlugin().getComponentLogger().error("", e);
                     }
                     return null;
                 }
@@ -137,9 +137,9 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
             return switch (identifier) {
                 case "gameCount" -> Integer.toString(plugin.getMinigameManager().getAllMinigames().size());
                 case "enabledGameCount" -> Long.toString(plugin.getMinigameManager().getAllMinigames().values()
-                        .stream().filter(Minigame::isEnabled).count());
+                    .stream().filter(Minigame::isEnabled).count());
                 case "totalPlaying" -> Long.toString(plugin.getPlayerManager().getAllMinigamePlayers().stream()
-                        .filter(MinigamePlayer::isInMinigame).count());
+                    .filter(MinigamePlayer::isInMinigame).count());
                 default -> null;
             };
         }

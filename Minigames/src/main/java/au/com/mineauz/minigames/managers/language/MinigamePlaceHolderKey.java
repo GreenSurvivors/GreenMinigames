@@ -16,7 +16,6 @@ public enum MinigamePlaceHolderKey implements PlaceHolderKey {
     KILLS("kills"),
     LOADOUT("loadout"),
     LOCATION("location"),
-    MATERIAL("material"),
     MAX("max"),
     MECHANIC("mechanic"),
     MIN("min"),

@@ -19,10 +19,12 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 import java.util.Set;
@@ -32,8 +34,8 @@ public class BroadcastAction extends AAction {
     private final BooleanFlag excludeExecutor = new BooleanFlag("exludeExecutor", false);
     private final EnumFlag<MinigameMessageType> messageType = new EnumFlag<>("messageType", MinigameMessageType.INFO);
 
-    protected BroadcastAction(@NotNull String name) {
-        super(name);
+    protected BroadcastAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -74,7 +76,7 @@ public class BroadcastAction extends AAction {
     public void executeRegionAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Region region) {
         ScriptObject base = new ScriptObject() {
             @Override
-            public @NotNull Set<String> getKeys() {
+            public @NotNull Set<String> getReferenceKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
@@ -84,7 +86,7 @@ public class BroadcastAction extends AAction {
             }
 
             @Override
-            public @Nullable ScriptReference get(@NotNull String name) {
+            public @Nullable ScriptReference resolveReference(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -106,7 +108,7 @@ public class BroadcastAction extends AAction {
     public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         ScriptObject base = new ScriptObject() {
             @Override
-            public @NotNull Set<String> getKeys() {
+            public @NotNull Set<String> getReferenceKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
@@ -116,7 +118,7 @@ public class BroadcastAction extends AAction {
             }
 
             @Override
-            public @Nullable ScriptReference get(@NotNull String name) {
+            public @Nullable ScriptReference resolveReference(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -156,25 +158,25 @@ public class BroadcastAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        message.saveValue(config, path);
-        excludeExecutor.saveValue(config, path);
-        messageType.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        message.saveValue(config);
+        excludeExecutor.saveValue(config);
+        messageType.saveValue(config);
 
         // dataFixerUpper
-        config.set(path + config.options().pathSeparator() + "redText", null);
+        config.removeChild("redText");
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        message.loadValue(config, path);
-        excludeExecutor.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        message.loadValue(config);
+        excludeExecutor.loadValue(config);
 
         // dataFixerUpper
-        if (config.getBoolean(path + config.options().pathSeparator() + "redText")) {
+        if (config.node("redText").getBoolean(false)) {
             messageType.setFlag(MinigameMessageType.ERROR);
         } else {
-            messageType.loadValue(config, path);
+            messageType.loadValue(config);
         }
     }
 
@@ -183,9 +185,9 @@ public class BroadcastAction extends AAction {
         Menu menu = new Menu(3, getDisplayname(), mgPlayer);
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        menu.addItem(message.getMenuItem(Material.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MESSAGE_NAME)));
-        menu.addItem(excludeExecutor.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_EXCLUDING_NAME)));
-        menu.addItem(messageType.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MSGTYPE_NAME)));
+        menu.addItem(message.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MESSAGE_NAME)));
+        menu.addItem(excludeExecutor.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_EXCLUDING_NAME)));
+        menu.addItem(messageType.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MSGTYPE_NAME)));
 
         menu.displayMenu(mgPlayer);
         return true;

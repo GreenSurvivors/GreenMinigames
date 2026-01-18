@@ -1,6 +1,9 @@
 package au.com.mineauz.minigames.minigame.modules;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.key.Key;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
@@ -18,24 +21,24 @@ public enum MgModules implements ModuleFactory {
     TREASURE_HUNT("TreasureHunt", TreasureHuntModule::new),
     WEATHER_TIME("WeatherTime", WeatherTimeModule::new);
 
-    private final @NotNull BiFunction<@NotNull Minigame, @NotNull String, @NotNull MinigameModule> minigameModuleInit;
-    private final @NotNull String name;
+    private final @NotNull BiFunction<@NotNull Minigame, @NotNull Key, @NotNull MinigameModule> minigameModuleInit;
+    private final @NotNull Key key;
 
-    MgModules(@NotNull String name, @NotNull BiFunction<@NotNull Minigame, @NotNull String, @NotNull MinigameModule> minigameModuleInit) {
+    MgModules(final @NotNull String key, final @NotNull BiFunction<@NotNull Minigame, @NotNull Key, @NotNull MinigameModule> minigameModuleInit) {
         this.minigameModuleInit = minigameModuleInit;
-        this.name = name;
+        this.key = new NamespacedKey(Minigames.getPlugin(), key);
     }
 
-    public @NotNull MinigameModule makeNewModule(@NotNull Minigame minigame) {
-        return minigameModuleInit.apply(minigame, name);
+    public @NotNull MinigameModule makeNewModule(final @NotNull Minigame minigame) {
+        return minigameModuleInit.apply(minigame, key);
     }
 
     @Override
     public @NotNull String toString() {
-        return name;
+        return key.value();
     }
 
-    public @NotNull String getName() {
-        return name;
+    public @NotNull Key getKey() {
+        return key;
     }
 }

@@ -5,8 +5,10 @@ import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.objects.ResourcePack;
+import io.leangen.geantyref.TypeToken;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -20,6 +22,7 @@ import java.util.*;
 
 public class ResourcePackManager { //todo work with multiple ressource packs
     private static final @NotNull Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
+    private final @NotNull Minigames plugin = Minigames.getPlugin();
     private final @NotNull Map<@NotNull String, @NotNull ResourcePack> resources = new HashMap<>();
     private boolean enabled = true;
     private MinigameSave config;
@@ -29,14 +32,12 @@ public class ResourcePackManager { //todo work with multiple ressource packs
             try {
                 Path path = Files.createDirectories(resourceDir);
                 if (Files.notExists(path)) {
-                    Minigames.getCmpnntLogger().error("Cannot create a resource directory to house resources " +
-                            "- they will be unavailable");
+                    plugin.getComponentLogger().error("Cannot create a resource directory to house resources - they will be unavailable");
                     enabled = false;
                 }
 
-            } catch (IOException e) {
-                Minigames.getCmpnntLogger().error("Cannot create a resource directory to house resources " +
-                        "- they will be unavailable: Message" + e.getMessage());
+            } catch (final @NotNull IOException e) {
+                plugin.getComponentLogger().error("Cannot create a resource directory to house resources - they will be unavailable.", e);
                 enabled = false;
             }
     }
@@ -73,25 +74,29 @@ public class ResourcePackManager { //todo work with multiple ressource packs
         return resources.put(pack.getName(), pack);
     }
 
-    public void removeResourcePack(@NotNull ResourcePack pack) {
+    public void removeResourcePack(final @NotNull ResourcePack pack) {
         if (!enabled) return;
         resources.remove(pack.getName());
-        saveResources();
+        try {
+            saveResources();
+        } catch (final @NotNull IOException e) {
+            plugin.getComponentLogger().error("Couldn't remove resource pack " + pack.getName(), e);
+        }
     }
 
-    public boolean initialize(final @NotNull MinigameSave c) {
-        this.config = c;
+    public boolean initialize() {
+        config = MinigameSave.forGlobalData(Path.of("resources"));
         boolean emptyPresent = false;
-        final List<ResourcePack> resources = new ArrayList<>();
-        final Object objects = this.config.getConfig().get("resources");
-        if (objects instanceof List<?> obj) {
-            for (final Object object : obj) {
-                if (object instanceof ResourcePack) {
-                    resources.add((ResourcePack) object);
-                }
-            }
+        final @NotNull List<@NotNull ResourcePack> resources;
+        try {
+            resources = config.getConfigRoot().node("resources").getList(TypeToken.get(ResourcePack.class), List.of()); // todo serializer
+        } catch (final @NotNull ConfigurateException e) {
+            plugin.getComponentLogger().error("Couldn't load resource packs!", e);
+
+            return false;
         }
-        for (final ResourcePack pack : resources) {
+
+        for (final @NotNull ResourcePack pack : resources) {
             if (pack.getName().equals(MinigameMessageManager.getStrippedMgMessage(MgMiscLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME))) {
                 emptyPresent = true;
                 enabled = true;
@@ -100,7 +105,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
         }
         if (!emptyPresent) {
             if (!loadEmptyPack()) {
-                Minigames.getCmpnntLogger().warn("Minigames Resource Manager could not create the empty reset pack");
+                plugin.getComponentLogger().warn("Minigames Resource Manager could not create the empty reset pack");
                 enabled = false;
                 return false;
             }
@@ -109,9 +114,9 @@ public class ResourcePackManager { //todo work with multiple ressource packs
         return true;
     }
 
-    public void saveResources() {
+    public void saveResources() throws IOException {
         List<ResourcePack> resourceList = new ArrayList<>(resources.values());
-        config.getConfig().set("resources", resourceList);
+        config.getConfigRoot().node("resources").setList(TypeToken.get(ResourcePack.class), resourceList);
         config.saveConfig();
     }
 

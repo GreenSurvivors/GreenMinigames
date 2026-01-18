@@ -11,10 +11,12 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
@@ -22,8 +24,8 @@ public class EquipLoadoutAction extends AAction {
     private final StringFlag loadout = new StringFlag("loadout", "default");
     private final BooleanFlag equipOnTrigger = new BooleanFlag("equipOnTrigger", false);
 
-    protected EquipLoadoutAction(@NotNull String name) {
-        super(name);
+    protected EquipLoadoutAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -80,24 +82,22 @@ public class EquipLoadoutAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        loadout.saveValue(config, path);
-        equipOnTrigger.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        loadout.saveValue(config);
+        equipOnTrigger.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        loadout.loadValue(config, path);
-        equipOnTrigger.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        loadout.loadValue(config);
+        equipOnTrigger.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(new MenuItemString(Material.DIAMOND_SWORD, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_NAME), new Callback<>() {
+        m.addItem(new MenuItemString(ItemType.DIAMOND_SWORD, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_NAME), new Callback<>() {
 
             @Override
             public String getValue() {
@@ -110,7 +110,7 @@ public class EquipLoadoutAction extends AAction {
             }
         }));
 
-        m.addItem(new MenuItemBoolean(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_NAME),
+        m.addItem(new MenuItemBoolean(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_DESCRIPTION), new Callback<>() {
             @Override
             public Boolean getValue() {

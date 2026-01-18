@@ -8,28 +8,32 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TeamsModule extends MinigameModule {
-    private final @NotNull  Map<@NotNull TeamColor, @NotNull TeamFlag> teams = new HashMap<>();
+    private final @NotNull Map<@NotNull TeamColor, @NotNull TeamFlag> teams = new HashMap<>();
     private final @NotNull EnumFlag<@NotNull TeamColor> defaultWinner = new EnumFlag<>("defaultwinner", TeamColor.NONE);
 
-    public TeamsModule(@NotNull Minigame mgm, @NotNull String name) {
-        super(mgm, name);
+    public TeamsModule(final @NotNull Minigame mgm, final @NotNull Key key) {
+        super(mgm, key);
     }
 
     public static @Nullable TeamsModule getMinigameModule(@NotNull Minigame mgm) {
-        return ((TeamsModule) mgm.getModule(MgModules.TEAMS.getName()));
+        return ((TeamsModule) mgm.getModule(MgModules.TEAMS.getKey()));
     }
 
     @Override
@@ -38,44 +42,46 @@ public class TeamsModule extends MinigameModule {
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
-        for (TeamFlag teamFlag : teams.values()) {
-            teamFlag.saveValue(config, path + config.options().pathSeparator() + "teams");
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        final @NotNull CommentedConfigurationNode teamsNode = config.node("teams");
+        for (final @NotNull TeamFlag teamFlag : teams.values()) {
+            teamFlag.saveValue(teamsNode);
         }
 
-        defaultWinner.saveValue(config, path);
+        defaultWinner.saveValue(config);
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
+    public void load(final @NotNull CommentedConfigurationNode config) {
         // this does not have a dataFixerUpper
-        if (config.contains(path + config.options().pathSeparator() + "startposred") ||
-                config.contains(path + config.options().pathSeparator() + "startposblue")) {
-            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " +
-                    path + config.options().pathSeparator() + "startpos*");
+        if (config.hasChild("startposred") || config.hasChild( "startposblue")) {
+            Minigames.getPlugin().getLogger().warning(config.path() + " contains unsupported configurations: startpos*");
         }
 
-        final ConfigurationSection configSection = config.getConfigurationSection(path + config.options().pathSeparator() + "teams");
-        if (configSection != null) {
-            Set<String> teamNames = configSection.getKeys(false);
-            Scoreboard scoreboard = getMinigame().getScoreboard();
+        final @NotNull CommentedConfigurationNode teamsNode = config.node("teams");
+        if (!teamsNode.virtual() && !teamsNode.isNull()) {
+            final @NotNull Scoreboard scoreboard = getMinigame().getScoreboard();
 
-            for (String teamName : teamNames) {
-                TeamFlag tf = new TeamFlag(teamName, null, getMinigame());
-                tf.loadValue(config, path + config.options().pathSeparator() + getName().toLowerCase());
+            for (final @NotNull CommentedConfigurationNode teamNode : teamsNode.childrenList()) {
+                try {
+                    TeamFlag tf = new TeamFlag(teamNode.key().toString(), null, getMinigame());
+                    tf.loadValue(teamNode);
 
-                teams.put(tf.getFlag().getColor(), tf);
-                String sbTeam = tf.getFlag().getColor().toString().toLowerCase();
-                org.bukkit.scoreboard.Team scoreboardTeam = scoreboard.registerNewTeam(sbTeam);
-                scoreboardTeam.setAllowFriendlyFire(tf.getFlag().isFriendlyFireEnabled());
-                scoreboardTeam.setCanSeeFriendlyInvisibles(tf.getFlag().canSeeFriendlyInvisibles());
-                scoreboardTeam.setOption(org.bukkit.scoreboard.Team.Option.NAME_TAG_VISIBILITY, tf.getFlag().getNameTagVisibility());
-                scoreboardTeam.setOption(org.bukkit.scoreboard.Team.Option.COLLISION_RULE, tf.getFlag().getCollisionRule());
-                scoreboardTeam.color(tf.getFlag().getTextColor());
+                    teams.put(tf.getFlag().getColor(), tf);
+                    String sbTeam = tf.getFlag().getColor().toString().toLowerCase();
+                    org.bukkit.scoreboard.Team scoreboardTeam = scoreboard.registerNewTeam(sbTeam);
+                    scoreboardTeam.setAllowFriendlyFire(tf.getFlag().isFriendlyFireEnabled());
+                    scoreboardTeam.setCanSeeFriendlyInvisibles(tf.getFlag().canSeeFriendlyInvisibles());
+                    scoreboardTeam.setOption(org.bukkit.scoreboard.Team.Option.NAME_TAG_VISIBILITY, tf.getFlag().getNameTagVisibility());
+                    scoreboardTeam.setOption(org.bukkit.scoreboard.Team.Option.COLLISION_RULE, tf.getFlag().getCollisionRule());
+                    scoreboardTeam.color(tf.getFlag().getTextColor());
+                } catch (final @NotNull SerializationException e) {
+                    Minigames.getPlugin().getComponentLogger().error("Couldn't load team " + teamNode.path(), e);
+                }
             }
         }
 
-        defaultWinner.loadValue(config, path);
+        defaultWinner.loadValue(config);
     }
 
     public @Nullable Team getTeam(@NotNull TeamColor color) {
@@ -123,7 +129,7 @@ public class TeamsModule extends MinigameModule {
      */
     public @NotNull Team addTeam(@NotNull TeamColor color, @Nullable String name) {
         if (!hasTeam(color)) {
-            final TeamFlag teamFlag = new TeamFlag(color.name(), new Team(color, getMinigame()), getMinigame());
+            final TeamFlag teamFlag = new TeamFlag(color, new Team(color, getMinigame()), getMinigame());
             teams.put(color, teamFlag);
             String teamNameString = color.getUserFriendlyName().toLowerCase();
             @NotNull org.bukkit.scoreboard.Team bukkitTeam = getMinigame().getScoreboard().registerNewTeam(teamNameString);
@@ -146,7 +152,7 @@ public class TeamsModule extends MinigameModule {
      * @param team  The new Team
      */
     public void addTeam(@NotNull TeamColor color, @NotNull Team team) {
-        teams.put(color, new TeamFlag(color.name(), team, getMinigame()));
+        teams.put(color, new TeamFlag(color, team, getMinigame()));
         String sbTeam = color.getUserFriendlyName().toLowerCase();
         Scoreboard scoreboard = getMinigame().getScoreboard();
         org.bukkit.scoreboard.Team bukkitTeam = scoreboard.getTeam(sbTeam);
@@ -243,7 +249,7 @@ public class TeamsModule extends MinigameModule {
 
         List<TeamColor> teamColors = new ArrayList<>(teams.keySet());
         teamColors.add(TeamColor.NONE);
-        menuItems.add(new MenuItemList<>(Material.PAPER, MgMenuLangKey.MENU_TEAM_DEFAULTWIN_NAME,
+        menuItems.add(new MenuItemList<>(ItemType.PAPER, MgMenuLangKey.MENU_TEAM_DEFAULTWIN_NAME,
                 getDefaultWinnerCallback(), teamColors));
 
         menuItems.add(new MenuItemNewLine());
@@ -258,7 +264,7 @@ public class TeamsModule extends MinigameModule {
 
         menu.addItem(new MenuItemBack(previousMenu), menu.getSize() - 9);
 
-        MenuItemPage teamOptionsMenuPage = new MenuItemPage(Material.CHEST, MgMenuLangKey.MENU_TEAM_OPTIONS_NAME, menu);
+        MenuItemPage teamOptionsMenuPage = new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TEAM_OPTIONS_NAME, menu);
         previousMenu.addItem(teamOptionsMenuPage);
     }
 

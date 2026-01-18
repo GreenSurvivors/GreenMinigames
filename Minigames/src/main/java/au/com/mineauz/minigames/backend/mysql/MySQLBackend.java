@@ -46,8 +46,7 @@ public class MySQLBackend extends Backend {
             database = config.getString("database", "database");
 
             // Create the pool
-            String url = String.format("jdbc:mysql://%s/%s",
-                    config.getString("host", "localhost:3306"), database);
+            String url = String.format("jdbc:mysql://%s/%s", config.getString("host", "localhost:3306"), database);
             MinigameMessageManager.debugMessage("URL: " + url);
             Properties props = new Properties();
             props.put("user", config.getString("username", "username"));
@@ -236,7 +235,7 @@ public class MySQLBackend extends Backend {
                 return settings;
             }
         } catch (SQLException e) {
-            Minigames.getCmpnntLogger().error("", e);
+            Minigames.getPlugin().getComponentLogger().error("", e);
             return Collections.emptyMap();
         } finally {
             if (handler != null) {
@@ -255,14 +254,14 @@ public class MySQLBackend extends Backend {
             int minigameId = getMinigameId(handler, minigame);
             for (StatSettings setting : settings) {
                 handler.batchUpdate(saveStatSettings, minigameId, setting.getStat().getName(),
-                        MiniMessage.miniMessage().serialize(setting.getDisplayName()),
-                        setting.getFormat().name().toUpperCase());
+                    MiniMessage.miniMessage().serialize(setting.getDisplayName()),
+                    setting.getFormat().name().toUpperCase());
             }
 
             handler.executeBatch(saveStatSettings);
             handler.endTransaction();
         } catch (SQLException e) {
-            Minigames.getCmpnntLogger().error("", e);
+            Minigames.getPlugin().getComponentLogger().error("", e);
 
             if (handler != null) {
                 handler.endTransactionFail();

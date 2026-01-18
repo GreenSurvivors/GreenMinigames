@@ -5,10 +5,12 @@ import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
@@ -76,24 +78,24 @@ public abstract class AFlag<T> {
         };
     }
 
-    public abstract void saveValue(@NotNull Configuration config, @NotNull String path);
+    public abstract void saveValue(final @NotNull CommentedConfigurationNode config) throws SerializationException;
 
-    public abstract void loadValue(@NotNull Configuration config, @NotNull String path);
+    public abstract void loadValue(final @NotNull CommentedConfigurationNode config) throws ConfigurateException;
 
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMaterial, @NotNull MinigameLangKey langKey) {
-        return getMenuItem(displayMaterial, MinigameMessageManager.getMgMessage(langKey));
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey) {
+        return getMenuItem(displayType, MinigameMessageManager.getMgMessage(langKey));
     }
 
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMaterial, @Nullable Component name) {
-        return getMenuItem(displayMaterial, name, null);
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
+        return getMenuItem(displayType, name, null);
     }
 
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey nameLangKey,
-                                @NotNull MinigameLangKey descriptionLangKey) {
-        return getMenuItem(displayMat, MinigameMessageManager.getMgMessage(nameLangKey),
-                MinigameMessageManager.getMgMessageList(descriptionLangKey));
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey nameLangKey,
+                                         @NotNull MinigameLangKey descriptionLangKey) {
+        return getMenuItem(displayType, MinigameMessageManager.getMgMessage(nameLangKey),
+            MinigameMessageManager.getMgMessageList(descriptionLangKey));
     }
 
-    public abstract @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                         @Nullable List<@NotNull Component> description);
+    public abstract @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
+                                                  @Nullable List<@NotNull Component> description);
 }

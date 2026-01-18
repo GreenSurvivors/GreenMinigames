@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +55,7 @@ public class SpectateSign extends AMinigameSign {
 
     @Override
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        if (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && !mgPlayer.isInMinigame()) {
+        if (mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty() && !mgPlayer.isInMinigame()) {
             Minigame mgm = getMinigame(sign);
             if (mgm != null) {
                 if (mgm.isEnabled()) {

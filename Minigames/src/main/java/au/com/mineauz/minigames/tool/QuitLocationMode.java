@@ -7,9 +7,11 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
+import org.bukkit.block.BlockType;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,8 +35,8 @@ public class QuitLocationMode implements ToolMode {
     }
 
     @Override
-    public @NotNull Material getIcon() {
-        return Material.OAK_DOOR;
+    public @NotNull ItemType getIcon() {
+        return ItemType.OAK_DOOR;
     }
 
     @Override
@@ -46,14 +48,16 @@ public class QuitLocationMode implements ToolMode {
     @Override
     public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
                              @Nullable Team team, @NotNull PlayerInteractEvent event) {
-        minigame.setQuitLocation(mgPlayer.getLocation());
+        minigame.setQuitLocation(new SafeFullLocation(mgPlayer.getLocation()));
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SET_QUITLOCATION);
     }
 
     @Override
     public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         if (minigame.getQuitLocation() != null) {
-            mgPlayer.getPlayer().sendBlockChange(minigame.getQuitLocation(), Material.SKELETON_SKULL.createBlockData());
+            if (mgPlayer.getLocation().getWorld().equals(minigame.getQuitLocation().getWorld())) {
+                mgPlayer.getPlayer().sendBlockChange(minigame.getQuitLocation().toLocation(), BlockType.SKELETON_SKULL.createBlockData());
+            }
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_QUITLOCATION);
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOQUITLOCATION);
@@ -63,8 +67,10 @@ public class QuitLocationMode implements ToolMode {
     @Override
     public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         if (minigame.getQuitLocation() != null) {
-            mgPlayer.getPlayer().sendBlockChange(minigame.getQuitLocation(),
-                    minigame.getQuitLocation().getBlock().getBlockData());
+            if (mgPlayer.getLocation().getWorld().equals(minigame.getQuitLocation().getWorld())) {
+                mgPlayer.getPlayer().sendBlockChange(minigame.getQuitLocation().toLocation(),
+                    minigame.getQuitLocation().getBlockAt().getBlockData());
+            }
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_QUITLOCATION);
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOQUITLOCATION);

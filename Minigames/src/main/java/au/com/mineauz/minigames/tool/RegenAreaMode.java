@@ -15,9 +15,10 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.RegenRegionChangeResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,8 +47,8 @@ public class RegenAreaMode implements ToolMode {
     }
 
     @Override
-    public @NotNull Material getIcon() {
-        return Material.OAK_SAPLING;
+    public @NotNull ItemType getIcon() {
+        return ItemType.OAK_SAPLING;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class RegenAreaMode implements ToolMode {
             menu.addItem(new MenuItemBack(mgPlayer.getMenu()), menu.getSize() - 9);
         }
 
-        menu.addItem(new MenuItemString(Material.PAPER, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONNAME_NAME, new Callback<>() {
+        menu.addItem(new MenuItemString(ItemType.PAPER, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONNAME_NAME, new Callback<>() {
 
             @Override
             public @NotNull String getValue() {
@@ -77,7 +78,7 @@ public class RegenAreaMode implements ToolMode {
             List<MenuItem> menuItems = new ArrayList<>();
 
             for (final MgRegion region : tool.getMinigame().getRegenRegions()) {
-                MenuItemCustom customMenuItem = new MenuItemCustom(Material.CHEST, Component.text(region.getName()));
+                MenuItemCustom customMenuItem = new MenuItemCustom(ItemType.CHEST, Component.text(region.getName()));
 
                 // Set the region area and go back to the main menu
                 customMenuItem.setClick(() -> {
@@ -85,7 +86,7 @@ public class RegenAreaMode implements ToolMode {
 
                     menu.displayMenu(mgPlayer);
 
-                    return null;
+                    return ItemStack.empty();
                 });
 
                 menuItems.add(customMenuItem);
@@ -94,7 +95,7 @@ public class RegenAreaMode implements ToolMode {
             regionMenu.addItems(menuItems);
             regionMenu.addItem(new MenuItemBack(menu), regionMenu.getSize() - 9);
 
-            menu.addItem(new MenuItemPage(Material.CHEST, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONEDIT_NAME, regionMenu));
+            menu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONEDIT_NAME, regionMenu));
         }
         menu.displayMenu(mgPlayer);
     }
@@ -116,23 +117,23 @@ public class RegenAreaMode implements ToolMode {
             if (result.success()) {
                 if (region == null) {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.REGION_REGENREGION_CREATED,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                 } else {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.REGION_REGENREGION_UPDATED,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                 }
 
                 mgPlayer.clearSelection();
             } else {
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_REGENREGION_ERROR_LIMIT,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
             }
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOREGIONSELECTED);
@@ -155,13 +156,13 @@ public class RegenAreaMode implements ToolMode {
         String name = MinigameTool.getMinigameTool(mgPlayer).getSetting(SETTING_KEY);
         if (minigame.getRegenRegion(name) != null) {
             displayedRegions.put(mgPlayer.getUUID(),
-                    Minigames.getPlugin().display.displayCuboid(mgPlayer.getPlayer(), minigame.getRegenRegion(name)));
+                Minigames.getPlugin().getDisplayManager().displayCuboid(mgPlayer.getPlayer(), minigame.getRegenRegion(name)));
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_REGENREGION,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
+                Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
+                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_ERROR_NOREGENREION,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name));
+                Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name));
         }
     }
 
@@ -180,7 +181,7 @@ public class RegenAreaMode implements ToolMode {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_REGION);
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_ERROR_NOREGENREION,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name));
+                Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name));
         }
     }
 }

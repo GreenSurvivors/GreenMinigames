@@ -63,8 +63,8 @@ public class CTFFlag {
         Block signBlock = sign.getBlock();
         if (Tag.WALL_SIGNS.isTagged(signBlock.getType())) {
             this.spawnAttachedToLocation = signBlock.getRelative(
-                            ((Directional) sign.getBlockData()).getFacing().getOppositeFace()).
-                    getLocation().toBlockLocation();
+                    ((Directional) sign.getBlockData()).getFacing().getOppositeFace()).
+                getLocation().toBlockLocation();
         } else if (Tag.STANDING_SIGNS.isTagged(signBlock.getType())) {
             this.spawnAttachedToLocation = signBlock.getRelative(BlockFace.DOWN).getLocation().toBlockLocation();
         } else { // is hanging sign and therefor not depending on a block
@@ -99,6 +99,7 @@ public class CTFFlag {
     /**
      * If no (horizontal) blockface was given, sets a flag as a block in the world above or below the given location, so that is stands on the ground
      * Elsewise it will set the flag as a wall attachment
+     *
      * @param location the location near where the flag should be placed
      * @return the location where the flag was placed or null if not possible
      */
@@ -141,7 +142,7 @@ public class CTFFlag {
 
                 currentAttachtedToOriginalBlockState = nextTo.getBlock().getState();
                 currentAttachtedToLocation = nextTo.clone();
-                nextTo.getBlock().setType(Material.BEDROCK);
+                nextTo.getBlock().setBlockData(BlockType.BEDROCK.createBlockData());
 
                 atHome = false;
 
@@ -200,7 +201,7 @@ public class CTFFlag {
 
                 currentAttachtedToOriginalBlockState = blockBelow.getBlock().getState();
                 currentAttachtedToLocation = blockBelow.clone();
-                blockBelow.getBlock().setType(Material.BEDROCK);
+                blockBelow.getBlock().setBlockData(BlockType.BEDROCK.createBlockData());
 
                 atHome = false;
 
@@ -217,10 +218,10 @@ public class CTFFlag {
 
     public void removeFlag() {
         if (atHome) {
-            spawnLocation.getBlock().setType(Material.AIR);
+            spawnLocation.getBlock().setBlockData(BlockType.AIR.createBlockData());
         } else {
             if (currentLocation != null) {
-                currentLocation.getBlock().setType(Material.AIR);
+                currentLocation.getBlock().setBlockData(BlockType.AIR.createBlockData());
 
                 currentAttachtedToLocation.getBlock().setType(currentAttachtedToOriginalBlockState.getType());
                 currentAttachtedToOriginalBlockState.update();
@@ -260,18 +261,18 @@ public class CTFFlag {
     public void startReturnTimer() {
         final CTFFlag self = this;
         taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
-            final String locationID = MinigameUtils.createLocationID(currentLocation);
+            final String locationID = MinigameUtils.createBlockLocationID(currentLocation);
 
             if (ctfModule.hasDroppedFlag(locationID)) {
                 ctfModule.removeDroppedFlag(locationID);
-                String newID = MinigameUtils.createLocationID(spawnLocation);
+                String newID = MinigameUtils.createBlockLocationID(spawnLocation);
                 ctfModule.addDroppedFlag(newID, self);
             }
             respawnFlag();
 
             if (getTeam() != null) {
                 MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_FLAG_RETURNEDTEAM,
-                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(getTeam().getDisplayName(), getTeam().getTextColor()))));
+                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(getTeam().getDisplayName(), getTeam().getTextColor()))));
             } else {
                 MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_FLAG_RETURNEDNEUTRAL));
             }
@@ -297,7 +298,7 @@ public class CTFFlag {
     }
 
     @Contract(pure = true)
-    public boolean isFlag (final @NotNull ItemStack item) {
+    public boolean isFlag(final @NotNull ItemStack item) {
         return item.getPersistentDataContainer().has(flagKey);
     }
 

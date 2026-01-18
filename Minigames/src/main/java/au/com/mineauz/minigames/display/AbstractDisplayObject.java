@@ -5,34 +5,37 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
+
 /**
  * The type Abstract display object.
  */
 public abstract class AbstractDisplayObject implements IDisplayObject {
-    private final @NotNull World world;
     private final @NotNull DisplayManager manager;
-    protected @Nullable Player player;
+    private final @NotNull WeakReference<World> worldReference;
+    protected final @Nullable Player player;
 
     /**
      * Instantiates a new Abstract display object.
      *
      * @param manager the manager
-     * @param world the world
+     * @param world   the world
      */
     public AbstractDisplayObject(final @NotNull DisplayManager manager, final @NotNull World world) {
         this.manager = manager;
-        this.world = world;
+        this.worldReference = new WeakReference<>(world);
+        this.player = null;
     }
 
     /**
      * Instantiates a new Abstract display object.
      *
      * @param manager the manager
-     * @param player the player
+     * @param player  the player
      */
     public AbstractDisplayObject(final @NotNull DisplayManager manager, final @NotNull Player player) {
         this.manager = manager;
-        this.world = player.getWorld();
+        this.worldReference = new WeakReference<>(player.getWorld());
         this.player = player;
     }
 
@@ -60,8 +63,8 @@ public abstract class AbstractDisplayObject implements IDisplayObject {
      * @return the world
      */
     @Override
-    public @NotNull World getWorld() {
-        return world;
+    public @Nullable World getWorld() {
+        return worldReference.get();
     }
 
     /**

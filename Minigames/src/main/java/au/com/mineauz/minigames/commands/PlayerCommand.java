@@ -72,8 +72,8 @@ public class PlayerCommand extends ACommand {
                     for (MinigamePlayer mgPlayer : mgPlayers) {
                         //todo don't send x trillion messages. merge to list and send as pages
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_PLAYER_LIST_ENTRY,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName()), //  mgPlayer.getMinigame() is never null, we only add player in Minigame to list
-                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName()), //  mgPlayer.getMinigame() is never null, we only add player in Minigame to list
+                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                     }
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgMiscLangKey.QUANTIFIER_NONE);
@@ -86,37 +86,37 @@ public class PlayerCommand extends ACommand {
                     if (mgPlayer.isInMinigame()) {
                         TextComponent.Builder message = Component.text();
                         message.append(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_HEADER,
-                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName())));
+                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName())));
 
                         Duration playTime = Duration.ofMillis(Calendar.getInstance().getTimeInMillis() - mgPlayer.getStartTime() + mgPlayer.getStoredTime());
 
                         message.appendNewline().append(MinigameMessageManager.getMgMessage(
-                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_MINIGAME,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName())));
+                            MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_MINIGAME,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getName())));
                         message.appendNewline().append(MinigameMessageManager.getMgMessage(
-                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_SCORE,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore()))));
+                            MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_SCORE,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore()))));
                         message.appendNewline().append(MinigameMessageManager.getMgMessage(
-                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_KILLS,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.KILLS.getKey(), String.valueOf(mgPlayer.getKills()))));
+                            MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_KILLS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.KILLS.getKey(), String.valueOf(mgPlayer.getKills()))));
                         message.appendNewline().append(MinigameMessageManager.getMgMessage(
-                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_DEATHS,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.DEATHS.getKey(), String.valueOf(mgPlayer.getDeaths()))));
+                            MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_DEATHS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.DEATHS.getKey(), String.valueOf(mgPlayer.getDeaths()))));
                         message.appendNewline().append(MinigameMessageManager.getMgMessage(
-                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_REVERTS,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.REVERTS.getKey(), String.valueOf(mgPlayer.getReverts()))));
+                            MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_REVERTS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.REVERTS.getKey(), String.valueOf(mgPlayer.getReverts()))));
                         message.appendNewline().append(MinigameMessageManager.getMgMessage(
-                                MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_PLAYTIME,
-                                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(playTime))));
+                            MgCommandLangKey.COMMAND_PLAYER_PLAYERINFO_PLAYTIME,
+                            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(playTime))));
 
                         MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, message.build());
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_PLAYER,
-                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
+                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                     }
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
             }
             return true;
@@ -129,7 +129,7 @@ public class PlayerCommand extends ACommand {
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> plys = new ArrayList<>(PLUGIN.getPlayerManager().getAllMinigamePlayers()).stream().
-                    map(MinigamePlayer::getName).collect(Collectors.toCollection(ArrayList::new));
+                map(MinigamePlayer::getName).collect(Collectors.toCollection(ArrayList::new));
 
             plys.add("list");
             return CommandDispatcher.tabCompleteMatch(plys, args[0]);

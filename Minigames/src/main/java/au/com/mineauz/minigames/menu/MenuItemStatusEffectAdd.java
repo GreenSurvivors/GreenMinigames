@@ -12,10 +12,10 @@ import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -31,43 +32,43 @@ public class MenuItemStatusEffectAdd extends MenuItem implements StringConsumer 
     private static final @NotNull Pattern POSITIV_INT_PATTERN = Pattern.compile("[+]?[0-9]+");
     private final @NotNull PlayerLoadout loadout;
 
-    public MenuItemStatusEffectAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull PlayerLoadout loadout) {
-        super(displayMat, langKey);
+    public MenuItemStatusEffectAdd(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull PlayerLoadout loadout) {
+        super(displayType, langKey);
         this.loadout = loadout;
     }
 
-    public MenuItemStatusEffectAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull PlayerLoadout loadout) {
-        super(displayMat, name);
+    public MenuItemStatusEffectAdd(@Nullable ItemType displayType, @Nullable Component name, @NotNull PlayerLoadout loadout) {
+        super(displayType, name);
         this.loadout = loadout;
     }
 
-    public MenuItemStatusEffectAdd(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemStatusEffectAdd(@Nullable ItemType displayType, @Nullable Component name,
                                    @Nullable List<@NotNull Component> description, @NotNull PlayerLoadout loadout) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.loadout = loadout;
     }
 
     @Override
-    public @Nullable ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
 
         // time for a player to write a valid potion into chat
-        int reopenSeconds = 30;
+        final @NotNull Duration reopenTime = Duration.ofSeconds(30);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STATUSEFFECTADD_ENTERCHAT,
-                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
         mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(reopenSeconds);
-        return null;
+        getContainer().startReopenTimer(reopenTime);
+        return ItemStack.empty();
     }
 
     @Override
     public void acceptString(@NotNull String entry) {
         String[] split = entry.split(", ");
         if (split.length == 3) {
-            String effect = split[0].toUpperCase();
+            String effect = split[0].toLowerCase(Locale.ROOT);
             @Nullable PotionEffectType eff = Registry.EFFECT.get(NamespacedKey.fromString(effect));
             if (eff != null) {
                 if (POSITIV_INT_PATTERN.matcher(split[1]).matches() && Integer.parseInt(split[1]) != 0) {
@@ -92,22 +93,22 @@ public class MenuItemStatusEffectAdd extends MenuItem implements StringConsumer 
                         }
                         for (int i = 0; i < 36; i++) {
                             if (!getContainer().hasMenuItem(i)) {
-                                getContainer().addItem(new MenuItemStatusEffect(Material.POTION, Component.translatable(eff.translationKey()), des, peff, loadout), i);
+                                getContainer().addItem(new MenuItemStatusEffect(ItemType.POTION, Component.translatable(eff.translationKey()), des, peff, loadout), i);
                                 loadout.addPotionEffect(peff);
                                 break;
                             }
                         }
                     } else {
                         MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
                     }
                 } else {
                     MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
                 }
             } else {
                 MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTSTATUSEFFECT,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
             }
 
             getContainer().cancelReopenTimer();

@@ -13,9 +13,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +27,9 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
     private static final @NotNull String DESCRIPTION_TOKEN = "BlockData_description";
     private final @NotNull Callback<BlockData> dataCallback;
 
-    public MenuItemBlockData(@NotNull Material displayMat, @Nullable Component name,
+    public MenuItemBlockData(@NotNull ItemType displayType, @Nullable Component name,
                              @NotNull Callback<BlockData> callback) {
-        super(displayMat, name);
+        super(displayType, name);
         this.dataCallback = callback;
         setDescriptionPart(DESCRIPTION_TOKEN, createDescription(dataCallback.getValue()));
     }
@@ -44,9 +44,9 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
      */
     private @NotNull List<@NotNull Component> createDescription(@NotNull BlockData data) {
         List<Component> result = new ArrayList<>();
-        result.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MATERIAL_DESCRIOPTION,
-                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(data.getMaterial().translationKey()))));
-        String dataString = data.getAsString();
+        result.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_BLOCKTYPE_DESCRIPTION,
+            Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(data.getMaterial().translationKey()))));
+        final @NotNull String dataString = data.getAsString();
 
         int firstBracket = dataString.indexOf('[');
         int secondBracket = dataString.indexOf(']');
@@ -59,8 +59,8 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
                 String[] pair = StringUtils.split(meta, "=", 2);
                 if (pair.length == 2) {
                     result.add(Component.text(pair[0], NamedTextColor.GOLD).
-                            append(Component.text(" : ")).
-                            append(Component.text(pair[1], NamedTextColor.DARK_GREEN)));
+                        append(Component.text(" : ")).
+                        append(Component.text(pair[1], NamedTextColor.DARK_GREEN)));
                 } else {
                     result.add(Component.text(val, NamedTextColor.GOLD));
                 }
@@ -69,15 +69,15 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
             int extraStart = dataString.indexOf('{', secondBracket);
             if (extraStart > 0) {
                 result.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_BLOCKDATA_DESCRIOPTION_EXTRA,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), dataString.substring(extraStart))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), dataString.substring(extraStart))));
             }
         }
         return result;
     }
 
     @Override
-    public @NotNull ItemStack onClickWithItem(@Nullable ItemStack item) {
-        if (item != null && item.getType().isBlock()) {
+    public @NotNull ItemStack onClickWithItem(@NotNull ItemStack item) {
+        if (item.getType().isBlock()) {
             this.dataCallback.setValue(item.getType().createBlockData());
 
             // update the display item
@@ -85,23 +85,23 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
             setDisplayItem(stackUpdate.withType(item.getType()));
         } else {
             MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_BLOCKDATA_ERROR_INVALID,
-                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item != null ? Component.translatable(item.getType().translationKey()) : Component.text("?")));
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(item.getType().translationKey())));
         }
         return getDisplayItem();
     }
 
     @Override
-    public @Nullable ItemStack onDoubleClick() {
+    public @NotNull ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
-        final int reopenSeconds = 10;
+        final @NotNull Duration reopenTime = Duration.ofSeconds(10);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_BLOCKDATA_CLICKBLOCK,
-                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
-                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+            Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
         mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenSeconds);
-        return null;
+        getContainer().startReopenTimer(reopenTime);
+        return ItemStack.empty();
     }
 
     @Override
@@ -119,9 +119,11 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
         setDescriptionPart(DESCRIPTION_TOKEN, createDescription(dataCallback.getValue()));
 
         // update the display item
-        if (blockData.getMaterial().isItem()) {
+        if (blockData.getPlacementMaterial().isItem()) {
             ItemStack stackUpdate = getDisplayItem();
-            setDisplayItem(stackUpdate.withType(blockData.getMaterial()));
+            setDisplayItem(stackUpdate.withType(blockData.getPlacementMaterial()));
+        } else {
+            // todo - does never happen, hopefully
         }
 
         getContainer().cancelReopenTimer();

@@ -8,12 +8,13 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.block.BlockType;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,8 +38,8 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
     }
 
     @Override
-    public @NotNull Material getIcon() {
-        return Material.SKELETON_SKULL;
+    public @NotNull ItemType getIcon() {
+        return ItemType.SKELETON_SKULL;
     }
 
     @Override
@@ -53,13 +54,13 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
             int ny;
             int nz;
             String nworld;
-            Location delLoc = null;
+            @Nullable SafeFullLocation delLoc = null;
             if (team != null) {
                 if (team.hasStartLocations()) {
-                    for (Location loc : team.getStartLocations()) {
-                        nx = loc.getBlockX();
-                        ny = loc.getBlockY();
-                        nz = loc.getBlockZ();
+                    for (SafeFullLocation loc : team.getStartLocations()) {
+                        nx = loc.blockX();
+                        ny = loc.blockY();
+                        nz = loc.blockZ();
                         nworld = loc.getWorld().getName();
 
                         if (x == nx && y == ny && z == nz && world.equals(nworld)) {
@@ -78,10 +79,10 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName() + " ", team.getTextColor())));
                 }
             } else {
-                for (Location loc : minigame.getStartLocations()) {
-                    nx = loc.getBlockX();
-                    ny = loc.getBlockY();
-                    nz = loc.getBlockZ();
+                for (SafeFullLocation loc : minigame.getStartLocations()) {
+                    nx = loc.blockX();
+                    ny = loc.blockY();
+                    nz = loc.blockZ();
                     nworld = loc.getWorld().getName();
 
                     if (x == nx && y == ny && z == nz && world.equals(nworld)) {
@@ -103,13 +104,13 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
     @Override
     public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event) {
         if (team == null) {
-            minigame.addStartLocation(mgPlayer.getLocation());
+            minigame.addStartLocation(new SafeFullLocation(mgPlayer.getLocation()));
 
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_ADDED_STARTLOCATION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), ""),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
-            team.addStartLocation(mgPlayer.getLocation());
+            team.addStartLocation(new SafeFullLocation(mgPlayer.getLocation()));
 
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_ADDED_STARTLOCATION,
                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName() + " ", team.getTextColor())),
@@ -120,16 +121,20 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
     @Override
     public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         if (team != null) {
-            for (Location loc : team.getStartLocations()) {
-                mgPlayer.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL.createBlockData());
+            for (SafeFullLocation loc : team.getStartLocations()) {
+                if (mgPlayer.getLocation().getWorld().equals(loc.getWorld())) {
+                    mgPlayer.getPlayer().sendBlockChange(loc.toLocation(), BlockType.SKELETON_SKULL.createBlockData());
+                }
             }
 
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_STARTLOCATION,
                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName() + " ", team.getTextColor())),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
-            for (Location loc : minigame.getStartLocations()) {
-                mgPlayer.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL.createBlockData());
+            for (SafeFullLocation loc : minigame.getStartLocations()) {
+                if (mgPlayer.getLocation().getWorld().equals(loc.getWorld())) {
+                    mgPlayer.getPlayer().sendBlockChange(loc.toLocation(), BlockType.SKELETON_SKULL.createBlockData());
+                }
             }
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_STARTLOCATION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), ""),
@@ -140,16 +145,20 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
     @Override
     public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         if (team != null) {
-            for (Location loc : team.getStartLocations()) {
-                mgPlayer.getPlayer().sendBlockChange(loc, loc.getBlock().getBlockData());
+            for (final @NotNull SafeFullLocation loc : team.getStartLocations()) {
+                if (mgPlayer.getLocation().getWorld().equals(loc.getWorld())) {
+                    mgPlayer.getPlayer().sendBlockChange(loc.toLocation(), loc.getBlockAt().getBlockData());
+                }
             }
 
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_STARTLOCATION,
                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName() + " ", team.getTextColor())),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
-            for (Location loc : minigame.getStartLocations()) {
-                mgPlayer.getPlayer().sendBlockChange(loc, loc.getBlock().getBlockData());
+            for (SafeFullLocation loc : minigame.getStartLocations()) {
+                if (mgPlayer.getLocation().getWorld().equals(loc.getWorld())) {
+                    mgPlayer.getPlayer().sendBlockChange(loc.toLocation(), loc.getBlockAt().getBlockData());
+                }
             }
 
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_STARTLOCATION,

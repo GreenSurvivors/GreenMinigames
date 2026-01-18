@@ -11,8 +11,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,32 +25,32 @@ public class MenuItemList<T> extends MenuItem implements StringConsumer { //todo
     private final @NotNull Callback<T> value;
     private final @NotNull List<T> options;
 
-    public MenuItemList(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<@NotNull T> value,
+    public MenuItemList(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<@NotNull T> value,
                         @NotNull List<@NotNull T> options) {
-        super(displayMat, langKey);
+        super(displayType, langKey);
         this.value = value;
         this.options = options;
         updateDescription();
     }
 
-    public MenuItemList(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<@NotNull T> value,
+    public MenuItemList(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<@NotNull T> value,
                         @NotNull List<@NotNull T> options) {
-        this(displayMat, name, null, value, options);
+        this(displayType, name, null, value, options);
     }
 
-    public MenuItemList(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
+    public MenuItemList(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
                         @Nullable List<@NotNull Component> description, @NotNull Callback<@NotNull T> value,
                         @NotNull List<@NotNull T> options) {
-        super(displayMat, langKey, description);
+        super(displayType, langKey, description);
         this.value = value;
         this.options = options;
         updateDescription();
     }
 
-    public MenuItemList(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemList(@Nullable ItemType displayType, @Nullable Component name,
                         @Nullable List<@NotNull Component> description, @NotNull Callback<@NotNull T> value,
                         @NotNull List<@NotNull T> options) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.value = value;
         this.options = options;
         updateDescription();
@@ -65,7 +65,7 @@ public class MenuItemList<T> extends MenuItem implements StringConsumer { //todo
 
         if (pos == -1) {
             setDescriptionPart(DESCRIPTION_TOKEN,
-                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_ERROR_UNKNOWN));
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_ERROR_UNKNOWN));
         } else {
             List<Component> description = new ArrayList<>();
 
@@ -115,28 +115,28 @@ public class MenuItemList<T> extends MenuItem implements StringConsumer { //todo
     }
 
     @Override
-    public @Nullable ItemStack onDoubleClick() {
+    public @NotNull ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
 
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
-        int reopenSeconds = 10;
+        final @NotNull Duration reopenTime = Duration.ofSeconds(10);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LIST_ENTERCHAT,
-                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
-                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+            Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
         String optionsStr = String.join(", ", options.stream().map(Object::toString).toList());
         if (optionsStr.length() > 8000) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMenuLangKey.MENU_LIST_ERROR_TOOLONG);
         } else {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LIST_OPTION,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), optionsStr));
+                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), optionsStr));
         }
 
         mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenSeconds);
+        getContainer().startReopenTimer(reopenTime);
 
-        return null;
+        return ItemStack.empty();
     }
 
     @Override

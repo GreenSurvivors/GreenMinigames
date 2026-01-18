@@ -17,7 +17,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -34,7 +34,7 @@ public class SQLiteBackend extends Backend {
     private StatementKey insertPlayer;
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
-    private @Nullable File database;
+    private @Nullable Path database;
 
 
     public SQLiteBackend(@NotNull ComponentLogger logger) {
@@ -42,14 +42,14 @@ public class SQLiteBackend extends Backend {
         loader = new SQLiteStatLoader(this, logger);
         saver = new SQLiteStatSaver(this, logger);
         try {
-            database = new File(Minigames.getPlugin().getDataFolder(), "minigames.db");
+            database = Minigames.getPlugin().getDataPath().resolve("minigames.db");
         } catch (NullPointerException e) {
             logger.warn("Could not locate or set database path");
         }
 
     }
 
-    public void setDatabase(File dbbath) {
+    public void setDatabase(final @Nullable Path dbbath) {
         database = dbbath;
     }
 
@@ -63,7 +63,7 @@ public class SQLiteBackend extends Backend {
             if (database == null) {
                 return false;
             }
-            String url = "jdbc:sqlite:" + database.getAbsolutePath();
+            String url = "jdbc:sqlite:" + database.toAbsolutePath();
             MinigameMessageManager.debugMessage("URL: " + url);
             Properties properties = new Properties();
             properties.put("username", "");
@@ -278,7 +278,7 @@ public class SQLiteBackend extends Backend {
                 return settings;
             }
         } catch (SQLException e) {
-            Minigames.getCmpnntLogger().error("", e);
+            Minigames.getPlugin().getComponentLogger().error("", e);
             return Collections.emptyMap();
         } finally {
             if (handler != null) {
@@ -304,7 +304,7 @@ public class SQLiteBackend extends Backend {
             handler.executeBatch(saveStatSettings);
             handler.endTransaction();
         } catch (SQLException e) {
-            Minigames.getCmpnntLogger().error("", e);
+            Minigames.getPlugin().getComponentLogger().error("", e);
 
             if (handler != null) {
                 handler.endTransactionFail();
@@ -331,7 +331,7 @@ public class SQLiteBackend extends Backend {
     @Override
     public boolean doConversion(@NotNull Notifier notifier) {
         BackendImportCallback callback = getImportCallback();
-        FlatFileExporter exporter = new FlatFileExporter(new File(Minigames.getPlugin().getDataFolder(), "completion.yml"), callback, notifier);
+        FlatFileExporter exporter = new FlatFileExporter(Path.of("completion"), callback, notifier);
         return exporter.doExport();
     }
 }

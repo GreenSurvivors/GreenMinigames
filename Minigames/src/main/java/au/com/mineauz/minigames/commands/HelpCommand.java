@@ -35,16 +35,16 @@ public class HelpCommand extends ACommand {
                 info.append(Component.join(JoinConfiguration.arrayLike(), Arrays.stream(setCommand.getAliases()).map(Component::text).toList()));
 
                 MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
-                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
-                                append(info.appendNewline().append(setCommand.getUsage()).appendNewline().append(setCommand.getDescription()).
-                                        colorIfAbsent(NamedTextColor.WHITE)));//todo needs formatting (not hardcoded)
+                    MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
+                        append(info.appendNewline().append(setCommand.getUsage()).appendNewline().append(setCommand.getDescription()).
+                            colorIfAbsent(NamedTextColor.WHITE)));//todo needs formatting (not hardcoded)
             } else {
                 MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
-                        MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
-                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
-                                append(setCommand.getUsage().appendNewline().append(setCommand.getDescription()).
-                                        colorIfAbsent(NamedTextColor.WHITE)));//todo needs formatting (not hardcoded)
+                    MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
+                        append(setCommand.getUsage().appendNewline().append(setCommand.getDescription()).
+                            colorIfAbsent(NamedTextColor.WHITE)));//todo needs formatting (not hardcoded)
             }
             return true;
         } else {
@@ -89,12 +89,12 @@ public class HelpCommand extends ACommand {
         final List<ICommandInfo> commandsOfPage = allCommands.subList(COMMANDS_PER_SITE * (pageNumber - 1), Math.min(allCommands.size(), pageNumber * COMMANDS_PER_SITE));
         // command name + description + click event for detailed info
         final Component pageCore = Component.join(JoinConfiguration.newlines(), commandsOfPage.stream().
-                map(cmd -> Component.text(cmd.getName()).append(Component.text(" - ")).append(cmd.getDescription()).
-                        clickEvent(ClickEvent.suggestCommand("/minigame help " + cmd.getName()))).toList()).colorIfAbsent(NamedTextColor.WHITE); //todo needs formatting (not hardcoded)
+            map(cmd -> Component.text(cmd.getName()).append(Component.text(" - ")).append(cmd.getDescription()).
+                clickEvent(ClickEvent.suggestCommand("/minigame help " + cmd.getName()))).toList()).colorIfAbsent(NamedTextColor.WHITE); //todo needs formatting (not hardcoded)
 
         final Component header = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_LIST_HEADER,
-                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(pageNumber)),
-                Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(numPages)));
+            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(pageNumber)),
+            Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(numPages)));
         final Component footer = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DIVIDER_LARGE); //todo clickable next/back buttons on footer
 
         return header.appendNewline().append(pageCore).appendNewline().append(footer);

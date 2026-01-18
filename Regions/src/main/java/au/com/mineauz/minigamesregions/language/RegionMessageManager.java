@@ -26,7 +26,7 @@ public class RegionMessageManager {
         if (src != null) {
             MinigameMessageManager.initLangFiles(src, BUNDLE_KEY);
         } else {
-            Minigames.getCmpnntLogger().warn("Couldn't save lang files: no CodeSource!");
+            Main.getPlugin().getComponentLogger().warn("Couldn't save lang files: no CodeSource!");
         }
 
         String tag = Minigames.getPlugin().getConfig().getString("lang", Locale.getDefault().toLanguageTag());
@@ -44,19 +44,19 @@ public class RegionMessageManager {
             try (InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
                 langBundleMinigameRegions = new PropertyResourceBundle(inputStreamReader);
             } catch (IOException e) {
-                Minigames.getCmpnntLogger().warn("couldn't get Ressource bundle from file " + file.getName(), e);
+                Main.getPlugin().getComponentLogger().warn("couldn't get Ressource bundle from file " + file.getName(), e);
             }
         } else {
             try {
                 langBundleMinigameRegions = ResourceBundle.getBundle(BUNDLE_KEY, locale, Main.getPlugin().getClass().getClassLoader(), new UTF8ResourceBundleControl());
             } catch (MissingResourceException e) {
-                Minigames.getCmpnntLogger().warn("couldn't get Ressource bundle for lang " + locale.toLanguageTag(), e);
+                Main.getPlugin().getComponentLogger().warn("couldn't get Ressource bundle for lang " + locale.toLanguageTag(), e);
             }
         }
         if (langBundleMinigameRegions != null) {
             MinigameMessageManager.registerMessageFile(BUNDLE_KEY, langBundleMinigameRegions);
         } else {
-            Minigames.getCmpnntLogger().error("No region language Resource Could be loaded...messaging will be broken");
+            Main.getPlugin().getComponentLogger().error("No region language Resource Could be loaded...messaging will be broken");
         }
     }
 

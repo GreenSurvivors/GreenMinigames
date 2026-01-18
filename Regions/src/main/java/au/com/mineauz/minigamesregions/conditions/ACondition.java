@@ -11,15 +11,16 @@ import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
 public abstract class ACondition {
-    private final @NotNull BooleanFlag invert = new BooleanFlag("invert", false);
+    private final @NotNull BooleanFlag isInverted = new BooleanFlag("invert", false);
     protected final @NotNull String name;
 
     protected ACondition(@NotNull String name) {
@@ -27,19 +28,19 @@ public abstract class ACondition {
     }
 
     protected void addInvertMenuItem(@NotNull Menu menu) {
-        menu.addItem(invert.getMenuItem(Material.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_INVERT_NAME)), menu.getSize() - 1);
+        menu.addItem(isInverted.getMenuItem(ItemType.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_INVERT_NAME)), menu.getSize() - 1);
     }
 
-    protected void saveInvert(@NotNull FileConfiguration config, @NotNull String path) {
-        invert.saveValue(config, path);
+    protected void saveInvertedStatus(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        isInverted.saveValue(config);
     }
 
-    protected void loadInvert(@NotNull FileConfiguration config, @NotNull String path) {
-        invert.loadValue(config, path);
+    protected void loadInvert(@NotNull CommentedConfigurationNode config) {
+        isInverted.loadValue(config);
     }
 
     public boolean isInverted() {
-        return invert.getFlag();
+        return isInverted.getFlag();
     }
 
     public @NotNull String getName() {
@@ -58,9 +59,9 @@ public abstract class ACondition {
 
     public abstract boolean checkNodeCondition(MinigamePlayer mgPlayer, @NotNull Node node);
 
-    public abstract void saveArguments(@NotNull FileConfiguration config, @NotNull String path);
+    public abstract void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException;
 
-    public abstract void loadArguments(@NotNull FileConfiguration config, @NotNull String path);
+    public abstract void loadArguments(@NotNull CommentedConfigurationNode config) throws SerializationException;
 
     public abstract boolean displayMenu(@NotNull MinigamePlayer player, Menu prev);
 

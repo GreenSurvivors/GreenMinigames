@@ -12,7 +12,6 @@ import au.com.mineauz.minigames.tool.MinigameTool;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
@@ -41,6 +40,7 @@ public class JoinSign extends AMinigameSign {
     public @Nullable String getUsePermission() {
         return "minigame.sign.use.join";
     }
+
     public boolean signCreate(@NotNull SignChangeEvent event) {
         final Sign sign = (Sign) event.getBlock().getState();
         final Minigame minigame = getMinigame(sign, event.line(2));
@@ -77,7 +77,7 @@ public class JoinSign extends AMinigameSign {
             return true;
         }
         MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
+            Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
         return false;
     }
 
@@ -100,7 +100,7 @@ public class JoinSign extends AMinigameSign {
             }
 
             for (ItemStack item : mgPlayer.getPlayer().getInventory().getArmorContents()) {
-                if (item != null && item.getType() != Material.AIR) {
+                if (item != null && !item.isEmpty()) {
                     MinigameMessageManager.debugMessage("Found armor: " + item);
                     invOk = false;
                     break;
@@ -108,12 +108,12 @@ public class JoinSign extends AMinigameSign {
             }
         } else {
             fullInv = false;
-            invOk = mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR;
+            invOk = mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty();
         }
         if (invOk) {
             final @NotNull Minigame mgm = getMinigame(sign);
             if (mgm != null && (!mgm.getUsePermissions() ||
-                    mgPlayer.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
+                mgPlayer.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
                 if (mgm.isEnabled()) {
                     final @Nullable Double moneyBet = getMoneyBet(sign);
 
@@ -130,7 +130,7 @@ public class JoinSign extends AMinigameSign {
                 }
             } else if (mgm == null) {
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), sign.getSide(Side.FRONT).line(2)));
+                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), sign.getSide(Side.FRONT).line(2)));
             } else if (mgm.getUsePermissions()) {
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
             }

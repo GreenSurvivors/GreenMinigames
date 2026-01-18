@@ -12,10 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
+import org.bukkit.block.*;
 import org.bukkit.block.data.Hangable;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
@@ -25,14 +22,21 @@ import org.bukkit.material.Attachable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.Comparator;
 
 @SuppressWarnings("UnstableApiUsage") // Position
 public class RecorderData implements Listener {
     // list of blocks that need another block to not break
-    private static final @NotNull ArrayList<@NotNull Material> supportedMats = new ArrayList<>();
+    private static final @NotNull ArrayList<@NotNull BlockType> supportedBlockTypes = new ArrayList<>();
     // this plugin
     private static Minigames plugin;
 
@@ -40,43 +44,43 @@ public class RecorderData implements Listener {
      * this list of Blocks will be regenerated after all the solid ones.
      * It contains an arrangement of Blocks that need a block under / next or over it to support it.
      * If one block is missing or wrongly added here there shouldn't be big issues anyway.
-     * We will test if the Material is affected by gravity or is attachable later.
+     * We will test if the BlockType is affected by gravity or is attachable later.
      * However, just to be sure we will delay regenerating this ones
      */
     static {
-        supportedMats.add(Material.WATER);
-        supportedMats.add(Material.LAVA);
-        supportedMats.addAll(Tag.DOORS.getValues());
-        supportedMats.addAll(Tag.RAILS.getValues());
-        supportedMats.add(Material.TRIPWIRE);
-        supportedMats.addAll(Tag.PRESSURE_PLATES.getValues());
-        supportedMats.add(Material.COMPARATOR);
-        supportedMats.add(Material.REPEATER);
-        supportedMats.add(Material.REDSTONE_WIRE);
-        supportedMats.add(Material.SNOW);
-        supportedMats.add(Material.NETHER_PORTAL);
-        supportedMats.add(Material.PISTON_HEAD);
-        supportedMats.add(Material.MOVING_PISTON);
-        supportedMats.add(Material.LILY_PAD);
-        supportedMats.addAll(Tag.WOOL_CARPETS.getValues());
-        supportedMats.add(Material.MOSS_CARPET);
-        supportedMats.add(Material.TALL_GRASS);
-        supportedMats.add(Material.TALL_SEAGRASS);
-        supportedMats.add(Material.DEAD_BUSH);
-        supportedMats.add(Material.RED_MUSHROOM);
-        supportedMats.add(Material.BROWN_MUSHROOM);
-        supportedMats.addAll(Tag.SAPLINGS.getValues());
-        supportedMats.addAll(Tag.FLOWERS.getValues());
-        supportedMats.addAll(Tag.CORALS.getValues());
-        supportedMats.addAll(Tag.CROPS.getValues());
-        supportedMats.add(Material.HANGING_ROOTS);
-        supportedMats.add(Material.NETHER_WART);
-        supportedMats.add(Material.SMALL_DRIPLEAF);
-        supportedMats.add(Material.BIG_DRIPLEAF);
-        supportedMats.add(Material.KELP_PLANT);
-        supportedMats.addAll(Tag.CAVE_VINES.getValues());
-        supportedMats.add(Material.VINE);
-        supportedMats.add(Material.SCAFFOLDING);
+        supportedBlockTypes.add(BlockType.WATER);
+        supportedBlockTypes.add(BlockType.LAVA);
+        supportedBlockTypes.addAll(Tag.DOORS.getValues().stream().map(Material::asBlockType).toList());
+        supportedBlockTypes.addAll(Tag.RAILS.getValues().stream().map(Material::asBlockType).toList());
+        supportedBlockTypes.add(BlockType.TRIPWIRE);
+        supportedBlockTypes.addAll(Tag.PRESSURE_PLATES.getValues().stream().map(Material::asBlockType).toList());
+        supportedBlockTypes.add(BlockType.COMPARATOR);
+        supportedBlockTypes.add(BlockType.REPEATER);
+        supportedBlockTypes.add(BlockType.REDSTONE_WIRE);
+        supportedBlockTypes.add(BlockType.SNOW);
+        supportedBlockTypes.add(BlockType.NETHER_PORTAL);
+        supportedBlockTypes.add(BlockType.PISTON_HEAD);
+        supportedBlockTypes.add(BlockType.MOVING_PISTON);
+        supportedBlockTypes.add(BlockType.LILY_PAD);
+        supportedBlockTypes.addAll(Tag.WOOL_CARPETS.getValues().stream().map(Material::asBlockType).toList());
+        supportedBlockTypes.add(BlockType.MOSS_CARPET);
+        supportedBlockTypes.add(BlockType.TALL_GRASS);
+        supportedBlockTypes.add(BlockType.TALL_SEAGRASS);
+        supportedBlockTypes.add(BlockType.DEAD_BUSH);
+        supportedBlockTypes.add(BlockType.RED_MUSHROOM);
+        supportedBlockTypes.add(BlockType.BROWN_MUSHROOM);
+        supportedBlockTypes.addAll(Tag.SAPLINGS.getValues().stream().map(Material::asBlockType).toList());
+        supportedBlockTypes.addAll(Tag.FLOWERS.getValues().stream().map(Material::asBlockType).toList());
+        supportedBlockTypes.addAll(Tag.CORALS.getValues().stream().map(Material::asBlockType).toList());
+        supportedBlockTypes.addAll(Tag.CROPS.getValues().stream().map(Material::asBlockType).toList());
+        supportedBlockTypes.add(BlockType.HANGING_ROOTS);
+        supportedBlockTypes.add(BlockType.NETHER_WART);
+        supportedBlockTypes.add(BlockType.SMALL_DRIPLEAF);
+        supportedBlockTypes.add(BlockType.BIG_DRIPLEAF);
+        supportedBlockTypes.add(BlockType.KELP_PLANT);
+        supportedBlockTypes.addAll(Tag.CAVE_VINES.getValues().stream().map(Material::asBlockType).toList());
+        supportedBlockTypes.add(BlockType.VINE);
+        supportedBlockTypes.add(BlockType.SCAFFOLDING);
     }
 
     // the minigame this data belongs to
@@ -85,12 +89,12 @@ public class RecorderData implements Listener {
     private final @NotNull Map<@NotNull UUID, @NotNull EntityData> entityData = new HashMap<>();
     // white/blacklisted blocks that can (not) be broken by a player in the minigame
     // and therefore is not required to regenerated
-    private final @NotNull List<@NotNull Material> wbBlocks = new ArrayList<>();
+    private final @NotNull List<@NotNull BlockType> wbBlocks = new ArrayList<>();
     // is it a white or a blacklist?
     private boolean whitelistMode = false;
     private boolean hasCreatedRegenBlocks = false;
     //data of blocks that will be regenerated
-    private @NotNull Map<@NotNull Position,@NotNull  MgBlockData> blockdata = new HashMap<>();
+    private @NotNull Map<@NotNull Position, @NotNull MgBlockData> blockdata = new HashMap<>();
 
     public RecorderData(@NotNull Minigame minigame) {
         plugin = Minigames.getPlugin();
@@ -121,15 +125,15 @@ public class RecorderData implements Listener {
         };
     }
 
-    public void addWBBlock(Material mat) {
-        wbBlocks.add(mat);
+    public void addWBBlock(final @NotNull BlockType blockType) {
+        wbBlocks.add(blockType);
     }
 
-    public @NotNull List<@NotNull Material> getWBBlocks() {
+    public @NotNull List<@NotNull BlockType> getWBBlocks() {
         return wbBlocks;
     }
 
-    public boolean removeWBBlock(@NotNull Material mat) {
+    public boolean removeWBBlock(@NotNull BlockType mat) {
         return wbBlocks.remove(mat);
     }
 
@@ -198,7 +202,7 @@ public class RecorderData implements Listener {
 
     public void addInventory(@NotNull MgBlockData bdata, @NotNull InventoryHolder ih) {
         ItemStack[] inventory = Arrays.stream(ih.getInventory().getContents()).
-                map(itemStack -> itemStack == null ? null : itemStack.clone()).toArray(ItemStack[]::new);
+            map(itemStack -> itemStack == null ? null : itemStack.clone()).toArray(ItemStack[]::new);
 
         bdata.setInventory(inventory);
     }
@@ -270,8 +274,9 @@ public class RecorderData implements Listener {
                     invHolder.getInventory().clear();
                 }
 
-                if (supportedMats.contains(data.getBlockState().getType()) ||
-                        data.getBlockState().getBlockData() instanceof Attachable || data.getBlockState() instanceof Hangable) {
+                if (supportedBlockTypes.contains(data.getBlockState().getType()) ||
+                    data.getBlockState().getBlockData() instanceof Attachable || data.getBlockState() instanceof Hangable) {
+
                     attachableBlocks.add(data);
                 } else if (data.getBukkitBlockData().getMaterial().hasGravity()) {
                     gravityBlocks.add(data);
@@ -296,13 +301,13 @@ public class RecorderData implements Listener {
 
     private void customBlockComparator(@NotNull List<@NotNull MgBlockData> baseBlocks) {
         baseBlocks.sort(
-                Comparator.comparingInt(
-                        (MgBlockData o) -> o.getBlockState().getChunk().getX()
-                ).thenComparingInt(
-                        o -> o.getBlockState().getChunk().getZ()
-                ).thenComparingInt(
-                        o -> o.getBlockState().getY()
-                )
+            Comparator.comparingInt(
+                (MgBlockData data) -> data.getBlockState().getChunk().getX()
+            ).thenComparingInt(
+                data -> data.getBlockState().getChunk().getZ()
+            ).thenComparingInt(
+                data -> data.getBlockState().getY()
+            )
         );
     }
 
@@ -391,8 +396,7 @@ public class RecorderData implements Listener {
             return;
         }
 
-        File file = new File(plugin.getDataFolder() + File.separator + "minigames" + File.separator +
-                minigame.getName() + File.separator + "backup.json");
+        Path file = plugin.getDataPath().resolve("minigames").resolve(minigame.getName()).resolve("backup.json");
 
         // register custom serializer for Position.
         // this is purely for backwards compatibility.
@@ -405,12 +409,12 @@ public class RecorderData implements Listener {
         Type mapType = new TypeToken<Map<Position, MgBlockData>>() {
         }.getType();
 
-        try (FileWriter writer = new FileWriter(file)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
             customGson.toJson(blockdata, mapType, writer);
         } catch (FileNotFoundException e) {
-            Minigames.getCmpnntLogger().error("File not found!!!", e);
+            Minigames.getPlugin().getComponentLogger().error("File not found!!!", e);
         } catch (IOException e) {
-            Minigames.getCmpnntLogger().error("IO Error!", e);
+            Minigames.getPlugin().getComponentLogger().error("IO Error!", e);
         }
     }
 
@@ -420,10 +424,9 @@ public class RecorderData implements Listener {
      * @return true if loading the data was successful else false
      */
     public boolean restoreBlockData() { //todo load entity data as well
-        File file = new File(plugin.getDataFolder() + File.separator + "minigames" + File.separator +
-            minigame.getName() + File.separator + "backup.json");
+        Path file = plugin.getDataPath().resolve("minigames").resolve(minigame.getName()).resolve("backup.json");
 
-        if (file.exists() && file.isFile() && file.canRead()) {
+        if (Files.isRegularFile(file) && Files.isReadable(file)) {
             // register custom deserializer for Position.
             // this is purely for backwards compatibility.
             // If that is not important to you, just use Gson gson = new Gson(); instead of GsonBuilder gsonBuilder = new GsonBuilder(); and following
@@ -439,7 +442,7 @@ public class RecorderData implements Listener {
 
                     return Position.fine(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
                 } catch (JsonParseException | NumberFormatException e) {
-                    Minigames.getCmpnntLogger().error("", e);
+                    Minigames.getPlugin().getComponentLogger().error("", e);
                     return null;
                 }
             };
@@ -449,11 +452,11 @@ public class RecorderData implements Listener {
             Gson customGson = gsonBuilder.create();
             Type type = new TypeToken<Map<Position, MgBlockData>>() {
             }.getType();
-            try (FileReader reader = new FileReader(file)) {
+            try (final @NotNull BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
                 blockdata = customGson.fromJson(reader, type);
                 return true;
             } catch (IOException e) {
-                Minigames.getCmpnntLogger().error("", e);
+                Minigames.getPlugin().getComponentLogger().error("", e);
             }
         }
         return false;

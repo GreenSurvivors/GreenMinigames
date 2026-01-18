@@ -20,13 +20,15 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,16 +98,20 @@ public class RewardSign extends AMinigameSign {
 
             Menu rewardMenu = new Menu(5, getName(), mgPlayer);
 
-            rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateMaterial(),
-                    MgMenuLangKey.MENU_REWARD_GROUP_ADD_NAME, rew), 42);
-            rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, rew), 43);
-            final MenuItemCustom mic = new MenuItemCustom(MenuUtility.getSaveMaterial(), MgMenuLangKey.MENU_REWARD_SAVE_ALL_NAME);
+            rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateType(),
+                MgMenuLangKey.MENU_REWARD_GROUP_ADD_NAME, rew), 42);
+            rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, rew), 43);
+            final MenuItemCustom mic = new MenuItemCustom(MenuUtility.getSaveType(), MgMenuLangKey.MENU_REWARD_SAVE_ALL_NAME);
             final Location floc = loc;
             mic.setClick(() -> {
-                mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
+                try {
+                    mdata.saveRewardSign(MinigameUtils.createBlockLocationID(floc), true);
+                } catch (final @NotNull IOException e) {
+                    plugin.getComponentLogger().error("Couldn't save reward sign at " + floc, e);
+                }
                 MinigameMessageManager.sendMgMessage(mic.getContainer().getViewer(), MinigameMessageType.INFO, MgMiscLangKey.SIGN_REWARD_SAVED);
                 mic.getContainer().getViewer().getPlayer().closeInventory();
-                return null;
+                return ItemStack.empty();
             });
             rewardMenu.addItem(mic, 44);
 
@@ -116,10 +122,10 @@ public class RewardSign extends AMinigameSign {
 
             List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_SHIFTLEFT);
             for (RewardGroup group : rew.getGroups()) {
-                MenuItemRewardGroup rwg = new MenuItemRewardGroup(Material.CHEST,
-                        MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), group.getName())),
-                        des, group, rew);
+                MenuItemRewardGroup rwg = new MenuItemRewardGroup(ItemType.CHEST,
+                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), group.getName())),
+                    des, group, rew);
                 menuItems.add(rwg);
             }
             rewardMenu.addItems(menuItems);
@@ -131,7 +137,11 @@ public class RewardSign extends AMinigameSign {
     @Override
     public void signBreak(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
         if (plugin.getMinigameManager().hasRewardSign(sign.getLocation())) {
-            plugin.getMinigameManager().removeRewardSign(sign.getLocation());
+            try {
+                plugin.getMinigameManager().removeRewardSign(sign.getLocation());
+            } catch (final IOException e) {
+                plugin.getComponentLogger().error("Couldn't remove reward sign at " + sign.getLocation(), e);
+            }
         }
     }
 }

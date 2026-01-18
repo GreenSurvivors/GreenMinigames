@@ -7,16 +7,17 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.Map;
 
 public class ReequipLoadoutAction extends AAction {
 
-    protected ReequipLoadoutAction(@NotNull String name) {
-        super(name);
+    protected ReequipLoadoutAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -59,12 +60,12 @@ public class ReequipLoadoutAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) {
         // None
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         // None
     }
 

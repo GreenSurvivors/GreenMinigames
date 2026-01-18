@@ -2,27 +2,30 @@ package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
-import org.bukkit.Location;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
+import io.leangen.geantyref.TypeToken;
 import org.bukkit.World;
-import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.UUID;
 
 public class StoredPlayerCheckpoints {
-    private final @NotNull String uuid;
-    private final @NotNull Map<@NotNull String, @NotNull Location> checkpoints;
+    private final @NotNull UUID uuid;
+    private final @NotNull Map<@NotNull String, @NotNull SafeFullLocation> checkpoints;
 //    private final @NotNull Map<@NotNull String, @NotNull List<@NotNull String>> singlePlayerFlags; // the whole singleplayer flag system is unused.
     private final @NotNull Map<@NotNull String, @NotNull Long> storedTime;
     private final @NotNull Map<@NotNull String, @NotNull Integer> storedDeaths;
     private final @NotNull Map<@NotNull String, @NotNull Integer> storedReverts;
-    private @Nullable Location globalCheckpoint;
+    private @Nullable SafeFullLocation globalCheckpoint;
 
-    public StoredPlayerCheckpoints(@NotNull String uuid) {
+    public StoredPlayerCheckpoints(final @NotNull UUID uuid) {
         this.uuid = uuid;
         checkpoints = new HashMap<>();
 //        singlePlayerFlags = new HashMap<>();
@@ -31,7 +34,7 @@ public class StoredPlayerCheckpoints {
         storedReverts = new HashMap<>();
     }
 
-    public void addCheckpoint(@NotNull String minigame, @NotNull Location checkpoint) {
+    public void addCheckpoint(@NotNull String minigame, @NotNull SafeFullLocation checkpoint) {
         checkpoints.put(minigame, checkpoint);
     }
 
@@ -43,7 +46,7 @@ public class StoredPlayerCheckpoints {
         return checkpoints.containsKey(minigame);
     }
 
-    public Location getCheckpoint(@NotNull String minigame) {
+    public @Nullable SafeFullLocation getCheckpoint(@NotNull String minigame) {
         return checkpoints.get(minigame);
     }
 
@@ -51,11 +54,11 @@ public class StoredPlayerCheckpoints {
         return globalCheckpoint != null;
     }
 
-    public @Nullable Location getGlobalCheckpoint() {
+    public @Nullable SafeFullLocation getGlobalCheckpoint() {
         return globalCheckpoint;
     }
 
-    public void setGlobalCheckpoint(Location checkpoint) {
+    public void setGlobalCheckpoint(@Nullable SafeFullLocation checkpoint) {
         globalCheckpoint = checkpoint;
     }
 
@@ -83,7 +86,7 @@ public class StoredPlayerCheckpoints {
         storedTime.put(minigame, time);
     }
 
-    public Long getTime(@NotNull String minigame) {
+    public @Nullable Long getTime(final @NotNull String minigame) {
         return storedTime.get(minigame);
     }
 
@@ -99,7 +102,7 @@ public class StoredPlayerCheckpoints {
         storedDeaths.put(minigame, deaths);
     }
 
-    public Integer getDeaths(@NotNull String minigame) {
+    public @Nullable Integer getDeaths(@NotNull String minigame) {
         return storedDeaths.get(minigame);
     }
 
@@ -115,7 +118,7 @@ public class StoredPlayerCheckpoints {
         storedReverts.put(minigame, reverts);
     }
 
-    public Integer getReverts(@NotNull String minigame) {
+    public @Nullable Integer getReverts(@NotNull String minigame) {
         return storedReverts.get(minigame);
     }
 
@@ -127,132 +130,79 @@ public class StoredPlayerCheckpoints {
         storedReverts.remove(minigame);
     }
 
-    public void saveCheckpoints() {
-        MinigameSave save = new MinigameSave("playerdata" + File.separator + "checkpoints" + File.separator + uuid);
+    public void saveCheckpoints() throws IOException {
+        final @NotNull MinigameSave save = MinigameSave.forPlayerData(uuid, Path.of("checkpoints"));
         save.deleteFile();
         if (hasNoCheckpoints()) return;
 
-        save = new MinigameSave("playerdata" + File.separator + "checkpoints" + File.separator + uuid);
-        Configuration config = save.getConfig();
-        char configSeparator = config.options().pathSeparator();
-        for (String mgm : checkpoints.keySet()) {
-            MinigameMessageManager.debugMessage("Attempting to save checkpoint for " + mgm + "...");
-            try {
-                config.set(mgm, null);
-                config.set(mgm + configSeparator + "x", checkpoints.get(mgm).getX());
-                config.set(mgm + configSeparator + "y", checkpoints.get(mgm).getY());
-                config.set(mgm + configSeparator + "z", checkpoints.get(mgm).getZ());
-                config.set(mgm + configSeparator + "yaw", checkpoints.get(mgm).getYaw());
-                config.set(mgm + configSeparator + "pitch", checkpoints.get(mgm).getPitch());
-                config.set(mgm + configSeparator + "world", checkpoints.get(mgm).getWorld().getName());
+        final @NotNull CommentedConfigurationNode rootNode = save.getConfigRoot();
 
-//                if (singlePlayerFlags.containsKey(mgm)) {
-//                    config.set(mgm + configSeparator + "flags", getSinglePlayerFlags(mgm));
-//                }
+        for (final @NotNull Map.Entry<@NotNull String, @NotNull SafeFullLocation> entry : checkpoints.entrySet()) {
+            final @NotNull String minigameName = entry.getKey();
+            MinigameMessageManager.debugMessage("Attempting to save checkpoint for " + minigameName + "...");
+            final @NotNull CommentedConfigurationNode minigameCheckpointNode = rootNode.node(minigameName);
 
-                if (storedTime.containsKey(mgm)) {
-                    config.set(mgm + configSeparator + "time", getTime(mgm));
-                }
+            final @NotNull SafeFullLocation location = entry.getValue();
+            minigameCheckpointNode.node("x").raw(location.x());
+            minigameCheckpointNode.node("y").raw(location.y());
+            minigameCheckpointNode.node("z").raw(location.z());
+            minigameCheckpointNode.node("yaw").raw(location.yaw());
+            minigameCheckpointNode.node("pitch").raw(location.pitch());
+            minigameCheckpointNode.node("world").raw(location.getWorldName());
 
-                if (storedDeaths.containsKey(mgm)) {
-                    config.set(mgm + configSeparator + "deaths", getDeaths(mgm));
-                }
-
-                if (storedReverts.containsKey(mgm)) {
-                    config.set(mgm + configSeparator + "reverts", getReverts(mgm));
-                }
-            } catch (Exception e) {
-                // When an error is detected, remove the stored erroneous checkpoint
-                Minigames.getCmpnntLogger().warn("Unable to save checkpoint for " + mgm + "! It has been been removed.");
-                Minigames.getCmpnntLogger().error("", e);
-
-                // Remove the checkpoint from memory, so it doesn't cause an error again
-                config.set(mgm, null);
-                checkpoints.remove(mgm);
-//                singlePlayerFlags.remove(mgm);
-                storedTime.remove(mgm);
-                storedDeaths.remove(mgm);
-                storedReverts.remove(mgm);
-            }
+//            minigameCheckpointNode.node("flags").setList(String.class, getSinglePlayerFlags(minigameName));
+            minigameCheckpointNode.node("time").raw(getTime(minigameName));
+            minigameCheckpointNode.node("deaths").raw(getDeaths(minigameName));
+            minigameCheckpointNode.node("reverts").raw(getReverts(minigameName));
         }
 
-        if (hasGlobalCheckpoint()) {
-            try {
-                config.set("globalcheckpoint" + configSeparator + "x", globalCheckpoint.getX());
-                config.set("globalcheckpoint" + configSeparator + "y", globalCheckpoint.getY());
-                config.set("globalcheckpoint" + configSeparator + "z", globalCheckpoint.getZ());
-                config.set("globalcheckpoint" + configSeparator + "yaw", globalCheckpoint.getYaw());
-                config.set("globalcheckpoint" + configSeparator + "pitch", globalCheckpoint.getPitch());
-                config.set("globalcheckpoint" + configSeparator + "world", globalCheckpoint.getWorld().getName());
-            } catch (Exception e) {
-                // When an error is detected, remove the global checkpoint
-                config.set("globalcheckpoint", null);
-                Minigames.getCmpnntLogger().warn("Unable to save global checkpoint!", e);
-            }
+        if (globalCheckpoint != null) {
+            rootNode.node("globalcheckpoint").set(globalCheckpoint);
         }
         save.saveConfig();
     }
 
-    public void loadCheckpoints() {
-        MinigameSave save = new MinigameSave("playerdata" + File.separator + "checkpoints" + File.separator + uuid);
-        Configuration config = save.getConfig();
-        char configSeparator = config.options().pathSeparator();
-        Set<String> mgms = config.getKeys(false);
-        for (String mgm : mgms) {
-            if (!mgm.equals("globalcheckpoint")) {
-                MinigameMessageManager.debugMessage("Attempting to load checkpoint for " + mgm + "...");
-                try {
-                    double locx = config.getDouble(mgm + configSeparator + "x");
-                    double locy = config.getDouble(mgm + configSeparator + "y");
-                    double locz = config.getDouble(mgm + configSeparator + "z");
-                    float yaw = (float) config.getDouble(mgm + configSeparator + "yaw");
-                    float pitch = (float) config.getDouble(mgm + configSeparator + "pitch");
-                    String world = (String) config.get(mgm + configSeparator + "world");
+    public void loadCheckpoints() throws ConfigurateException {
+        final @NotNull CommentedConfigurationNode rootNode = MinigameSave.forPlayerData(uuid, Path.of("checkpoints")).getConfigRoot();
+        for (final @NotNull Map.Entry<@NotNull Object, @NotNull CommentedConfigurationNode> entry : rootNode.childrenMap().entrySet()) {
+            final @NotNull String nodeKey = entry.getKey().toString();
+            final @NotNull CommentedConfigurationNode checkpointNode = entry.getValue();
 
-                    World w = Minigames.getPlugin().getServer().getWorld(world);
-                    if (w == null) {
-                        Minigames.getCmpnntLogger().warn("WARNING: Invalid world \"" + world + "\" found in checkpoint for " + mgm + "! Checkpoint has been removed.");
-                        continue;
-                    }
+            if (nodeKey.equals("globalcheckpoint")) {
+                globalCheckpoint = checkpointNode.get(TypeToken.get(SafeFullLocation.class));
+            } else {
+                final @NotNull String minigameName = checkpointNode.key().toString();
 
-                    Location loc = new Location(w, locx, locy, locz, yaw, pitch);
-                    checkpoints.put(mgm, loc);
-                } catch (ClassCastException e) {
-                    MinigameMessageManager.debugMessage("Checkpoint could not be loaded ... " + mgm + " xyz not double");
-                } catch (NullPointerException e) {
-                    Minigames.getCmpnntLogger().error("", e);
+                MinigameMessageManager.debugMessage("Attempting to load checkpoint for " + minigameName + "...");
+                final double x = checkpointNode.node("x").getDouble();
+                final double y = checkpointNode.node("y").getDouble();
+                final double z = checkpointNode.node("z").getDouble();
+                final float yaw = checkpointNode.node("yaw").getFloat();
+                final float pitch = checkpointNode.node("pitch").getFloat();
+                final String worldName = checkpointNode.node("world").getString("");
+
+                final @Nullable World world = Minigames.getPlugin().getServer().getWorld(worldName);
+                if (world == null) {
+                    Minigames.getPlugin().getComponentLogger().warn("Invalid world \"" + worldName + "\" found in checkpoint for " + minigameName + "!");
                 }
-//                if (config.contains(mgm + configSeparator + "flags")) {
-//                    singlePlayerFlags.put(mgm, config.getStringList(mgm + configSeparator + "flags"));
+
+                checkpoints.put(minigameName, new SafeFullLocation(worldName, x, y, z, yaw, pitch));
+
+//                if (checkpointNode.hasChild("flags")) {
+//                    singlePlayerFlags.put(minigameName, checkpointNode.node("flags").getList(String.class));
 //                }
 
-                if (config.contains(mgm + configSeparator + "time")) {
-                    storedTime.put(mgm, config.getLong(mgm + configSeparator + "time"));
+                if (rootNode.hasChild("time")) {
+                    storedTime.put(minigameName, rootNode.node("time").getLong());
                 }
 
-                if (config.contains(mgm + configSeparator + "deaths")) {
-                    storedDeaths.put(mgm, config.getInt(mgm + configSeparator + "deaths"));
+                if (rootNode.hasChild("deaths")) {
+                    storedDeaths.put(minigameName, rootNode.node("deaths").getInt());
                 }
 
-                if (config.contains(mgm + configSeparator + "reverts")) {
-                    storedReverts.put(mgm, config.getInt(mgm + configSeparator + "reverts"));
+                if (rootNode.hasChild("reverts")) {
+                    storedReverts.put(minigameName, rootNode.node("reverts").getInt());
                 }
-            }
-        }
-
-        if (config.contains("globalcheckpoint")) {
-            double x = config.getDouble("globalcheckpoint" + configSeparator + "x");
-            double y = config.getDouble("globalcheckpoint" + configSeparator + "y");
-            double z = config.getDouble("globalcheckpoint" + configSeparator + "z");
-            float yaw = (float) config.getDouble("globalcheckpoint" + configSeparator + "yaw");
-            float pitch = (float) config.getDouble("globalcheckpoint" + configSeparator + "pitch");
-            String world = config.getString("globalcheckpoint" + configSeparator + "world");
-
-            World w = Minigames.getPlugin().getServer().getWorld(world);
-            if (w == null) {
-                Minigames.getCmpnntLogger().warn("WARNING: Invalid world \"" + world + "\" found in global checkpoint! Checkpoint has been removed.");
-            } else {
-                globalCheckpoint = new Location(Minigames.getPlugin().getServer().getWorld(world), x, y, z, yaw, pitch);
             }
         }
     }

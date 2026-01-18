@@ -10,11 +10,13 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.WeatherType;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 public class WeatherTimeModule extends MinigameModule {
     private final TimeFlag time = new TimeFlag("customTime.value", 0L);
@@ -23,12 +25,12 @@ public class WeatherTimeModule extends MinigameModule {
     private final EnumFlag<WeatherType> weather = new EnumFlag<>("customWeather.type", WeatherType.CLEAR);
     private int task = -1;
 
-    public WeatherTimeModule(@NotNull Minigame mgm, @NotNull String name) {
-        super(mgm, name);
+    public WeatherTimeModule(final @NotNull Minigame mgm, final @NotNull Key key) {
+        super(mgm, key);
     }
 
     public static WeatherTimeModule getMinigameModule(@NotNull Minigame minigame) {
-        return (WeatherTimeModule) minigame.getModule(MgModules.WEATHER_TIME.getName());
+        return (WeatherTimeModule) minigame.getModule(MgModules.WEATHER_TIME.getKey());
     }
 
     @Override
@@ -37,32 +39,33 @@ public class WeatherTimeModule extends MinigameModule {
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
-        time.saveValue(config, path);
-        useCustomTime.saveValue(config, path);
-        weather.saveValue(config, path);
-        useCustomWeather.saveValue(config, path);
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        time.saveValue(config);
+        useCustomTime.saveValue(config);
+        weather.saveValue(config);
+        useCustomWeather.saveValue(config);
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        time.loadValue(config, path);
-        useCustomTime.loadValue(config, path);
-        weather.loadValue(config, path);
-        useCustomWeather.loadValue(config, path);
+    public void load(final @NotNull CommentedConfigurationNode config) {
+        time.loadValue(config);
+        useCustomTime.loadValue(config);
+        weather.loadValue(config);
+        useCustomWeather.loadValue(config);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void addEditMenuOptions(@NotNull Menu previosMenu) {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_TIMEWEATHER_NAME, previosMenu.getViewer());
 
-        menu.addItem(useCustomTime.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_USE_NAME));
-        menu.addItem(time.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_NAME, 0L, 24000L));
-        menu.addItem(useCustomWeather.getMenuItem(Material.WATER_BUCKET, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_USE_NAME)); // todo 1.21 use wind charge
-        menu.addItem(weather.getMenuItem(Material.WATER_BUCKET, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_NAME));
+        menu.addItem(useCustomTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_USE_NAME));
+        menu.addItem(time.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_NAME, 0L, 24000L));
+        menu.addItem(useCustomWeather.getMenuItem(ItemType.WATER_BUCKET, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_USE_NAME)); // todo 1.21 use wind charge
+        menu.addItem(weather.getMenuItem(ItemType.WATER_BUCKET, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_NAME));
         menu.addItem(new MenuItemBack(previosMenu), menu.getSize() - 9);
 
-        previosMenu.addItem(new MenuItemPage(Material.CHEST, MgMenuLangKey.MENU_TIMEWEATHER_NAME, menu));
+        previosMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TIMEWEATHER_NAME, menu));
     }
 
     @Override

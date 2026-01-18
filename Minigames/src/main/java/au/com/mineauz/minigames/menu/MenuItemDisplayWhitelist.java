@@ -2,8 +2,9 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
+import org.bukkit.block.BlockType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,39 +12,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemDisplayWhitelist extends MenuItem {
-    private final @NotNull List<@NotNull Material> whitelist;
+    private final @NotNull List<@NotNull BlockType> whitelist;
     private final @NotNull Callback<Boolean> whitelistMode;
     private final @NotNull List<@NotNull Component> modeDescription;
 
-    public MenuItemDisplayWhitelist(@Nullable Material displayMat, @Nullable Component name,
-                                    @NotNull List<@NotNull Material> whitelist, @NotNull Callback<Boolean> whitelistMode,
+    public MenuItemDisplayWhitelist(@Nullable ItemType displayType, @Nullable Component name,
+                                    @NotNull List<@NotNull BlockType> whitelist, @NotNull Callback<Boolean> whitelistMode,
                                     @NotNull List<@NotNull Component> modeDescription) {
-        this(displayMat, name, null, whitelist, whitelistMode, modeDescription);
+        this(displayType, name, null, whitelist, whitelistMode, modeDescription);
     }
 
-    public MenuItemDisplayWhitelist(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemDisplayWhitelist(@Nullable ItemType displayType, @Nullable Component name,
                                     @Nullable List<@NotNull Component> mainDescription,
-                                    @NotNull List<@NotNull Material> whitelist, @NotNull Callback<Boolean> whitelistMode,
+                                    @NotNull List<@NotNull BlockType> whitelist, @NotNull Callback<Boolean> whitelistMode,
                                     @NotNull List<@NotNull Component> modeDescription) {
-        super(displayMat, name, mainDescription);
+        super(displayType, name, mainDescription);
         this.whitelist = whitelist;
         this.whitelistMode = whitelistMode;
         this.modeDescription = modeDescription;
     }
 
     @Override
-    public @Nullable ItemStack onClick() {
-        Menu menu = new Menu(6, MgMenuLangKey.MENU_WHITELIST_BLOCK_NAME, getContainer().getViewer());
-        List<MenuItem> items = new ArrayList<>();
-        for (Material bl : whitelist) {
-            items.add(new MenuItemWhitelistBlock(bl, whitelist));
+    public @NotNull ItemStack onClick() {
+        final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_WHITELIST_BLOCK_NAME, getContainer().getViewer());
+        final @NotNull List<@NotNull MenuItem> items = new ArrayList<>();
+        for (final @NotNull BlockType blockType : whitelist) {
+            if (blockType.hasItemType()) {
+                items.add(new MenuItemWhitelistBlock(blockType.getItemType(), whitelist));
+            } else {
+                // todo create a placeholder item
+            }
         }
         menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
-        menu.addItem(new MenuItemAddWhitelistBlock(MgMenuLangKey.MENU_WHITELIST_ADDMATERIAL_NAME, whitelist), menu.getSize() - 1);
-        menu.addItem(new MenuItemBoolean(Material.ENDER_PEARL, MgMenuLangKey.MENU_WHITELIST_MODE, modeDescription,
-                whitelistMode), menu.getSize() - 2);
+        menu.addItem(new MenuItemAddWhitelistBlock(MgMenuLangKey.MENU_WHITELIST_ADDBLOCKTYPE_NAME, whitelist), menu.getSize() - 1);
+        menu.addItem(new MenuItemBoolean(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_WHITELIST_MODE, modeDescription,
+            whitelistMode), menu.getSize() - 2);
         menu.addItems(items);
         menu.displayMenu(getContainer().getViewer());
-        return null;
+        return ItemStack.empty();
     }
 }

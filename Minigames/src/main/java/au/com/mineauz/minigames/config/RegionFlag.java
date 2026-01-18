@@ -1,86 +1,72 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MgRegion;
-import io.papermc.paper.math.Position;
+import au.com.mineauz.minigames.objects.safelocation.SafeFineLocation;
+import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage") // Position
 public class RegionFlag extends AFlag<MgRegion> {
     private final @Nullable String legacyFistPointLabel, legacySecondPointLabel;
 
-    public RegionFlag(@NotNull String name, MgRegion value,
-                      @Nullable String legacyFirstPoint, @Nullable String legacySecondPoint) {
-        super(name, value);
+    public RegionFlag(final @NotNull MgRegion defaultVal,
+                      final @Nullable String legacyFirstPoint, final @Nullable String legacySecondPoint) {
+        super(defaultVal.getName(), defaultVal);
         this.legacyFistPointLabel = legacyFirstPoint;
         this.legacySecondPointLabel = legacySecondPoint;
     }
 
-    public RegionFlag(@NotNull String name, MgRegion value) {
-        super(name, value);
+    /// the given name HAS TO Match with the name of the MgRegion!
+    public RegionFlag(final @NotNull String name, final MgRegion defaultVal,
+                      final @Nullable String legacyFirstPoint, final @Nullable String legacySecondPoint) {
+        super(name, defaultVal);
+        this.legacyFistPointLabel = legacyFirstPoint;
+        this.legacySecondPointLabel = legacySecondPoint;
+    }
+
+    public RegionFlag(final @NotNull String name, final MgRegion defaultVal) {
+        super(name, defaultVal);
         this.legacyFistPointLabel = null;
         this.legacySecondPointLabel = null;
     }
 
     @Override
-    public void saveValue(@NotNull Configuration config, @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
+    public void saveValue(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.removeChild(getName());
+        if (legacyFistPointLabel != null) {
+            config.removeChild(legacyFistPointLabel);
+        }
+        if (legacySecondPointLabel != null) {
+            config.removeChild(legacySecondPointLabel);
+        }
 
-        if (getFlag() != null) {
-            config.set(path + configSeparator + "name", getFlag().getName());
-            config.set(path + configSeparator + "world", getFlag().getWorld().getName());
-            config.set(path + configSeparator + "pos1", getFlag().getPos1().x() + ":" + getFlag().getPos1().y() + ":" + getFlag().getPos1().z());
-            config.set(path + configSeparator + "pos2", getFlag().getPos2().x() + ":" + getFlag().getPos2().y() + ":" + getFlag().getPos2().z());
-        } else {
-            config.set(path, null);
+        if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
+            config.node(getName()).set(getFlag());
         }
     }
 
     @Override
-    public void loadValue(@NotNull Configuration config, @NotNull String path) {
-        char configSeparator = config.options().pathSeparator();
-        String name = config.getString(path + configSeparator + "name");
+    public void loadValue(final @NotNull CommentedConfigurationNode config) throws ConfigurateException {
         MgRegion result = null;
 
-        if (name != null) {
-            String worldName = config.getString(path + configSeparator + "world", "not found!");
-
-            String[] slitPos1 = config.getString(path + configSeparator + "pos1").split(":");
-            String[] slitPos2 = config.getString(path + configSeparator + "pos2").split(":");
-
-            double x1 = Double.parseDouble(slitPos1[0]);
-            double y1 = Double.parseDouble(slitPos1[1]);
-            double z1 = Double.parseDouble(slitPos1[2]);
-
-            double x2 = Double.parseDouble(slitPos2[0]);
-            double y2 = Double.parseDouble(slitPos2[1]);
-            double z2 = Double.parseDouble(slitPos2[2]);
-
-            World world = Bukkit.getWorld(worldName);
-            if (world != null) {
-                result = new MgRegion(world, name, Position.fine(x1, y1, z1), Position.fine(x2, y2, z2));
-            } else {
-                Minigames.getCmpnntLogger().warn("Could not load Region because world '" + worldName + "' was invalid. " +
-                        "Throwing exception so the config don't get overwritten.");
-                throw new RuntimeException("invalid worldName at '" + path + configSeparator + getName() + "'");
-            }
-        } else {
-            //import legacy regions from before regions existed
-            if (legacyFistPointLabel != null && legacySecondPointLabel != null) {
-                SimpleLocationFlag locFlag1 = new SimpleLocationFlag(legacyFistPointLabel, null);
-                SimpleLocationFlag locFlag2 = new SimpleLocationFlag(legacySecondPointLabel, null);
+        if (legacyFistPointLabel == null || !config.hasChild(legacyFistPointLabel)) {
+            setFlag(config.node(getName()).get(TypeToken.get(MgRegion.class)));
+        } else { // datafixerupper
+            //import legacy regions from before region object existed
+            if (legacySecondPointLabel != null) {
+                final @NotNull LocationFlag<SafeFineLocation> locFlag1 = new LocationFlag<>(legacyFistPointLabel, null, SafeFineLocation.class);
+                final @NotNull LocationFlag<SafeFineLocation> locFlag2 = new LocationFlag<>(legacySecondPointLabel, null, SafeFineLocation.class);
 
                 if (locFlag1.getFlag() != null && locFlag2.getFlag() != null) {
-                    result = new MgRegion("legacy", locFlag1.getFlag(), locFlag2.getFlag());
+                    result = new MgRegion("legacy" + System.nanoTime(), locFlag1.getFlag(), locFlag2.getFlag());
                 }
             }
         }
@@ -92,15 +78,21 @@ public class RegionFlag extends AFlag<MgRegion> {
         setFlag(result);
     }
 
-    @Deprecated
+    /// the name of the region HAS TO match the name of the node!
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
-        return getMenuItem(displayMat, name, null);
+    public void setFlag (MgRegion region) {
+        super.setFlag(region);
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
+        return getMenuItem(displayType, name, null);
+    }
+
+    @Deprecated
+    @Override
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
                                          @Nullable List<@NotNull Component> description) {
         return null; // todo
     }

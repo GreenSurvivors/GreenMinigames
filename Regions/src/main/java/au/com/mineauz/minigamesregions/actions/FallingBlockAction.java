@@ -8,18 +8,21 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockType;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.Map;
 
 public class FallingBlockAction extends AAction {
 
-    protected FallingBlockAction(@NotNull String name) {
-        super(name);
+    protected FallingBlockAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -51,23 +54,22 @@ public class FallingBlockAction extends AAction {
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
                                     @NotNull Region region) {
         debug(mgPlayer, region);
-        Location temp = region.getFirstPoint();
-        for (int y = region.getFirstPoint().getBlockY();
-             y <= region.getSecondPoint().getBlockY();
-             y++) {
+
+        if (region.getWorld() == null) {
+            return;
+        }
+
+        final Location temp = region.getFirstPoint().toLocation();
+        for (int y = NumberConversions.floor(region.getMinY()); y <= region.getMaxY(); y++) {
             temp.setY(y);
-            for (int x = region.getFirstPoint().getBlockX();
-                 x <= region.getSecondPoint().getBlockX();
-                 x++) {
+            for (int x = NumberConversions.floor(NumberConversions.floor(region.getMinX())); x <= region.getMaxX(); x++) {
                 temp.setX(x);
-                for (int z = region.getFirstPoint().getBlockZ();
-                     z <= region.getSecondPoint().getBlockZ();
-                     z++) {
+                for (int z = NumberConversions.floor(region.getMinZ()); z <= region.getMaxZ(); z++) {
                     temp.setZ(z);
-                    if (temp.getBlock().getType() != Material.AIR) {
+                    if (temp.getBlock().getType().isAir()) {
                         temp.getWorld().spawn(temp, FallingBlock.class,
                                 fallingBlock -> fallingBlock.setBlockData(temp.getBlock().getBlockData()));
-                        temp.getBlock().setType(Material.AIR);
+                        temp.getBlock().setBlockData(BlockType.AIR.createBlockData());
                     }
                 }
             }
@@ -75,24 +77,27 @@ public class FallingBlockAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
-        if (node.getLocation().getBlock().getType() != Material.AIR) {
-            node.getLocation().getWorld().spawn(node.getLocation(), FallingBlock.class, fallingBlock ->
-                    fallingBlock.setBlockData(node.getLocation().getBlock().getBlockData()));
-            node.getLocation().getBlock().setType(Material.AIR);
+
+        if (node.getSafeLocation().getWorld() == null) {
+            return;
+        }
+
+        final Block block = node.getSafeLocation().getBlockAt();
+        if (block.getType().isAir()) {
+            node.getSafeLocation().getWorld().spawn(node.getSafeLocation().toLocation(), FallingBlock.class, fallingBlock ->
+                    fallingBlock.setBlockData(block.getBlockData()));
+            block.setBlockData(BlockType.AIR.createBlockData());
         }
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override

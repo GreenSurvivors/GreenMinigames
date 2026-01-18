@@ -1,9 +1,10 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 public interface ActionFactory {
-    @NotNull ActionInterface makeNewAction();
+    @NotNull IAction makeNewAction();
 
-    @NotNull String getName();
+    @NotNull NamespacedKey getKey();
 }

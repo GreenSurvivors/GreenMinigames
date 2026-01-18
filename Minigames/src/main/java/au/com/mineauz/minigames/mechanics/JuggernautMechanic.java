@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-public class JuggernautMechanic extends GameMechanicBase {
+public class JuggernautMechanic extends AGameMechanic {
 
     protected JuggernautMechanic() {
     }
@@ -76,8 +76,8 @@ public class JuggernautMechanic extends GameMechanicBase {
                 juggernautModule.setJuggernaut(juggernaut);
                 MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
                 MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
-                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.displayName())),
-                        MinigameMessageType.INFO, juggernaut);
+                        Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.displayName())),
+                    MinigameMessageType.INFO, juggernaut);
             }
         }
 

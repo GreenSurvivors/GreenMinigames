@@ -3,37 +3,38 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
 public class StringFlag extends AFlag<String> {
 
-    public StringFlag(@NotNull String name, String value) {
-        super(name, value);
+    public StringFlag(final @NotNull String name, final String defaultVal) {
+        super(name, defaultVal);
     }
 
     @Override
-    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+    public void saveValue(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.removeChild(getName());
+
         if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
-            config.set(path + config.options().pathSeparator() + getName(), getFlag());
-        } else {
-            config.set(path + config.options().pathSeparator() + getName(), null);
+            config.node(getName()).raw(getFlag());
         }
     }
 
     @Override
-    public void loadValue(@NotNull Configuration config, @NotNull String path) {
-        setFlag(config.getString(path + config.options().pathSeparator() + getName(), getDefaultFlag()));
+    public void loadValue(final @NotNull CommentedConfigurationNode config) {
+        setFlag(config.node(getFlag()).getString(getDefaultFlag()));
     }
 
     @Override
-    public @NotNull MenuItemString getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                      @Nullable List<@NotNull Component> description) {
-        return new MenuItemString(displayMat, name, description, new Callback<>() {
+    public @NotNull MenuItemString getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
+                                               @Nullable List<@NotNull Component> description) {
+        return new MenuItemString(displayType, name, description, new Callback<>() {
 
             @Override
             public String getValue() {

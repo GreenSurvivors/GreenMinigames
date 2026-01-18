@@ -121,9 +121,9 @@ public class MgBlockData {
         if (state instanceof InventoryHolder holder) {
             //get a list of all non-null items
             List<ItemStack> itemRand = Arrays.stream(inventoryContents)
-                    .filter(Objects::nonNull)
-                    .map(ItemStack::clone)
-                    .collect(Collectors.toCollection(ArrayList::new));
+                .filter(Objects::nonNull)
+                .map(ItemStack::clone)
+                .collect(Collectors.toCollection(ArrayList::new));
 
             //shuffle the list, it's random what item doesn't make it into the inventory if maxContents doesn't match the number of items
             Collections.shuffle(itemRand);

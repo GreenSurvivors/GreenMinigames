@@ -9,34 +9,35 @@ import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.TriggerRegistry;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
 public class MenuItemNodeExecutorAdd extends MenuItem {
     private final @NotNull Node node;
 
-    public MenuItemNodeExecutorAdd(@Nullable Material displayMat, @Nullable RegionLangKey langKey, @NotNull Node node) {
-        super(displayMat, RegionMessageManager.getMessage(langKey));
+    public MenuItemNodeExecutorAdd(@Nullable ItemType itemType, @Nullable RegionLangKey langKey, @NotNull Node node) {
+        super(itemType, RegionMessageManager.getMessage(langKey));
         this.node = node;
     }
 
-    public MenuItemNodeExecutorAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Node node) {
-        super(displayMat, name);
+    public MenuItemNodeExecutorAdd(@Nullable ItemType itemType, @Nullable Component name, @NotNull Node node) {
+        super(itemType, name);
         this.node = node;
     }
 
-    public MenuItemNodeExecutorAdd(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemNodeExecutorAdd(@Nullable ItemType itemType, @Nullable Component name,
                                    @Nullable List<@NotNull Component> description, @NotNull Node node) {
-        super(displayMat, name, description);
+        super(itemType, name, description);
         this.node = node;
     }
 
     @Override
-    public @Nullable ItemStack onClick() {
+    public @NonNull ItemStack onClick() {
         Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_ADD_NAME), getContainer().getViewer());
 
         for (Trigger trig : TriggerRegistry.getAllNodeTriggers()) {
@@ -46,6 +47,6 @@ public class MenuItemNodeExecutorAdd extends MenuItem {
         menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
         menu.displayMenu(getContainer().getViewer());
 
-        return null;
+        return ItemStack.empty();
     }
 }

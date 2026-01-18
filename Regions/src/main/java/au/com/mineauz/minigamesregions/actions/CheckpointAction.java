@@ -2,21 +2,23 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.Map;
 
 public class CheckpointAction extends AAction {
 
-    protected CheckpointAction(@NotNull String name) {
-        super(name);
+    protected CheckpointAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -60,17 +62,15 @@ public class CheckpointAction extends AAction {
 
     private void execute(@Nullable MinigamePlayer player) {
         if (player == null || !player.isInMinigame()) return;
-        player.setCheckpoint(player.getLocation());
+        player.setCheckpoint(new SafeFullLocation(player.getLocation()));
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override

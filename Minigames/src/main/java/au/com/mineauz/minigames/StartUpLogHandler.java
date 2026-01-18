@@ -23,8 +23,8 @@ class StartUpLogHandler extends Handler {
     public void publish(@NotNull LogRecord record) {
         builder.append('[').append(record.getLevel().getName()).append("] ").append(record.getMessage()).append('\n');
         if (record.getThrown() != null) {
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(stringWriter);
+            final @NotNull StringWriter stringWriter = new StringWriter();
+            final @NotNull PrintWriter printWriter = new PrintWriter(stringWriter);
             record.getThrown().printStackTrace(printWriter);
             exceptionBuilder.append('[').append(record.getLevel().getName()).append("] ").append(record.getMessage()).append('\n')
                     .append(stringWriter).append('\n');

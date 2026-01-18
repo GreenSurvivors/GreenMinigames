@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandException;
@@ -60,15 +61,15 @@ public class CreateCommand extends ACommand {
                         type = MinigameType.valueOf(args[1].toUpperCase());
                     } else {
                         MinigameMessageManager.sendMgMessage(player, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTYPE,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                         return false;
                     }
                 } else {
                     type = MinigameType.SINGLEPLAYER;
                 }
-                Minigame mgm = new Minigame(mgmName, type, player.getLocation());
+                Minigame mgm = new Minigame(mgmName, type, new SafeFullLocation(player.getLocation()));
                 MinigameMessageManager.sendMgMessage(player, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_CREATE_SUCCESS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
                 List<String> mgs;
                 if (PLUGIN.getConfig().contains("minigames")) {
                     mgs = PLUGIN.getConfig().getStringList("minigames");

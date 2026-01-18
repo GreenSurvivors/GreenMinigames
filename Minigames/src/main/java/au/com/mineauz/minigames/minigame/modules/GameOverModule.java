@@ -14,19 +14,22 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameOverModule extends MinigameModule {
+    private final @NotNull Minigames plugin = Minigames.getPlugin();
     private final @NotNull TimeFlag timer = new TimeFlag("gameOver.timer", 0L); // in seconds
     private final @NotNull BooleanFlag invincible = new BooleanFlag("gameOver.invincible", false);
     private final @NotNull BooleanFlag humiliation = new BooleanFlag("gameOver.humiliation", false);
@@ -36,12 +39,12 @@ public class GameOverModule extends MinigameModule {
     private final @NotNull List<@NotNull MinigamePlayer> losers = new ArrayList<>();
     private int task = -1;
 
-    public GameOverModule(@NotNull Minigame mgm, @NotNull String name) {
-        super(mgm, name);
+    public GameOverModule(@NotNull Minigame mgm, @NotNull Key key) {
+        super(mgm, key);
     }
 
     public static @Nullable GameOverModule getMinigameModule(@NotNull Minigame mgm) {
-        return ((GameOverModule) mgm.getModule(MgModules.GAME_OVER.getName()));
+        return ((GameOverModule) mgm.getModule(MgModules.GAME_OVER.getKey()));
     }
 
     @Override
@@ -50,32 +53,32 @@ public class GameOverModule extends MinigameModule {
     }
 
     @Override
-    public void save(@NotNull FileConfiguration config, @NotNull String path) {
-        timer.saveValue(config, path);
-        invincible.saveValue(config, path);
-        humiliation.saveValue(config, path);
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        timer.saveValue(config);
+        invincible.saveValue(config);
+        humiliation.saveValue(config);
     }
 
     @Override
-    public void load(@NotNull FileConfiguration config, @NotNull String path) {
-        timer.loadValue(config, path);
-        invincible.loadValue(config, path);
-        humiliation.loadValue(config, path);
+    public void load(final @NotNull CommentedConfigurationNode config) {
+        timer.loadValue(config);
+        invincible.loadValue(config);
+        humiliation.loadValue(config);
     }
 
     @Override
-    public void addEditMenuOptions(@NotNull Menu previous) {
+    public void addEditMenuOptions(final @NotNull Menu previous) {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_GAMEOVER_NAME, previous.getViewer());
-        menu.addItem(timer.getMenuItem(Material.CLOCK, MgMenuLangKey.MENU_GAMEOVER_TIME_NAME, 0L, null));
+        menu.addItem(timer.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_GAMEOVER_TIME_NAME, 0L, null));
 
-        menu.addItem(invincible.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_GAMEOVER_INVINCIBILITY_NAME));
-        menu.addItem(humiliation.getMenuItem(Material.DIAMOND_SWORD, MgMenuLangKey.MENU_GAMEOVER_HUMILIATION_NAME,
-                MgMenuLangKey.MENU_GAMEOVER_HUMILIATION_DESCRIPTION));
-        menu.addItem(interact.getMenuItem(Material.STONE_PRESSURE_PLATE, MgMenuLangKey.MENU_GAMEOVER_INTERACT_NAME));
+        menu.addItem(invincible.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_GAMEOVER_INVINCIBILITY_NAME));
+        menu.addItem(humiliation.getMenuItem(ItemType.DIAMOND_SWORD, MgMenuLangKey.MENU_GAMEOVER_HUMILIATION_NAME,
+            MgMenuLangKey.MENU_GAMEOVER_HUMILIATION_DESCRIPTION));
+        menu.addItem(interact.getMenuItem(ItemType.STONE_PRESSURE_PLATE, MgMenuLangKey.MENU_GAMEOVER_INTERACT_NAME));
 
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        previous.addItem(new MenuItemPage(Material.OAK_DOOR, MgMenuLangKey.MENU_GAMEOVER_NAME, menu));
+        previous.addItem(new MenuItemPage(ItemType.OAK_DOOR, MgMenuLangKey.MENU_GAMEOVER_NAME, menu));
     }
 
     @Override
@@ -85,7 +88,7 @@ public class GameOverModule extends MinigameModule {
 
     public void startEndGameTimer() {
         MinigameMessageManager.sendMinigameMessage(getMinigame(), MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_GAMEOVERQUIT,
-                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(timer.getFlag())))));
+            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(timer.getFlag())))));
         getMinigame().setState(MinigameState.ENDED);
 
         List<MinigamePlayer> allPlys = new ArrayList<>(winners.size() + losers.size());
@@ -117,15 +120,15 @@ public class GameOverModule extends MinigameModule {
                 stopEndGameTimer();
             }
 
-            task = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
+            task = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                 for (MinigamePlayer loser : new ArrayList<>(losers)) {
                     if (loser.isInMinigame()) {
-                        Minigames.getPlugin().getPlayerManager().quitMinigame(loser, true);
+                        plugin.getPlayerManager().quitMinigame(loser, true);
                     }
                 }
                 for (MinigamePlayer winner : new ArrayList<>(winners)) {
                     if (winner.isInMinigame()) {
-                        Minigames.getPlugin().getPlayerManager().quitMinigame(winner, true);
+                        plugin.getPlayerManager().quitMinigame(winner, true);
                     }
                 }
 

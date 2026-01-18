@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 
-public class CustomMechanic extends GameMechanicBase {
+public class CustomMechanic extends AGameMechanic {
 
     @Override
     public @NotNull String getMechanicName() {

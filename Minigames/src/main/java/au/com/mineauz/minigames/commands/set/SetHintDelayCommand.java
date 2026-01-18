@@ -68,7 +68,7 @@ public class SetHintDelayCommand extends ASetCommand {
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TREASURE_HUNT.getName()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TREASURE_HUNT.getKey().value()));
             }
         }
         return false;

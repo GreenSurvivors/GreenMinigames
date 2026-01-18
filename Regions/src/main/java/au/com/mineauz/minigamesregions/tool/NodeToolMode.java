@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
 import au.com.mineauz.minigamesregions.Main;
@@ -17,9 +18,9 @@ import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,8 +45,8 @@ public class NodeToolMode implements ToolMode {
     }
 
     @Override
-    public @NotNull Material getIcon() {
-        return Material.STONE_BUTTON;
+    public @NotNull ItemType getIcon() {
+        return ItemType.STONE_BUTTON;
     }
 
     @Override
@@ -56,7 +57,7 @@ public class NodeToolMode implements ToolMode {
             menu.addItem(new MenuItemBack(player.getMenu()), menu.getSize() - 9);
         }
 
-        menu.addItem(new MenuItemString(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME), new Callback<>() {
+        menu.addItem(new MenuItemString(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME), new Callback<>() {
             @Override
             public @NotNull String getValue() {
                 return tool.getSetting("Node");
@@ -76,14 +77,14 @@ public class NodeToolMode implements ToolMode {
             List<MenuItem> items = new ArrayList<>();
 
             for (final Node node : module.getNodes()) {
-                MenuItemCustom item = new MenuItemCustom(Material.STONE_BUTTON, Component.text(node.getName()));
+                MenuItemCustom item = new MenuItemCustom(ItemType.STONE_BUTTON, Component.text(node.getName()));
 
                 // Set the node and go back to the main menu
                 item.setClick(() -> {
                     tool.setSetting("Node", node.getName());
                     menu.displayMenu(player);
 
-                    return null;
+                    return ItemStack.empty();
                 });
 
                 items.add(item);
@@ -92,7 +93,7 @@ public class NodeToolMode implements ToolMode {
             nodeMenu.addItems(items);
             nodeMenu.addItem(new MenuItemBack(menu), nodeMenu.getSize() - 9);
 
-            menu.addItem(new MenuItemPage(Material.STONE_BUTTON, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_EDIT_NAME), nodeMenu));
+            menu.addItem(new MenuItemPage(ItemType.STONE_BUTTON, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_EDIT_NAME), nodeMenu));
         }
         menu.displayMenu(player);
     }
@@ -108,11 +109,11 @@ public class NodeToolMode implements ToolMode {
             RegionModule mod = RegionModule.getMinigameModule(minigame);
             String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Node");
 
-            Location loc = event.getClickedBlock().getLocation().add(0.5, 0.5, 0.5);
-            Node node = mod.getNode(name);
+            final @NotNull SafeFullLocation loc = new SafeFullLocation(event.getClickedBlock().getLocation().add(0.5, 0.5, 0.5));
+            @Nullable Node node = mod.getNode(name);
             if (node == null) {
                 node = new Node(name, minigame, loc);
-                mod.addNode(name, node);
+                mod.addNode(node);
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                         RegionLangKey.NODE_ADDED,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
@@ -135,14 +136,14 @@ public class NodeToolMode implements ToolMode {
 
         Node node = mod.getNode(name);
         if (node == null) {
-            node = new Node(name, minigame, mgPlayer.getLocation());
-            mod.addNode(name, node);
+            node = new Node(name, minigame, mgPlayer.getSafeLocation());
+            mod.addNode(node);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.NODE_ADDED,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
         } else {
-            node.setLocation(mgPlayer.getLocation());
+            node.setLocation(mgPlayer.getSafeLocation());
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.NODE_EDITED,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),

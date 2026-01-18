@@ -19,16 +19,17 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -46,24 +47,24 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
 
     @Override
     public void addMenuItems(final @NotNull Menu menu) {
-        menu.addItem(new MenuItemEnum<>(Material.COMPARATOR, MgMenuLangKey.MENU_REWARD_SCHEME_HIERARCHY_COMPARISON_NAME,
-                getConfigurationTypeCallback(), Comparison.class));
-        menu.addItem(enableRewardsOnLoss.getMenuItem(Material.LEVER, MgMenuLangKey.MENU_REWARD_SCHEME_HIERARCHY_LOSS_AWARD_NAME,
-                MgMenuLangKey.MENUREWARD_SCHEME_HIERARCHY_LOSS_AWARD_DESCRIPTION));
-        menu.addItem(lossUsesSecondary.getMenuItem(Material.LEVER, MgMenuLangKey.MENU_REWARD_SCHEME_HIERARCHY_LOSS_SECONDARY_NAME,
-                MgMenuLangKey.MENUREWARD_SCHEME_HIERARCHY_LOSS_SECONDARY_DESCRIPTION));
+        menu.addItem(new MenuItemEnum<>(ItemType.COMPARATOR, MgMenuLangKey.MENU_REWARD_SCHEME_HIERARCHY_COMPARISON_NAME,
+            getConfigurationTypeCallback(), Comparison.class));
+        menu.addItem(enableRewardsOnLoss.getMenuItem(ItemType.LEVER, MgMenuLangKey.MENU_REWARD_SCHEME_HIERARCHY_LOSS_AWARD_NAME,
+            MgMenuLangKey.MENUREWARD_SCHEME_HIERARCHY_LOSS_AWARD_DESCRIPTION));
+        menu.addItem(lossUsesSecondary.getMenuItem(ItemType.LEVER, MgMenuLangKey.MENU_REWARD_SCHEME_HIERARCHY_LOSS_SECONDARY_NAME,
+            MgMenuLangKey.MENUREWARD_SCHEME_HIERARCHY_LOSS_SECONDARY_DESCRIPTION));
         menu.addItem(new MenuItemNewLine());
 
-        MenuItemCustom primary = new MenuItemCustom(Material.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME);
+        MenuItemCustom primary = new MenuItemCustom(ItemType.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME);
         primary.setClick(() -> {
             showRewardsMenu(primaryRewards, menu.getViewer(), menu);
-            return null;
+            return ItemStack.empty();
         });
 
-        MenuItemCustom secondary = new MenuItemCustom(Material.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME);
+        MenuItemCustom secondary = new MenuItemCustom(ItemType.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME);
         secondary.setClick(() -> {
             showRewardsMenu(secondaryRewards, menu.getViewer(), menu);
-            return null;
+            return ItemStack.empty();
         });
 
         menu.addItem(primary);
@@ -74,10 +75,10 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
         Menu submenu = new Menu(6, MgMenuLangKey.MENU_REWARD_NAME, player);
 
         for (T key : rewards.keySet()) {
-            submenu.addItem(new MenuItemRewardPair(Material.CHEST, rewards, key));
+            submenu.addItem(new MenuItemRewardPair(ItemType.CHEST, rewards, key));
         }
 
-        submenu.addItem(new MenuItemAddReward(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_REWARD_SET_ADD_NAME, rewards), submenu.getSize() - 2);
+        submenu.addItem(new MenuItemAddReward(MenuUtility.getCreateType(), MgMenuLangKey.MENU_REWARD_SET_ADD_NAME, rewards), submenu.getSize() - 2);
         submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 1);
 
         submenu.setPreviousPage(parent);
@@ -128,54 +129,48 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
     }
 
     @Override
-    public void awardPlayerOnLoss(@NotNull MinigamePlayer player, StoredGameStats data, Minigame minigame) {
+    public void awardPlayerOnLoss(final @NotNull MinigamePlayer player, final StoredGameStats data, final Minigame minigame) {
         if (enableRewardsOnLoss.getFlag())
             awardPlayer(player, data, minigame, lossUsesSecondary.getFlag());
     }
 
     @Override
-    public void save(@NotNull Configuration config, @NotNull String path) {
-        comparisonType.saveValue(config, path);
-        enableRewardsOnLoss.saveValue(config, path);
-        lossUsesSecondary.saveValue(config, path);
+    public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        comparisonType.saveValue(config);
+        enableRewardsOnLoss.saveValue(config);
+        lossUsesSecondary.saveValue(config);
 
-        save(primaryRewards, config, path + config.options().pathSeparator() + "score-primary");
-        save(secondaryRewards, config, path + config.options().pathSeparator() + "score-secondary");
+        save(primaryRewards, config.node("score-primary"));
+        save(secondaryRewards, config.node("score-secondary"));
     }
 
-    private void save(@NotNull TreeMap<@NotNull T, @NotNull Rewards> map, @NotNull Configuration config, @NotNull String path) {
+    private void save(final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map, final @NotNull CommentedConfigurationNode config) throws SerializationException {
         for (Entry<T, Rewards> entry : map.entrySet()) {
-            entry.getValue().save(config, path + config.options().pathSeparator() + entry.getKey());
+            entry.getValue().save(config.node(entry.getKey()));
         }
     }
 
     @Override
-    public void load(@NotNull Configuration config, @NotNull String path) {
-        comparisonType.loadValue(config, path);
-        enableRewardsOnLoss.loadValue(config, path);
-        lossUsesSecondary.loadValue(config, path);
+    public void load(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        comparisonType.loadValue(config);
+        enableRewardsOnLoss.loadValue(config);
+        lossUsesSecondary.loadValue(config);
 
-        load(primaryRewards, config, path + config.options().pathSeparator() + "score-primary");
-        load(secondaryRewards, config, path + config.options().pathSeparator() + "score-secondary");
+        load(primaryRewards, config.node("score-primary"));
+        load(secondaryRewards, config.node("score-secondary"));
     }
 
-    protected abstract T loadKey(String key);
+    protected abstract T loadKey(final @NotNull Object key);
 
-    private void load(@NotNull TreeMap<@NotNull T, @NotNull Rewards> map, @NotNull Configuration config, @NotNull String path) {
+    private void load(final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map, final @NotNull CommentedConfigurationNode config) throws SerializationException {
         map.clear();
-        ConfigurationSection section = config.getConfigurationSection(path);
-        char configSeparator = config.options().pathSeparator();
 
-        if (section != null) {
-            for (String key : section.getKeys(false)) {
-                T value = loadKey(key);
+        if (!config.virtual() && !config.isNull()) {
+            for (final @NotNull Map.Entry<@NotNull Object, @NotNull CommentedConfigurationNode> entry: config.childrenMap().entrySet()) {
+                T value = loadKey(entry.getKey());
 
-                ConfigurationSection subSection = config.getConfigurationSection(path + configSeparator + key);
-
-                Rewards reward = new Rewards();
-                if (subSection != null) {
-                    reward.load(config, path + configSeparator + key);
-                }
+                final @NotNull Rewards reward = new Rewards();
+                reward.load(entry.getValue());
                 map.put(value, reward);
             }
         }
@@ -215,9 +210,9 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
         private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
         private @NotNull T value;
 
-        public MenuItemRewardPair(@Nullable Material displayMat, @NotNull TreeMap<@NotNull T, @NotNull Rewards> map,
+        public MenuItemRewardPair(@Nullable ItemType displayType, @NotNull TreeMap<@NotNull T, @NotNull Rewards> map,
                                   @NotNull T value) {
-            super(displayMat, getMenuItemName(value));
+            super(displayType, getMenuItemName(value));
 
             this.map = map;
             this.value = value;
@@ -228,9 +223,9 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
 
         private void updateDescription() {
             List<Component> description = List.of(
-                    getMenuItemDescName(value).color(NamedTextColor.GREEN),
-                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARDPAIR_EDIT),
-                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK)
+                getMenuItemDescName(value).color(NamedTextColor.GREEN),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARDPAIR_EDIT),
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK)
             );
 
             setDescriptionPart(DESCRIPTION_TOKEN, description);
@@ -282,17 +277,18 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
 
         @Override
         // Open editor
-        public @Nullable ItemStack onDoubleClick() {
+        public @NotNull ItemStack onDoubleClick() {
             MinigamePlayer mgPlayer = getContainer().getViewer();
             mgPlayer.setNoClose(true);
             mgPlayer.getPlayer().closeInventory();
+            final @NotNull Duration reopenTime = Duration.ofSeconds(10);
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_HIERARCHY_ENTERCHAT,
-                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(10))));
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
             mgPlayer.setManualEntry(this);
-            getContainer().startReopenTimer(10);
+            getContainer().startReopenTimer(reopenTime);
 
-            return null;
+            return ItemStack.empty();
         }
 
         @Override
@@ -315,11 +311,11 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
 
         @Override
         // Open rewards
-        public @Nullable ItemStack onShiftClick() {
+        public @NotNull ItemStack onShiftClick() {
             Menu rewardMenu = reward.createMenu(getName(), getContainer().getViewer(), getContainer());
 
             rewardMenu.displayMenu(getContainer().getViewer());
-            return null;
+            return ItemStack.empty();
         }
 
         @Override
@@ -335,33 +331,33 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
     public class MenuItemAddReward extends MenuItem implements StringConsumer {
         private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
 
-        public MenuItemAddReward(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
+        public MenuItemAddReward(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
                                  @NotNull TreeMap<@NotNull T, @NotNull Rewards> map) {
-            super(displayMat, langKey);
+            super(displayType, langKey);
 
             this.map = map;
         }
 
-        public MenuItemAddReward(@Nullable Material displayMat, @Nullable Component name,
+        public MenuItemAddReward(@Nullable ItemType displayType, @Nullable Component name,
                                  @NotNull TreeMap<@NotNull T, @NotNull Rewards> map) {
-            super(displayMat, name);
+            super(displayType, name);
 
             this.map = map;
         }
 
         @Override
-        public @Nullable ItemStack onClick() {
+        public @NotNull ItemStack onClick() {
             MinigamePlayer mgPlayer = getContainer().getViewer();
             mgPlayer.setNoClose(true);
             mgPlayer.getPlayer().closeInventory();
-            final int reopenSeconds = 10;
+            final @NotNull Duration reopenTime = Duration.ofSeconds(10);
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_HIERARCHY_ENTERCHAT,
-                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
             mgPlayer.setManualEntry(this);
-            getContainer().startReopenTimer(reopenSeconds);
+            getContainer().startReopenTimer(reopenTime);
 
-            return null;
+            return ItemStack.empty();
         }
 
         @Override

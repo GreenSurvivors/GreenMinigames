@@ -5,17 +5,18 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigamesregions.actions.ActionInterface;
-import au.com.mineauz.minigamesregions.executors.BaseExecutor;
+import au.com.mineauz.minigamesregions.ActionExecutor;
+import au.com.mineauz.minigamesregions.actions.IAction;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,12 @@ import java.util.Map.Entry;
 
 public class MenuItemAction extends MenuItem {
     private static final String DESCRIPTION_TOKEN = "Action_description";
-    private final @NotNull BaseExecutor exec;
-    private final @NotNull ActionInterface act;
+    private final @NotNull ActionExecutor exec;
+    private final @NotNull IAction act;
 
-    public MenuItemAction(@Nullable Material displayMat, @Nullable Component name,
-                          @NotNull BaseExecutor exec, @NotNull ActionInterface act) {
-        super(displayMat, name);
+    public MenuItemAction(@Nullable ItemType displayType, @Nullable Component name,
+                          @NotNull ActionExecutor exec, @NotNull IAction act) {
+        super(displayType, name);
         this.exec = exec;
         this.act = act;
         updateDescription();
@@ -66,17 +67,17 @@ public class MenuItemAction extends MenuItem {
     }
 
     @Override
-    public @Nullable ItemStack onClick() {
+    public @NonNull ItemStack onClick() {
         if (act.displayMenu(getContainer().getViewer(), getContainer())) {
-            return null;
+            return ItemStack.empty();
         }
         return getDisplayItem();
     }
 
     @Override
-    public @Nullable ItemStack onRightClick() {
+    public @NonNull ItemStack onRightClick() {
         exec.removeAction(act);
         getContainer().removeItem(getSlot());
-        return null;
+        return ItemStack.empty();
     }
 }

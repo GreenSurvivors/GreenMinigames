@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerLoadout;
-import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -10,9 +9,9 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GlobalLoadoutCommand extends ACommand {
-    private final MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
 
     @Override
     public @NotNull String getName() {
@@ -60,14 +58,14 @@ public class GlobalLoadoutCommand extends ACommand {
         List<MenuItem> menuItems = new ArrayList<>();
 
         for (PlayerLoadout globalLoadout : LoadoutModule.getGlobalLoadouts()) {
-            Material material = Material.WHITE_STAINED_GLASS_PANE;
+            ItemType displayType = ItemType.WHITE_STAINED_GLASS_PANE;
             if (!globalLoadout.getItemSlots().isEmpty()) {
-                material = globalLoadout.getItem((Integer) globalLoadout.getItemSlots().toArray()[0]).getType();
+                displayType = globalLoadout.getItem((Integer) globalLoadout.getItemSlots().toArray()[0]).getType().asItemType();
             }
-            menuItems.add(new MenuItemDisplayLoadout(material, globalLoadout.getDisplayName(),
-                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), globalLoadout));
+            menuItems.add(new MenuItemDisplayLoadout(displayType, globalLoadout.getDisplayName(),
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), globalLoadout));
         }
-        globalLoadoutMenu.addItem(new MenuItemLoadoutAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+        globalLoadoutMenu.addItem(new MenuItemLoadoutAdd(MenuUtility.getCreateType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
             LoadoutModule.getGlobalLoadoutMap()), 53);
         globalLoadoutMenu.addItems(menuItems);
 

@@ -2,7 +2,6 @@ package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.backend.BackendManager;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.display.DisplayManager;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
@@ -19,13 +18,12 @@ import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
 import au.com.mineauz.minigames.minigame.modules.RewardsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
+import au.com.mineauz.minigames.presets.PresetLoader;
 import au.com.mineauz.minigames.recorder.BasicRecorder;
 import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.stats.MinigameStatistics;
 import au.com.mineauz.minigames.stats.StatisticValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.milkbowl.vault.economy.Economy;
 import org.apache.maven.artifact.versioning.ComparableVersion;
@@ -34,95 +32,49 @@ import org.bstats.charts.CustomChart;
 import org.bstats.charts.MultiLineChart;
 import org.bstats.charts.SimpleBarChart;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.VisibleForTesting;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Pattern;
 
-public class Minigames extends JavaPlugin {
-    private static final Pattern COMPILE = Pattern.compile("-?[0-9]+");
-    private static ComponentLogger componentLogger = null;
-    private static Minigames plugin;
-    private static Economy econ;
-    private static SignBase minigameSigns;
-    private static ComparableVersion VERSION;
-    private static ComparableVersion PAPER_VERSION;
+public class Minigames extends JavaPlugin { // todo move a lot of these assignments to the constructor
+    private static @Deprecated @MonotonicNonNull Minigames plugin;
+    private Economy econ;
+    private SignBase minigameSigns;
+    private ComparableVersion pluginVersion;
     private final @NotNull StartUpLogHandler startUpHandler;
-    private static final MinigameMessageManager minigameMessageManager = new MinigameMessageManager();
-    public DisplayManager display;
+    private final MinigameMessageManager minigameMessageManager = new MinigameMessageManager();
+    private DisplayManager displayManager;
     private ResourcePackManager resourceManager;
     private MinigamePlayerManager playerManager;
     private MinigameManager minigameManager;
     private PlaceHolderManager placeHolderManager;
-    private CommandDispatcher disp;
+    private CommandDispatcher commandDispatcher;
     private boolean debug;
-    private boolean hasPAPI = false;
-    private long lastUpdateCheck;
+    private boolean hasPlaceholderAPI = false;
     private BackendManager backend;
     private Metrics metrics;
 
     public Minigames() {
         startUpHandler = new StartUpLogHandler();
+        plugin = this;
     }
 
-    public static ComparableVersion getVERSION() {
-        return VERSION;
-    }
-
-    public static Minigames getPlugin() {
-        return plugin;
-    }
-
-    public static @NotNull ComponentLogger getCmpnntLogger() {
-        if (Minigames.componentLogger == null) {
-            Minigames.componentLogger = Minigames.getPlugin().getComponentLogger();
-        }
-
-        return Minigames.componentLogger;
-    }
-
-    @VisibleForTesting
-    public static MinigameMessageManager getMinigameMessageManager () {
-        return minigameMessageManager;
-    }
-
-    public @NotNull String getStartupLog() {
-        return startUpHandler.getNormalLog();
-    }
-
-    public @NotNull String getStartupExceptionLog() {
-        return startUpHandler.getExceptionLog();
-    }
-
-    public PlaceHolderManager getPlaceHolderManager() {
-        return placeHolderManager;
-    }
-
-    public CommandDispatcher getCommandDispatcher() {
-        return disp;
-    }
-
+    @Override
     public void onDisable() {
         if (getPlugin() == null) {
             getComponentLogger().info("Minigames is disabled");
             return;
         }
+
+        boolean allSuccess = true;
 
         for (final Player p : getServer().getOnlinePlayers()) {
             if (playerManager.getMinigamePlayer(p).isInMinigame()) {
@@ -131,97 +83,59 @@ public class Minigames extends JavaPlugin {
         }
         for (final Minigame minigame : minigameManager.getAllMinigames().values()) {
             if (minigame.getType() == MinigameType.GLOBAL &&
-                    "treasure_hunt".equals(minigame.getMechanicName())
-                    && minigame.isEnabled()) {
+                "treasure_hunt".equals(minigame.getMechanicName())
+                && minigame.isEnabled()) { // todo move this into the Treasure mechanic
+
                 if (minigame.getMinigameTimer() != null) {
                     minigame.getMinigameTimer().stopTimer();
                 }
                 TreasureHuntMechanic.removeTreasure(minigame);
             }
         }
-        for (final Minigame mg : minigameManager.getAllMinigames().values()) {
-            mg.saveMinigame();
+        for (final @NotNull Minigame mg : minigameManager.getAllMinigames().values()) {
+            allSuccess &= mg.saveMinigame();
         }
 
         backend.shutdown();
         playerManager.saveDeniedCommands();
 
-        final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
-        Configuration globalConfig = globalLoadouts.getConfig();
-        if (LoadoutModule.hasGlobalLoadouts()) {
-            for (final PlayerLoadout loadout : LoadoutModule.getGlobalLoadouts()) {
-                char globalPathSeparator = globalConfig.options().pathSeparator();
-
-                for (final Integer slot : loadout.getItemSlots()) {
-                    globalConfig.set(loadout.getName() + globalPathSeparator + slot, loadout.getItem(slot));
-                }
-                if (!loadout.getAllPotionEffects().isEmpty()) {
-                    for (final PotionEffect eff : loadout.getAllPotionEffects()) {
-                        globalConfig.set(loadout.getName() +
-                                globalPathSeparator + "potions" +
-                                globalPathSeparator + eff.getType().getKey().getKey() +
-                                globalPathSeparator + "amp", eff.getAmplifier());
-                        globalConfig.set(loadout.getName() +
-                                globalPathSeparator + "potions" +
-                                globalPathSeparator + eff.getType().getKey().getKey() +
-                                globalPathSeparator + "dur", eff.getDuration());
-                    }
-                } else {
-                    globalConfig.set(loadout.getName() + globalPathSeparator + "potions", null);
-                }
-                if (loadout.getUsePermissions()) {
-                    globalConfig.set(loadout.getName() + globalPathSeparator + "usepermissions", true);
-                } else {
-                    globalConfig.set(loadout.getName() + globalPathSeparator + "usepermissions", null);
-                }
-            }
-        } else {
-            globalConfig.set("globalloadouts", null);
+        try {
+            LoadoutModule.saveGlobalLoadouts();
+        } catch (final @NotNull IOException e) {
+            getComponentLogger().error("Couldn't save global loadouts. Data loss is imminent!", e);
+            allSuccess = false;
         }
-        globalLoadouts.saveConfig();
-        minigameManager.saveRewardSigns();
-        resourceManager.saveResources();
-        getCmpnntLogger().info(getPluginMeta().getName() + " successfully disabled.");
+        try {
+            minigameManager.saveRewardSigns();
+        } catch (final @NotNull IOException e) {
+            getComponentLogger().error("Couldn't save reward signs. Data loss is imminent!", e);
+            allSuccess = false;
+        }
+        try {
+            resourceManager.saveResources();
+        } catch (final @NotNull IOException e) {
+            getComponentLogger().error("Couldn't save resources. Data loss is imminent!", e);
+            allSuccess = false;
+        }
+
+        if (allSuccess) {
+            getComponentLogger().info(getPluginMeta().getName() + " successfully disabled.");
+        }
     }
 
+    @Override
     public void onEnable() {
-        getLogger().addHandler(startUpHandler);
+        getLogger().addHandler(startUpHandler); // todo this currently does nothing, since we are using the Component logger
         ComponentLogger logger = getComponentLogger();
+        pluginVersion = new ComparableVersion(getPluginMeta().getVersion());
         try {
-            plugin = this;
-            switch (checkVersion()) {
-                case -1 -> {
-                    logger.warn("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Paper Version: " + PAPER_VERSION.getCanonical());
-                    logger.warn("Your version is newer: " + Bukkit.getBukkitVersion());
-                    logger.warn("Please check for an update!");
-                }
-                case 0 -> {
-                }
-                case 1 -> {
-                    if (!getConfig().getBoolean("forceload", true)) {
-                        logger.warn("This version of Minigames (" + VERSION.getCanonical() + ") " +
-                                "is designed for Paper Version: " + PAPER_VERSION.getCanonical());
-                        logger.warn("Your version is " + Bukkit.getVersion());
-                        logger.warn(" Bypass this by setting forceload: true in the config");
-
-                        logger.warn("DISABLING MINIGAMES....");
-                        plugin = null;
-                        onDisable();
-                        return;
-                    } else {
-                        logger.warn("Version incompatible - Force Loading Minigames.");
-                        logger.warn("This version of Minigames (" + VERSION.getCanonical() + ") " +
-                                "is designed for Bukkit Version: " + PAPER_VERSION.getCanonical());
-                        logger.warn("Your version is " + Bukkit.getBukkitVersion());
-                    }
-                }
-            }
-            ConfigurationSerialization.registerClass(ResourcePack.class);
+            if (checkVersion()) return;
+            ConfigurationSerialization.registerClass(ResourcePack.class); // todo
             MinigameMessageManager.registerCoreLanguage();
-            loadPresets();
+            PresetLoader.initPresets(this);
             setupMinigames();
             if (!setupEconomy()) {
-                getLogger().info("No Vault plugin found! You may only reward items.");
+                logger.info("No Vault plugin found! You may only reward items.");
             }
             backend = new BackendManager(getComponentLogger());
             if (!backend.initialize(getConfig())) {
@@ -230,14 +144,13 @@ public class Minigames extends JavaPlugin {
             }
             getConfig().options().copyDefaults(true);
             saveConfig();
-            //        playerManager.loadDCPlayers();
             playerManager.loadDeniedCommands();
-            setupLoadOuts();
+            LoadoutModule.setupGlobalLoadOuts(this);
             minigameSigns = new SignBase();
             minigameManager.loadRewardSigns();
 
-            disp = new CommandDispatcher();
-            getServer().getCommandMap().register(getPluginMeta().getName().toLowerCase(Locale.ENGLISH), disp);
+            commandDispatcher = new CommandDispatcher();
+            getServer().getCommandMap().register(getPluginMeta().getName().toLowerCase(Locale.ENGLISH), commandDispatcher);
 
             for (final Player player : getServer().getOnlinePlayers()) {
                 playerManager.addMinigamePlayer(player);
@@ -262,77 +175,61 @@ public class Minigames extends JavaPlugin {
         getLogger().removeHandler(startUpHandler);
     }
 
-    private void setupLoadOuts() {
-        final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
-        Configuration globalConfig = globalLoadouts.getConfig();
-        char globalPathSeparator = globalConfig.options().pathSeparator();
-
-        final Set<String> keys = globalConfig.getKeys(false);
-        for (final String loadoutName : keys) {
-            LoadoutModule.addGlobalLoadout(loadoutName);
-            ConfigurationSection loadOutSection = globalConfig.getConfigurationSection(loadoutName);
-            if (loadOutSection != null) {
-                final Set<String> items = loadOutSection.getKeys(false);
-                for (final String slot : items) {
-                    if (COMPILE.matcher(slot).matches()) {
-                        LoadoutModule.getGlobalLoadout(loadoutName).addItem(globalConfig.getItemStack(loadoutName + '.' + slot), Integer.parseInt(slot));
-                    }
+    /// returns true if the check failed and the plugin should get disabled
+    private boolean checkVersion() {
+        final ComparableVersion paperVersion = new ComparableVersion(getPluginMeta().getAPIVersion());
+        final ComparableVersion serverVersion = new ComparableVersion(getServer().getMinecraftVersion());
+        switch (paperVersion.compareTo(serverVersion)) {
+            case -1 -> {
+                getComponentLogger().warn("""
+                        This version of Minigames ({}) is designed for Paper Version: {}
+                        Your version is newer: {}
+                        Please check for an update!""",
+                    pluginVersion.getCanonical(), paperVersion.getCanonical(), Bukkit.getBukkitVersion());
+            }
+            case 0 -> {
+            }
+            case 1 -> {
+                if (!getConfig().getBoolean("forceload", true)) {
+                    getComponentLogger().warn("""
+                            This version of Minigames ({}) is designed for Paper Version: {}
+                            Your version is {}
+                            Bypass this by setting forceload: true in the config.
+                            DISABLING MINIGAMES....""",
+                        pluginVersion.getCanonical(), paperVersion.getCanonical(), Bukkit.getVersion());
+                    plugin = null;
+                    onDisable();
+                    return true;
+                } else {
+                    getComponentLogger().warn("""
+                            Version incompatible - Force Loading Minigames.
+                            This version of Minigames ({}) is designed for Bukkit Version: {}
+                            Your version is {}""",
+                        pluginVersion.getCanonical(), paperVersion.getCanonical(), Bukkit.getBukkitVersion());
                 }
             }
-            if (globalConfig.contains(loadoutName + globalPathSeparator + "potions")) {
-                ConfigurationSection potionLoadOutSection = globalConfig.getConfigurationSection(loadoutName + globalPathSeparator + "potions");
-                if (potionLoadOutSection != null) {
-                    final Set<String> pots = potionLoadOutSection.getKeys(false);
-                    for (final String eff : pots) {
-                        PotionEffectType type = Registry.EFFECT.get(NamespacedKey.fromString(eff));
-                        if (type != null) {
-                            final PotionEffect effect = new PotionEffect(type,
-                                    globalConfig.getInt(loadoutName + globalPathSeparator + "potions" + globalPathSeparator + eff + globalPathSeparator + "dur"),
-                                    globalConfig.getInt(loadoutName + globalPathSeparator + "potions" + globalPathSeparator + eff + globalPathSeparator + "amp"));
-                            LoadoutModule.getGlobalLoadout(loadoutName).addPotionEffect(effect);
-                        }
-                    }
-                }
-            }
-            if (globalConfig.contains(loadoutName + globalPathSeparator + "usepermissions")) {
-                LoadoutModule.getGlobalLoadout(loadoutName).setUsePermissions(globalConfig.getBoolean(loadoutName + globalPathSeparator + "usepermissions"));
-            }
         }
-    }
 
-    private void loadPresets() {
-        final String prespath = getDataFolder() + File.separator + "presets" + File.separator;
-        final String[] presets = {"spleef", "lms", "ctf", "infection"};
-        File pres;
-        for (String preset : presets) {
-            pres = new File(prespath + preset + ".yml");
-            if (!pres.exists()) {
-                saveResource("presets" + File.separator + preset + ".yml", false);
-            }
-        }
+        return false;
     }
 
     private void setupMinigames() {
         minigameManager = new MinigameManager();
         playerManager = new MinigamePlayerManager();
-        display = new DisplayManager();
+        displayManager = new DisplayManager();
 
         resourceManager = new ResourcePackManager();
-        final MinigameSave resources = new MinigameSave("resources");
-        minigameManager.addConfigurationFile("resources", resources.getConfig());
-        resourceManager.initialize(resources);
+        resourceManager.initialize();
         minigameManager.addMinigameType(new SingleplayerType());
         minigameManager.addMinigameType(new MultiplayerType());
-
-        final MinigameSave completion = new MinigameSave("completion");
-        minigameManager.addConfigurationFile("completion", completion.getConfig());
 
         getServer().getPluginManager().registerEvents(new Events(), this);
         //always active recorder, don't get confused with RegenRecorder, that is only active, if the minigame has a regen area
         getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
 
+        saveDefaultConfig();
+
         try {
-            getConfig().load(getDataFolder() + File.separator + "config.yml");
             final List<String> mgs;
             if (getConfig().contains("minigames")) {
                 mgs = getConfig().getStringList("minigames");
@@ -343,30 +240,16 @@ public class Minigames extends JavaPlugin {
             debug = getConfig().getBoolean("debug", false);
 
             if (!mgs.isEmpty()) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                    for (final String minigameName : mgs) {
-                        final Minigame game = new Minigame(minigameName);
-                        try {
-                            game.loadMinigame();
-                            minigameManager.addMinigame(game);
-                        } catch (final Exception e) {
-                            getComponentLogger().error(Component.text("Failed to load \"" + minigameName + "\"! The configuration file may be corrupt or missing!", NamedTextColor.RED));
-                            getCmpnntLogger().error("", e);
-                        }
+                for (final @NotNull String minigameName : mgs) {
+                    final @NotNull Minigame game = new Minigame(minigameName);
+                    if (game.loadMinigame()) {
+                        minigameManager.addMinigame(game);
                     }
-                }, 1L);
-            }
-        } catch (final FileNotFoundException ex) {
-            getComponentLogger().info("Failed to load config, creating one.");
-            try {
-                getConfig().save(getDataFolder() + File.separator + "config.yml");
-            } catch (final IOException e) {
-                getComponentLogger().error("Could not save config.yml!", e);
+                }
             }
         } catch (final Exception e) {
             getComponentLogger().error("Failed to load config!", e);
         }
-
     }
 
     private boolean setupEconomy() {
@@ -381,9 +264,34 @@ public class Minigames extends JavaPlugin {
         return true;
     }
 
+    private void initMetrics() {
+        metrics = new Metrics(this, 1190);
+        final MultiLineChart chart = new MultiLineChart("Players_in_Minigames", () -> {
+            final Map<String, Integer> result = new HashMap<>();
+            result.put("Total_Players", playerManager.getAllMinigamePlayers().size());
+            for (final MinigamePlayer pl : playerManager.getAllMinigamePlayers()) {
+                if (pl.isInMinigame()) {
+                    int count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
+                    result.put(pl.getMinigame().getType().getName(), count + 1);
+                }
+            }
+            return result;
+        });
+        final SimpleBarChart barChart = new SimpleBarChart("Modules_v_Servers", () -> {
+            final Map<String, Integer> result = new HashMap<>();
+            for (final ModuleFactory module : minigameManager.getModules()) {
+                result.put(module.getKey().asString(), 1);
+            }
+            return result;
+        });
+        metrics.addCustomChart(chart);
+        metrics.addCustomChart(barChart);
+    }
+
+    @SuppressWarnings("LoggingSimilarMessage")
     private void hookPlaceHolderApi() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            hasPAPI = true;
+            hasPlaceholderAPI = true;
             getComponentLogger().info("--------------------");
             getComponentLogger().info("Hooking PlaceHolder API");
             placeHolderManager = new PlaceHolderManager(this);
@@ -406,81 +314,45 @@ public class Minigames extends JavaPlugin {
         return econ;
     }
 
-    private int checkVersion() {
-        VERSION = new ComparableVersion(getPluginMeta().getVersion());
-        PAPER_VERSION = new ComparableVersion(getPluginMeta().getAPIVersion());
-        final ComparableVersion serverversion = new ComparableVersion(getServer().getMinecraftVersion());
-        return PAPER_VERSION.compareTo(serverversion);
+    public void addMetric(final @NotNull CustomChart chart) {
+        metrics.addCustomChart(chart);
     }
 
-    /**
-     * use {@link #getPlayerManager()}
-     *
-     * @return MinigamePlayeManager
-     */
-    @Deprecated
-    public MinigamePlayerManager getPlayerData() {
-        return playerManager;
+    public ComparableVersion getVersion() {
+        return pluginVersion;
     }
 
-    /**
-     * use {@link #minigameManager}
-     *
-     * @return MinigameManager
-     */
     @Deprecated
-    public MinigameManager getMinigameData() {
-        return minigameManager;
+    public static @MonotonicNonNull Minigames getPlugin() {
+        return plugin;
+    }
+
+    public MinigameMessageManager getMinigameMessageManager() {
+        return minigameMessageManager;
+    }
+
+    public @NotNull String getStartupLog() {
+        return startUpHandler.getNormalLog();
+    }
+
+    public @NotNull String getStartupExceptionLog() {
+        return startUpHandler.getExceptionLog();
+    }
+
+    public PlaceHolderManager getPlaceHolderManager() {
+        return placeHolderManager;
+    }
+
+    public CommandDispatcher getCommandDispatcher() {
+        return commandDispatcher;
     }
 
     public BackendManager getBackend() {
         return backend;
     }
 
-    @Deprecated
-    public long getLastUpdateCheck() {
-        return lastUpdateCheck;
-    }
-
-    @Deprecated
-    public void setLastUpdateCheck(final long time) {
-        lastUpdateCheck = time;
-    }
-
-    /**
-     * @return Signs
-     */
-    @SuppressWarnings("unused")
     public SignBase getMinigameSigns() {
         return minigameSigns;
-    }
-
-    private void initMetrics() {
-        metrics = new Metrics(this, 1190);
-        final MultiLineChart chart = new MultiLineChart("Players_in_Minigames", () -> {
-            final Map<String, Integer> result = new HashMap<>();
-            result.put("Total_Players", playerManager.getAllMinigamePlayers().size());
-            for (final MinigamePlayer pl : playerManager.getAllMinigamePlayers()) {
-                if (pl.isInMinigame()) {
-                    int count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
-                    result.put(pl.getMinigame().getType().getName(), count + 1);
-                }
-            }
-            return result;
-        });
-        final SimpleBarChart barChart = new SimpleBarChart("Modules_v_Servers", () -> {
-            final Map<String, Integer> result = new HashMap<>();
-            for (final ModuleFactory module : minigameManager.getModules()) {
-                result.put(module.getName(), 1);
-            }
-            return result;
-        });
-        metrics.addCustomChart(chart);
-        metrics.addCustomChart(barChart);
-    }
-
-    public void addMetric(final CustomChart chart) {
-        metrics.addCustomChart(chart);
     }
 
     public void queueStatSave(final @NotNull StoredGameStats saveData, final boolean winner) {
@@ -490,8 +362,8 @@ public class Minigames extends JavaPlugin {
         backend.saveStats(saveData);
 
         winCountFuture.thenApply(winCount -> Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> {
-            final Minigame minigame = saveData.getMinigame();
-            final MinigamePlayer player = saveData.getPlayer();
+            final @NotNull Minigame minigame = saveData.getMinigame();
+            final @NotNull MinigamePlayer player = saveData.getPlayer();
 
             // Do rewards
             if (winner) {
@@ -526,7 +398,11 @@ public class Minigames extends JavaPlugin {
         return resourceManager;
     }
 
-    public boolean includesPapi() {
-        return hasPAPI;
+    public boolean includesPlaceholderAPI() {
+        return hasPlaceholderAPI;
+    }
+
+    public DisplayManager getDisplayManager() {
+        return displayManager;
     }
 }

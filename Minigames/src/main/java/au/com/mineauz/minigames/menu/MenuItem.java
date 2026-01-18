@@ -3,9 +3,10 @@ package au.com.mineauz.minigames.menu;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,31 +18,31 @@ public class MenuItem {
     private static final String BASE_DESCRIPTION_TOKEN = "Base_description";
     private final @NotNull List<@NotNull IdComponent> descriptionRegistry = new ArrayList<>();
     private @NotNull ItemStack displayItem;
-    private @Nullable Menu container = null;
+    private @MonotonicNonNull Menu container = null;
     private int slot = 0;
 
-    public MenuItem(@Nullable Material displayMat, @Nullable Component name) {
-        this(displayMat, name, null);
+    public MenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {
+        this(displayType, name, null);
     }
 
-    public MenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey langKey) {
-        this(displayMat, MinigameMessageManager.getMgMessage(langKey), null);
+    public MenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey) {
+        this(displayType, MinigameMessageManager.getMgMessage(langKey), null);
     }
 
-    public MenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @Nullable List<Component> description) {
-        this(displayMat, MinigameMessageManager.getMgMessage(langKey), description);
+    public MenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey, final @Nullable List<Component> description) {
+        this(displayType, MinigameMessageManager.getMgMessage(langKey), description);
     }
 
-    public MenuItem(@Nullable Material displayMat, @Nullable Component name, @Nullable List<@NotNull Component> description) {
-        if (displayMat == null) {
+    public MenuItem(@Nullable ItemType displayType, final @Nullable Component name, final @Nullable List<@NotNull Component> description) {
+        if (displayType == null) {
             if (description == null) {
-                displayMat = MenuUtility.getSlotFillerItem();
+                displayType = MenuUtility.getSlotFillerType();
             } else {
-                displayMat = MenuUtility.getUnknownDisplayItem();
+                displayType = MenuUtility.getUnknownDisplayType();
             }
         }
-        this.displayItem = new ItemStack(displayMat);
-        ItemMeta meta = this.displayItem.getItemMeta();
+        this.displayItem = displayType.createItemStack();
+        final @NotNull ItemMeta meta = this.displayItem.getItemMeta();
         meta.displayName(name);
 
         if (description == null) {
@@ -55,7 +56,7 @@ public class MenuItem {
         }
     }
 
-    public MenuItem(@NotNull ItemStack displayItem, @Nullable Component name) {
+    public MenuItem(final @NotNull ItemStack displayItem, final @Nullable Component name) {
         ItemMeta meta = displayItem.getItemMeta();
         if (name != null) {
             meta.displayName(name);
@@ -78,7 +79,7 @@ public class MenuItem {
      * @param descriptionPart  the part of description to get written. If null the part will get removed.
      */
     public void setDescriptionPart(final @NotNull String descriptionToken,
-                                   @Nullable List<@NotNull Component> descriptionPart) {
+                                   final @Nullable List<@NotNull Component> descriptionPart) {
         ItemMeta itemMeta = displayItem.getItemMeta();
 
         if (descriptionRegistry.isEmpty()) {
@@ -144,8 +145,7 @@ public class MenuItem {
                 displayItem.setItemMeta(itemMeta);
             }
         } else {
-            // todo Math.clamp in Java 21
-            postion = Math.max(0, Math.min(postion, descriptionRegistry.size()));
+            postion = Math.clamp(postion, 0, descriptionRegistry.size());
 
             removeDescriptionPart(descriptionToken);
 
@@ -179,7 +179,7 @@ public class MenuItem {
         }
     }
 
-    public void removeDescriptionPart(@NotNull String descriptionToken) {
+    public void removeDescriptionPart(final @NotNull String descriptionToken) {
         boolean found = false;
         for (Iterator<IdComponent> it = descriptionRegistry.iterator(); it.hasNext(); ) {
             IdComponent idCToCheck = it.next();
@@ -194,8 +194,8 @@ public class MenuItem {
         }
     }
 
-    public List<Component> getDescription() {
-        return displayItem.getItemMeta().lore();
+    public @Nullable List<@NotNull Component> getDescription() {
+        return displayItem.lore();
     }
 
     /**
@@ -204,7 +204,7 @@ public class MenuItem {
      * @see #setDescriptionPart(String, List)
      * @see #setDescriptionPartAtIndex(String, int, List)
      */
-    public void setBaseDescriptionPart(@Nullable List<@NotNull Component> description) {
+    public void setBaseDescriptionPart(final @Nullable List<@NotNull Component> description) {
         setDescriptionPartAtIndex(BASE_DESCRIPTION_TOKEN, 0, description);
     }
 
@@ -224,7 +224,7 @@ public class MenuItem {
      *
      * @see #setBaseDescriptionPart(List)
      */
-    public void setDisplayItem(@NotNull ItemStack item) {
+    public void setDisplayItem(final @NotNull ItemStack item) {
         ItemMeta originalMeta = displayItem.getItemMeta();
         displayItem = item.clone();
         ItemMeta newMeta = displayItem.getItemMeta();
@@ -240,41 +240,41 @@ public class MenuItem {
     public void update() {
     }
 
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         //Do stuff
         return getDisplayItem();
     }
 
-    public ItemStack onClickWithItem(ItemStack item) {
+    public @NotNull ItemStack onClickWithItem(@NotNull ItemStack item) {
         //Do stuff
         return getDisplayItem();
     }
 
-    public ItemStack onRightClick() {
+    public @NotNull ItemStack onRightClick() {
         //Do stuff
         return getDisplayItem();
     }
 
-    public ItemStack onShiftClick() {
+    public @NotNull ItemStack onShiftClick() {
         //Do stuff
         return getDisplayItem();
     }
 
-    public ItemStack onShiftRightClick() {
+    public @NotNull ItemStack onShiftRightClick() {
         //Do stuff
         return getDisplayItem();
     }
 
-    public ItemStack onDoubleClick() {
+    public @NotNull ItemStack onDoubleClick() { // todo enable a way for autocompletion
         //Do Stuff
         return getDisplayItem();
     }
 
-    public @Nullable Menu getContainer() {
+    public @MonotonicNonNull Menu getContainer() {
         return container;
     }
 
-    public void setContainer(@NotNull Menu container) {
+    public void setContainer(final @NotNull Menu container) {
         this.container = container;
     }
 

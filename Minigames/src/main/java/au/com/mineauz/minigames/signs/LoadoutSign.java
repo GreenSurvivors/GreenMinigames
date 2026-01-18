@@ -14,7 +14,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
@@ -49,7 +48,7 @@ public class LoadoutSign extends AMinigameSign {
 
     @Override
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        if (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && mgPlayer.isInMinigame()) {
+        if (mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty() && mgPlayer.isInMinigame()) {
             Minigame mgm = mgPlayer.getMinigame();
 
             if (mgm == null || mgm.isSpectator(mgPlayer)) {
@@ -71,16 +70,16 @@ public class LoadoutSign extends AMinigameSign {
                 }
 
                 if (loadout != null) {
-                    if (!loadout.getUsePermissions() || mgPlayer.getPlayer().hasPermission("minigame.loadout." + sign.getSide(Side.FRONT).getLine(2).toLowerCase())) {
+                    if (!loadout.usesPermissions() || mgPlayer.getPlayer().hasPermission("minigame.loadout." + sign.getSide(Side.FRONT).getLine(2).toLowerCase())) {
                         if (mgPlayer.setLoadout(loadout)) {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_EQUIPPED,
-                                    Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), sign.getSide(Side.FRONT).line(2)));
+                                Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), sign.getSide(Side.FRONT).line(2)));
 
                             if (mgm.getType() == MinigameType.SINGLEPLAYER ||
-                                    mgm.hasStarted()) {
+                                mgm.hasStarted()) {
                                 if (sign.getSide(Side.FRONT).getLine(3).equalsIgnoreCase("respawn")) {
                                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
-                                            Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
+                                        Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
                                 } else if (sign.getSide(Side.FRONT).getLine(3).equalsIgnoreCase("temporary")) {
                                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_TEMPORARILY);
                                     loadout.equipLoadout(mgPlayer);
@@ -98,7 +97,7 @@ public class LoadoutSign extends AMinigameSign {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_ERROR_NOLOADOUT);
                 }
             }
-        } else if (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
+        } else if (!mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
         }
         return false;

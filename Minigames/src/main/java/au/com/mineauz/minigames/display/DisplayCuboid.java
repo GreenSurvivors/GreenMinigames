@@ -1,30 +1,31 @@
 package au.com.mineauz.minigames.display;
 
+import io.papermc.paper.math.Position;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.BlockType;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("UnstableApiUsage") // shut up Position
 public class DisplayCuboid extends AbstractDisplayObject implements INonPersistentDisplay, IDisplayObject {
-    private static final Location temp = new Location(null, 0, 0, 0);
-
-    private final @NotNull Vector minCorner;
-    private final @NotNull Vector maxCorner;
+    private final @NotNull Position minCorner;
+    private final @NotNull Position maxCorner;
 
     private int lastBarrier = 41;
 
-    public DisplayCuboid(@NotNull DisplayManager manager, @NotNull World world, @NotNull Vector minCorner, @NotNull Vector maxCorner) {
+    public DisplayCuboid(final @NotNull DisplayManager manager, @NotNull World world, @NotNull Position minCorner, @NotNull Position maxCorner) {
         super(manager, world);
         this.minCorner = minCorner;
         this.maxCorner = maxCorner;
     }
 
-    public DisplayCuboid(@NotNull DisplayManager manager, @NotNull Player player, @NotNull Vector minCorner, @NotNull Vector maxCorner) {
-        this(manager, player.getWorld(), minCorner, maxCorner);
-        this.player = player;
+    public DisplayCuboid(final @NotNull DisplayManager manager, final @NotNull Player player,
+                         final @NotNull Position minCorner, final @NotNull Position maxCorner) {
+        super(manager, player);
+        this.minCorner = minCorner;
+        this.maxCorner = maxCorner;
     }
 
     @Override
@@ -47,45 +48,46 @@ public class DisplayCuboid extends AbstractDisplayObject implements INonPersiste
         double step = 0.5;
 
         // X axis
-        for (double x = minCorner.getX(); x <= maxCorner.getX(); x += step) {
-            placeEffectAt(x, minCorner.getY(), minCorner.getZ());
-            placeEffectAt(x, maxCorner.getY(), minCorner.getZ());
-            placeEffectAt(x, minCorner.getY(), maxCorner.getZ());
-            placeEffectAt(x, maxCorner.getY(), maxCorner.getZ());
+        for (double x = minCorner.x(); x <= maxCorner.x(); x += step) {
+            placeEffectAt(x, minCorner.y(), minCorner.z());
+            placeEffectAt(x, maxCorner.y(), minCorner.z());
+            placeEffectAt(x, minCorner.y(), maxCorner.z());
+            placeEffectAt(x, maxCorner.y(), maxCorner.z());
         }
 
         // Y axis
-        for (double y = minCorner.getY(); y <= maxCorner.getY(); y += step) {
-            placeEffectAt(minCorner.getX(), y, minCorner.getZ());
-            placeEffectAt(maxCorner.getX(), y, minCorner.getZ());
-            placeEffectAt(minCorner.getX(), y, maxCorner.getZ());
-            placeEffectAt(maxCorner.getX(), y, maxCorner.getZ());
+        for (double y = minCorner.y(); y <= maxCorner.y(); y += step) {
+            placeEffectAt(minCorner.x(), y, minCorner.z());
+            placeEffectAt(maxCorner.x(), y, minCorner.z());
+            placeEffectAt(minCorner.x(), y, maxCorner.z());
+            placeEffectAt(maxCorner.x(), y, maxCorner.z());
         }
 
         // Z axis
-        for (double z = minCorner.getZ(); z <= maxCorner.getZ(); z += step) {
-            placeEffectAt(minCorner.getX(), minCorner.getY(), z);
-            placeEffectAt(maxCorner.getX(), minCorner.getY(), z);
-            placeEffectAt(minCorner.getX(), maxCorner.getY(), z);
-            placeEffectAt(maxCorner.getX(), maxCorner.getY(), z);
+        for (double z = minCorner.z(); z <= maxCorner.z(); z += step) {
+            placeEffectAt(minCorner.x(), minCorner.y(), z);
+            placeEffectAt(maxCorner.x(), minCorner.y(), z);
+            placeEffectAt(minCorner.x(), maxCorner.y(), z);
+            placeEffectAt(maxCorner.x(), maxCorner.y(), z);
         }
     }
 
-    private void placeEffectAt(double x, double y, double z) {
-        lastBarrier++;
-        if (lastBarrier < 41) {
-            return;
-        }
-        lastBarrier = 0;
-        temp.setX(x);
-        temp.setY(y);
-        temp.setZ(z);
-        temp.setWorld(getWorld());
+    private void placeEffectAt(final double x, final double y, final double z) {
+        if (getWorld() != null) {
+            lastBarrier++;
+            if (lastBarrier < 41) {
+                return;
+            }
+            lastBarrier = 0;
+            final @NotNull Location temp = new Location(getWorld(), x, y, z);
 
-        if (player == null) {
-            getWorld().spawnParticle(Particle.BLOCK_MARKER, temp, 1, 0, 0, 0, 0, Material.BARRIER.createBlockData());
+            if (player == null) {
+                getWorld().spawnParticle(Particle.BLOCK_MARKER, temp, 1, BlockType.BARRIER.createBlockData());
+            } else {
+                player.spawnParticle(Particle.BLOCK_MARKER, temp, 1, BlockType.BARRIER.createBlockData());
+            }
         } else {
-            player.spawnParticle(Particle.BLOCK_MARKER, temp, 1, 0, 0, 0, 0, Material.BARRIER.createBlockData());
+            remove();
         }
     }
 }

@@ -14,8 +14,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,18 +29,18 @@ public class MenuItemRewardGroup extends MenuItem implements StringConsumer {
     private final @NotNull RewardGroup group;
     private final @NotNull Rewards rewards;
 
-    public MenuItemRewardGroup(@Nullable Material displayMat, @Nullable Component name, @NotNull RewardGroup group,
+    public MenuItemRewardGroup(@Nullable ItemType displayType, @Nullable Component name, @NotNull RewardGroup group,
                                @NotNull Rewards rewards) {
-        super(displayMat, name);
+        super(displayType, name);
         this.group = group;
         this.rewards = rewards;
         updateDescription();
     }
 
-    public MenuItemRewardGroup(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemRewardGroup(@Nullable ItemType displayType, @Nullable Component name,
                                @Nullable List<@NotNull Component> description, @NotNull RewardGroup group,
                                @NotNull Rewards rewards) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.group = group;
         this.rewards = rewards;
         updateDescription();
@@ -112,31 +112,31 @@ public class MenuItemRewardGroup extends MenuItem implements StringConsumer {
     }
 
     @Override
-    public @Nullable ItemStack onShiftRightClick() {
+    public @NotNull ItemStack onShiftRightClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
 
-        final int reopenSeconds = 10;
+        final @NotNull Duration reopenTime = Duration.ofSeconds(10);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_REWARD_GROUP_ENTERCHAT,
-                Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), group.getName()),
-                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+            Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), group.getName()),
+            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
         mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(reopenSeconds);
-        return null;
+        getContainer().startReopenTimer(reopenTime);
+        return ItemStack.empty();
     }
 
     @Override
-    public @Nullable ItemStack onShiftClick() {
+    public @NotNull ItemStack onShiftClick() {
         Menu rewardMenu = new Menu(5, getName(), getContainer().getViewer());
         rewardMenu.setPreviousPage(getContainer());
 
-        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateMaterial(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME,
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_REWARD_ITEM_ADD_DESCRIPTION), group), 43);
-        rewardMenu.addItem(new MenuItemPage(MenuUtility.getSaveMaterial(),
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
-                        Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), getName())), rewardMenu.getPreviousPage()), 44);
+        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME,
+            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_REWARD_ITEM_ADD_DESCRIPTION), group), 43);
+        rewardMenu.addItem(new MenuItemPage(MenuUtility.getSaveType(),
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
+                Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), getName())), rewardMenu.getPreviousPage()), 44);
 
         List<MenuItem> menuItems = new ArrayList<>(group.getItems().size());
         for (ARewardType item : group.getItems()) {
@@ -145,6 +145,6 @@ public class MenuItemRewardGroup extends MenuItem implements StringConsumer {
 
         rewardMenu.addItems(menuItems);
         rewardMenu.displayMenu(getContainer().getViewer());
-        return null;
+        return ItemStack.empty();
     }
 }

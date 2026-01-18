@@ -17,10 +17,11 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,20 +109,20 @@ public class ScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        min.saveValue(config, path);
-        max.saveValue(config, path);
-        scoreHolder.saveValue(config, path);
-        teamColor.saveValue(config, path);
-        saveInvert(config, path);
+    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        min.saveValue(config);
+        max.saveValue(config);
+        scoreHolder.saveValue(config);
+        teamColor.saveValue(config);
+        saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        min.loadValue(config, path);
-        max.loadValue(config, path);
-        scoreHolder.loadValue(config, path);
-        teamColor.loadValue(config, path);
+    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+        min.loadValue(config);
+        max.loadValue(config);
+        scoreHolder.loadValue(config);
+        teamColor.loadValue(config);
 
         /*
          DATA FIXER UPPER
@@ -134,17 +135,17 @@ public class ScoreRangeCondition extends ACondition {
             teamColor.setFlag(TeamColor.RED);
         }
 
-        loadInvert(config, path);
+        loadInvert(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
         Menu menu = new Menu(3, getDisplayName(), player);
-        menu.addItem(min.getMenuItem(Material.STONE_SLAB,
+        menu.addItem(min.getMenuItem(ItemType.STONE_SLAB,
             RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0, null));
-        menu.addItem(max.getMenuItem(Material.STONE,
+        menu.addItem(max.getMenuItem(ItemType.STONE,
             RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 0, null));
-        menu.addItem(scoreHolder.getMenuItem(Material.PUFFERFISH_BUCKET,
+        menu.addItem(scoreHolder.getMenuItem(ItemType.PUFFERFISH_BUCKET,
             RegionMessageManager.getMessage(RegionLangKey.MENU_SCORE_HOLDER_NAME)));
         List<TeamColor> teams = new ArrayList<>(TeamColor.validColors());
 
@@ -168,8 +169,8 @@ public class ScoreRangeCondition extends ACondition {
         return true;
     }
 
-    private @NotNull Material getTeamMaterial() {
-        return teamColor.getFlag().getDisplaMaterial();
+    private @NotNull ItemType getTeamMaterial() {
+        return teamColor.getFlag().getDisplayType();
     }
 
     @Override

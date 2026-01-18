@@ -2,8 +2,8 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,100 +11,101 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused") // api
 public class MenuItemCustom extends MenuItem {
-    private @Nullable Supplier<@Nullable ItemStack> click = null;
-    private @Nullable Function<ItemStack, @Nullable ItemStack> clickItem = null;
-    private @Nullable Supplier<@Nullable ItemStack> rightClick = null;
-    private @Nullable Supplier<@Nullable ItemStack> shiftClick = null;
-    private @Nullable Supplier<@Nullable ItemStack> shiftRightClick = null;
-    private @Nullable Supplier<@Nullable ItemStack> doubleClick = null;
+    private @Nullable Supplier<@NotNull ItemStack> click = null;
+    private @Nullable Function<ItemStack, @NotNull ItemStack> clickItem = null;
+    private @Nullable Supplier<@NotNull ItemStack> rightClick = null;
+    private @Nullable Supplier<@NotNull ItemStack> shiftClick = null;
+    private @Nullable Supplier<@NotNull ItemStack> shiftRightClick = null;
+    private @Nullable Supplier<@NotNull ItemStack> doubleClick = null;
 
-    public MenuItemCustom(@Nullable Material displayMat, @Nullable Component name) {
-        super(displayMat, name);
+    public MenuItemCustom(@Nullable ItemType displayType, @Nullable Component name) {
+        super(displayType, name);
     }
 
-    public MenuItemCustom(@Nullable Material displayMat, @NotNull MinigameLangKey langKey) {
-        super(displayMat, langKey);
+    public MenuItemCustom(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey) {
+        super(displayType, langKey);
     }
 
-    public MenuItemCustom(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
+    public MenuItemCustom(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
                           @Nullable List<@NotNull Component> description) {
-        super(displayMat, langKey, description);
+        super(displayType, langKey, description);
     }
 
-    public MenuItemCustom(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemCustom(@Nullable ItemType displayType, @Nullable Component name,
                           @Nullable List<@NotNull Component> description) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
     }
 
     @Override
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         if (click != null) {
             return click.get();
         }
         return getDisplayItem();
     }
 
-    public void setClick(Supplier<@Nullable ItemStack> sup) {
+    public void setClick(@Nullable Supplier<@NotNull ItemStack> sup) {
         click = sup;
     }
 
     @Override
-    public ItemStack onClickWithItem(ItemStack item) {
+    public @NotNull ItemStack onClickWithItem(@NotNull ItemStack item) {
         if (clickItem != null)
             return clickItem.apply(item);
         return getDisplayItem();
     }
 
-    public void setClickItem(Function<ItemStack, @Nullable ItemStack> func) {
+    public void setClickItem(@Nullable Function<ItemStack, @NotNull ItemStack> func) {
         clickItem = func;
     }
 
     @Override
-    public ItemStack onRightClick() {
+    public @NotNull ItemStack onRightClick() {
         if (rightClick != null) {
             return rightClick.get();
         }
         return getDisplayItem();
     }
 
-    public void setRightClick(Supplier<@Nullable ItemStack> sup) {
+    public void setRightClick(@Nullable Supplier<@NotNull ItemStack> sup) {
         rightClick = sup;
     }
 
     @Override
-    public ItemStack onShiftClick() {
+    public @NotNull ItemStack onShiftClick() {
         if (shiftClick != null) {
             return shiftClick.get();
         }
         return getDisplayItem();
     }
 
-    public void setShiftClick(Supplier<@Nullable ItemStack> sup) {
+    public void setShiftClick(@Nullable Supplier<@NotNull ItemStack> sup) {
         shiftClick = sup;
     }
 
     @Override
-    public ItemStack onShiftRightClick() {
+    public @NotNull ItemStack onShiftRightClick() {
         if (shiftRightClick != null) {
             return shiftRightClick.get();
         }
         return getDisplayItem();
     }
 
-    public void setShiftRightClick(Supplier<@Nullable ItemStack> sup) {
+    public void setShiftRightClick(@Nullable Supplier<@NotNull ItemStack> sup) {
         shiftRightClick = sup;
     }
 
     @Override
-    public ItemStack onDoubleClick() {
+    public @NotNull ItemStack onDoubleClick() {
         if (doubleClick != null) {
             return doubleClick.get();
         }
         return getDisplayItem();
     }
 
-    public void setDoubleClick(Supplier<@Nullable ItemStack> sup) {
+    public void setDoubleClick(@Nullable Supplier<@NotNull ItemStack> sup) {
         doubleClick = sup;
     }
 }

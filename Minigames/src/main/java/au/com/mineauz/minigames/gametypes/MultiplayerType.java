@@ -15,18 +15,19 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -67,14 +68,14 @@ public class MultiplayerType extends MinigameTypeBase {
 
     @Override
     public boolean teleportOnJoin(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {
-        Location location = mgm.getLobbyLocation();
+        final @Nullable SafeFullLocation location = mgm.getLobbyLocation();
         boolean result = false;
         if (location == null) {
             plugin.getLogger().warning("Game has no lobby set and it was expected:" + mgm.getName());
         } else {
             result = mgPlayer.teleport(location);
             if (plugin.getConfig().getBoolean("warnings") && mgPlayer.getPlayer().getWorld() != location.getWorld() &&
-                    mgPlayer.getPlayer().hasPermission("minigame.set.lobby")) { //todo permission manager
+                mgPlayer.getPlayer().hasPermission("minigame.set.lobby")) { //todo permission manager
 
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
             }
@@ -101,12 +102,12 @@ public class MultiplayerType extends MinigameTypeBase {
             } else if (mgm.getMpTimer() == null) {
                 int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
                 MinigameMessageManager.sendMinigameMessage(mgm, MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_WAITINGFORPLAYERS,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(neededPlayers))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(neededPlayers))));
             }
         } else if (mgm.hasStarted()) {
             mgPlayer.setLatejoining(true);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_LATEJOIN,
-                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(secondsUntilLateJoin)))));
+                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(secondsUntilLateJoin)))));
             final MinigamePlayer fply = mgPlayer;
             final Minigame fmgm = mgm;
             if (mgm.isTeamGame()) {
@@ -119,12 +120,12 @@ public class MultiplayerType extends MinigameTypeBase {
 
                 smTeam.addPlayer(mgPlayer);
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(smTeam.getPlayerAssignMessage(),
-                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(smTeam.getDisplayName(), smTeam.getTextColor()))));
+                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(smTeam.getDisplayName(), smTeam.getTextColor()))));
 
                 final Team fteam = smTeam;
                 mgPlayer.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                     if (fply.isInMinigame()) {
-                        List<Location> locs = new ArrayList<>();
+                        final @NotNull List<SafeFullLocation> locs = new ArrayList<>();
                         if (TeamsModule.getMinigameModule(fmgm).hasTeamStartLocations()) {
                             locs.addAll(fteam.getStartLocations());
                         } else {
@@ -142,7 +143,7 @@ public class MultiplayerType extends MinigameTypeBase {
             } else {
                 mgPlayer.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                     if (fply.isInMinigame()) {
-                        List<Location> locs = new ArrayList<>(fmgm.getStartLocations());
+                        final @NotNull List<SafeFullLocation> locs = new ArrayList<>(fmgm.getStartLocations());
                         Collections.shuffle(locs);
                         fply.teleport(locs.getFirst());
                         fply.getLoadout().equipLoadout(fply);
@@ -190,7 +191,8 @@ public class MultiplayerType extends MinigameTypeBase {
         }
 
         if (mgm.isTeamGame() && mgm.getPlayers().size() > 1 &&
-                teamsWithPlayers == 1 && mgm.hasStarted() && !forced) {
+            teamsWithPlayers == 1 && mgm.hasStarted() && !forced) {
+
             if (TeamsModule.getMinigameModule(mgm).getTeams().size() != 1) {
                 Team winner = null;
                 for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
@@ -217,16 +219,17 @@ public class MultiplayerType extends MinigameTypeBase {
                 mgm.setMpBets(null);
             }
         } else if (mgm.getPlayers().size() - 1 < mgm.getMinPlayers() &&
-                mgm.getMpTimer() != null &&
-                mgm.getMpTimer().getStartWaitTimeLeft() != 0 &&
-                (mgm.getState() == MinigameState.STARTING || mgm.getState() == MinigameState.WAITING)) {
+            mgm.getMpTimer() != null &&
+            mgm.getMpTimer().getStartWaitTimeLeft() != 0 &&
+            (mgm.getState() == MinigameState.STARTING || mgm.getState() == MinigameState.WAITING)) {
+
             mgm.getMpTimer().setCurrentLobbyWaitTime(Minigames.getPlugin().getConfig().getInt("multiplayer.waitforplayers"));
             mgm.getMpTimer().pauseTimer();
             mgm.getMpTimer().removeTimer();
             mgm.setMpTimer(null);
             mgm.setState(MinigameState.IDLE);
             MinigameMessageManager.sendMinigameMessage(mgm, MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_WAITINGFORPLAYERS,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(1))));
+                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(1))));
         }
     }
 
@@ -285,7 +288,8 @@ public class MultiplayerType extends MinigameTypeBase {
                 for (Team team : TeamsModule.getMinigameModule(mgm).getTeams()) {
                     //make the next team winner, if they have the highest score
                     if (winner == null || (team.getScore() > winner.getScore() &&
-                            (drawTeams.isEmpty() || team.getScore() > drawTeams.getFirst().getScore()))) {
+                        (drawTeams.isEmpty() || team.getScore() > drawTeams.getFirst().getScore()))) {
+
                         winner = team;
 
                         //make the next team draw with the last winner, if their scores match
@@ -325,14 +329,14 @@ public class MultiplayerType extends MinigameTypeBase {
                     if (plugin.getConfig().getBoolean("multiplayer.broadcastwin")) {
                         if (drawTeams.size() == 2) {
                             MinigameMessageManager.broadcastServer(MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_END_TEAM_TIE,
-                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(drawTeams.get(0).getDisplayName(), drawTeams.get(0).getTextColor())),
-                                    Placeholder.component(MinigamePlaceHolderKey.OTHER_TEAM.getKey(), Component.text(drawTeams.get(1).getDisplayName(), drawTeams.get(1).getTextColor())),
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName())
+                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(drawTeams.get(0).getDisplayName(), drawTeams.get(0).getTextColor())),
+                                Placeholder.component(MinigamePlaceHolderKey.OTHER_TEAM.getKey(), Component.text(drawTeams.get(1).getDisplayName(), drawTeams.get(1).getTextColor())),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName())
                             ), mgm, MinigameMessageType.TIE);
                         } else {
                             MinigameMessageManager.broadcastServer(MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_END_TEAM_TIECOUNT,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(drawTeams.size())),
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName())
+                                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(drawTeams.size())),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName())
                             ), mgm, MinigameMessageType.TIE);
                         }
 
@@ -349,22 +353,22 @@ public class MultiplayerType extends MinigameTypeBase {
                         }
 
                         MinigameMessageManager.broadcastServer(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_INFO_SCORE,
-                                        Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), scores)),
-                                mgm, MinigameMessageType.INFO);
+                                Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), scores)),
+                            mgm, MinigameMessageType.INFO);
                     } else { // don't broadcastServer win
                         if (drawTeams.size() == 2) {
                             MinigameMessageManager.sendMinigameMessage(mgm,
-                                    MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_END_TEAM_TIE,
-                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(drawTeams.get(0).getDisplayName(), drawTeams.get(0).getTextColor())),
-                                            Placeholder.component(MinigamePlaceHolderKey.OTHER_TEAM.getKey(), Component.text(drawTeams.get(1).getDisplayName(), drawTeams.get(1).getTextColor())),
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName())),
-                                    MinigameMessageType.TIE);
+                                MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_END_TEAM_TIE,
+                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(drawTeams.get(0).getDisplayName(), drawTeams.get(0).getTextColor())),
+                                    Placeholder.component(MinigamePlaceHolderKey.OTHER_TEAM.getKey(), Component.text(drawTeams.get(1).getDisplayName(), drawTeams.get(1).getTextColor())),
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName())),
+                                MinigameMessageType.TIE);
                         } else {
                             MinigameMessageManager.sendMinigameMessage(mgm,
-                                    MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_END_TEAM_TIECOUNT,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(drawTeams.size())),
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName())),
-                                    MinigameMessageType.TIE);
+                                MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_END_TEAM_TIECOUNT,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(drawTeams.size())),
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName())),
+                                MinigameMessageType.TIE);
                         }
 
                         for (MinigamePlayer mgPlayer : players) {
@@ -383,7 +387,7 @@ public class MultiplayerType extends MinigameTypeBase {
                             }
 
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_INFO_SCORE,
-                                    Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), scores));
+                                Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), scores));
                         }
                     }
 
@@ -459,14 +463,14 @@ public class MultiplayerType extends MinigameTypeBase {
         final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getType() == MinigameType.MULTIPLAYER) {
             Minigame mg = mgPlayer.getMinigame();
-            Location respawnPos;
+            final @Nullable SafeFullLocation respawnPos;
             if (mgPlayer.getMinigame().isTeamGame()) {
-                Team team = mgPlayer.getTeam();
+                final @NotNull Team team = mgPlayer.getTeam();
                 if (mg.hasStarted() && !mgPlayer.isLatejoining()) {
                     if (mg.isAllowedMPCheckpoints() && mgPlayer.hasCheckpoint()) {
                         respawnPos = mgPlayer.getCheckpoint();
                     } else {
-                        List<Location> starts = new ArrayList<>();
+                        final @NotNull List<@NotNull SafeFullLocation> starts = new ArrayList<>();
                         if (TeamsModule.getMinigameModule(mg).hasTeamStartLocations()) {
                             starts.addAll(team.getStartLocations());
                             mgPlayer.getLoadout().equipLoadout(mgPlayer);
@@ -485,7 +489,7 @@ public class MultiplayerType extends MinigameTypeBase {
                     if (mg.isAllowedMPCheckpoints() && mgPlayer.hasCheckpoint()) {
                         respawnPos = mgPlayer.getCheckpoint();
                     } else {
-                        List<Location> starts = new ArrayList<>(mg.getStartLocations());
+                        final @NotNull List<@NotNull SafeFullLocation> starts = new ArrayList<>(mg.getStartLocations());
                         Collections.shuffle(starts);
                         respawnPos = starts.getFirst();
                     }
@@ -496,7 +500,9 @@ public class MultiplayerType extends MinigameTypeBase {
                 }
             }
 
-            event.setRespawnLocation(respawnPos);
+            if (respawnPos != null) {
+                event.setRespawnLocation(respawnPos.toLocation());
+            }
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> mgPlayer.getPlayer().setNoDamageTicks(60));
         }

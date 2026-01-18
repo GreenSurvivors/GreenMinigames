@@ -10,13 +10,14 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -42,7 +43,7 @@ public class SingleplayerType extends MinigameTypeBase {
 
     @Override
     public boolean teleportOnJoin(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {
-        List<Location> locs = new ArrayList<>(mgm.getStartLocations());
+        List<SafeFullLocation> locs = new ArrayList<>(mgm.getStartLocations());
 
         if (locs.isEmpty()) {
             return false;
@@ -96,7 +97,11 @@ public class SingleplayerType extends MinigameTypeBase {
             spc.removeTime(mgm.getName());
             spc.removeReverts(mgm.getName());
             mgPlayer.teleport(mgPlayer.getCheckpoint());
-            spc.saveCheckpoints();
+            try {
+                spc.saveCheckpoints();
+            } catch (IOException e) {
+                plugin.getComponentLogger().info("Couldn't safe player checkpoints while joining the game. Data loss will be imminent!", e);
+            }
         }
 
         if (mgm.getState() != MinigameState.OCCUPIED) {
@@ -116,7 +121,11 @@ public class SingleplayerType extends MinigameTypeBase {
 //                player.getStoredPlayerCheckpoints().removeSinglePlayerFlags(mgm.getName()); // the whole singleplayer flag system is unused.
                 player.getStoredPlayerCheckpoints().removeReverts(mgm.getName());
                 player.getStoredPlayerCheckpoints().removeTime(mgm.getName());
-                player.getStoredPlayerCheckpoints().saveCheckpoints();
+                try {
+                    player.getStoredPlayerCheckpoints().saveCheckpoints();
+                } catch (IOException e) {
+                    plugin.getComponentLogger().info("Couldn't safe player checkpoints while ending the game. Data loss will be imminent!", e);
+                }
             }
         }
     }
@@ -133,7 +142,11 @@ public class SingleplayerType extends MinigameTypeBase {
             spc.addDeaths(mgm.getName(), player.getDeaths());
             spc.addReverts(mgm.getName(), player.getReverts());
             spc.addTime(mgm.getName(), Calendar.getInstance().getTimeInMillis() - player.getStartTime() + player.getStoredTime());
-            spc.saveCheckpoints();
+            try {
+                spc.saveCheckpoints();
+            } catch (IOException e) {
+                plugin.getComponentLogger().info("Couldn't safe player checkpoints while quitting the game. Data loss will be imminent!", e);
+            }
         }
 
         if (mgm.getRecorderData().hasData() && !mgm.getPlayers().isEmpty()) {
@@ -151,10 +164,13 @@ public class SingleplayerType extends MinigameTypeBase {
             MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
             Minigame mgm = mgPlayer.getMinigame();
             if (mgm != null && mgm.getType() == MinigameType.SINGLEPLAYER) {
-                event.setRespawnLocation(mgPlayer.getCheckpoint());
-                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_CHECKPOINT_DEATHREVERT);
+                final SafeFullLocation checkpoint = mgPlayer.getCheckpoint();
+                if (checkpoint != null) {
+                    event.setRespawnLocation(checkpoint.toLocation());
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_CHECKPOINT_DEATHREVERT);
 
-                mgPlayer.getLoadout().equipLoadout(mgPlayer);
+                    mgPlayer.getLoadout().equipLoadout(mgPlayer);
+                }
             }
         }
     }

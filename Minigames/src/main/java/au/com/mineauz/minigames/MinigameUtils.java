@@ -3,16 +3,13 @@ package au.com.mineauz.minigames;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
+import au.com.mineauz.minigames.objects.safelocation.ASafeLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,54 +93,54 @@ public class MinigameUtils {
         if (small) {
             if (weeks != 0) {
                 timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_WEEKS_SHORT,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(weeks))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(weeks))));
             }
             if (days != 0) {
                 timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_DAYS_SHORT,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(days))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(days))));
             }
             if (hours != 0) {
                 timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_HOURS_SHORT,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(hours))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(hours))));
             }
             if (minutes != 0) {
                 timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_MINUTES_SHORT,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minutes))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minutes))));
             }
 
             if (seconds != 0 || timeComponents.isEmpty()) {
                 timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_SECONDS_SHORT,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(seconds))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(seconds))));
             }
 
             return Component.join(JoinConfiguration.separator(Component.text(":")), timeComponents);
         } else {
             if (weeks != 0) {
                 timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_WEEKS_LONG,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(weeks))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(weeks))));
             }
             if (days != 0) {
                 timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_DAYS_LONG,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(days))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(days))));
             }
             if (hours != 0) {
                 timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_HOURS_LONG,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(hours))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(hours))));
             }
             if (minutes != 0) {
                 timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_MINUTES_LONG,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minutes))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minutes))));
             }
             if (seconds != 0 || timeComponents.isEmpty()) {
                 timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_SECONDS_LONG,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(seconds))));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(seconds))));
             }
 
             Component lastTimeComponent = timeComponents.pop();
             if (!timeComponents.isEmpty()) {
                 return Component.join(JoinConfiguration.commas(true), timeComponents).
-                        appendSpace().append(MinigameMessageManager.getMgMessage(MgMiscLangKey.AND)).appendSpace().
-                        append(lastTimeComponent);
+                    appendSpace().append(MinigameMessageManager.getMgMessage(MgMiscLangKey.AND)).appendSpace().
+                    append(lastTimeComponent);
             } else {
                 return lastTimeComponent;
             }
@@ -167,44 +164,12 @@ public class MinigameUtils {
      * @param location - The location to give an ID to.
      * @return The ID
      */
-    public static @NotNull String createLocationID(@NotNull Location location) {
+    public static @NotNull String createBlockLocationID(@NotNull Location location) {
         return location.getBlockX() + ":" + location.getBlockY() + ":" + location.getBlockZ() + ":" + location.getWorld().getName();
     }
 
-    /**
-     * Loads a short location (x, y, z, world) from a configuration section
-     *
-     * @param section The section that contains the fields
-     * @return A location with the contents of that section, or null if the world is invalid
-     */
-    public static @Nullable Location loadShortLocation(@NotNull ConfigurationSection section) {
-        double x = section.getDouble("x");
-        double y = section.getDouble("y");
-        double z = section.getDouble("z");
-
-        String worldName = section.getString("world");
-        World world = Bukkit.getWorld(worldName);
-
-        if (world != null) {
-            return new Location(world, x, y, z);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Saves a short location (x, y, z, world) to a configuration section
-     *
-     * @param config  The Configuration to save into
-     * @param location The location to save
-     */
-    public static void saveShortLocation(@NotNull Configuration config, @NotNull String path, @NotNull Location location) {
-        char configSeparator = config.options().pathSeparator();
-
-        config.set(path + configSeparator + "world", location.getWorld().getName());
-        config.set(path + configSeparator + "x", location.getX());
-        config.set(path + configSeparator + "y", location.getY());
-        config.set(path + configSeparator + "z", location.getZ());
+    public static @NotNull String createBlockLocationID(@NotNull ASafeLocation location) {
+        return location.blockX() + ":" + location.blockY() + ":" + location.blockZ() + ":" + location.getWorld().getName();
     }
 
     /**
@@ -257,14 +222,14 @@ public class MinigameUtils {
         final Matcher fallbackMatcher = BET_MONEY_PATTERN.matcher(line3);
         if (fallbackMatcher.matches()) {
             return Double.parseDouble(fallbackMatcher.group("amount"));
-        } else if (acceptPlainNumber && NumberUtils.isParsable(line3)){
+        } else if (acceptPlainNumber && NumberUtils.isParsable(line3)) {
             return Double.parseDouble(line3);
         } else {
             return null;
         }
     }
 
-    public static @NotNull Component formatMoney (final double amount) {
+    public static @NotNull Component formatMoney(final double amount) {
         if (Minigames.getPlugin().hasEconomy()) {
             return Component.text(Minigames.getPlugin().getEconomy().format(amount));
         } else {

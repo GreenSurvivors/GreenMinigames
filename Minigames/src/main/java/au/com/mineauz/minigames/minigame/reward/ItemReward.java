@@ -7,22 +7,25 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import io.leangen.geantyref.TypeFactory;
+import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class ItemReward extends ARewardType {
-    private ItemStack item = new ItemStack(Material.DIAMOND);
+    private @NotNull ItemStack item = ItemType.DIAMOND.createItemStack();
 
     public ItemReward(@NotNull Rewards rewards) {
         super(rewards);
@@ -53,8 +56,8 @@ public class ItemReward extends ARewardType {
             }
 
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WIN, MgMiscLangKey.REWARD_ITEM,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(item.getAmount())),
-                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item.displayName()));
+                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(item.getAmount())),
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item.displayName()));
         }
     }
 
@@ -64,13 +67,18 @@ public class ItemReward extends ARewardType {
     }
 
     @Override
-    public void saveReward(@NotNull Configuration config, @NotNull String path) {
-        config.set(path, item);
+    public void saveReward(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.set(item.serializeAsBytes());
     }
 
     @Override
-    public void loadReward(@NotNull Configuration config, @NotNull String path) {
-        item = config.getItemStack(path);
+    public void loadReward(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        if (config.isMap()) {
+            // datafixerupper
+            item = ItemStack.deserialize((Map<String, Object>) config.get(TypeFactory.parameterizedClass(Map.class, String.class, Object.class)));
+        } else {
+            item =ItemStack.deserializeBytes(config.get(TypeToken.get(byte[].class)));
+        }
     }
 
     public ItemStack getRewardItem() {
@@ -128,7 +136,7 @@ public class ItemReward extends ARewardType {
             description.add(getRarity().getDisplayName().color(NamedTextColor.GREEN));
             description.add(rarities.get(after).getDisplayName().color(NamedTextColor.GRAY));
             description.add(MinigameMessageManager.getMgMessage(
-                    MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK).color(NamedTextColor.DARK_PURPLE));
+                MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK).color(NamedTextColor.DARK_PURPLE));
 
             setDescriptionPartAtIndex(DESCRIPTION_REWARD_TOKEN, 0, description);
         }
@@ -162,10 +170,10 @@ public class ItemReward extends ARewardType {
         }
 
         @Override
-        public @Nullable ItemStack onShiftRightClick() {
+        public @NotNull ItemStack onShiftRightClick() {
             getRewards().removeReward(reward);
             getContainer().removeItem(getSlot());
-            return null;
+            return ItemStack.empty();
         }
     }
 }

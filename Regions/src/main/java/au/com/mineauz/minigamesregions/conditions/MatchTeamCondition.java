@@ -12,11 +12,12 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,16 +67,15 @@ public class MatchTeamCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        teamColor.saveValue(config, path);
-        saveInvert(config, path);
+    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        teamColor.saveValue(config);
+        saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        teamColor.loadValue(config, path);
-        loadInvert(config, path);
+    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+        teamColor.loadValue(config);
+        loadInvert(config);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class MatchTeamCondition extends ACondition {
             @Override
             public @NotNull ItemStack getDisplayItem() {
                 ItemStack stack = super.getDisplayItem();
-                return stack.withType(getTeamMaterial());
+                return stack.withType(getTeamMaterial().asMaterial());
             }
         });
 
@@ -108,8 +108,8 @@ public class MatchTeamCondition extends ACondition {
         return true;
     }
 
-    private @NotNull Material getTeamMaterial() {
-        return teamColor.getFlagOrDefault().getDisplaMaterial();
+    private @NotNull ItemType getTeamMaterial() {
+        return teamColor.getFlagOrDefault().getDisplayType();
     }
 
     @Override

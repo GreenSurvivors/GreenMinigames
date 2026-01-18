@@ -13,24 +13,27 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockType;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.material.Directional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
 public class SwapBlockAction extends AAction { // todo once paper no longer relocates Craftbukkit, merge Blockdata via nms state, so everything that can remain of old data will, if the keep setting is on
-    private final BlockDataFlag matchType = new BlockDataFlag("matchtype", Material.STONE.createBlockData());
-    private final BlockDataFlag toData = new BlockDataFlag("totype", Material.COBBLESTONE.createBlockData());
+    private final BlockDataFlag matchType = new BlockDataFlag("matchtype", BlockType.STONE.createBlockData());
+    private final BlockDataFlag toData = new BlockDataFlag("totype", BlockType.COBBLESTONE.createBlockData());
     private final BooleanFlag keepAttachment = new BooleanFlag("keepattachment", false);
 
-    protected SwapBlockAction(@NotNull String name) {
-        super(name);
+    protected SwapBlockAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -67,9 +70,9 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
-        for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
-            for (int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++) {
-                for (int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++) {
+        for (int y = region.getFirstPoint().blockY(); y <= region.getSecondPoint().blockY(); y++) {
+            for (int x = region.getFirstPoint().blockX(); x <= region.getSecondPoint().blockX(); x++) {
+                for (int z = region.getFirstPoint().blockZ(); z <= region.getSecondPoint().blockZ(); z++) {
                     Block block = region.getFirstPoint().getWorld().getBlockAt(x, y, z);
 
                     if (block.getBlockData().getMaterial() == matchType.getFlag().getMaterial()) {
@@ -107,26 +110,24 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        matchType.saveValue(config, path);
-        toData.saveValue(config, path);
-        keepAttachment.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        matchType.saveValue(config);
+        toData.saveValue(config);
+        keepAttachment.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        matchType.loadValue(config, path);
-        toData.loadValue(config, path);
-        keepAttachment.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        matchType.loadValue(config);
+        toData.loadValue(config);
+        keepAttachment.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(new MenuItemBlockData(matchType.getFlag().getMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), new Callback<>() {
+        m.addItem(new MenuItemBlockData(matchType.getFlag().getPlacementMaterial().asItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), new Callback<>() {
 
             @Override
             public BlockData getValue() {
@@ -141,7 +142,7 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
 
         }));
         m.addItem(new MenuItemNewLine());
-        m.addItem(new MenuItemBlockData(toData.getFlag().getMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME), new Callback<>() {
+        m.addItem(new MenuItemBlockData(toData.getFlag().getPlacementMaterial().asItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME), new Callback<>() {
 
             @Override
             public BlockData getValue() {
@@ -154,7 +155,7 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
             }
         }));
 
-        m.addItem(keepAttachment.getMenuItem(Material.PISTON, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_NAME),
+        m.addItem(keepAttachment.getMenuItem(ItemType.PISTON, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_DESCRIPTION)));
         m.displayMenu(mgPlayer);
         return true;

@@ -21,8 +21,8 @@ import au.com.mineauz.minigamesregions.menu.MenuItemRegion;
 import com.google.common.collect.Iterables;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,8 +48,8 @@ public class ExecutorHolderEditToolMode implements ToolMode {
     }
 
     @Override
-    public @NotNull Material getIcon() {
-        return Material.WRITABLE_BOOK;
+    public @NotNull ItemType getIcon() {
+        return ItemType.WRITABLE_BOOK;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
 
         Map<Node, Vector> nodeLocs = new IdentityHashMap<>();
         for (Node node : module.getNodes()) {
-            nodeLocs.put(node, node.getLocation().toVector());
+            nodeLocs.put(node, node.getSafeLocation().toVector());
         }
 
         Set<ExecutableScriptObject> hits = Collections.newSetFromMap(new IdentityHashMap<>());
@@ -134,7 +134,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
             throw new UnsupportedOperationException("Unknown ExecutableScriptObject  type!");
         }
 
-        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(),
+        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveType(),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName())), minigame), menu.getSize() - 9);
 
@@ -152,16 +152,16 @@ public class ExecutorHolderEditToolMode implements ToolMode {
 
             if (object instanceof Region region) {
                 options.append(region.getName());
-                MenuItemRegion item = new MenuItemRegion(Material.CHEST, Component.text(region.getName()), region, module);
+                MenuItemRegion item = new MenuItemRegion(ItemType.CHEST, Component.text(region.getName()), region, module);
                 menu.addItem(item);
             } else if (object instanceof Node node) {
                 options.append(node.getName());
-                MenuItemNode item = new MenuItemNode(Material.STONE_BUTTON, Component.text(node.getName()), node, module);
+                MenuItemNode item = new MenuItemNode(ItemType.STONE_BUTTON, Component.text(node.getName()), node, module);
                 menu.addItem(item);
             }
         }
 
-        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveMaterial(),
+        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveType(),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), module.getMinigame().getDisplayName())),
                 module.getMinigame()), menu.getSize() - 9);

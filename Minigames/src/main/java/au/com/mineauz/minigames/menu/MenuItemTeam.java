@@ -6,8 +6,8 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,14 +19,14 @@ public class MenuItemTeam extends MenuItem {
     private final @NotNull Team team;
 
     public MenuItemTeam(@Nullable Component name, @NotNull Team team) {
-        super(Material.LEATHER_CHESTPLATE, name, MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
+        super(ItemType.LEATHER_CHESTPLATE, name, MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
 
         this.team = team;
         setTeamIcon();
     }
 
     public MenuItemTeam(@Nullable Component name, @NotNull List<@NotNull Component> description, @NotNull Team team) {
-        super(Material.LEATHER_CHESTPLATE, name, description);
+        super(ItemType.LEATHER_CHESTPLATE, name, description);
 
         getDescription().addFirst(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
         this.team = team;
@@ -56,10 +56,11 @@ public class MenuItemTeam extends MenuItem {
         getDisplayItem().setItemMeta(m);
     }
 
+    @SuppressWarnings("UnstableApiUsage") // shutup ItemType.Typed
     @Override
-    public @Nullable ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         Menu menu = new Menu(3, getName(), getContainer().getViewer());
-        menu.addItem(new MenuItemString(Material.NAME_TAG, MgMenuLangKey.MENU_DISPLAYNAME_NAME, new Callback<>() {
+        menu.addItem(new MenuItemString(ItemType.NAME_TAG, MgMenuLangKey.MENU_DISPLAYNAME_NAME, new Callback<>() {
 
             @Override
             public @NotNull String getValue() {
@@ -71,7 +72,7 @@ public class MenuItemTeam extends MenuItem {
                 team.setDisplayName(value);
             }
         }));
-        menu.addItem(new MenuItemInteger(Material.STONE, MgMenuLangKey.MENU_TEAM_MAXPLAYERS, new Callback<>() {
+        menu.addItem(new MenuItemInteger(ItemType.STONE, MgMenuLangKey.MENU_TEAM_MAXPLAYERS, new Callback<>() {
 
             @Override
             public @NotNull Integer getValue() {
@@ -85,32 +86,32 @@ public class MenuItemTeam extends MenuItem {
         }, 0, null));
 
 
-        menu.addItem(team.getPlayerAssignMessageFlag().getMenuItem(Material.PAPER, MgMenuLangKey.MENU_TEAM_ASSIGNMSG_NAME,
-                MgMenuLangKey.MENU_TEAM_ASSIGNMSG_DESCRIPTION));
-        menu.addItem(team.getAutoBalanceMsgFlag().getMenuItem(Material.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCEMSG_NAME,
-                MgMenuLangKey.MENU_TEAM_AUTOBALANCEMSG_DESCRIPTION));
-        menu.addItem(team.getGameAutoBalanceMsgFlag().getMenuItem(Material.PAPER, MgMenuLangKey.MENU_TEAM_GAMEAUTOBALANCEMSG_NAME,
-                MgMenuLangKey.MENU_TEAM_GAMEAUTOBALANCEMSG_DESCRIPTION));
+        menu.addItem(team.getPlayerAssignMessageFlag().getMenuItem(ItemType.PAPER, MgMenuLangKey.MENU_TEAM_ASSIGNMSG_NAME,
+            MgMenuLangKey.MENU_TEAM_ASSIGNMSG_DESCRIPTION));
+        menu.addItem(team.getAutoBalanceMsgFlag().getMenuItem(ItemType.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCEMSG_NAME,
+            MgMenuLangKey.MENU_TEAM_AUTOBALANCEMSG_DESCRIPTION));
+        menu.addItem(team.getGameAutoBalanceMsgFlag().getMenuItem(ItemType.PAPER, MgMenuLangKey.MENU_TEAM_GAMEAUTOBALANCEMSG_NAME,
+            MgMenuLangKey.MENU_TEAM_GAMEAUTOBALANCEMSG_DESCRIPTION));
 
-        menu.addItem(new MenuItemList<>(Material.NAME_TAG, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_NAME, team.getNameTagVisibilityCallback(),
-                Arrays.asList(Team.VisibilityMapper.values())));
-        menu.addItem(new MenuItemList<>(Material.SCAFFOLDING, MgMenuLangKey.MENU_TEAM_COLLISIONRULE_NAME, team.getCollisionRuleCallback(),
+        menu.addItem(new MenuItemList<>(ItemType.NAME_TAG, MgMenuLangKey.MENU_TEAM_NAMEVISIBILITY_NAME, team.getNameTagVisibilityCallback(),
+            Arrays.asList(Team.VisibilityMapper.values())));
+        menu.addItem(new MenuItemList<>(ItemType.SCAFFOLDING, MgMenuLangKey.MENU_TEAM_COLLISIONRULE_NAME, team.getCollisionRuleCallback(),
             Arrays.asList(Team.CollisionRuleMapper.values())));
-        menu.addItem(new MenuItemBoolean(Material.ARROW, MgMenuLangKey.MENU_TEAM_FRIENDLYFIRE_NAME, team.getFriedndlyFireCallback()));
-        menu.addItem(new MenuItemBoolean(Material.ENDER_EYE, MgMenuLangKey.MENU_TEAM_SEE_FRIENDLY_INVISIBLES_NAME, team.getSeeFriendlyInvisiblesCallback()));
-        menu.addItem(new MenuItemList<>(Material.RECOVERY_COMPASS, MgMenuLangKey.MENU_TEAM_SHOW_DEATH_MESSAGE_NAME, team.getWhohmtoShowDeathmessageCallback(),
+        menu.addItem(new MenuItemBoolean(ItemType.ARROW, MgMenuLangKey.MENU_TEAM_FRIENDLYFIRE_NAME, team.getFriedndlyFireCallback()));
+        menu.addItem(new MenuItemBoolean(ItemType.ENDER_EYE, MgMenuLangKey.MENU_TEAM_SEE_FRIENDLY_INVISIBLES_NAME, team.getSeeFriendlyInvisiblesCallback()));
+        menu.addItem(new MenuItemList<>(ItemType.RECOVERY_COMPASS, MgMenuLangKey.MENU_TEAM_SHOW_DEATH_MESSAGE_NAME, team.getWhohmtoShowDeathmessageCallback(),
             Arrays.stream(org.bukkit.scoreboard.Team.OptionStatus.values()).map(Enum::name).toList()));
-        menu.addItem(new MenuItemBoolean(Material.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCE, team.getAutoBalanceCallBack()));
+        menu.addItem(new MenuItemBoolean(ItemType.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCE, team.getAutoBalanceCallBack()));
 
         menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
         menu.displayMenu(getContainer().getViewer());
-        return null;
+        return ItemStack.empty();
     }
 
     @Override
-    public @Nullable ItemStack onRightClick() {
+    public @NotNull ItemStack onRightClick() {
         TeamsModule.getMinigameModule(team.getMinigame()).removeTeam(team.getColor());
         getContainer().removeItem(getSlot());
-        return null;
+        return ItemStack.empty();
     }
 }

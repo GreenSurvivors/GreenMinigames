@@ -19,11 +19,14 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,11 +34,11 @@ import java.util.List;
 import java.util.Map;
 
 public class GiveItemAction extends AAction {
-    private final ItemFlag item = new ItemFlag("item", new ItemStack(Material.STONE));
+    private final ItemFlag item = new ItemFlag("item", ItemType.STONE.createItemStack());
     private final IntegerFlag count = new IntegerFlag("count", 1);
 
-    protected GiveItemAction(@NotNull String name) {
-        super(name);
+    protected GiveItemAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -93,40 +96,31 @@ public class GiveItemAction extends AAction {
     }
 
     private void execute(@NotNull MinigamePlayer player) {
-        Map<Integer, ItemStack> unadded = player.getPlayer().getInventory().addItem(item.getFlag());
-
-        if (!unadded.isEmpty()) {
-            for (ItemStack i : unadded.values()) {
-                player.getLocation().getWorld().dropItem(player.getLocation(), i);
-            }
-        }
+        player.getPlayer().give(item.getFlag());
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        item.saveValue(config, path);
-        count.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        item.saveValue(config);
+        count.saveValue(config);
 
         //dataFixerUpper
-
-        char configSeparator = config.options().pathSeparator();
-        config.set(path + configSeparator + "type", null);
-        config.set(path + configSeparator + "name", null);
-        config.set(path + configSeparator + "lore", null);
+        config.removeChild("type");
+        config.removeChild("name");
+        config.removeChild("lore");
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        item.loadValue(config, path);
-        count.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        item.loadValue(config);
+        count.loadValue(config);
 
         ItemStack tempItem = item.getFlag();
         tempItem.setAmount(count.getFlag());
 
         //dataFixerUpper
-        char configSeparator = config.options().pathSeparator();
-        if (config.contains(path + configSeparator + "type")) {
-            Material mat = Material.matchMaterial(config.getString(path + configSeparator + "type", ""));
+        if (config.hasChild("type")) {
+            Material mat = Material.matchMaterial(config.node("type").getString(""));
 
             if (mat != null) {
                 tempItem = tempItem.withType(mat);
@@ -134,15 +128,16 @@ public class GiveItemAction extends AAction {
         }
         ItemMeta meta = tempItem.getItemMeta();
 
-        if (config.contains(path + configSeparator + "name")) {
-            meta.displayName(MiniMessage.miniMessage().deserialize(config.getString(path + configSeparator + "name", "")));
+        if (config.hasChild("name")) {
+            meta.displayName(MiniMessage.miniMessage().deserialize(config.node("name").getString("")));
         }
-        if (config.contains(path + configSeparator + "lore")) {
-            List<Component> newLore = Arrays.stream(config.getString(path + configSeparator + "lore", "").split(";")).
+        if (config.hasChild("lore")) {
+            List<Component> newLore = Arrays.stream(config.node("lore").getString("").split(";")).
                     map(MiniMessage.miniMessage()::deserialize).toList(); //as the description states semicolons will be used for new lines
             meta.lore(newLore);
         }
         tempItem.setItemMeta(meta);
+        // dataFixerUpper end
 
         item.setFlag(tempItem);
     }
@@ -154,10 +149,10 @@ public class GiveItemAction extends AAction {
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(item.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME)));
 
-        menu.addItem(count.getMenuItem(Material.STONE_SLAB,
+        menu.addItem(count.getMenuItem(ItemType.STONE_SLAB,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 64));
 
-        MenuItemComponent menuItemLore = new MenuItemComponent(Material.WRITTEN_BOOK,
+        MenuItemComponent menuItemLore = new MenuItemComponent(ItemType.WRITTEN_BOOK,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_GIVEITEM_LORE_DESCRIPTION), new Callback<>() {
             @Override

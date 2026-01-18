@@ -70,10 +70,10 @@ public class QuitCommand extends ACommand {
                                 PLUGIN.getPlayerManager().quitMinigame(pl, true);
                             }
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_QUIT_QUITALLMINIGAME,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                         } else {
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[1]));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[1]));
                         }
                     } else {
                         for (MinigamePlayer pl : PLUGIN.getPlayerManager().getAllMinigamePlayers()) {
@@ -90,7 +90,7 @@ public class QuitCommand extends ACommand {
 
                     if (players.isEmpty()) {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                         return true;
                     } else {
                         mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(players.getFirst());
@@ -99,10 +99,10 @@ public class QuitCommand extends ACommand {
                     if (mgPlayer.isInMinigame()) {
                         PLUGIN.getPlayerManager().quitMinigame(mgPlayer, false);
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_QUIT_QUITOTHER,
-                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
+                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                     }
                 }
             } else {
@@ -129,5 +129,4 @@ public class QuitCommand extends ACommand {
         }
         return null;
     }
-
 }

@@ -28,14 +28,18 @@ public class KillsRewardScheme extends HierarchyRewardScheme<Integer> {
     }
 
     @Override
-    protected @NotNull Integer loadKey(@NotNull String key) {
-        return Integer.valueOf(key);
+    protected @NotNull Integer loadKey(final @NotNull Object key) {
+        if (key instanceof Number number) {
+            return number.intValue();
+        }
+
+        return Integer.valueOf(key.toString());
     }
 
     @Override
     protected @NotNull Component getMenuItemDescName(Integer value) {
         return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_KILLS_DESCRIPTION,
-                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(value)));
+            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(value)));
     }
 
     @Override

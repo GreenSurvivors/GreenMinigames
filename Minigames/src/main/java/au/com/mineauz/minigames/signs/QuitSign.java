@@ -7,7 +7,6 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
@@ -39,10 +38,10 @@ public class QuitSign extends AMinigameSign {
 
     @Override
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        if (mgPlayer.isInMinigame() && mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
+        if (mgPlayer.isInMinigame() && mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
             plugin.getPlayerManager().quitMinigame(mgPlayer, false);
             return true;
-        } else if (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
+        } else if (!mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
         }
         return false;

@@ -8,8 +8,8 @@ import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardTypes;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,45 +20,45 @@ public class MenuItemRewardAdd extends MenuItem {
     private @Nullable Rewards rewards = null;
     private @Nullable RewardGroup group = null;
 
-    public MenuItemRewardAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Rewards rewards) {
-        super(displayMat, langKey);
+    public MenuItemRewardAdd(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Rewards rewards) {
+        super(displayType, langKey);
         this.rewards = rewards;
     }
 
-    public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull Rewards rewards) {
-        super(displayMat, name);
+    public MenuItemRewardAdd(@Nullable ItemType displayType, @Nullable Component name, @NotNull Rewards rewards) {
+        super(displayType, name);
         this.rewards = rewards;
     }
 
-    public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemRewardAdd(@Nullable ItemType displayType, @Nullable Component name,
                              @Nullable List<@NotNull Component> description, @NotNull Rewards rewards) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.rewards = rewards;
     }
 
-    public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable Component name, @NotNull RewardGroup group) {
-        super(displayMat, name);
+    public MenuItemRewardAdd(@Nullable ItemType displayType, @Nullable Component name, @NotNull RewardGroup group) {
+        super(displayType, name);
         this.group = group;
     }
 
-    public MenuItemRewardAdd(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
+    public MenuItemRewardAdd(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
                              @Nullable List<@NotNull Component> description, @NotNull RewardGroup group) {
-        super(displayMat, langKey, description);
+        super(displayType, langKey, description);
         this.group = group;
     }
 
-    public MenuItemRewardAdd(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemRewardAdd(@Nullable ItemType displayType, @Nullable Component name,
                              @Nullable List<@NotNull Component> description, @NotNull RewardGroup group) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.group = group;
     }
 
     @Override
-    public @Nullable ItemStack onClick() {
-        Menu m = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SELECTTYPE_NAME), getContainer().getViewer());
+    public @NotNull ItemStack onClick() {
+        final @NotNull Menu menu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SELECTTYPE_NAME), getContainer().getViewer());
         final Menu orig = getContainer();
         for (RewardTypes.RewardTypeFactory factory : RewardTypes.getRewardTypeFactories()) {
-            final MenuItemCustom custom = new MenuItemCustom(Material.STONE, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_TYPE_NAME));
+            final MenuItemCustom custom = new MenuItemCustom(ItemType.STONE, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_TYPE_NAME));
             final ARewardType rewType = factory.makeNewType(rewards);
 
             if (rewType.isUsable()) {
@@ -74,13 +74,13 @@ public class MenuItemRewardAdd extends MenuItem {
                     }
                     orig.displayMenu(orig.getViewer());
                     orig.addItem(rewType.getMenuItem());
-                    return null;
+                    return ItemStack.empty();
                 });
-                m.addItem(custom);
+                menu.addItem(custom);
             }
         }
-        m.addItem(new MenuItemBack(orig), m.getSize() - 9);
-        m.displayMenu(m.getViewer());
-        return null;
+        menu.addItem(new MenuItemBack(orig), menu.getSize() - 9);
+        menu.displayMenu(menu.getViewer());
+        return ItemStack.empty();
     }
 }

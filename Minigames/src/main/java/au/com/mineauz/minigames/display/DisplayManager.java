@@ -2,15 +2,18 @@ package au.com.mineauz.minigames.display;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.objects.MgRegion;
+import au.com.mineauz.minigames.objects.safelocation.ASafeLocation;
+import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
+import io.papermc.paper.math.Position;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +21,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+@SuppressWarnings("UnstableApiUsage") // shut up position
 public class DisplayManager {
     private final @NotNull Map<@NotNull INonPersistentDisplay, @NotNull Integer> nextTickDelay = new IdentityHashMap<>();
     private final @NotNull SetMultimap<@NotNull Player, @NotNull AbstractDisplayObject> playerDisplays;
@@ -29,19 +33,20 @@ public class DisplayManager {
         worldDisplays = HashMultimap.create();
     }
 
-    public @NotNull DisplayCuboid displayCuboid(@NotNull Player player, @NotNull Location corner1, @NotNull Location corner2) {
+    public @NotNull DisplayCuboid displayCuboid(@NotNull Player player, @NotNull ASafeLocation corner1, @NotNull ASafeLocation corner2) {
         Validate.isTrue(corner1.getWorld() == corner2.getWorld(), "Both corners must be in the same world");
 
-        double minX = Math.min(corner1.getX(), corner2.getX());
-        double maxX = Math.max(corner1.getX(), corner2.getX());
-        double minY = Math.min(corner1.getY(), corner2.getY());
-        double maxY = Math.max(corner1.getY(), corner2.getY());
-        double minZ = Math.min(corner1.getZ(), corner2.getZ());
-        double maxZ = Math.max(corner1.getZ(), corner2.getZ());
+        double minX = Math.min(corner1.x(), corner2.x());
+        double maxX = Math.max(corner1.x(), corner2.x());
+        double minY = Math.min(corner1.y(), corner2.y());
+        double maxY = Math.max(corner1.y(), corner2.y());
+        double minZ = Math.min(corner1.z(), corner2.z());
+        double maxZ = Math.max(corner1.z(), corner2.z());
 
         return displayCuboid(player, minX, minY, minZ, maxX, maxY, maxZ);
     }
 
+    @ApiStatus.Obsolete
     public @NotNull DisplayCuboid displayCuboid(@NotNull Location corner1, @NotNull Location corner2) {
         Validate.isTrue(corner1.getWorld() == corner2.getWorld(), "Both corners must be in the same world");
 
@@ -56,23 +61,28 @@ public class DisplayManager {
     }
 
     public @NotNull DisplayCuboid displayCuboid(@NotNull Player player, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return new DisplayCuboid(this, player, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
+        return new DisplayCuboid(this, player, Position.fine(minX, minY, minZ), Position.fine(maxX, maxY, maxZ));
     }
 
-    public @NotNull DisplayCuboid displayCuboid(@NotNull Player player, @NotNull MgRegion region) {
-        return new DisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
+    public @NotNull DisplayCuboid displayCuboid(final @NotNull Player player, final @NotNull MgRegion region) {
+        return new DisplayCuboid(this, player, region.getMin(), region.getMax().offset(1.0, 1.0, 1.0));
     }
 
     public @NotNull DisplayCuboid displayCuboid(@NotNull World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return new DisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
+        return new DisplayCuboid(this, world, Position.fine(minX, minY, minZ), Position.fine(maxX, maxY, maxZ));
     }
 
     public @NotNull DisplayCuboid displayCuboid(@NotNull World world, @NotNull MgRegion region) {
-        return new DisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
+        return new DisplayCuboid(this, world, region.getMin(), region.getMax());
     }
 
+    @ApiStatus.Obsolete
     public @NotNull DisplayPoint displayPoint(@NotNull Player player, @NotNull Location location, boolean showDirection) {
         return displayPoint(player, location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), showDirection);
+    }
+
+    public @NotNull DisplayPoint displayPoint(@NotNull Player player, @NotNull SafeFullLocation location, boolean showDirection) {
+        return displayPoint(player, location.x(), location.y(), location.z(), location.yaw(), location.pitch(), showDirection);
     }
 
     public @NotNull DisplayPoint displayPoint(@NotNull Location location, boolean showDirection) {
@@ -80,11 +90,11 @@ public class DisplayManager {
     }
 
     public @NotNull DisplayPoint displayPoint(@NotNull Player player, double x, double y, double z, float yaw, float pitch, boolean showDirection) {
-        return new DisplayPoint(this, player, new Vector(x, y, z), yaw, pitch, showDirection);
+        return new DisplayPoint(this, player, Position.fine(x, y, z), yaw, pitch, showDirection);
     }
 
     public @NotNull DisplayPoint displayPoint(@NotNull World world, double x, double y, double z, float yaw, float pitch, boolean showDirection) {
-        return new DisplayPoint(this, world, new Vector(x, y, z), yaw, pitch, showDirection);
+        return new DisplayPoint(this, world, Position.fine(x, y, z), yaw, pitch, showDirection);
     }
 
     public void removeAll(@NotNull Player player) {

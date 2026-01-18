@@ -15,9 +15,12 @@ import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 import java.util.Random;
@@ -34,8 +37,8 @@ public class RandomFillingAction extends AAction {
     private final IntegerFlag percentageChance = new IntegerFlag("percentagechance", 50);
     private final BooleanFlag replaceAll = new BooleanFlag("replaceAll", true);
 
-    protected RandomFillingAction(@NotNull String name) {
-        super(name);
+    protected RandomFillingAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -70,19 +73,19 @@ public class RandomFillingAction extends AAction {
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
-        if (mgPlayer == null || mgPlayer.getMinigame() == null) {
+        if (mgPlayer == null || mgPlayer.getMinigame() == null || region.getWorld() == null) {
             return;
         }
 
-        Location temp = region.getFirstPoint();
+        Location temp = region.getFirstPoint().toLocation();
         Random rndGen = ThreadLocalRandom.current();
         RecorderData data = mgPlayer.getMinigame().getRecorderData();
 
-        for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
+        for (int y = region.getFirstPoint().blockY(); y <= region.getSecondPoint().blockY(); y++) {
             temp.setY(y);
-            for (int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++) {
+            for (int x = region.getFirstPoint().blockX(); x <= region.getSecondPoint().blockX(); x++) {
                 temp.setX(x);
-                for (int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++) {
+                for (int z = region.getFirstPoint().blockZ(); z <= region.getSecondPoint().blockZ(); z++) {
                     temp.setZ(z);
                     int randomDraw = rndGen.nextInt(100);  //Generating a number between [0-99]
                     randomDraw++;                //Adding one to handle edge cases (0 %, 100 %) correctly.
@@ -106,26 +109,26 @@ public class RandomFillingAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        toData.saveValue(config, path);
-        percentageChance.saveValue(config, path);
-        replaceAll.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        toData.saveValue(config);
+        percentageChance.saveValue(config);
+        replaceAll.saveValue(config);
 
         // dataFixerUpper
-        config.set(path + "totype", null);
+        config.removeChild("totype");
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        percentageChance.loadValue(config, path);
-        replaceAll.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        percentageChance.loadValue(config);
+        replaceAll.loadValue(config);
 
         //dataFixerUpper
-        Material mat = Material.matchMaterial(config.getString(path + "totype", ""));
+        Material mat = Material.matchMaterial(config.node().getString(""));
         if (mat != null) {
             toData.setFlag(mat.createBlockData());
         } else {
-            toData.loadValue(config, path);
+            toData.loadValue(config);
         }
     }
 
@@ -139,7 +142,7 @@ public class RandomFillingAction extends AAction {
 
         //Percentage of blocks that will get replaced
         m.addItem(new MenuItemNewLine());
-        m.addItem(new MenuItemInteger(Material.BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME),
+        m.addItem(new MenuItemInteger(ItemType.BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME),
                 new Callback<>() {
 
                     @Override
@@ -156,7 +159,7 @@ public class RandomFillingAction extends AAction {
 
         //Replace all or replace selectively
         m.addItem(new MenuItemNewLine());
-        m.addItem(replaceAll.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_MISSES_NAME)));
+        m.addItem(replaceAll.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_MISSES_NAME)));
 
         m.displayMenu(mgPlayer);
 

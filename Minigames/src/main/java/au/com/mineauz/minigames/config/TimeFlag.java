@@ -6,64 +6,65 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
 public class TimeFlag extends AFlag<Long> {
 
-    public TimeFlag(@NotNull String name, Long value) {
-        super(name, value);
+    public TimeFlag(@NotNull String name, Long defaultVal) {
+        super(name, defaultVal);
     }
 
     @Override
-    public void saveValue(@NotNull Configuration config, @NotNull String path) {
+    public void saveValue(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        config.removeChild(getName());
+
         if (getFlag() != null && !getFlag().equals(getDefaultFlag())) {
-            config.set(path + config.options().pathSeparator() + getName(), getFlag());
-        } else {
-            config.set(path + config.options().pathSeparator() + getName(), null);
+            config.node(getName()).set(getFlag());
         }
     }
 
     @Override
-    public void loadValue(@NotNull Configuration config, @NotNull String path) {
-        setFlag(config.getLong(path + config.options().pathSeparator() + getName(), getDefaultFlag()));
+    public void loadValue(final @NotNull CommentedConfigurationNode config) {
+        setFlag(config.node(getName()).getLong(getDefaultFlag()));
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable Material displayMat, @Nullable Component name) {
-        return getMenuItem(displayMat, name, null);
+    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
+        return getMenuItem(displayType, name, null);
     }
 
-    public @NotNull MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItemTime getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
                                              @Nullable Long min, @Nullable Long max) {
-        return getMenuItem(displayMat, name, null, min, max);
+        return getMenuItem(displayType, name, null, min, max);
     }
 
-    public MenuItemTime getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
+    public MenuItemTime getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
                                     @Nullable Long min, @Nullable Long max) {
-        return getMenuItem(displayMat, langKey, null, min, max);
+        return getMenuItem(displayType, langKey, null, min, max);
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
+    public @NotNull MenuItemTime getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
                                              @Nullable List<@NotNull Component> description) {
-        return getMenuItem(displayMat, name, description, 0L, null);
+        return getMenuItem(displayType, name, description, 0L, null);
     }
 
-    public @NotNull MenuItemTime getMenuItem(@Nullable Material displayMat, @NotNull MinigameLangKey langKey,
+    public @NotNull MenuItemTime getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
                                              @Nullable List<@NotNull Component> description, @Nullable Long min, @Nullable Long max) {
-        return getMenuItem(displayMat, MinigameMessageManager.getMgMessage(langKey), description, min, max);
+        return getMenuItem(displayType, MinigameMessageManager.getMgMessage(langKey), description, min, max);
     }
 
-    public @NotNull MenuItemTime getMenuItem(@Nullable Material displayMat, @Nullable Component name,
-                                    @Nullable List<@NotNull Component> description, @Nullable Long min, @Nullable Long max) {
-        return new MenuItemTime(displayMat, name, description, new Callback<>() {
+    public @NotNull MenuItemTime getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
+                                             @Nullable List<@NotNull Component> description, @Nullable Long min, @Nullable Long max) {
+        return new MenuItemTime(displayType, name, description, new Callback<>() {
 
             @Override
             public Long getValue() {

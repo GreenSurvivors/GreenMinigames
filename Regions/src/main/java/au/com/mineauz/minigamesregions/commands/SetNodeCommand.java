@@ -61,7 +61,7 @@ public class SetNodeCommand extends ASetCommand {
                 if (rmod != null) {
                     if (args[0].equalsIgnoreCase("create") && args.length >= 2) {
                         if (!rmod.hasNode(args[1])) {
-                            rmod.addNode(args[1], new Node(args[1], minigame, mgPlayer.getLocation()));
+                            rmod.addNode(new Node(args[1], minigame, mgPlayer.getSafeLocation()));
                             MinigameMessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, RegionMessageManager.getBundleKey(),
                                     RegionLangKey.NODE_ADDED,
                                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), args[1]),
@@ -93,7 +93,7 @@ public class SetNodeCommand extends ASetCommand {
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), RegionModule.getFactory().getName()));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), RegionModule.getFactory().getKey().value()));
                     return true;
                 }
             } else {

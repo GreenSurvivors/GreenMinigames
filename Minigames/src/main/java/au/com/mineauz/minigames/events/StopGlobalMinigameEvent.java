@@ -8,7 +8,7 @@ public class StopGlobalMinigameEvent extends AbstractCancellableMinigameEvent {
     private final @NotNull String mechanic;
     private final Audience caller;
 
-    public StopGlobalMinigameEvent(@NotNull Minigame mgm, Audience caller) {
+    public StopGlobalMinigameEvent(final @NotNull Minigame mgm, final @NotNull Audience caller) {
         super(mgm);
         mechanic = mgm.getMechanicName();
         this.caller = caller;

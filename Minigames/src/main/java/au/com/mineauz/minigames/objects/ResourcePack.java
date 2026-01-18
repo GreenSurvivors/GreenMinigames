@@ -7,12 +7,9 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -33,8 +30,9 @@ public final class ResourcePack implements ConfigurationSerializable {
     private final @NotNull String name;
     private final @NotNull Component displayName;
     private final @Nullable URL url;
-    private final @Nullable File local;
+    private final @NotNull Path local;
     private final @Nullable String description;
+    private final @NotNull Minigames plugin = Minigames.getPlugin();
     /**
      * Unique SH1 hash
      */
@@ -54,14 +52,13 @@ public final class ResourcePack implements ConfigurationSerializable {
         try {
             url1 = new URI((String) input.get("url")).toURL();
         } catch (final MalformedURLException | URISyntaxException e) {
-            Minigames.getCmpnntLogger().warn("The URL defined in the configuration is malformed: ", e);
+            plugin.getComponentLogger().warn("The URL defined in the configuration is malformed: ", e);
             url1 = null;
             this.valid = false;
         }
         this.url = url1;
-        final Path path = ResourcePackManager.getResourceDir();
-        this.local = new File(path.toFile(), name + '.' + ext);
-        this.validate();
+        this.local = ResourcePackManager.getResourceDir().resolve(name + '.' + ext);
+        validate();
     }
 
     /**
@@ -81,7 +78,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @param url         the url
      * @param file        the file
      */
-    public ResourcePack(final @NotNull Component displayName, final @NotNull URL url, final File file) {
+    public ResourcePack(final @NotNull Component displayName, final @NotNull URL url, final @Nullable Path file) {
         this(displayName, url, file, null);
     }
 
@@ -93,14 +90,13 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @param file        the file
      * @param description the description
      */
-    public ResourcePack(final @NotNull Component displayName, final @NotNull URL url, final @Nullable File file, final @Nullable String description) {
+    public ResourcePack(final @NotNull Component displayName, final @NotNull URL url, final @Nullable Path file, final @Nullable String description) {
         this.name = PlainTextComponentSerializer.plainText().serialize(displayName);
         this.displayName = displayName;
-        final Path path = ResourcePackManager.getResourceDir();
-        this.local = file != null ? file : new File(path.toFile(), name + '.' + ext);
+        this.local = file != null ? file : ResourcePackManager.getResourceDir().resolve(name + '.' + ext);
         this.url = url;
         this.description = description;
-        this.validate();
+        validate();
     }
 
     /**
@@ -126,58 +122,52 @@ public final class ResourcePack implements ConfigurationSerializable {
     }
 
     private void validate() {
-        BukkitScheduler scheduler = Bukkit.getScheduler();
-        try {
-            scheduler.runTaskAsynchronously(Minigames.getPlugin(), () -> {
-                synchronized (this.local) {
-                    if (this.local.exists()) {
-                        //set the local hash;
-                        try (final FileInputStream fis = new FileInputStream(this.local)) {
-                            this.hash = this.getSH1Hash(fis);
-                        } catch (final IOException e) {
-                            Minigames.getCmpnntLogger().error("", e);
-                        }
-                        //Validate the remote file hash = local.
-                        final File temp;
-                        try (final InputStream in = this.url.openStream()) {
-                            temp = File.createTempFile(this.name, ext);
-                            Files.copy(in, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        } catch (final IOException e) {
-                            Minigames.getCmpnntLogger().warn("", e);
-                            this.valid = false;
-                            return;
-                        }
-                        try (final FileInputStream fis = new FileInputStream(temp)) {
-                            final byte[] has = this.getSH1Hash(fis);
-                            if (Arrays.equals(has, this.hash)) {
-                                Minigames.getCmpnntLogger().info(Component.text("Resource Pack: ").append(this.displayName).append(Component.text(" passed external validation")));
-                                this.valid = true;
-                                return;
-                            }
-                        } catch (final IOException e) {
-                            Minigames.getCmpnntLogger().warn("", e);
-                            this.valid = false;
-                            return;
-                        }
-                        // Local did not match hash on remote so copy the remote over the local.
-                        try (final FileInputStream fis = new FileInputStream(temp)) {
-                            Files.copy(fis, this.local.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        } catch (final IOException e) {
-                            Minigames.getCmpnntLogger().error("", e);
-                        }
-                        //set the new hash as long as it's not null its valid
-                        this.setLocalHash();
-                    } else {
-                        this.download(this.local);
-                        this.setLocalHash();
-                        this.valid = true;
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            synchronized (local) {
+                if (Files.isRegularFile(local)) {
+                    //set the local hash;
+                    try (final InputStream stream = Files.newInputStream(local)) {
+                        hash = getSH1Hash(stream);
+                    } catch (final IOException e) {
+                        plugin.getComponentLogger().error("Couldn't get hash for resource file " + local, e);
                     }
+                    //Validate the remote file hash = local.
+                    final @NotNull Path temp;
+                    try (final @NotNull InputStream in = url.openStream()) {
+                        temp = Files.createTempFile(name, ext);
+                        Files.copy(in, temp, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (final IOException e) {
+                        plugin.getComponentLogger().warn("", e);
+                        valid = false;
+                        return;
+                    }
+                    try (final @NotNull InputStream in = Files.newInputStream(temp)) {
+                        final byte[] has = getSH1Hash(in);
+                        if (Arrays.equals(has, hash)) {
+                            plugin.getComponentLogger().info("Resource Pack: " + displayName + " passed external validation");
+                            valid = true;
+                            return;
+                        }
+                    } catch (final IOException e) {
+                        plugin.getComponentLogger().warn("", e);
+                        valid = false;
+                        return;
+                    }
+                    // Local did not match hash on remote so copy the remote over the local.
+                    try (final @NotNull InputStream in = Files.newInputStream(temp)) {
+                        Files.copy(in, local, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (final IOException e) {
+                        plugin.getComponentLogger().error("", e);
+                    }
+                    //set the new hash as long as it's not null its valid
+                    setLocalHash();
+                } else {
+                    download(local);
+                    setLocalHash();
+                    valid = true;
                 }
-            });
-        } catch (Exception e) {
-            Minigames.getCmpnntLogger().error("", e);
-            this.valid = false;
-        }
+            }
+        });
     }
 
     private byte @Nullable [] getSH1Hash(final @NotNull InputStream fis) {
@@ -193,12 +183,12 @@ public final class ResourcePack implements ConfigurationSerializable {
                     }
                 }
             } catch (final IOException e) {
-                Minigames.getCmpnntLogger().warn("", e);
+                plugin.getComponentLogger().warn("", e);
                 return null;
             }
             return digest.digest();
         } catch (final NoSuchAlgorithmException e) {
-            Minigames.getCmpnntLogger().error("", e);
+            plugin.getComponentLogger().error("", e);
             return null;
         }
     }
@@ -207,18 +197,18 @@ public final class ResourcePack implements ConfigurationSerializable {
      * Generate the local SH1 hash
      */
     private void setLocalHash() {
-        if (this.local != null && this.local.exists()) {
-            try (final FileInputStream fis = new FileInputStream(this.local)) {
-                this.hash = this.getSH1Hash(fis);
-                this.valid = true;
+        if (Files.isRegularFile(local)) {
+            try (final InputStream in = Files.newInputStream(local)) {
+                hash = getSH1Hash(in);
+                valid = true;
                 return;
             } catch (final IOException e) {
-                Minigames.getCmpnntLogger().warn("", e);
-                this.valid = false;
+                plugin.getComponentLogger().warn("", e);
+                valid = false;
                 return;
             }
         }
-        this.valid = false;
+        valid = false;
     }
 
     /**
@@ -226,20 +216,21 @@ public final class ResourcePack implements ConfigurationSerializable {
      *
      * @param file the file
      */
-    public void download(final @NotNull File file) {
-        if (!file.exists()) {
-            if (!file.getParentFile().exists()) {
-                if (!file.getParentFile().mkdirs()) {
-                    this.valid = false;
-                    return;
-                }
+    public void download(final @NotNull Path file) {
+        if (!Files.isRegularFile(file)) {
+            try {
+                Files.createDirectories(file);
+            } catch (IOException e) {
+                plugin.getComponentLogger().error("couldn't download ressource pack because the directory to save the file in couldn't be created", e);
+                valid = false;
+                return;
             }
         }
-        try (final InputStream in = this.url.openStream()) {
-            Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        try (final InputStream in = url.openStream()) {
+            Files.copy(in, file, StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException e) {
-            Minigames.getCmpnntLogger().error("", e);
-            this.valid = false;
+            plugin.getComponentLogger().error("", e);
+            valid = false;
         }
     }
 
@@ -249,7 +240,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @return the name
      */
     public @NotNull String getName() {
-        return this.name;
+        return name;
     }
 
     /**
@@ -258,7 +249,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @return the name
      */
     public @NotNull Component getDisplayName() {
-        return this.displayName;
+        return displayName;
     }
 
     /**
@@ -267,7 +258,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @return the boolean
      */
     public boolean isValid() {
-        return this.valid;
+        return valid;
     }
 
     /**
@@ -276,7 +267,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @return the description
      */
     public @Nullable String getDescription() {
-        return this.description;
+        return description;
     }
 
     /**
@@ -286,7 +277,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      */
     @SuppressWarnings("syncronized")
     public byte[] getSH1Hash() {
-        return this.hash;
+        return hash;
     }
 
     /**
@@ -295,17 +286,16 @@ public final class ResourcePack implements ConfigurationSerializable {
      * @return url url
      */
     public @Nullable URL getUrl() {
-        return this.url;
+        return url;
     }
 
     @Override
     public @NotNull Map<@NotNull String, @NotNull Object> serialize() {
         final Map<String, Object> result = new HashMap<>();
-        result.put("name", MiniMessage.miniMessage().serialize(this.displayName));
-        result.put("url", this.url.toString());
-        result.put("description", this.description);
+        result.put("name", MiniMessage.miniMessage().serialize(displayName));
+        result.put("url", url.toString());
+        result.put("description", description);
 
         return result;
     }
-
 }

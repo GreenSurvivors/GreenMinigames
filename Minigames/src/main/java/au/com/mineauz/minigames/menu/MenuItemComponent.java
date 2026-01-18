@@ -11,8 +11,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,21 +25,21 @@ public class MenuItemComponent extends MenuItem implements StringConsumer {
     private final @NotNull Callback<Component> component;
     private boolean allowNull = false;
 
-    public MenuItemComponent(@Nullable Material displayMat, @NotNull MinigameLangKey langKey, @NotNull Callback<Component> component) {
-        super(displayMat, langKey);
+    public MenuItemComponent(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<Component> component) {
+        super(displayType, langKey);
         this.component = component;
         updateDescription();
     }
 
-    public MenuItemComponent(@Nullable Material displayMat, @Nullable Component name, @NotNull Callback<Component> component) {
-        super(displayMat, name);
+    public MenuItemComponent(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<Component> component) {
+        super(displayType, name);
         this.component = component;
         updateDescription();
     }
 
-    public MenuItemComponent(@Nullable Material displayMat, @Nullable Component name,
+    public MenuItemComponent(@Nullable ItemType displayType, @Nullable Component name,
                              @Nullable List<@NotNull Component> description, @NotNull Callback<Component> component) {
-        super(displayMat, name, description);
+        super(displayType, name, description);
         this.component = component;
         updateDescription();
     }
@@ -61,23 +61,23 @@ public class MenuItemComponent extends MenuItem implements StringConsumer {
     }
 
     @Override
-    public @Nullable ItemStack onDoubleClick() {
+    public @NotNull ItemStack onDoubleClick() {
         MinigamePlayer mgPlayer = getContainer().getViewer();
         mgPlayer.setNoClose(true);
         mgPlayer.getPlayer().closeInventory();
 
-        final int reopenSeconds = 20;
+        final @NotNull Duration reopenTime = Duration.ofSeconds(20);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
-                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
-                Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(reopenSeconds))));
+            Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
+            Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
         if (allowNull) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ALLOWNULL,
-                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
         }
         mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenSeconds);
+        getContainer().startReopenTimer(reopenTime);
 
-        return null;
+        return ItemStack.empty();
     }
 
     @Override

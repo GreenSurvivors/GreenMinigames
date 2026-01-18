@@ -14,10 +14,15 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.*;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.Sound;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +33,8 @@ public class PlaySoundAction extends AAction {
     private final @NotNull FloatFlag volume = new FloatFlag("volume", 1f);
     private final @NotNull FloatFlag pitch = new FloatFlag("pitch", 1f);
 
-    protected PlaySoundAction(@NotNull String name) {
-        super(name);
+    protected PlaySoundAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -73,7 +78,11 @@ public class PlaySoundAction extends AAction {
     @Override
     public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
         debug(mgPlayer, node);
-        execute(mgPlayer, node.getLocation());
+        if (node.getSafeLocation().getWorld() == null) {
+            return;
+        }
+
+        execute(mgPlayer, node.getSafeLocation().toLocation());
     }
 
     private void execute(@NotNull MinigamePlayer player, @NotNull Location loc) {
@@ -94,18 +103,16 @@ public class PlaySoundAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        soundKey.saveValue(config, path);
-        privatePlayBack.saveValue(config, path);
-        volume.saveValue(config, path);
-        pitch.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        soundKey.saveValue(config);
+        privatePlayBack.saveValue(config);
+        volume.saveValue(config);
+        pitch.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config,
-                              @NotNull String path) {
-        soundKey.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        soundKey.loadValue(config);
 
         try {
             @SuppressWarnings({"UnstableApiUsage", "removal"})
@@ -115,9 +122,9 @@ public class PlaySoundAction extends AAction {
         } catch (IllegalArgumentException ignored) {
         }
 
-        privatePlayBack.loadValue(config, path);
-        volume.loadValue(config, path);
-        pitch.loadValue(config, path);
+        privatePlayBack.loadValue(config);
+        volume.loadValue(config);
+        pitch.loadValue(config);
     }
 
     @Override
@@ -126,7 +133,7 @@ public class PlaySoundAction extends AAction {
 
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         List<Sound> sounds = Registry.SOUNDS.stream().toList();
-        m.addItem(new MenuItemList<>(Material.NOTE_BLOCK, MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME, new Callback<>() {
+        m.addItem(new MenuItemList<>(ItemType.NOTE_BLOCK, MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME, new Callback<>() {
 
             @Override
             public @NotNull Sound getValue() {
@@ -144,8 +151,8 @@ public class PlaySoundAction extends AAction {
             }
         }, sounds));
 
-        m.addItem(privatePlayBack.getMenuItem(Material.ENDER_PEARL, MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME));
-        m.addItem(new MenuItemDecimal(Material.JUKEBOX, MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME, new Callback<>() {
+        m.addItem(privatePlayBack.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME));
+        m.addItem(new MenuItemDecimal(ItemType.JUKEBOX, MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME, new Callback<>() {
 
             @Override
             public @NotNull Double getValue() {
@@ -158,7 +165,7 @@ public class PlaySoundAction extends AAction {
             }
         }, 0.1, 1d, 0.5, null));
 
-        m.addItem(new MenuItemDecimal(Material.ENDER_EYE, MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME, new Callback<>() {
+        m.addItem(new MenuItemDecimal(ItemType.ENDER_EYE, MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME, new Callback<>() {
 
             @Override
             public @NotNull Double getValue() {

@@ -14,7 +14,6 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +39,7 @@ public class FinishSign extends AMinigameSign {
     public @Nullable String getUsePermission() {
         return null;
     }
+
     public boolean signCreate(@NotNull SignChangeEvent event) {
         event.line(1, getName());
         Component line2 = event.line(2);
@@ -52,7 +52,7 @@ public class FinishSign extends AMinigameSign {
                 setPersistentMinigame(sign, minigame);
             } else {
                 MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), line2));
+                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), line2));
                 return false;
             }
         }
@@ -61,7 +61,7 @@ public class FinishSign extends AMinigameSign {
 
     @Override
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        if (mgPlayer.isInMinigame() && mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
+        if (mgPlayer.isInMinigame() && mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
             Minigame minigame = mgPlayer.getMinigame();
 
             if (minigame.isSpectator(mgPlayer) || minigame.getState() == MinigameState.ENDED) {
@@ -123,7 +123,7 @@ public class FinishSign extends AMinigameSign {
                 plugin.getPlayerManager().partyMode(mgPlayer);
             }
             return true;
-        } else if (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
+        } else if (!mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
         }
         return false;

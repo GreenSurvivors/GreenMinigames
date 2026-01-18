@@ -18,9 +18,10 @@ import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,19 +46,19 @@ public class RegionToolMode implements ToolMode {
     }
 
     @Override
-    public @NotNull Material getIcon() {
-        return Material.DIAMOND_BLOCK;
+    public @NotNull ItemType getIcon() {
+        return ItemType.DIAMOND_BLOCK;
     }
 
     @Override
     public void onSetMode(final @NotNull MinigamePlayer player, @NotNull MinigameTool tool) {
         tool.setSetting("Region", "None");
-        final Menu m = new Menu(2, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_SELECT_NAME), player);
+        final @NotNull Menu menu = new Menu(2, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_SELECT_NAME), player);
         if (player.isInMenu()) {
-            m.addItem(new MenuItemBack(player.getMenu()), m.getSize() - 9);
+            menu.addItem(new MenuItemBack(player.getMenu()), menu.getSize() - 9);
         }
         final MinigameTool ftool = tool;
-        m.addItem(new MenuItemString(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_NAME_NAME), new Callback<>() {
+        menu.addItem(new MenuItemString(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_NAME_NAME), new Callback<>() {
 
             @Override
             public @NotNull String getValue() {
@@ -78,26 +79,26 @@ public class RegionToolMode implements ToolMode {
             List<MenuItem> items = new ArrayList<>();
 
             for (final Region region : module.getRegions()) {
-                MenuItemCustom item = new MenuItemCustom(Material.CHEST, Component.text(region.getName()));
+                MenuItemCustom item = new MenuItemCustom(ItemType.CHEST, Component.text(region.getName()));
 
                 // Set the node and go back to the main menu
                 item.setClick(() -> {
                     ftool.setSetting("Region", region.getName());
 
-                    m.displayMenu(player);
+                    menu.displayMenu(player);
 
-                    return null;
+                    return ItemStack.empty();
                 });
 
                 items.add(item);
             }
 
             regionMenu.addItems(items);
-            regionMenu.addItem(new MenuItemBack(m), regionMenu.getSize() - 9);
+            regionMenu.addItem(new MenuItemBack(menu), regionMenu.getSize() - 9);
 
-            m.addItem(new MenuItemPage(Material.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_EDIT_NAME), regionMenu));
+            menu.addItem(new MenuItemPage(ItemType.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_EDIT_NAME), regionMenu));
         }
-        m.displayMenu(player);
+        menu.displayMenu(player);
     }
 
     @Override

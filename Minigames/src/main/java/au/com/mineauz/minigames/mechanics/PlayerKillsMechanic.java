@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public class PlayerKillsMechanic extends GameMechanicBase {
+public class PlayerKillsMechanic extends AGameMechanic {
 
     protected PlayerKillsMechanic() {
     }
@@ -110,8 +110,8 @@ public class PlayerKillsMechanic extends GameMechanicBase {
                     ateam.addScore();
                     if (mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()) {
                         MinigameMessageManager.sendMinigameMessage(mgm, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_KILLS_FINALKILL,
-                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), attacker.displayName()),
-                                Placeholder.component(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayerWhoDied.displayName())));
+                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), attacker.displayName()),
+                            Placeholder.component(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayerWhoDied.displayName())));
 
                         List<MinigamePlayer> w = new ArrayList<>(ateam.getPlayers());
                         List<MinigamePlayer> l = new ArrayList<>(mgm.getPlayers().size() - ateam.getPlayers().size());
@@ -130,9 +130,10 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     private void playerSuicide(@NotNull PlayerDeathEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getEntity());
         if (mgPlayer.isInMinigame() &&
-                (mgPlayer.getPlayer().getKiller() == null || mgPlayer.getPlayer().getKiller() == mgPlayer.getPlayer()) &&
-                mgPlayer.getMinigame().hasStarted()) {
-            Minigame mgm = mgPlayer.getMinigame();
+            (mgPlayer.getPlayer().getKiller() == null || mgPlayer.getPlayer().getKiller() == mgPlayer.getPlayer()) &&
+            mgPlayer.getMinigame().hasStarted()) {
+
+            final Minigame mgm = mgPlayer.getMinigame();
             if (mgm.getMechanicName().equals("kills")) {
                 mgPlayer.takeScore();
                 mgm.setScore(mgPlayer, mgPlayer.getScore());

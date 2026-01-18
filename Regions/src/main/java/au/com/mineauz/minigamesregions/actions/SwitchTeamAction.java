@@ -15,10 +15,11 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,8 +28,8 @@ public class SwitchTeamAction extends AAction {
     private final StringFlag teamFrom = new StringFlag("From", "ALL");
     private final StringFlag teamTo = new StringFlag("To", "ALL");
 
-    protected SwitchTeamAction(@NotNull String name) {
-        super(name);
+    protected SwitchTeamAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -97,11 +98,11 @@ public class SwitchTeamAction extends AAction {
 
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override
@@ -111,7 +112,7 @@ public class SwitchTeamAction extends AAction {
 
         List<String> teams = Arrays.stream(TeamColor.values()).map(TeamColor::getUserFriendlyName).collect(Collectors.toCollection(ArrayList::new));
         teams.add("All"); //todo ?
-        menu.addItem(new MenuItemList<>(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_NAME),
+        menu.addItem(new MenuItemList<>(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_DESCRIPTION), new Callback<>() {
 
             @Override
@@ -125,7 +126,7 @@ public class SwitchTeamAction extends AAction {
             }
         }, teams));
 
-        menu.addItem(new MenuItemList<>(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_NAME),
+        menu.addItem(new MenuItemList<>(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_DESCRIPTION), new Callback<>() {
 
             @Override

@@ -17,10 +17,12 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 import java.util.Set;
@@ -29,8 +31,8 @@ public class MessageAction extends AAction {
     private final StringFlag msg = new StringFlag("message", "Hello World");
     private final EnumFlag<MinigameMessageType> messageType = new EnumFlag<>("messageType", MinigameMessageType.INFO);
 
-    protected MessageAction(@NotNull String name) {
-        super(name);
+    protected MessageAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -68,7 +70,7 @@ public class MessageAction extends AAction {
 
         ScriptObject base = new ScriptObject() {
             @Override
-            public @NotNull Set<@NotNull String> getKeys() {
+            public @NotNull Set<@NotNull String> getReferenceKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
@@ -78,7 +80,7 @@ public class MessageAction extends AAction {
             }
 
             @Override
-            public @Nullable ScriptReference get(@NotNull String name) {
+            public @Nullable ScriptReference resolveReference(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -107,7 +109,7 @@ public class MessageAction extends AAction {
 
         ScriptObject base = new ScriptObject() {
             @Override
-            public @NotNull Set<String> getKeys() {
+            public @NotNull Set<String> getReferenceKeys() {
                 return Set.of("player", "area", "minigame", "team");
             }
 
@@ -117,7 +119,7 @@ public class MessageAction extends AAction {
             }
 
             @Override
-            public @Nullable ScriptReference get(@NotNull String name) {
+            public @Nullable ScriptReference resolveReference(@NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -143,22 +145,22 @@ public class MessageAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        msg.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        msg.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        msg.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        msg.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.setPreviousPage(previous);
-        m.addItem(msg.getMenuItem(Material.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME)));
-        m.addItem(new MenuItemBack(m.getPreviousPage()), m.getSize() - 9);
-        m.displayMenu(mgPlayer);
+        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+        menu.setPreviousPage(previous);
+        menu.addItem(msg.getMenuItem(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME)));
+        menu.addItem(new MenuItemBack(menu.getPreviousPage()), menu.getSize() - 9);
+        menu.displayMenu(mgPlayer);
         return true;
     }
 }

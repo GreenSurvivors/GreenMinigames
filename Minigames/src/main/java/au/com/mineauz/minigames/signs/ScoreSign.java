@@ -77,8 +77,8 @@ public class ScoreSign extends AMinigameSign {
                     mgPlayer.addScore(score);
                     mg.setScore(mgPlayer, mgPlayer.getScore());
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.SIGN_SCORE_ADDSCORE,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(score)),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(score)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())));
                     if (mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= mgPlayer.getScore()) {
                         Minigames.getPlugin().getPlayerManager().endMinigame(mgPlayer);
                     }
@@ -96,8 +96,8 @@ public class ScoreSign extends AMinigameSign {
 
                         pteam.addScore(score);
                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.SIGN_SCORE_ADDSCORETEAM,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(score)),
-                                Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(pteam.getScore())));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(score)),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(pteam.getScore())));
                         Minigames.getPlugin().getMinigameManager().addClaimedScore(mg, sign.getLocation(), 0);
                         if (mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= pteam.getScore()) {
                             List<MinigamePlayer> winners = new ArrayList<>(pteam.getPlayers());

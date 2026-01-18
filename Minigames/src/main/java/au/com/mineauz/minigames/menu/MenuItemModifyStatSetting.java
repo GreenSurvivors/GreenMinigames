@@ -9,8 +9,8 @@ import au.com.mineauz.minigames.stats.MinigameStatistics;
 import au.com.mineauz.minigames.stats.StatFormat;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,20 +20,20 @@ public class MenuItemModifyStatSetting extends MenuItem {
     private final @NotNull Minigame minigame;
     private final @NotNull MinigameStat stat;
 
-    public MenuItemModifyStatSetting(@Nullable Material displayMat, @NotNull Minigame minigame, @NotNull MinigameStat stat) {
-        super(displayMat, stat.getDisplayName());
+    public MenuItemModifyStatSetting(@Nullable ItemType displayType, @NotNull Minigame minigame, @NotNull MinigameStat stat) {
+        super(displayType, stat.getDisplayName());
 
         this.minigame = minigame;
         this.stat = stat;
     }
 
     @Override
-    public ItemStack onClick() {
+    public @NotNull ItemStack onClick() {
         Menu subMenu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_EDIT_NAME,
-                Placeholder.component(MinigamePlaceHolderKey.STAT.getKey(), stat.getDisplayName())), getContainer().getViewer());
+            Placeholder.component(MinigamePlaceHolderKey.STAT.getKey(), stat.getDisplayName())), getContainer().getViewer());
 
-        subMenu.addItem(new MenuItemComponent(Material.NAME_TAG,
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DISPLAYNAME_NAME), new Callback<>() {
+        subMenu.addItem(new MenuItemComponent(ItemType.NAME_TAG,
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DISPLAYNAME_NAME), new Callback<>() {
             @Override
             public Component getValue() {
                 return minigame.getSettings(stat).getDisplayName();
@@ -46,7 +46,7 @@ public class MenuItemModifyStatSetting extends MenuItem {
         }));
 
         if (stat != MinigameStatistics.Losses) {
-            subMenu.addItem(new MenuItemList<>(Material.ENDER_CHEST, MgMenuLangKey.MENU_STAT_STORAGEFORMAT, new Callback<>() {
+            subMenu.addItem(new MenuItemList<>(ItemType.ENDER_CHEST, MgMenuLangKey.MENU_STAT_STORAGEFORMAT, new Callback<>() {
                 @Override
                 public @NotNull StatFormat getValue() {
                     return minigame.getSettings(stat).getFormat();

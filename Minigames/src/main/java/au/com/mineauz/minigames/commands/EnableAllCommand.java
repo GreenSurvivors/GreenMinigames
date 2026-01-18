@@ -59,14 +59,14 @@ public class EnableAllCommand extends ACommand {
                 minigames.remove(mdata.getMinigame(arg));
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), arg));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), arg));
             }
         }
         for (Minigame mg : minigames) {
             mg.setEnabled(true);
         }
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_ENABLEALL_SUCCESS,
-                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(minigames.size())));
+            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(minigames.size())));
         return true;
     }
 

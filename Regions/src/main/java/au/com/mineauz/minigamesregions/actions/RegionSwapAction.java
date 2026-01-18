@@ -21,11 +21,14 @@ import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -42,8 +45,8 @@ public class RegionSwapAction extends AAction {
     private final StringFlag toRegion = new StringFlag("toRegion", "");
     private final BooleanFlag swapRegion = new BooleanFlag("swapRegion", true);
 
-    protected RegionSwapAction(@NotNull String name) {
-        super(name);
+    protected RegionSwapAction(final @NotNull NamespacedKey key) {
+        super(key);
     }
 
     @Override
@@ -120,7 +123,7 @@ public class RegionSwapAction extends AAction {
                 }
             } else {
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), RegionModule.getFactory().getName()),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), RegionModule.getFactory().getKey().value()),
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()));
             }
         }
@@ -166,9 +169,9 @@ public class RegionSwapAction extends AAction {
     }
 
     private void fillRegionBlockList(@NotNull Region targetRegion, @NotNull ArrayList<BlockState> targetRegionBlocks) {
-        for (int y = targetRegion.getFirstPoint().getBlockY(); y <= targetRegion.getSecondPoint().getBlockY(); y++) {
-            for (int x = targetRegion.getFirstPoint().getBlockX(); x <= targetRegion.getSecondPoint().getBlockX(); x++) {
-                for (int z = targetRegion.getFirstPoint().getBlockZ(); z <= targetRegion.getSecondPoint().getBlockZ(); z++) {
+        for (int y = targetRegion.getFirstPoint().blockY(); y <= targetRegion.getSecondPoint().blockY(); y++) {
+            for (int x = targetRegion.getFirstPoint().blockX(); x <= targetRegion.getSecondPoint().blockX(); x++) {
+                for (int z = targetRegion.getFirstPoint().blockZ(); z <= targetRegion.getSecondPoint().blockZ(); z++) {
                     targetRegionBlocks.add(targetRegion.getFirstPoint().getWorld().getBlockAt(x, y, z).getState());
                 }
             }
@@ -176,17 +179,17 @@ public class RegionSwapAction extends AAction {
     }
 
     @Override
-    public void saveArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        fromRegion.saveValue(config, path);
-        toRegion.saveValue(config, path);
-        swapRegion.saveValue(config, path);
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        fromRegion.saveValue(config);
+        toRegion.saveValue(config);
+        swapRegion.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull FileConfiguration config, @NotNull String path) {
-        fromRegion.loadValue(config, path);
-        toRegion.loadValue(config, path);
-        swapRegion.loadValue(config, path);
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
+        fromRegion.loadValue(config);
+        toRegion.loadValue(config);
+        swapRegion.loadValue(config);
 
     }
 
@@ -194,14 +197,13 @@ public class RegionSwapAction extends AAction {
     public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
         Menu m = new Menu(3, getDisplayname(), mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(fromRegion.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_FROM_NAME)));
-        m.addItem(swapRegion.getMenuItem(Material.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_SWAP_NAME)));
+        m.addItem(fromRegion.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_FROM_NAME)));
+        m.addItem(swapRegion.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_SWAP_NAME)));
 
         m.addItem(new MenuItemNewLine());
-        m.addItem(toRegion.getMenuItem(Material.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_TO_NAME)));
+        m.addItem(toRegion.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_TO_NAME)));
 
         m.displayMenu(mgPlayer);
         return true;
     }
-
 }

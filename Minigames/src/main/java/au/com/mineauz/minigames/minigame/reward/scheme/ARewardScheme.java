@@ -4,8 +4,9 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import org.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 /**
  * RewardSchemes allow more flexibility for reward handling.
@@ -37,7 +38,7 @@ public abstract class ARewardScheme {
      * @param minigame        The minigame they were playing
      * @param firstCompletion True if this is the first time they are completing the minigame
      */
-    public abstract void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion);
+    public abstract void awardPlayer(final @NotNull MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion);
 
     /**
      * Awards the player with the rewards specified in this scheme.
@@ -54,12 +55,12 @@ public abstract class ARewardScheme {
      *
      * @param config The config to write into
      */
-    public abstract void save(@NotNull Configuration config, @NotNull String path);
+    public abstract void save(final @NotNull CommentedConfigurationNode config) throws SerializationException;
 
     /**
      * Loads any extra info for this scheme. Flags will be loaded elsewhere
      *
      * @param config The config to read from
      */
-    public abstract void load(@NotNull Configuration config, @NotNull String path);
+    public abstract void load(final @NotNull CommentedConfigurationNode config) throws SerializationException;
 }
