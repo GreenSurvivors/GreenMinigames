@@ -11,7 +11,7 @@ public class GameMechanics {
 
     static {
         addGameMechanic(new CustomMechanic());
-        Arrays.stream(MgMechanics.values()).forEach(s -> addGameMechanic(s.getMechanic()));
+        Arrays.stream(MgMechanics.values()).forEach(defaultMechanics -> addGameMechanic(defaultMechanics.getMechanic()));
     }
 
     /**

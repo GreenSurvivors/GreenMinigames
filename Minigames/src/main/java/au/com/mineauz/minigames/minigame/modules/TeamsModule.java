@@ -18,13 +18,10 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class TeamsModule extends MinigameModule {
+public class TeamsModule extends AMinigameModule {
     private final @NotNull Map<@NotNull TeamColor, @NotNull TeamFlag> teams = new HashMap<>();
     private final @NotNull EnumFlag<@NotNull TeamColor> defaultWinner = new EnumFlag<>("defaultwinner", TeamColor.NONE);
 
@@ -242,7 +239,7 @@ public class TeamsModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(@NotNull Menu previousMenu) {
+    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(@NotNull Menu previousMenu) {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_TEAM_NAME, previousMenu.getViewer());
         menu.setPreviousPage(previousMenu);
         List<MenuItem> menuItems = new ArrayList<>();
@@ -266,10 +263,7 @@ public class TeamsModule extends MinigameModule {
 
         MenuItemPage teamOptionsMenuPage = new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TEAM_OPTIONS_NAME, menu);
         previousMenu.addItem(teamOptionsMenuPage);
-    }
 
-    @Override
-    public boolean displayMechanicSettings(@NotNull Menu previous) {
-        return false;
+        return null;
     }
 }

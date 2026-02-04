@@ -86,7 +86,7 @@ public class MultiplayerType extends MinigameTypeBase {
     @Override
     public boolean joinMinigame(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {
         if (!LobbySettingsModule.getMinigameModule(mgm).canInteractPlayerWait()) mgPlayer.setCanInteract(false);
-        if (!LobbySettingsModule.getMinigameModule(mgm).canMovePlayerWait()) mgPlayer.setFrozen(true);
+        if (!LobbySettingsModule.getMinigameModule(mgm).canMoveOnPlayerWait()) mgPlayer.setFrozen(true);
         if (!mgm.isWaitingForPlayers() && !mgm.hasStarted()) {
             if (mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()) {
                 mgm.setMpTimer(new MultiplayerTimer(mgm));

@@ -9,8 +9,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import io.leangen.geantyref.TypeFactory;
@@ -35,7 +34,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class LoadoutModule extends MinigameModule {
+public class LoadoutModule extends AMinigameModule {
     private static final Pattern NUMBER_PATTERN = Pattern.compile("-?[0-9]+");
     private static final @NotNull Map<@NotNull Key, @NotNull ILoadoutAddonFactory> registeredAddons = new HashMap<>();
     private static final @NotNull Map<String, @NotNull PlayerLoadout> globalLoadouts = new HashMap<>();
@@ -354,12 +353,31 @@ public class LoadoutModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(@NotNull Menu menu) {
-        // TODO Move loadout menu stuff here
-    }
+    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu superMenu) {
+        final Menu loadouts = new Menu(6, getMinigame().getDisplayName(), superMenu.getViewer());
+        final @NotNull List<@NotNull MenuItem> loadoutMenuItems = new ArrayList<>();
 
-    @Override
-    public boolean displayMechanicSettings(@NotNull Menu previous) {
-        return false;
+        for (final @NotNull PlayerLoadout playerLoadout : getLoadouts()) {
+            @NotNull ItemType itemType = ItemType.GLASS_PANE;
+
+            if (!playerLoadout.getItemSlots().isEmpty()) {
+                itemType = playerLoadout.getItem((Integer) playerLoadout.getItemSlots().toArray()[0]).getType().asItemType();
+            }
+            if (playerLoadout.isDeletable()) {
+                loadoutMenuItems.add(new MenuItemDisplayLoadout(itemType, playerLoadout.getDisplayName(),
+                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), playerLoadout, getMinigame()));
+            } else {
+                loadoutMenuItems.add(new MenuItemDisplayLoadout(itemType, playerLoadout.getDisplayName(), playerLoadout, getMinigame()));
+            }
+        }
+
+        loadouts.addItem(new MenuItemLoadoutAdd(MenuUtility.getCreateType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+            getLoadoutMap(), getMinigame()), 53);
+        loadouts.addItem(new MenuItemBack(superMenu), loadouts.getSize() - 9);
+        loadouts.addItems(loadoutMenuItems);
+
+        superMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_MINIGAME_LOADOUTS_NAME, loadouts));
+
+        return null;
     }
 }

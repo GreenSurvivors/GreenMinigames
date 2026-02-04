@@ -7,11 +7,10 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
+import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
-import au.com.mineauz.minigames.minigame.modules.MgModules;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
@@ -110,10 +109,15 @@ public class InfectionMechanic extends AGameMechanic {
         return result;
     }
 
-    @Nullable
     @Override
-    public MinigameModule displaySettings(@NotNull Minigame minigame) {
-        return minigame.getModule(MgModules.INFECTION.getKey());
+    public boolean displayMechanicSettings(@NotNull Minigame minigame, @NotNull Menu previous) {
+        InfectionModule module = InfectionModule.getMinigameModule(minigame);
+
+        if (module != null) {
+            return module.displayMechanicSettings(previous);
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -156,7 +160,7 @@ public class InfectionMechanic extends AGameMechanic {
         MinigamePlayer player = playerManager.getMinigamePlayer(event.getEntity());
         if (player.isInMinigame()) {
             Minigame mgm = player.getMinigame();
-            if (mgm.isTeamGame() && mgm.getMechanicName().equals("infection")) {
+            if (mgm.isTeamGame() && mgm.getMechanicName().equals(getMechanicName())) {
                 TeamsModule teamsModule = TeamsModule.getMinigameModule(mgm);
                 InfectionModule infectionModule = InfectionModule.getMinigameModule(mgm);
 

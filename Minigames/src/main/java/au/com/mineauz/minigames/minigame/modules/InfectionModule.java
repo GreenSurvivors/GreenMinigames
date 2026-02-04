@@ -3,10 +3,7 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemList;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -19,8 +16,9 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SequencedCollection;
 
-public class InfectionModule extends MinigameModule {
+public class InfectionModule extends AMechanicProvidingModule {
     private final IntegerFlag infectedPercent = new IntegerFlag("infectedPercent", 18);
     private final EnumFlag<TeamColor> infectedTeam = new EnumFlag<>("infectedTeam", TeamColor.RED);
     private final EnumFlag<TeamColor> survivorTeam = new EnumFlag<>("survivorTeam", TeamColor.BLUE);
@@ -55,7 +53,7 @@ public class InfectionModule extends MinigameModule {
         survivorTeam.loadValue(config);
     }
 
-    public @NotNull Callback<TeamColor> getInfectedTeamCallback() {
+    protected @NotNull Callback<TeamColor> getInfectedTeamCallback() {
         return new Callback<>() {
             @Override
             public TeamColor getValue() {
@@ -89,7 +87,7 @@ public class InfectionModule extends MinigameModule {
     }
 
     @NotNull
-    public Callback<TeamColor> getSurvivorTeamCallback() {
+    protected Callback<TeamColor> getSurvivorTeamCallback() {
         return new Callback<>() {
             @Override
             public TeamColor getValue() {
@@ -124,7 +122,8 @@ public class InfectionModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(@NotNull Menu menu) {
+    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(@NotNull Menu menu) {
+        return null;
     }
 
     @Override

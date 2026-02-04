@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.TypeDependentDisplayData;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.key.Key;
@@ -14,7 +15,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
-public class JuggernautModule extends MinigameModule {
+import java.util.SequencedCollection;
+
+public class JuggernautModule extends AMechanicProvidingModule {
     private @Nullable MinigamePlayer juggernaut = null;
 
     public JuggernautModule(final @NotNull Minigame mgm, final @NotNull Key key) {
@@ -39,7 +42,8 @@ public class JuggernautModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(@NotNull Menu menu) {
+    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(@NotNull Menu menu) {
+        return null;
     }
 
     @Override

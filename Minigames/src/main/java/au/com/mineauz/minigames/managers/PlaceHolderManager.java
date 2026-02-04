@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.managers;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.AMinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -150,7 +150,7 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
         for (GameOptions o : GameOptions.values()) {
             identifiers.put(name + "_" + o.name, "GAME_" + name);
         }
-        for (MinigameModule module : game.getModules()) {
+        for (AMinigameModule module : game.getModules()) {
             ModulePlaceHolderProvider provider = module.getModulePlaceHolders();
             if (provider != null) {
                 registerModulePlaceholders(game.getName(), provider);

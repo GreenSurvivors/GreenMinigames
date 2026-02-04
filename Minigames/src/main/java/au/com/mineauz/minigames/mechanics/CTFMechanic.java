@@ -10,12 +10,11 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
+import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.CTFModule;
-import au.com.mineauz.minigames.minigame.modules.MgModules;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -88,8 +87,14 @@ public class CTFMechanic extends AGameMechanic {
     }
 
     @Override
-    public MinigameModule displaySettings(@NotNull Minigame minigame) {
-        return minigame.getModule(MgModules.CAPTURE_THE_FLAG.getKey());
+    public boolean displayMechanicSettings(final @NotNull Minigame minigame, final @NotNull Menu previous) {
+        final @Nullable CTFModule module = CTFModule.getMinigameModule(minigame);
+
+        if (module != null) {
+            return module.displayMechanicSettings(previous);
+        }
+
+        return false;
     }
 
     @Override

@@ -21,15 +21,15 @@ public enum MgModules implements ModuleFactory {
     TREASURE_HUNT("TreasureHunt", TreasureHuntModule::new),
     WEATHER_TIME("WeatherTime", WeatherTimeModule::new);
 
-    private final @NotNull BiFunction<@NotNull Minigame, @NotNull Key, @NotNull MinigameModule> minigameModuleInit;
+    private final @NotNull BiFunction<@NotNull Minigame, @NotNull Key, @NotNull AMinigameModule> minigameModuleInit;
     private final @NotNull Key key;
 
-    MgModules(final @NotNull String key, final @NotNull BiFunction<@NotNull Minigame, @NotNull Key, @NotNull MinigameModule> minigameModuleInit) {
+    MgModules(final @NotNull String key, final @NotNull BiFunction<@NotNull Minigame, @NotNull Key, @NotNull AMinigameModule> minigameModuleInit) {
         this.minigameModuleInit = minigameModuleInit;
         this.key = new NamespacedKey(Minigames.getPlugin(), key);
     }
 
-    public @NotNull MinigameModule makeNewModule(final @NotNull Minigame minigame) {
+    public @NotNull AMinigameModule makeNewModule(final @NotNull Minigame minigame) {
         return minigameModuleInit.apply(minigame, key);
     }
 

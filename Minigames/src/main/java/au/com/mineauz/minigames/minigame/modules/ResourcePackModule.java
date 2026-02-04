@@ -21,7 +21,9 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-public class ResourcePackModule extends MinigameModule { //todo rework to work with multiple ressource packs
+import java.util.SequencedCollection;
+
+public class ResourcePackModule extends AMinigameModule { //todo rework to work with multiple ressource packs
     private final @NotNull BooleanFlag enabled = new BooleanFlag("resourcePackEnabled", false);
     private final @NotNull ComponentFlag resourcePackDisplayName = new ComponentFlag("resourcePackName", Component.empty());
     private final @NotNull BooleanFlag forced = new BooleanFlag("forceResourcePack", false);
@@ -79,7 +81,7 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
     }
 
     @Override
-    public void addEditMenuOptions(@NotNull Menu previousMenu) {
+    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(@NotNull Menu previousMenu) {
         Menu menu = new Menu(3, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_NAME, previousMenu.getViewer());
         menu.setPreviousPage(previousMenu);
         menu.addItem(enabled.getMenuItem(ItemType.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_ENABLE_NAME));
@@ -119,10 +121,7 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
         MenuItemPage previousMenuItem = new MenuItemPage(ItemType.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_NAME, menu);
         menu.addItem(new MenuItemBack(previousMenu), menu.getSize() - 9);
         previousMenu.addItem(previousMenuItem);
-    }
 
-    @Override
-    public boolean displayMechanicSettings(@NotNull Menu previous) {
-        return false;
+        return null;
     }
 }

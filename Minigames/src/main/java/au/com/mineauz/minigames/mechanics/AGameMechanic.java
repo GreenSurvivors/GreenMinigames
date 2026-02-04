@@ -9,11 +9,12 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
+import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public abstract class AGameMechanic implements Listener {
+public abstract class AGameMechanic implements Listener, Keyed {
     protected static final @NotNull Minigames plugin = Minigames.getPlugin();
     protected final @NotNull MinigamePlayerManager playerManager;
     protected final @NotNull MinigameManager minigameManager;
@@ -72,7 +73,6 @@ public abstract class AGameMechanic implements Listener {
      * @param minigame The minigame in which the balancing occours
      * @return List of {@link MinigamePlayer} that have been moved to a different or new team.
      */
-
     public @NotNull List<@NotNull MinigamePlayer> balanceTeam(@NotNull List<@NotNull MinigamePlayer> players, @NotNull Minigame minigame) {
         List<MinigamePlayer> result = new ArrayList<>();
         if (minigame.isTeamGame()) {
@@ -153,13 +153,7 @@ public abstract class AGameMechanic implements Listener {
         }
     }
 
-    /**
-     * Returns the module that is assigned to this mechanic, or null if none is assigned. This is to open the settings menu
-     * for the GameMechanic if clicked in the edit menu.
-     *
-     * @return The module that has been assigned
-     */
-    public abstract MinigameModule displaySettings(@NotNull Minigame minigame);
+    public abstract boolean displayMechanicSettings(final @NotNull Minigame minigame, final @NotNull Menu previous);
 
     /**
      * Called when a global Minigame has been started.

@@ -68,13 +68,13 @@ public class SetLobbyCommand extends ASetCommand {
                         Boolean canMove = BooleanUtils.toBooleanObject(args[2]);
                         if (canMove != null) {
                             if (args[1].equalsIgnoreCase("playerwait")) {
-                                lobby.setCanMovePlayerWait(canMove);
+                                lobby.setCanMoveOnPlayerWait(canMove);
 
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_CANMOVE_PLAYERWAIT,
                                         Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
                                                 canMove ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                             } else if (args[1].equalsIgnoreCase("startwait")) {
-                                lobby.setCanMoveStartWait(canMove);
+                                lobby.setCanMoveOnStartWait(canMove);
 
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_CANMOVE_START,
                                         Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(

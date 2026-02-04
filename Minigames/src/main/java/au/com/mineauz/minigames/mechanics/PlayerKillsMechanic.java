@@ -4,9 +4,9 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
+import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -40,8 +40,8 @@ public class PlayerKillsMechanic extends AGameMechanic {
     }
 
     @Override
-    public @Nullable MinigameModule displaySettings(@NotNull Minigame minigame) {
-        return null;
+    public boolean displayMechanicSettings(@NotNull Minigame minigame, @NotNull Menu previous) {
+        return false;
     }
 
     @Override
@@ -68,10 +68,10 @@ public class PlayerKillsMechanic extends AGameMechanic {
 
     @EventHandler
     private void playerAttackPlayer(@NotNull PlayerDeathEvent event) {
-        MinigamePlayer mgPlayerWhoDied = playerManager.getMinigamePlayer(event.getEntity());
-        Minigame mgm = mgPlayerWhoDied.getMinigame();
-        if (mgPlayerWhoDied.isInMinigame() && mgm.getMechanicName().equals("kills")) {
-            MinigamePlayer attacker;
+        final @NotNull MinigamePlayer mgPlayerWhoDied = playerManager.getMinigamePlayer(event.getEntity());
+        final Minigame mgm = mgPlayerWhoDied.getMinigame();
+        if (mgPlayerWhoDied.isInMinigame() && mgm.getMechanicName().equals(getMechanicName())) {
+            final @NotNull MinigamePlayer attacker;
             if (mgPlayerWhoDied.getPlayer().getKiller() != null) {
                 attacker = playerManager.getMinigamePlayer(mgPlayerWhoDied.getPlayer().getKiller());
                 if (attacker == mgPlayerWhoDied) {
@@ -134,7 +134,7 @@ public class PlayerKillsMechanic extends AGameMechanic {
             mgPlayer.getMinigame().hasStarted()) {
 
             final Minigame mgm = mgPlayer.getMinigame();
-            if (mgm.getMechanicName().equals("kills")) {
+            if (mgm.getMechanicName().equals(getMechanicName())) {
                 mgPlayer.takeScore();
                 mgm.setScore(mgPlayer, mgPlayer.getScore());
                 if (mgm.isTeamGame())
@@ -149,7 +149,7 @@ public class PlayerKillsMechanic extends AGameMechanic {
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isTeamGame()) {
             Minigame mgm = mgPlayer.getMinigame();
 
-            if (mgm.getMechanicName().equals("kills")) {
+            if (mgm.getMechanicName().equals(getMechanicName())) {
                 autoBalanceOnDeath(mgPlayer, mgm);
             }
         }

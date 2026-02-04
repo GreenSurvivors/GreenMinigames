@@ -6,7 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.AMinigameModule;
 import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -38,14 +38,14 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.*;
 
-public class RegionModule extends MinigameModule {
+public class RegionModule extends AMinigameModule {
     private final @NotNull Map<@NotNull String, @NotNull Region> regions = new HashMap<>();
     private final @NotNull Map<@NotNull String, @NotNull Node> nodes = new HashMap<>();
     private static final @NotNull ModuleFactory moduleFactory = new ModuleFactory() {
         private final Key key = new NamespacedKey(Main.getPlugin(), "regions");
 
         @Override
-        public @NotNull MinigameModule makeNewModule(@NotNull Minigame minigame) {
+        public @NotNull AMinigameModule makeNewModule(@NotNull Minigame minigame) {
             return new RegionModule(minigame, key);
         }
 
@@ -362,18 +362,14 @@ public class RegionModule extends MinigameModule {
 
 
     @Override
-    public void addEditMenuOptions(@NotNull Menu menu) {
-        final MenuItemCustom menuItemCustom = new MenuItemCustom(ItemType.DIAMOND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME));
-        final Menu fmenu = menu;
+    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu menu) {
+        final @NotNull MenuItemCustom menuItemCustom = new MenuItemCustom(ItemType.DIAMOND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME));
         menuItemCustom.setClick(() -> {
-            displayMenu(menuItemCustom.getContainer().getViewer(), fmenu);
+            displayMenu(menu.getViewer(), menu);
             return ItemStack.empty();
         });
         menu.addItem(menuItemCustom);
-    }
 
-    @Override
-    public boolean displayMechanicSettings(@NotNull Menu previous) {
-        return false;
+        return null;
     }
 }

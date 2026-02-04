@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
+import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.JuggernautModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -47,8 +48,14 @@ public class JuggernautMechanic extends AGameMechanic {
     }
 
     @Override
-    public JuggernautModule displaySettings(@NotNull Minigame minigame) {
-        return JuggernautModule.getMinigameModule(minigame);
+    public boolean displayMechanicSettings(@NotNull Minigame minigame, @NotNull Menu previous) {
+        final @Nullable JuggernautModule module = JuggernautModule.getMinigameModule(minigame);
+
+        if (module != null) {
+            return module.displayMechanicSettings(previous);
+        } else {
+            return false;
+        }
     }
 
     @Override

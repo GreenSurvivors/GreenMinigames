@@ -70,7 +70,7 @@ public class MultiplayerTimer {
                         Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(currentLobbyWaitTime)))),
                     MinigameMessageType.INFO);
                 allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractPlayerWait());
-                freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMovePlayerWait());
+                freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveOnPlayerWait());
                 minigame.setState(MinigameState.WAITING);
             } else if (timeMsg.contains(currentLobbyWaitTime)) {
                 MinigameMessageManager.sendMinigameMessage(minigame, MinigameUtils.convertTime(Duration.ofSeconds(currentLobbyWaitTime)),
@@ -84,7 +84,7 @@ public class MultiplayerTimer {
                 MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_STARTUP_MINIGAMESTARTS),
                     MinigameMessageType.INFO);
 
-                freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveStartWait());
+                freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveOnStartWait());
                 allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractStartWait());
 
                 if (LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()) {

@@ -11,6 +11,7 @@ import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.managers.PlaceHolderManager;
 import au.com.mineauz.minigames.managers.ResourcePackManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
@@ -83,7 +84,7 @@ public class Minigames extends JavaPlugin { // todo move a lot of these assignme
         }
         for (final Minigame minigame : minigameManager.getAllMinigames().values()) {
             if (minigame.getType() == MinigameType.GLOBAL &&
-                "treasure_hunt".equals(minigame.getMechanicName())
+                GameMechanics.MgMechanics.TREASUREHUNT.getMechanic().getMechanicName().equals(minigame.getMechanicName())
                 && minigame.isEnabled()) { // todo move this into the Treasure mechanic
 
                 if (minigame.getMinigameTimer() != null) {

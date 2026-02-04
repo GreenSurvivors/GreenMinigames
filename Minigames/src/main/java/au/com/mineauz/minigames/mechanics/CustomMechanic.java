@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -27,6 +27,11 @@ public class CustomMechanic extends AGameMechanic {
     @Override
     public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
         return true;
+    }
+
+    @Override
+    public boolean displayMechanicSettings(@NotNull Minigame minigame, @NotNull Menu previous) {
+        return false;
     }
 
     @Override
@@ -57,14 +62,9 @@ public class CustomMechanic extends AGameMechanic {
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isTeamGame()) {
             Minigame mgm = mgPlayer.getMinigame();
 
-            if (mgm.getMechanicName().equals("custom")) {
+            if (mgm.getMechanicName().equals(getMechanicName())) {
                 autoBalanceOnDeath(mgPlayer, mgm);
             }
         }
-    }
-
-    @Override
-    public @Nullable MinigameModule displaySettings(@NotNull Minigame minigame) {
-        return null;
     }
 }

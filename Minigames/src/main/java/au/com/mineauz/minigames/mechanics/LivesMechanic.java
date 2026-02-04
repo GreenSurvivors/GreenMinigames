@@ -6,8 +6,8 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
+import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -47,8 +47,8 @@ public class LivesMechanic extends AGameMechanic {
     }
 
     @Override
-    public @Nullable MinigameModule displaySettings(@NotNull Minigame minigame) {
-        return null;
+    public boolean displayMechanicSettings(@NotNull Minigame minigame, @NotNull Menu previous) {
+        return false;
     }
 
     @Override

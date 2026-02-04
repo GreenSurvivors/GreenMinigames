@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.TypeDependentDisplayData;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.key.Key;
@@ -15,10 +16,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.WeatherType;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-public class WeatherTimeModule extends MinigameModule {
+import java.util.SequencedCollection;
+
+public class WeatherTimeModule extends AMinigameModule {
     private final TimeFlag time = new TimeFlag("customTime.value", 0L);
     private final BooleanFlag useCustomTime = new BooleanFlag("customTime.enabled", false);
     private final BooleanFlag useCustomWeather = new BooleanFlag("customWeather.enabled", false);
@@ -56,7 +60,7 @@ public class WeatherTimeModule extends MinigameModule {
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void addEditMenuOptions(@NotNull Menu previosMenu) {
+    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(@NotNull Menu previosMenu) {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_TIMEWEATHER_NAME, previosMenu.getViewer());
 
         menu.addItem(useCustomTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_USE_NAME));
@@ -66,11 +70,8 @@ public class WeatherTimeModule extends MinigameModule {
         menu.addItem(new MenuItemBack(previosMenu), menu.getSize() - 9);
 
         previosMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TIMEWEATHER_NAME, menu));
-    }
 
-    @Override
-    public boolean displayMechanicSettings(@NotNull Menu previous) {
-        return false;
+        return null;
     }
 
     public long getTime() {

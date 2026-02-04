@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.TypeDependentDisplayData;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
 import net.kyori.adventure.key.Key;
@@ -14,12 +15,14 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-public abstract class MinigameModule implements Keyed {
+import java.util.SequencedCollection;
+
+public abstract class AMinigameModule implements Keyed {
     private static @Nullable ComparableVersion minRequired = null;
     protected final @NotNull Key moduleKey;
     private final @NotNull Minigame mgm;
 
-    protected MinigameModule(final @NotNull Minigame mgm, final @NotNull Key moduleKey) {
+    protected AMinigameModule(final @NotNull Minigame mgm, final @NotNull Key moduleKey) {
         this.mgm = mgm;
         this.moduleKey = moduleKey;
     }
@@ -29,7 +32,7 @@ public abstract class MinigameModule implements Keyed {
     }
 
     /**
-     * This returns true if you the Minigames version is higher than your required version
+     * This returns true if the Minigames version is higher than your required version
      * ie if you require version 1.13 then and Minigames is at 1.14 it will be true
      *
      * @return true if the version exceeds your version
@@ -61,9 +64,7 @@ public abstract class MinigameModule implements Keyed {
 
     public abstract void load(final @NotNull CommentedConfigurationNode config) throws ConfigurateException;
 
-    public abstract void addEditMenuOptions(final @NotNull Menu menu);
-
-    public abstract boolean displayMechanicSettings(final @NotNull Menu previous);
+    public abstract @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu menu);
 
     /**
      * You should override this method if the module should provide more placeholders for a game it services.

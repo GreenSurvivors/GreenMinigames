@@ -9,9 +9,8 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
+import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.MgModules;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.RewardsModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.minigame.reward.ARewardType;
@@ -39,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mechnanics into one instance per minigame that actually uses it
+public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mechanics into one instance per minigame that actually uses it
 
     protected TreasureHuntMechanic() {
     }
@@ -177,8 +176,14 @@ public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mechn
     }
 
     @Override
-    public @Nullable MinigameModule displaySettings(@NotNull Minigame minigame) {
-        return minigame.getModule(MgModules.TREASURE_HUNT.getKey());
+    public boolean displayMechanicSettings(@NotNull Minigame minigame, @NotNull Menu previous) {
+        final @Nullable TreasureHuntModule module = TreasureHuntModule.getMinigameModule(minigame);
+
+        if (module != null) {
+            return module.displayMechanicSettings(previous);
+        } else {
+            return false;
+        }
     }
 
     @Override

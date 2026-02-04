@@ -11,6 +11,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.TypeDependentDisplayData;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -27,8 +28,9 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SequencedCollection;
 
-public class GameOverModule extends MinigameModule {
+public class GameOverModule extends AMinigameModule {
     private final @NotNull Minigames plugin = Minigames.getPlugin();
     private final @NotNull TimeFlag timer = new TimeFlag("gameOver.timer", 0L); // in seconds
     private final @NotNull BooleanFlag invincible = new BooleanFlag("gameOver.invincible", false);
@@ -67,7 +69,7 @@ public class GameOverModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(final @NotNull Menu previous) {
+    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu previous) {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_GAMEOVER_NAME, previous.getViewer());
         menu.addItem(timer.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_GAMEOVER_TIME_NAME, 0L, null));
 
@@ -79,11 +81,8 @@ public class GameOverModule extends MinigameModule {
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         previous.addItem(new MenuItemPage(ItemType.OAK_DOOR, MgMenuLangKey.MENU_GAMEOVER_NAME, menu));
-    }
 
-    @Override
-    public boolean displayMechanicSettings(@NotNull Menu previous) {
-        return false;
+        return null;
     }
 
     public void startEndGameTimer() {

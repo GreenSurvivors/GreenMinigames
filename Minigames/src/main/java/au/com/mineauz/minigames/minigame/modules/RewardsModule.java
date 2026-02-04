@@ -2,10 +2,7 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.scheme.ARewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.MgRewardSchemes;
@@ -20,7 +17,9 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-public class RewardsModule extends MinigameModule {
+import java.util.SequencedCollection;
+
+public class RewardsModule extends AMinigameModule {
     private @NotNull ARewardScheme scheme;
 
     public RewardsModule(final @NotNull Minigame mgm, final @NotNull Key key) {
@@ -76,7 +75,7 @@ public class RewardsModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(final @NotNull Menu menu) {
+    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu menu) {
         MenuItemCustom launcher = new MenuItemCustom(ItemType.DIAMOND,
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME));
         launcher.setClick(() -> {
@@ -86,6 +85,8 @@ public class RewardsModule extends MinigameModule {
         });
 
         menu.addItem(launcher);
+
+        return null;
     }
 
     private @NotNull Menu createSubMenu(final @NotNull Menu parent) {
@@ -111,11 +112,5 @@ public class RewardsModule extends MinigameModule {
 
         submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 9);
         return submenu;
-    }
-
-    @Override
-    public boolean displayMechanicSettings(@NotNull Menu previous) {
-        // Not used
-        return false;
     }
 }

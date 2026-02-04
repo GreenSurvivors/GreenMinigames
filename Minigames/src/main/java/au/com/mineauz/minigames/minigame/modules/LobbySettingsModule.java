@@ -2,17 +2,25 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.key.Key;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-public class LobbySettingsModule extends MinigameModule {
-    private final BooleanFlag canMovePlayerWait = new BooleanFlag("canMovePlayerWait", true);
-    private final BooleanFlag canMoveStartWait = new BooleanFlag("canMoveStartWait", true);
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SequencedCollection;
+
+public class LobbySettingsModule extends AMinigameModule {
+    private final BooleanFlag canMoveOnPlayerWait = new BooleanFlag("canMovePlayerWait", true);
+    private final BooleanFlag canMoveOnStartWait = new BooleanFlag("canMoveStartWait", true);
     private final BooleanFlag canInteractPlayerWait = new BooleanFlag("canInteractPlayerWait", true);
     private final BooleanFlag canInteractStartWait = new BooleanFlag("canInteractStartWait", true);
     private final BooleanFlag teleportOnPlayerWait = new BooleanFlag("teleportOnPlayerWait", false);
@@ -36,8 +44,8 @@ public class LobbySettingsModule extends MinigameModule {
     public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         canInteractPlayerWait.saveValue(config);
         canInteractStartWait.saveValue(config);
-        canMovePlayerWait.saveValue(config);
-        canMoveStartWait.saveValue(config);
+        canMoveOnPlayerWait.saveValue(config);
+        canMoveOnStartWait.saveValue(config);
         teleportOnPlayerWait.saveValue(config);
         playerWaitTime.saveValue(config);
     }
@@ -46,54 +54,26 @@ public class LobbySettingsModule extends MinigameModule {
     public void load(final @NotNull CommentedConfigurationNode config) {
         canInteractPlayerWait.loadValue(config);
         canInteractStartWait.loadValue(config);
-        canMovePlayerWait.loadValue(config);
-        canMoveStartWait.loadValue(config);
+        canMoveOnPlayerWait.loadValue(config);
+        canMoveOnStartWait.loadValue(config);
         teleportOnPlayerWait.loadValue(config);
         playerWaitTime.loadValue(config);
     }
 
-    public boolean canMovePlayerWait() {
-        return canMovePlayerWait.getFlag();
+    public boolean canMoveOnPlayerWait() {
+        return canMoveOnPlayerWait.getFlag();
     }
 
-    public void setCanMovePlayerWait(boolean canMovePlayerWait) {
-        this.canMovePlayerWait.setFlag(canMovePlayerWait);
+    public void setCanMoveOnPlayerWait(boolean canMoveOnPlayerWait) {
+        this.canMoveOnPlayerWait.setFlag(canMoveOnPlayerWait);
     }
 
-    public @NotNull Callback<@NotNull Boolean> getCanMovePlayerWaitCallback() {
-        return new Callback<>() {
-            @Override
-            public @NotNull Boolean getValue() {
-                return canMovePlayerWait.getFlag();
-            }
-
-            @Override
-            public void setValue(@NotNull Boolean value) {
-                canMovePlayerWait.setFlag(value);
-            }
-        };
+    public boolean canMoveOnStartWait() {
+        return canMoveOnStartWait.getFlag();
     }
 
-    public boolean canMoveStartWait() {
-        return canMoveStartWait.getFlag();
-    }
-
-    public void setCanMoveStartWait(boolean canMoveStartWait) {
-        this.canMoveStartWait.setFlag(canMoveStartWait);
-    }
-
-    public @NotNull Callback<Boolean> getCanMoveStartWaitCallback() {
-        return new Callback<>() {
-            @Override
-            public Boolean getValue() {
-                return canMoveStartWait.getFlag();
-            }
-
-            @Override
-            public void setValue(Boolean value) {
-                canMoveStartWait.setFlag(value);
-            }
-        };
+    public void setCanMoveOnStartWait(boolean canMoveOnStartWait) {
+        this.canMoveOnStartWait.setFlag(canMoveOnStartWait);
     }
 
     public boolean canInteractPlayerWait() {
@@ -104,40 +84,12 @@ public class LobbySettingsModule extends MinigameModule {
         this.canInteractPlayerWait.setFlag(canInteractPlayerWait);
     }
 
-    public @NotNull Callback<Boolean> getCanInteractPlayerWaitCallback() {
-        return new Callback<>() {
-            @Override
-            public Boolean getValue() {
-                return canInteractPlayerWait.getFlag();
-            }
-
-            @Override
-            public void setValue(Boolean value) {
-                canInteractPlayerWait.setFlag(value);
-            }
-        };
-    }
-
     public boolean canInteractStartWait() {
         return canInteractStartWait.getFlag();
     }
 
     public void setCanInteractStartWait(boolean canInteractStartWait) {
         this.canInteractStartWait.setFlag(canInteractStartWait);
-    }
-
-    public @NotNull Callback<Boolean> getCanInteractStartWaitCallback() {
-        return new Callback<>() {
-            @Override
-            public Boolean getValue() {
-                return canInteractStartWait.getFlag();
-            }
-
-            @Override
-            public void setValue(Boolean value) {
-                canInteractStartWait.setFlag(value);
-            }
-        };
     }
 
     public boolean isTeleportOnStart() {
@@ -148,40 +100,12 @@ public class LobbySettingsModule extends MinigameModule {
         this.teleportOnStart.setFlag(teleportOnStart);
     }
 
-    public @NotNull Callback<Boolean> getTeleportOnStartCallback() {
-        return new Callback<>() {
-            @Override
-            public Boolean getValue() {
-                return teleportOnStart.getFlag();
-            }
-
-            @Override
-            public void setValue(Boolean value) {
-                teleportOnStart.setFlag(value);
-            }
-        };
-    }
-
     public boolean isTeleportOnPlayerWait() {
         return teleportOnPlayerWait.getFlag();
     }
 
     public void setTeleportOnPlayerWait(boolean teleportOnPlayerWait) {
         this.teleportOnPlayerWait.setFlag(teleportOnPlayerWait);
-    }
-
-    public @NotNull Callback<Boolean> getTeleportOnPlayerWaitCallback() {
-        return new Callback<>() {
-            @Override
-            public Boolean getValue() {
-                return teleportOnPlayerWait.getFlag();
-            }
-
-            @Override
-            public void setValue(Boolean value) {
-                teleportOnPlayerWait.setFlag(value);
-            }
-        };
     }
 
     /**
@@ -198,27 +122,31 @@ public class LobbySettingsModule extends MinigameModule {
         playerWaitTime.setFlag(time);
     }
 
-    public @NotNull Callback<Long> getPlayerWaitTimeCallback() {
-        return new Callback<>() {
-            @Override
-            public Long getValue() {
-                return playerWaitTime.getFlag();
-            }
-
-            @Override
-            public void setValue(Long value) {
-                playerWaitTime.setFlag(value);
-            }
-        };
-    }
-
     @Override
-    public void addEditMenuOptions(@NotNull Menu menu) {
-        // TODO Auto-generated method stub
-    }
+    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu superMenu) {
+        final @NotNull Menu lobbyMenu = new Menu(6, getMinigame().getDisplayName(), superMenu.getViewer());
 
-    @Override
-    public boolean displayMechanicSettings(@NotNull Menu previous) {
-        return false;
+        final @NotNull List<@NotNull MenuItem> itemsLobby = new ArrayList<>(4);
+
+        itemsLobby.add(canInteractPlayerWait.getMenuItem(ItemType.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_INTERACT_NAME));
+        itemsLobby.add(canInteractStartWait.getMenuItem(ItemType.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_START_INTERACT_NAME));
+        itemsLobby.add(canMoveOnPlayerWait.getMenuItem(ItemType.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_MOVE_NAME));
+        itemsLobby.add(canMoveOnStartWait.getMenuItem(ItemType.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_START_MOVE_NAME));
+        itemsLobby.add(teleportOnPlayerWait.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TELEPORT_NAME));
+        itemsLobby.add(teleportOnStart.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_NAME,
+            MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_DESCRIPTION));
+        itemsLobby.add(playerWaitTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_NAME,
+            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_DESCRIPTION),
+            0L, Long.MAX_VALUE));
+        lobbyMenu.addItems(itemsLobby);
+        lobbyMenu.addItem(new MenuItemBack(superMenu), lobbyMenu.getSize() - 9);
+
+        final @NotNull MenuItemPage lobbySettingsMenuItemPage = new MenuItemPage(ItemType.OAK_DOOR, MgMenuLangKey.MENU_MINIGAME_LOBBY_SETTINGS_NAME, lobbyMenu);
+
+        if (getMinigame().getType() == MinigameType.MULTIPLAYER) {
+            superMenu.addItem(lobbySettingsMenuItemPage, 15);
+        }
+
+        return List.of(new TypeDependentDisplayData(lobbySettingsMenuItemPage, List.of(MinigameType.MULTIPLAYER), 15));
     }
 }

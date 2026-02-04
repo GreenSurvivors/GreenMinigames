@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.TypeDependentDisplayData;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -19,8 +20,9 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SequencedCollection;
 
-public class CTFModule extends MinigameModule {
+public class CTFModule extends AMechanicProvidingModule {
     // config
     private final BooleanFlag useFlagAsCapturePoint = new BooleanFlag("useFlagAsCapturePoint", true);
     private final BooleanFlag bringFlagBackManual = new BooleanFlag("bringFlagBackManual", false);
@@ -34,7 +36,7 @@ public class CTFModule extends MinigameModule {
     }
 
     public static CTFModule getMinigameModule(final @NotNull Minigame mgm) {
-        return ((CTFModule) mgm.getModule(MgModules.INFECTION.getKey()));
+        return ((CTFModule) mgm.getModule(MgModules.CAPTURE_THE_FLAG.getKey()));
     }
 
     public Boolean getUseFlagAsCapturePoint() {
@@ -147,7 +149,8 @@ public class CTFModule extends MinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(@NotNull Menu menu) {
+    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(@NotNull Menu menu) {
+        return null;
     }
 
     @Override
