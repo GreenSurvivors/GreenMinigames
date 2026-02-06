@@ -14,12 +14,12 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -37,7 +37,7 @@ public class GiveItemAction extends AAction {
     private final ItemFlag item = new ItemFlag("item", ItemType.STONE.createItemStack());
     private final IntegerFlag count = new IntegerFlag("count", 1);
 
-    protected GiveItemAction(final @NotNull NamespacedKey key) {
+    protected GiveItemAction(final @NotNull Key key) {
         super(key);
     }
 

@@ -8,7 +8,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
 import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
@@ -134,7 +134,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
             throw new UnsupportedOperationException("Unknown ExecutableScriptObject  type!");
         }
 
-        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveType(),
+        menu.addItem(new MenuItemSaveMinigame(MenuUtility.saveType(),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName())), minigame), menu.getSize() - 9);
 
@@ -161,7 +161,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
             }
         }
 
-        menu.addItem(new MenuItemSaveMinigame(MenuUtility.getSaveType(),
+        menu.addItem(new MenuItemSaveMinigame(MenuUtility.saveType(),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), module.getMinigame().getDisplayName())),
                 module.getMinigame()), menu.getSize() - 9);

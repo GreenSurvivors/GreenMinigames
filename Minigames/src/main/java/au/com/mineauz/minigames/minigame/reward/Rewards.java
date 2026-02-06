@@ -124,10 +124,10 @@ public class Rewards {
 
         rewardMenu.setPreviousPage(parent);
 
-        rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateType(),
+        rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.createType(),
             MgMenuLangKey.MENU_REWARD_GROUP_ADD_NAME, this), 42);
-        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, this), 43);
-        rewardMenu.addItem(new MenuItemPage(MenuUtility.getSaveType(),
+        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, this), 43);
+        rewardMenu.addItem(new MenuItemPage(MenuUtility.saveType(),
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
                 Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), name)),
             parent), 44);

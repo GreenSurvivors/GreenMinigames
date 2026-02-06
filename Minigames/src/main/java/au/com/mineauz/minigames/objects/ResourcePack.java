@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.objects;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.ResourcePackManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -57,7 +56,7 @@ public final class ResourcePack implements ConfigurationSerializable {
             this.valid = false;
         }
         this.url = url1;
-        this.local = ResourcePackManager.getResourceDir().resolve(name + '.' + ext);
+        this.local = Minigames.getPlugin().getResourcePackManager().getResourceDir().resolve(name + '.' + ext);
         validate();
     }
 
@@ -93,7 +92,7 @@ public final class ResourcePack implements ConfigurationSerializable {
     public ResourcePack(final @NotNull Component displayName, final @NotNull URL url, final @Nullable Path file, final @Nullable String description) {
         this.name = PlainTextComponentSerializer.plainText().serialize(displayName);
         this.displayName = displayName;
-        this.local = file != null ? file : ResourcePackManager.getResourceDir().resolve(name + '.' + ext);
+        this.local = file != null ? file : Minigames.getPlugin().getResourcePackManager().getResourceDir().resolve(name + '.' + ext);
         this.url = url;
         this.description = description;
         validate();

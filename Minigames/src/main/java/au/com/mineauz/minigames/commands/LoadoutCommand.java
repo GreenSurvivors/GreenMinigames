@@ -6,8 +6,8 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
-import au.com.mineauz.minigames.minigame.modules.MgModules;
+import au.com.mineauz.minigames.minigame.modules.MgDefaultModules;
+import au.com.mineauz.minigames.minigame.modules.loadout.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -66,7 +66,7 @@ public class LoadoutCommand extends ACommand {
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getDisplayName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.LOADOUT.getKey().value()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgDefaultModules.LOADOUT.getKey().value()));
                 }
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_SELF);

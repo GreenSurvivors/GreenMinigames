@@ -6,18 +6,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class StartGlobalMinigameEvent extends AbstractCancellableMinigameEvent {
-
-    private final @NotNull String mechanic;
     private final @Nullable MinigamePlayer caller;
 
-    public StartGlobalMinigameEvent(@NotNull Minigame mgm, @Nullable MinigamePlayer caller) {
+    public StartGlobalMinigameEvent(final @NotNull Minigame mgm, final @Nullable MinigamePlayer caller) {
         super(mgm);
-        mechanic = mgm.getMechanicName();
         this.caller = caller;
-    }
-
-    public @NotNull String getMechanic() {
-        return mechanic;
     }
 
     public @Nullable MinigamePlayer getCaller() {

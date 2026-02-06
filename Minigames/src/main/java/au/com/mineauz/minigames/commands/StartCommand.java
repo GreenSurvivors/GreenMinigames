@@ -65,7 +65,7 @@ public class StartCommand extends ACommand {
 
                         PLUGIN.getMinigameManager().startGlobalMinigame(mgm, caller);
                     }
-                } else if (mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()) {
+                } else if (mgm.getType() == MinigameType.MULTIPLAYER && mgm.hasPlayers()) {
                     if (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0) {
                         if (mgm.getMpTimer() == null) {
                             mgm.setMpTimer(new MultiplayerTimer(mgm));

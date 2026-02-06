@@ -6,9 +6,9 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
+import au.com.mineauz.minigames.minigame.modules.team.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -128,7 +128,7 @@ public class ScoreCommand extends ACommand {
                                     Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(score)));
 
                                 if (mgPlayer.getMinigame().getMaxScore() != 0 && score >= mgPlayer.getMinigame().getMaxScorePerPlayer()) {
-                                    PLUGIN.getPlayerManager().endMinigame(mgPlayer);
+                                    PLUGIN.getPlayerManager().winMinigame(mgPlayer);
                                 }
                             } else {
                                 TeamsModule tmod = TeamsModule.getMinigameModule(minigame);
@@ -201,7 +201,7 @@ public class ScoreCommand extends ACommand {
                             Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())));
 
                         if (mgPlayer.getMinigame().getMaxScore() != 0 && mgPlayer.getScore() >= mgPlayer.getMinigame().getMaxScorePerPlayer()) {
-                            PLUGIN.getPlayerManager().endMinigame(mgPlayer);
+                            PLUGIN.getPlayerManager().winMinigame(mgPlayer);
                         }
                     } else {
                         final TeamsModule tmod = TeamsModule.getMinigameModule(minigame);

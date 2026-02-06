@@ -18,10 +18,10 @@ import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemType;
@@ -45,7 +45,7 @@ public class RegionSwapAction extends AAction {
     private final StringFlag toRegion = new StringFlag("toRegion", "");
     private final BooleanFlag swapRegion = new BooleanFlag("swapRegion", true);
 
-    protected RegionSwapAction(final @NotNull NamespacedKey key) {
+    protected RegionSwapAction(final @NotNull Key key) {
         super(key);
     }
 

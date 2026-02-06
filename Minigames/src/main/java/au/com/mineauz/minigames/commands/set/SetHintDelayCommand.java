@@ -5,9 +5,9 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.mechanics.GameMechanicRegistry;
+import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.MgModules;
-import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
@@ -49,13 +49,11 @@ public class SetHintDelayCommand extends ASetCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String @Nullable [] args) {
         if (args != null) {
-            TreasureHuntModule treasureHuntModule = TreasureHuntModule.getMinigameModule(minigame);
-
-            if (treasureHuntModule != null) {
+            if (minigame.getMechanic() instanceof final @NotNull TreasureHuntMechanic treasureHuntMechanic) {
                 Long millis = MinigameUtils.parsePeriod(args[0]);
 
                 if (millis != null) {
-                    treasureHuntModule.setHintDelay(TimeUnit.MILLISECONDS.toSeconds(millis));
+                    treasureHuntMechanic.setHintDelay(TimeUnit.MILLISECONDS.toSeconds(millis));
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_HINTDELAY_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
@@ -68,7 +66,7 @@ public class SetHintDelayCommand extends ASetCommand {
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TREASURE_HUNT.getKey().value()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), GameMechanicRegistry.MgDefaultMechanic.TREASURE_HUNT.getKey().value()));
             }
         }
         return false;

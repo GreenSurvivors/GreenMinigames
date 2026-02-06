@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.backend.Backend;
 import au.com.mineauz.minigames.backend.BackendImportCallback;
 import au.com.mineauz.minigames.backend.Notifier;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.ScoreboardOrder;
+import au.com.mineauz.minigames.minigame.scoreboard.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;

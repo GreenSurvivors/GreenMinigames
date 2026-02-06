@@ -98,10 +98,10 @@ public class RewardSign extends AMinigameSign {
 
             Menu rewardMenu = new Menu(5, getName(), mgPlayer);
 
-            rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.getCreateType(),
+            rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.createType(),
                 MgMenuLangKey.MENU_REWARD_GROUP_ADD_NAME, rew), 42);
-            rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.getCreateType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, rew), 43);
-            final MenuItemCustom mic = new MenuItemCustom(MenuUtility.getSaveType(), MgMenuLangKey.MENU_REWARD_SAVE_ALL_NAME);
+            rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, rew), 43);
+            final MenuItemCustom mic = new MenuItemCustom(MenuUtility.saveType(), MgMenuLangKey.MENU_REWARD_SAVE_ALL_NAME);
             final Location floc = loc;
             mic.setClick(() -> {
                 try {

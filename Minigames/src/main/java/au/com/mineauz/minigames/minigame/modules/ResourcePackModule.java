@@ -21,8 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.SequencedCollection;
-
 public class ResourcePackModule extends AMinigameModule { //todo rework to work with multiple ressource packs
     private final @NotNull BooleanFlag enabled = new BooleanFlag("resourcePackEnabled", false);
     private final @NotNull ComponentFlag resourcePackDisplayName = new ComponentFlag("resourcePackName", Component.empty());
@@ -34,7 +32,7 @@ public class ResourcePackModule extends AMinigameModule { //todo rework to work 
     }
 
     public static @Nullable ResourcePackModule getMinigameModule(final @NotNull Minigame mgm) {
-        return ((ResourcePackModule) mgm.getModule(MgModules.RESOURCEPACK.getKey()));
+        return ((ResourcePackModule) mgm.getModule(MgDefaultModules.RESOURCEPACK.getKey()));
     }
 
     public boolean isEnabled() {
@@ -81,7 +79,7 @@ public class ResourcePackModule extends AMinigameModule { //todo rework to work 
     }
 
     @Override
-    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(@NotNull Menu previousMenu) {
+    public void addEditMenuOptions(@NotNull Menu previousMenu) {
         Menu menu = new Menu(3, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_NAME, previousMenu.getViewer());
         menu.setPreviousPage(previousMenu);
         menu.addItem(enabled.getMenuItem(ItemType.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_ENABLE_NAME));
@@ -104,7 +102,7 @@ public class ResourcePackModule extends AMinigameModule { //todo rework to work 
                     super.acceptString(string);
                     return;
                 }
-                ResourcePack pack = Minigames.getPlugin().getResourceManager().getResourcePack(string);
+                ResourcePack pack = Minigames.getPlugin().getResourcePackManager().getResourcePack(string);
                 if (pack == null) {
                     getContainer().cancelReopenTimer();
                     getContainer().displayMenu(getContainer().getViewer());
@@ -121,7 +119,5 @@ public class ResourcePackModule extends AMinigameModule { //todo rework to work 
         MenuItemPage previousMenuItem = new MenuItemPage(ItemType.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_NAME, menu);
         menu.addItem(new MenuItemBack(previousMenu), menu.getSize() - 9);
         previousMenu.addItem(previousMenuItem);
-
-        return null;
     }
 }

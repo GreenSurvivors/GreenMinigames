@@ -12,10 +12,10 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +37,7 @@ public class RandomFillingAction extends AAction {
     private final IntegerFlag percentageChance = new IntegerFlag("percentagechance", 50);
     private final BooleanFlag replaceAll = new BooleanFlag("replaceAll", true);
 
-    protected RandomFillingAction(final @NotNull NamespacedKey key) {
+    protected RandomFillingAction(final @NotNull Key key) {
         super(key);
     }
 

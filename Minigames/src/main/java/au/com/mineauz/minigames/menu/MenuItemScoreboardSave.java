@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
-import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
+import au.com.mineauz.minigames.minigame.scoreboard.ScoreboardDisplay;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;

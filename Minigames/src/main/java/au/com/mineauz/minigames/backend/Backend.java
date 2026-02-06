@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.backend;
 
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.ScoreboardOrder;
+import au.com.mineauz.minigames.minigame.scoreboard.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;

@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.TypeDependentDisplayData;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
 import net.kyori.adventure.key.Key;
@@ -15,10 +14,8 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.SequencedCollection;
-
 public abstract class AMinigameModule implements Keyed {
-    private static @Nullable ComparableVersion minRequired = null;
+    private @Nullable ComparableVersion minRequired = null;
     protected final @NotNull Key moduleKey;
     private final @NotNull Minigame mgm;
 
@@ -27,7 +24,7 @@ public abstract class AMinigameModule implements Keyed {
         this.moduleKey = moduleKey;
     }
 
-    public static void setVersion(@Nullable ComparableVersion version) {
+    public void setVersion(@Nullable ComparableVersion version) {
         minRequired = version;
     }
 
@@ -37,15 +34,15 @@ public abstract class AMinigameModule implements Keyed {
      *
      * @return true if the version exceeds your version
      */
-    public static boolean checkVersion() {
+    public boolean checkVersion() {
         return minRequired == null || !(minRequired.compareTo(Minigames.getPlugin().getVersion()) > 0);
     }
 
-    public static void addMetricChart(CustomChart chart) {
+    public static void addMetricChart(final @NotNull CustomChart chart) {
         Minigames.getPlugin().addMetric(chart);
     }
 
-    public static @Nullable ComparableVersion getMinRequired() {
+    public @Nullable ComparableVersion getMinRequired() {
         return minRequired;
     }
 
@@ -64,7 +61,7 @@ public abstract class AMinigameModule implements Keyed {
 
     public abstract void load(final @NotNull CommentedConfigurationNode config) throws ConfigurateException;
 
-    public abstract @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu menu);
+    public abstract void addEditMenuOptions(final @NotNull Menu menu);
 
     /**
      * You should override this method if the module should provide more placeholders for a game it services.

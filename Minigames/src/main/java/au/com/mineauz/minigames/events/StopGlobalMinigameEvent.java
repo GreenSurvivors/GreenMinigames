@@ -5,20 +5,14 @@ import net.kyori.adventure.audience.Audience;
 import org.jetbrains.annotations.NotNull;
 
 public class StopGlobalMinigameEvent extends AbstractCancellableMinigameEvent {
-    private final @NotNull String mechanic;
-    private final Audience caller;
+    private final @NotNull Audience caller;
 
     public StopGlobalMinigameEvent(final @NotNull Minigame mgm, final @NotNull Audience caller) {
         super(mgm);
-        mechanic = mgm.getMechanicName();
         this.caller = caller;
     }
 
-    public @NotNull String getMechanicName() {
-        return mechanic;
-    }
-
-    public Audience getCaller() {
+    public @NotNull Audience getCaller() {
         return caller;
     }
 

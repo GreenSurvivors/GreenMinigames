@@ -11,12 +11,11 @@ import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.managers.PlaceHolderManager;
 import au.com.mineauz.minigames.managers.ResourcePackManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
-import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
 import au.com.mineauz.minigames.minigame.modules.RewardsModule;
+import au.com.mineauz.minigames.minigame.modules.loadout.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import au.com.mineauz.minigames.presets.PresetLoader;
@@ -53,7 +52,7 @@ public class Minigames extends JavaPlugin { // todo move a lot of these assignme
     private final @NotNull StartUpLogHandler startUpHandler;
     private final MinigameMessageManager minigameMessageManager = new MinigameMessageManager();
     private DisplayManager displayManager;
-    private ResourcePackManager resourceManager;
+    private ResourcePackManager resourcePackManager;
     private MinigamePlayerManager playerManager;
     private MinigameManager minigameManager;
     private PlaceHolderManager placeHolderManager;
@@ -77,20 +76,19 @@ public class Minigames extends JavaPlugin { // todo move a lot of these assignme
 
         boolean allSuccess = true;
 
-        for (final Player p : getServer().getOnlinePlayers()) {
-            if (playerManager.getMinigamePlayer(p).isInMinigame()) {
-                playerManager.quitMinigame(playerManager.getMinigamePlayer(p), true);
+        for (final @NotNull Player player : getServer().getOnlinePlayers()) {
+            if (playerManager.getMinigamePlayer(player).isInMinigame()) {
+                playerManager.quitMinigame(playerManager.getMinigamePlayer(player), true);
             }
         }
-        for (final Minigame minigame : minigameManager.getAllMinigames().values()) {
-            if (minigame.getType() == MinigameType.GLOBAL &&
-                GameMechanics.MgMechanics.TREASUREHUNT.getMechanic().getMechanicName().equals(minigame.getMechanicName())
+        for (final @NotNull Minigame minigame : minigameManager.getAllMinigames().values()) {
+            if (minigame.getType() == MinigameType.GLOBAL && minigame.getMechanic() instanceof TreasureHuntMechanic treasureHuntMechanic
                 && minigame.isEnabled()) { // todo move this into the Treasure mechanic
 
                 if (minigame.getMinigameTimer() != null) {
                     minigame.getMinigameTimer().stopTimer();
                 }
-                TreasureHuntMechanic.removeTreasure(minigame);
+                treasureHuntMechanic.removeTreasure();
             }
         }
         for (final @NotNull Minigame mg : minigameManager.getAllMinigames().values()) {
@@ -113,7 +111,7 @@ public class Minigames extends JavaPlugin { // todo move a lot of these assignme
             allSuccess = false;
         }
         try {
-            resourceManager.saveResources();
+            resourcePackManager.saveResources();
         } catch (final @NotNull IOException e) {
             getComponentLogger().error("Couldn't save resources. Data loss is imminent!", e);
             allSuccess = false;
@@ -215,12 +213,12 @@ public class Minigames extends JavaPlugin { // todo move a lot of these assignme
     }
 
     private void setupMinigames() {
-        minigameManager = new MinigameManager();
-        playerManager = new MinigamePlayerManager();
-        displayManager = new DisplayManager();
+        minigameManager = new MinigameManager(this);
+        playerManager = new MinigamePlayerManager(this);
+        displayManager = new DisplayManager(this);
 
-        resourceManager = new ResourcePackManager();
-        resourceManager.initialize();
+        resourcePackManager = new ResourcePackManager(this);
+        resourcePackManager.initialize();
         minigameManager.addMinigameType(new SingleplayerType());
         minigameManager.addMinigameType(new MultiplayerType());
 
@@ -395,8 +393,8 @@ public class Minigames extends JavaPlugin { // todo move a lot of these assignme
         return minigameManager;
     }
 
-    public ResourcePackManager getResourceManager() {
-        return resourceManager;
+    public ResourcePackManager getResourcePackManager() {
+        return resourcePackManager;
     }
 
     public boolean includesPlaceholderAPI() {

@@ -8,7 +8,7 @@ public class MenuItemBack extends MenuItem {
     private final @NotNull Menu prev;
 
     public MenuItemBack(@NotNull Menu prev) {
-        super(MenuUtility.getBackType(), MgMenuLangKey.MENU_PAGE_BACK);
+        super(MenuUtility.backType(), MgMenuLangKey.MENU_PAGE_BACK);
         this.prev = prev;
     }
 

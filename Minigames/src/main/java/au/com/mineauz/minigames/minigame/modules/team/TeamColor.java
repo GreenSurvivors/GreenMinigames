@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.minigame;
+package au.com.mineauz.minigames.minigame.modules.team;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;

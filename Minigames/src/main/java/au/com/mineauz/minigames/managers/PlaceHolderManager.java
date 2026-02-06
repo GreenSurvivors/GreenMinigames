@@ -95,7 +95,7 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
                             return minigame.getType().getName();
                         }
                         case "mechanic" -> {
-                            return minigame.getMechanicName();
+                            return minigame.getMechanic() == null ? null : minigame.getMechanic().key().asMinimalString();
                         }
                         case "state" -> {
                             return minigame.getState().name();

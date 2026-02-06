@@ -5,8 +5,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -15,8 +15,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
-public interface IAction {
-    @NotNull NamespacedKey getKey();
+public interface IAction extends Keyed {
 
     @NotNull Component getDisplayname();
 

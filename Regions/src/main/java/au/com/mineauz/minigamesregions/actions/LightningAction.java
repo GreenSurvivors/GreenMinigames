@@ -8,9 +8,9 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +23,7 @@ import java.util.Random;
 public class LightningAction extends AAction {
     private final BooleanFlag effect = new BooleanFlag("effect", false);
 
-    protected LightningAction(final @NotNull NamespacedKey key) {
+    protected LightningAction(final @NotNull Key key) {
         super(key);
     }
 

@@ -52,7 +52,7 @@ public class MenuItemRegion extends MenuItem {
         if (previousPage != null) {
             menu.addItem(new MenuItemBack(previousPage), menu.getSize() - 9);
         }
-        menu.addItem(new MenuItemRegionExecutorAdd(MenuUtility.getCreateType(),
+        menu.addItem(new MenuItemRegionExecutorAdd(MenuUtility.createType(),
                 RegionLangKey.MENU_EXECUTOR_ADD_NAME, region), menu.getSize() - 1);
         menu.addItems(items);
 

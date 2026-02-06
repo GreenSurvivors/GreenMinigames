@@ -61,7 +61,7 @@ public class ResourcePackCommand extends ACommand {
                 if (args.length < 2) {
                     return false;
                 }
-                pack = PLUGIN.getResourceManager().getResourcePack(args[1]);
+                pack = PLUGIN.getResourcePackManager().getResourcePack(args[1]);
                 if (pack != null && pack.isValid()) {
                     MinigamePlayer mgPlayer;
                     if (args.length < 3) {
@@ -88,8 +88,8 @@ public class ResourcePackCommand extends ACommand {
             }
             case "remove" -> { // note: there was no way to remove a ressource for a player, without overwriting it with an empty one. Maybe it will be possible when mutli- ressouce packs arrive
                 if (args.length >= 2) {
-                    pack = PLUGIN.getResourceManager().getResourcePack(args[1]);
-                    PLUGIN.getResourceManager().removeResourcePack(pack);
+                    pack = PLUGIN.getResourcePackManager().getResourcePack(args[1]);
+                    PLUGIN.getResourcePackManager().removeResourcePack(pack);
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_RESSOURCEPACK_REMOVE);
                     sendList(sender);
@@ -105,7 +105,7 @@ public class ResourcePackCommand extends ACommand {
                         final ResourcePack newPack = new ResourcePack(MiniMessage.miniMessage().deserialize(args[1]), url);
                         PLUGIN.getServer().getScheduler().runTaskLaterAsynchronously(PLUGIN, () -> {
                             if (newPack.isValid()) {
-                                PLUGIN.getResourceManager().addResourcePack(newPack);
+                                PLUGIN.getResourcePackManager().addResourcePack(newPack);
                                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_SUCCESS);
                                 sendList(sender);
                             } else {
@@ -128,7 +128,7 @@ public class ResourcePackCommand extends ACommand {
             }
             case "clear" -> {
                 for (MinigamePlayer mgPlayer : PLUGIN.getPlayerManager().getAllMinigamePlayers()) {
-                    mgPlayer.applyResourcePack(PLUGIN.getResourceManager().getResourcePack("empty"));
+                    mgPlayer.applyResourcePack(PLUGIN.getResourcePackManager().getResourcePack("empty"));
                 }
                 return true;
             }
@@ -140,7 +140,7 @@ public class ResourcePackCommand extends ACommand {
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_RESSOUCEPACK_LIST_HEADER);
         MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
             Component.join(JoinConfiguration.commas(true),
-                PLUGIN.getResourceManager().getResourcePacks().stream().map(ResourcePack::getDisplayName).toList()));
+                PLUGIN.getResourcePackManager().getResourcePacks().stream().map(ResourcePack::getDisplayName).toList()));
         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_DIVIDER_LARGE);
     }
 
@@ -153,7 +153,7 @@ public class ResourcePackCommand extends ACommand {
             }
             case 2 -> {
                 switch (args[0]) {
-                    case "apply", "remove" -> result.addAll(PLUGIN.getResourceManager().getResourceNames());
+                    case "apply", "remove" -> result.addAll(PLUGIN.getResourcePackManager().getResourceNames());
                     case "addnew", "clear" -> {
                         return null;
                     }

@@ -1,7 +1,6 @@
-package au.com.mineauz.minigames.minigame.modules;
+package au.com.mineauz.minigames.minigame.modules.loadout;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.config.LoadoutFlag;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
@@ -11,6 +10,8 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.AMinigameModule;
+import au.com.mineauz.minigames.minigame.modules.MgDefaultModules;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import io.leangen.geantyref.TypeFactory;
 import io.leangen.geantyref.TypeToken;
@@ -50,7 +51,7 @@ public class LoadoutModule extends AMinigameModule {
     }
 
     public static @Nullable LoadoutModule getMinigameModule(@NotNull Minigame mgm) {
-        return ((LoadoutModule) mgm.getModule(MgModules.LOADOUT.getKey()));
+        return ((LoadoutModule) mgm.getModule(MgDefaultModules.LOADOUT.getKey()));
     }
 
     /**
@@ -353,7 +354,7 @@ public class LoadoutModule extends AMinigameModule {
     }
 
     @Override
-    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu superMenu) {
+    public void addEditMenuOptions(final @NotNull Menu superMenu) {
         final Menu loadouts = new Menu(6, getMinigame().getDisplayName(), superMenu.getViewer());
         final @NotNull List<@NotNull MenuItem> loadoutMenuItems = new ArrayList<>();
 
@@ -371,13 +372,11 @@ public class LoadoutModule extends AMinigameModule {
             }
         }
 
-        loadouts.addItem(new MenuItemLoadoutAdd(MenuUtility.getCreateType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+        loadouts.addItem(new MenuItemLoadoutAdd(MenuUtility.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
             getLoadoutMap(), getMinigame()), 53);
         loadouts.addItem(new MenuItemBack(superMenu), loadouts.getSize() - 9);
         loadouts.addItems(loadoutMenuItems);
 
         superMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_MINIGAME_LOADOUTS_NAME, loadouts));
-
-        return null;
     }
 }

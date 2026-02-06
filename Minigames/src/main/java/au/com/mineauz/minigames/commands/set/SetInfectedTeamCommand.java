@@ -5,12 +5,13 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.mechanics.GameMechanicRegistry;
+import au.com.mineauz.minigames.mechanics.InfectionMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.InfectionModule;
-import au.com.mineauz.minigames.minigame.modules.MgModules;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.MgDefaultModules;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
+import au.com.mineauz.minigames.minigame.modules.team.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
@@ -61,21 +62,20 @@ public class SetInfectedTeamCommand extends ASetCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String @Nullable [] args) {
         if (args != null) {
-            InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
-            TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
 
-            if (infectionModule != null) {
+            if (minigame.getMechanic() instanceof final @NotNull InfectionMechanic infectionMechanic) {
+                final @Nullable TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
                 if (teamsModule != null) {
                     TeamColor teamColor = TeamColor.matchColor(args[0]);
 
-                    final Predicate<TeamColor> teamCheck = teamColor1 -> teamColor1 == infectionModule.getDefaultInfectedTeam() ||
-                        teamColor1 == infectionModule.getDefaultSurvivorTeam() ||
+                    final Predicate<TeamColor> teamCheck = teamColor1 -> teamColor1 == infectionMechanic.getDefaultInfectedTeam() ||
+                        teamColor1 == infectionMechanic.getDefaultSurvivorTeam() ||
                         teamsModule.hasTeam(teamColor1) ||
                         teamColor1 == TeamColor.NONE;
 
                     if (teamColor != null) {
                         if (teamCheck.test(teamColor)) {
-                            infectionModule.setInfectedTeam(teamColor);
+                            infectionMechanic.setInfectedTeam(teamColor);
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_INFECTEDTEAM_SUCCESS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
@@ -88,8 +88,8 @@ public class SetInfectedTeamCommand extends ASetCommand {
                         }
                     } else {
                         if (args[0].equalsIgnoreCase("Default")) {
-                            teamColor = infectionModule.getDefaultInfectedTeam();
-                            infectionModule.setInfectedTeam(teamColor);
+                            teamColor = infectionMechanic.getDefaultInfectedTeam();
+                            infectionMechanic.setInfectedTeam(teamColor);
 
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_INFECTEDTEAM_SUCCESS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
@@ -105,23 +105,23 @@ public class SetInfectedTeamCommand extends ASetCommand {
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.TEAMS.getKey().value()));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgDefaultModules.TEAMS.getKey().value()));
                 }
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.INFECTION.getKey().value()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), GameMechanicRegistry.MgDefaultMechanic.INFECTION.getKey().value()));
             }
         }
         return false;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
-        InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
-        TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
-        if (infectionModule != null && teamsModule != null) {
+    public @Nullable List<@NotNull String> onTabComplete(final @NotNull CommandSender sender, final @NotNull Minigame minigame,
+                                                         final @NotNull String @NotNull [] args) {
+        final @Nullable TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+        if (minigame.getMechanic() instanceof final @NotNull InfectionMechanic infectionMechanic &&
+            teamsModule != null) {
             if (args.length == 1) {
                 List<String> teams = new ArrayList<>();
                 for (Team team : teamsModule.getTeams()) {
@@ -129,8 +129,8 @@ public class SetInfectedTeamCommand extends ASetCommand {
                 }
                 teams.add(TeamColor.NONE.name().toLowerCase(Locale.ENGLISH));
                 teams.add("default");
-                teams.add(WordUtils.capitalizeFully(infectionModule.getDefaultInfectedTeam().toString().toLowerCase()));
-                teams.add(WordUtils.capitalizeFully(infectionModule.getDefaultSurvivorTeam().toString().toLowerCase()));
+                teams.add(WordUtils.capitalizeFully(infectionMechanic.getDefaultInfectedTeam().toString().toLowerCase()));
+                teams.add(WordUtils.capitalizeFully(infectionMechanic.getDefaultSurvivorTeam().toString().toLowerCase()));
                 return CommandDispatcher.tabCompleteMatch(teams, args[0]);
             }
         }

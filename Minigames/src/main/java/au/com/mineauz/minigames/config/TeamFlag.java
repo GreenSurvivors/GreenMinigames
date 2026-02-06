@@ -2,8 +2,8 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
+import au.com.mineauz.minigames.minigame.modules.team.TeamColor;
 import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;

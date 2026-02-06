@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;

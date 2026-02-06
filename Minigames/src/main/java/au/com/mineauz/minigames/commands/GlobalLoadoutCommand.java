@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.minigame.modules.loadout.LoadoutModule;
+import au.com.mineauz.minigames.minigame.modules.loadout.PlayerLoadout;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -65,7 +65,7 @@ public class GlobalLoadoutCommand extends ACommand {
             menuItems.add(new MenuItemDisplayLoadout(displayType, globalLoadout.getDisplayName(),
                 MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), globalLoadout));
         }
-        globalLoadoutMenu.addItem(new MenuItemLoadoutAdd(MenuUtility.getCreateType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+        globalLoadoutMenu.addItem(new MenuItemLoadoutAdd(MenuUtility.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
             LoadoutModule.getGlobalLoadoutMap()), 53);
         globalLoadoutMenu.addItems(menuItems);
 

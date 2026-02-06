@@ -1,24 +1,33 @@
 package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.MinigameTimer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.RewardsModule;
-import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.minigame.reward.ARewardType;
 import au.com.mineauz.minigames.minigame.reward.ItemReward;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.safelocation.ASafeLocation;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
@@ -33,21 +42,38 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.time.Duration;
 import java.util.*;
 
-public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mechanics into one instance per minigame that actually uses it
+public class TreasureHuntMechanic extends AGameMechanic {
+    private final @NotNull StringFlag locationName = new StringFlag("location", null);
+    private final @NotNull IntegerFlag maxRadius = new IntegerFlag("maxradius", 1000);
+    private final @NotNull IntegerFlag maxHeight = new IntegerFlag("maxheight", 20);
+    private final @NotNull IntegerFlag minTreasure = new IntegerFlag("mintreasure", 0);
+    private final @NotNull IntegerFlag maxTreasure = new IntegerFlag("maxtreasure", 8);
+    private final @NotNull TimeFlag treasureWaitTime = new TimeFlag("treasurehuntwait", Minigames.getPlugin().getConfig().getLong("treasurehunt.waittime"));
+    private final @NotNull TimeFlag hintWaitTime = new TimeFlag("hintWaitTime", 500L);
+    private final @NotNull ArrayList<@NotNull Component> curHints = new ArrayList<>();
+    private final @NotNull Map<@NotNull UUID, @NotNull Long> hintUse = new HashMap<>();
+    //Unsaved Data
+    private @Nullable Location treasureLocation = null;
+    private boolean treasureFound = false;
 
-    protected TreasureHuntMechanic() {
+    public TreasureHuntMechanic(final @NotNull Minigames plugin, final @NotNull Key key, final @NotNull Minigame minigame) {
+        super(plugin, key, minigame);
     }
 
-    public static void removeTreasure(@NotNull Minigame minigame) {
-        TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
-        thm.clearHints();
-        if (thm.hasTreasureLocation()) {
-            Location old = thm.getTreasureLocation();
+    public void removeTreasure() {
+        clearHints();
+        if (hasTreasureLocation()) {
+            Location old = getTreasureLocation();
             if (old.getWorld() != null && !old.getWorld().isChunkLoaded(old.getChunk().getX(), old.getChunk().getZ())) {
                 boolean loaded = old.getChunk().load();
                 Chunk c = null;
@@ -63,24 +89,22 @@ public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mecha
                     c.setForceLoaded(false);
                     c.unload();
                 }
-                thm.setTreasureLocation(null);
+                setTreasureLocation(null);
             }
         }
     }
 
-    public static void spawnTreasure(final @NotNull Minigame mgm) {
-        final TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
+    public void spawnTreasure() {
+        if (hasTreasureLocation())
+            removeTreasure();
+        if (!getCurrentHints().isEmpty())
+            clearHints();
+        setTreasureFound(false);
 
-        if (thm.hasTreasureLocation())
-            removeTreasure(mgm);
-        if (!thm.getCurrentHints().isEmpty())
-            thm.clearHints();
-        thm.setTreasureFound(false);
-
-        ASafeLocation tcpos = mgm.getStartLocations().getFirst(); // todo use random one via shuffle
+        ASafeLocation tcpos = minigame.getStartLocations().getFirst(); // todo use random one via shuffle
 
         if (tcpos.getWorld() == null) {
-            plugin.getComponentLogger().error("Couldn't spawn treasure because the world for Minigame " + mgm.getName() + " was unloaded or removed!");
+            plugin.getComponentLogger().error("Couldn't spawn treasure because the world for Minigame " + minigame.getName() + " was unloaded or removed!");
             return;
         }
 
@@ -89,12 +113,12 @@ public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mecha
         double ry;
         double rz;
         final int maxradius;
-        if (thm.getMaxRadius() <= 0) {
+        if (getMaxRadius() <= 0) {
             maxradius = 1000;
         } else {
-            maxradius = thm.getMaxRadius();
+            maxradius = getMaxRadius();
         }
-        final int maxheight = thm.getMaxHeight();
+        final int maxheight = getMaxHeight();
 
         Random rand = new Random();
         int rrad = rand.nextInt(maxradius);
@@ -131,10 +155,10 @@ public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mecha
             if (rpos.getBlock().getState() instanceof Container container) {
 
                 // TODO: Treasure hunt needs own rewards specification
-                RewardsModule rewards = RewardsModule.getModule(mgm);
+                RewardsModule rewards = RewardsModule.getModule(minigame);
                 if (rewards.getScheme() instanceof StandardRewardScheme) {
                     if (!((StandardRewardScheme) rewards.getScheme()).getPrimaryReward().getRewards().isEmpty()) {
-                        int numItems = (int) Math.min(container.getInventory().getSize(), Math.round(Math.random() * (thm.getMaxTreasure() - thm.getMinTreasure())) + thm.getMinTreasure());
+                        int numItems = (int) Math.min(container.getInventory().getSize(), Math.round(Math.random() * (getMaxTreasure() - getMinTreasure())) + getMinTreasure());
 
                         final ItemStack[] items = new ItemStack[27];
                         for (int i = 0; i < numItems; i++) {
@@ -150,19 +174,39 @@ public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mecha
             }
         }, 0L);
 
-        thm.setTreasureLocation(rpos);
-        MinigameMessageManager.debugMessage(mgm.getName() + " treasure chest spawned at: " + rpos);
+        setTreasureLocation(rpos);
+        MinigameMessageManager.debugMessage(minigame.getName() + " treasure chest spawned at: " + rpos);
         MinigameMessageManager.broadcastServer(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_SPAWN,
                         Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(maxradius)),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.LOCATION.getKey(), thm.getLocation())),
-                mgm, "minigame.treasure.announce");
+                        Placeholder.unparsed(MinigamePlaceHolderKey.LOCATION.getKey(), getLocationName())),
+            minigame, "minigame.treasure.announce");
 
-        mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
+        minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
     }
 
     @Override
-    public @NotNull String getMechanicName() {
-        return "treasure_hunt";
+    public void save(@NotNull CommentedConfigurationNode config) throws SerializationException {
+        locationName.saveValue(config);
+        maxRadius.saveValue(config);
+        minTreasure.saveValue(config);
+        maxTreasure.saveValue(config);
+        treasureWaitTime.saveValue(config);
+        hintWaitTime.saveValue(config);
+    }
+
+    @Override
+    public void load(@NotNull CommentedConfigurationNode config) throws ConfigurateException {
+        locationName.loadValue(config);
+        maxRadius.loadValue(config);
+        minTreasure.loadValue(config);
+        maxTreasure.loadValue(config);
+        treasureWaitTime.loadValue(config);
+        hintWaitTime.loadValue(config);
+    }
+
+    @Override
+    public boolean useSeparateConfig() {
+        return false;
     }
 
     @Override
@@ -171,53 +215,68 @@ public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mecha
     }
 
     @Override
-    public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
+    public boolean checkCanStart(@Nullable MinigamePlayer caller) {
         return true;
     }
 
-    @Override
-    public boolean displayMechanicSettings(@NotNull Minigame minigame, @NotNull Menu previous) {
-        final @Nullable TreasureHuntModule module = TreasureHuntModule.getMinigameModule(minigame);
+//    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(@NotNull Menu menu) {
+//        List<String> thDes = new ArrayList<>();
+//        thDes.add("Treasure hunt related<newline>settings.");
+//        menu.addItem(new MenuItemPage(ItemType.CHEST, "Treasure Hunt Settings", thDes, treasureHunt));
+//        MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, "Default Loadout", LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
+//        defLoad.setAllowDelete(false);
+//        menu.addItem(defLoad);
+//
+//        return null;
+//    }
 
-        if (module != null) {
-            return module.displayMechanicSettings(previous);
-        } else {
-            return false;
-        }
+    @Override
+    public @NotNull MenuItemPage displayMechanicSettings(@NotNull Menu previous) {
+        final @NotNull Menu treasureHuntMenu = new Menu(6, minigame.getDisplayName(), previous.getViewer());
+
+        List<MenuItem> itemsTreasureHunt = new ArrayList<>(5);
+        itemsTreasureHunt.add(locationName.getMenuItem(ItemType.WHITE_BED, MgMenuLangKey.MENU_TREASUREHUNT_LOCATION_NAME,
+            MgMenuLangKey.MENU_TREASUREHUNT_LOCATION_DESCRIPTION));
+        itemsTreasureHunt.add(maxRadius.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_TREASUREHUNT_MAX_RADIUS_NAME, 10, null));
+        itemsTreasureHunt.add(maxHeight.getMenuItem(ItemType.BEACON, MgMenuLangKey.MENU_TREASUREHUNT_MAX_HEIGHT_NAME,
+            MgMenuLangKey.MENU_TREASUREHUNT_MAX_HEIGHT_DESCRIPTION, 1, 256));
+        itemsTreasureHunt.add(minTreasure.getMenuItem(ItemType.STONE_SLAB, MgMenuLangKey.MENU_TREASUREHUNT_MIN_ITEMS_NAME,
+            MgMenuLangKey.MENU_TREASUREHUNT_MIN_ITEMS_DESCRIPTION, 0, 27));
+        itemsTreasureHunt.add(maxTreasure.getMenuItem(ItemType.STONE, MgMenuLangKey.MENU_TREASUREHUNT_MAX_ITEMS_NAME,
+            MgMenuLangKey.MENU_TREASUREHUNT_MAX_ITEMS_DESCRIPTION, 0, 27));
+        itemsTreasureHunt.add(treasureWaitTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TREASUREHUNT_DELAY_RESTART_NAME, 0L, null));
+        itemsTreasureHunt.add(hintWaitTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TREASUREHUNT_DELAY_HINT_NAME, 0L, null));
+        treasureHuntMenu.addItems(itemsTreasureHunt);
+        treasureHuntMenu.addItem(new MenuItemBack(previous), treasureHuntMenu.getSize() - 9);
+
+        return new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_MINIGAME_MECHANIC_SETTINGS_NAME, treasureHuntMenu);
     }
 
     @Override
-    public void startMinigame(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
-        final TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
-        if (thm != null) {
-            if (thm.getLocation() != null) {
-                spawnTreasure(minigame);
+    public void startMinigame(@Nullable MinigamePlayer caller) {
+        if (getLocationName() != null) {
+            spawnTreasure();
 
-                if (Bukkit.getOnlinePlayers().isEmpty())
-                    minigame.getMinigameTimer().stopTimer();
+            if (Bukkit.getOnlinePlayers().isEmpty())
+                minigame.getMinigameTimer().stopTimer();
+        } else {
+            if (caller == null) {
+                Minigames.getPlugin().getComponentLogger().info("Treasure Hunt \"" + minigame.getName() + "\" requires a location name to run!");
             } else {
-                if (caller == null) {
-                    Minigames.getPlugin().getComponentLogger().info("Treasure Hunt \"" + minigame.getName() + "\" requires a location name to run!");
-                } else {
-                    MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_TREASUREHUNT_ERROR_NOLOCATION);
-                }
+                MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_TREASUREHUNT_ERROR_NOLOCATION);
             }
-        } else {
-            Minigames.getPlugin().getComponentLogger().warn(minigame.getName() + " tried to Start a TreasureHunt via it's TH mechanic but dos not have a TH-Module. What happened?");
         }
     }
 
     @Override
-    public void stopMinigame(@NotNull Minigame minigame) {
-        TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
-
+    public void stopMinigame() {
         minigame.getMinigameTimer().stopTimer();
         minigame.setMinigameTimer(null);
-        thm.clearHints();
+        clearHints();
 
-        if (thm.hasTreasureLocation()) {
-            removeTreasure(minigame);
-            if (!thm.isTreasureFound()) {
+        if (hasTreasureLocation()) {
+            removeTreasure();
+            if (!isTreasureFound()) {
                 MinigameMessageManager.broadcastServer(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_REMOVED,
                                 Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName())),
                         minigame, "minigame.treasure.announce");
@@ -226,34 +285,33 @@ public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mecha
     }
 
     @Override
-    public void onJoinMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player) {
+    public void onJoinMinigame(final @NotNull MinigamePlayer player) {
     }
 
     @Override
-    public void quitMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player,
-                             boolean forced) {
+    public void quitMinigame(final @NotNull MinigamePlayer player, final boolean forced) {
     }
 
     @Override
-    public void endMinigame(@NotNull Minigame minigame, @NotNull List<@NotNull MinigamePlayer> winners,
-                            @NotNull List<@NotNull MinigamePlayer> losers) {
+    public void endMinigame(final @NotNull List<@NotNull MinigamePlayer> winners,
+                            final @NotNull List<@NotNull MinigamePlayer> losers) {
     }
 
     @EventHandler
     private void timerTick(@NotNull MinigameTimerTickEvent event) {
-        if (event.getMinigame().getType() != MinigameType.GLOBAL &&
-                !event.getMinigame().getMechanicName().equals(getMechanicName())) return;
+        if (event.getMinigame().getType() != MinigameType.GLOBAL ||
+            !minigame.equals(event.getMinigame())) {
+            return;
+        }
 
-        Minigame mgm = event.getMinigame();
-        TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
-        if (!thm.hasTreasureLocation() || thm.isTreasureFound()) return;
+        if (!hasTreasureLocation() || isTreasureFound()) return;
 
         long time = event.getTimeLeft();
         long hintTime1 = event.getMinigame().getTimer() - 1;
         int hintTime2 = (int) (event.getMinigame().getTimer() * 0.75);
         int hintTime3 = (int) (event.getMinigame().getTimer() * 0.50);
         int hintTime4 = (int) (event.getMinigame().getTimer() * 0.25);
-        Location block = thm.getTreasureLocation();
+        Location block = getTreasureLocation();
 
         if (time == hintTime1) {
             double dfcx;
@@ -261,18 +319,18 @@ public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mecha
             String xdir;
             String zdir;
 
-            if (mgm.getStartLocations().getFirst().x() > block.getX()) {
-                dfcx = mgm.getStartLocations().getFirst().x() - block.getX();
+            if (minigame.getStartLocations().getFirst().x() > block.getX()) {
+                dfcx = minigame.getStartLocations().getFirst().x() - block.getX();
                 xdir = MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_WEST);
             } else {
-                dfcx = block.getX() - mgm.getStartLocations().getFirst().x();
+                dfcx = block.getX() - minigame.getStartLocations().getFirst().x();
                 xdir = MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_EAST);
             }
-            if (mgm.getStartLocations().getFirst().z() > block.getZ()) {
-                dfcz = mgm.getStartLocations().getFirst().z() - block.getZ();
+            if (minigame.getStartLocations().getFirst().z() > block.getZ()) {
+                dfcz = minigame.getStartLocations().getFirst().z() - block.getZ();
                 zdir = MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_NORTH);
             } else {
-                dfcz = block.getZ() - mgm.getStartLocations().getFirst().z();
+                dfcz = block.getZ() - minigame.getStartLocations().getFirst().z();
                 zdir = MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_SOUTH);
             }
             Component dir;
@@ -292,18 +350,18 @@ public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mecha
                 }
             }
             Component hint1 = MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_HINT1,
-                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()),
+                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
                     Placeholder.component(MinigamePlaceHolderKey.DIRECTION.getKey(), dir),
-                    Placeholder.parsed(MinigamePlaceHolderKey.LOCATION.getKey(), thm.getLocation()));
-            MinigameMessageManager.broadcastServer(hint1, mgm, "minigame.treasure.announce");
-            thm.addHint(hint1);
+                    Placeholder.parsed(MinigamePlaceHolderKey.LOCATION.getKey(), getLocationName()));
+            MinigameMessageManager.broadcastServer(hint1, minigame, "minigame.treasure.announce");
+            addHint(hint1);
         } else if (time == hintTime2) {
             block.setY(block.getY() - 1);
             Component hint2 = MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_HINT2,
-                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()),
+                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), block.getBlock().getType().toString().toLowerCase().replace("_", " ")));
-            MinigameMessageManager.broadcastServer(hint2, mgm, "minigame.treasure.announce");
-            thm.addHint(hint2);
+            MinigameMessageManager.broadcastServer(hint2, minigame, "minigame.treasure.announce");
+            addHint(hint2);
             block.setY(block.getY() + 1);
         } else if (time == hintTime3) {
             int height = block.getBlockY();
@@ -317,41 +375,40 @@ public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mecha
                 dir = MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_BELOW);
             }
             Component hint3 = MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_HINT3,
-                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()),
+                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
                     Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(dist)),
                     Placeholder.component(MinigamePlaceHolderKey.DIRECTION.getKey(), dir));
-            MinigameMessageManager.broadcastServer(hint3, mgm, "minigame.treasure.announce");
-            thm.addHint(hint3);
+            MinigameMessageManager.broadcastServer(hint3, minigame, "minigame.treasure.announce");
+            addHint(hint3);
         } else if (time == hintTime4) {
-            Component hint4 = MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_HINT4,
-                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()),
+            final @NotNull Component hint4 = MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_HINT4,
+                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
                     Placeholder.unparsed(MinigamePlaceHolderKey.BIOME.getKey(), block.getBlock().getBiome().toString().toLowerCase().replace("_", " ")));
-            MinigameMessageManager.broadcastServer(hint4, mgm, "minigame.treasure.announce");
-            thm.addHint(hint4);
+            MinigameMessageManager.broadcastServer(hint4, minigame, "minigame.treasure.announce");
+            addHint(hint4);
         }
     }
 
     @EventHandler
-    private void timerExpire(@NotNull TimerExpireEvent event) {
-        if (event.getMinigame().getType() != MinigameType.GLOBAL &&
-                !event.getMinigame().getMechanicName().equals(getMechanicName())) return;
+    private void timerExpire(final @NotNull TimerExpireEvent event) {
+        if (event.getMinigame().getType() != MinigameType.GLOBAL ||
+            !minigame.equals(event.getMinigame())) {
+            return;
+        }
 
-        Minigame mgm = event.getMinigame();
-        TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
-
-        if (thm.hasTreasureLocation()) {
-            mgm.setMinigameTimer(new MinigameTimer(mgm, thm.getTreasureWaitTime()));
-            Location old = thm.getTreasureLocation();
-            removeTreasure(mgm);
-            if (!thm.isTreasureFound()) {
+        if (hasTreasureLocation()) {
+            minigame.setMinigameTimer(new MinigameTimer(minigame, getTreasureWaitTime()));
+            Location old = getTreasureLocation();
+            removeTreasure();
+            if (!isTreasureFound()) {
                 MinigameMessageManager.broadcastServer(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_DESPAWN,
-                                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()),
+                                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
                                 Placeholder.component(MinigamePlaceHolderKey.LOCATION.getKey(), MinigameMessageManager.formatBlockLocation(old))),
-                        mgm, "minigame.treasure.announce");
+                        minigame, "minigame.treasure.announce");
             }
-            thm.setTreasureFound(false);
+            setTreasureFound(false);
         } else {
-            spawnTreasure(mgm);
+            spawnTreasure();
         }
     }
 
@@ -361,33 +418,191 @@ public class TreasureHuntMechanic extends AGameMechanic { // todo refactor mecha
             Block cblock = event.getClickedBlock();
             boolean cancelled = (event.useInteractedBlock() == Event.Result.DENY || event.useItemInHand() == Event.Result.DENY);
             if (cblock != null && cblock.getState() instanceof Chest chest && !cancelled) {
-                for (Minigame minigame : minigameManager.getAllMinigames().values()) {
-                    if (minigame.getType() == MinigameType.GLOBAL &&
-                            minigame.getMechanicName().equalsIgnoreCase(getMechanicName()) &&
-                            minigame.getMinigameTimer() != null) {
-                        TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
-                        if (!thm.isTreasureFound() && thm.hasTreasureLocation()) {
-                            int x1 = thm.getTreasureLocation().getBlockX();
-                            int x2 = cblock.getLocation().getBlockX();
-                            int y1 = thm.getTreasureLocation().getBlockY();
-                            int y2 = cblock.getLocation().getBlockY();
-                            int z1 = thm.getTreasureLocation().getBlockZ();
-                            int z2 = cblock.getLocation().getBlockZ();
-                            if (x2 == x1 && y2 == y1 && z2 == z1) {
-                                MinigameMessageManager.broadcastServer(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERFOUND,
-                                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), event.getPlayer().displayName()),
-                                                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName())),
-                                        minigame, "minigame.treasure.announce"); //todo Permission manager
-                                event.setCancelled(true);
-                                event.getPlayer().openInventory(chest.getInventory());
 
-                                thm.setTreasureFound(true);
-                                minigame.getMinigameTimer().setTimeLeft(300);
-                            }
+                if (minigame.getType() == MinigameType.GLOBAL &&
+                        minigame.getMinigameTimer() != null) {
+                    if (!isTreasureFound() && hasTreasureLocation()) {
+                        int x1 = getTreasureLocation().getBlockX();
+                        int x2 = cblock.getLocation().getBlockX();
+                        int y1 = getTreasureLocation().getBlockY();
+                        int y2 = cblock.getLocation().getBlockY();
+                        int z1 = getTreasureLocation().getBlockZ();
+                        int z2 = cblock.getLocation().getBlockZ();
+                        if (x2 == x1 && y2 == y1 && z2 == z1) {
+                            MinigameMessageManager.broadcastServer(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERFOUND,
+                                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), event.getPlayer().displayName()),
+                                            Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName())),
+                                    minigame, "minigame.treasure.announce"); //todo Permission manager
+                            event.setCancelled(true);
+                            event.getPlayer().openInventory(chest.getInventory());
+
+                            setTreasureFound(true);
+                            minigame.getMinigameTimer().setTimeLeft(300);
                         }
                     }
                 }
             }
         }
+    }
+
+    public int getMaxRadius() {
+        return maxRadius.getFlag();
+    }
+
+    public void setMaxRadius(int maxRadius) {
+        this.maxRadius.setFlag(maxRadius);
+    }
+
+    public int getMaxHeight() {
+        return maxHeight.getFlag();
+    }
+
+    public void setMaxHeight(int maxHeight) {
+        this.maxHeight.setFlag(maxHeight);
+    }
+
+    public String getLocationName() {
+        return locationName.getFlag();
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName.setFlag(locationName);
+    }
+
+    public int getMinTreasure() {
+        return minTreasure.getFlag();
+    }
+
+    public void setMinTreasure(int minTreasure) {
+        this.minTreasure.setFlag(minTreasure);
+    }
+
+    public int getMaxTreasure() {
+        return maxTreasure.getFlag();
+    }
+
+    public void setMaxTreasure(int maxTreasure) {
+        this.maxTreasure.setFlag(maxTreasure);
+    }
+
+    public Location getTreasureLocation() {
+        return treasureLocation.clone();
+    }
+
+    public void setTreasureLocation(Location loc) {
+        treasureLocation = loc;
+    }
+
+    public boolean hasTreasureLocation() {
+        return treasureLocation != null;
+    }
+
+    public boolean isTreasureFound() {
+        return treasureFound;
+    }
+
+    public void setTreasureFound(boolean bool) {
+        treasureFound = bool;
+    }
+
+    public @NotNull List<@NotNull Component> getCurrentHints() {
+        return curHints;
+    }
+
+    public void addHint(@NotNull Component hint) {
+        curHints.add(hint.color(NamedTextColor.GRAY));
+    }
+
+    public void clearHints() {
+        curHints.clear();
+    }
+
+    public long getTreasureWaitTime() {
+        return treasureWaitTime.getFlag();
+    }
+
+    public void setTreasureWaitTime(long time) {
+        treasureWaitTime.setFlag(time);
+    }
+
+    public long getLastHintUse(@NotNull MinigamePlayer player) {
+        if (!hintUse.containsKey(player.getUUID()))
+            return -1L;
+        return hintUse.get(player.getUUID());
+    }
+
+    public boolean canUseHint(@NotNull MinigamePlayer player) {
+        if (hintUse.containsKey(player.getUUID())) {
+            long curtime = System.currentTimeMillis();
+            long lastuse = curtime - hintUse.get(player.getUUID());
+            return lastuse >= getHintDelay() * 1000L;
+        }
+        return true;
+    }
+
+    public void addHintUse(@NotNull MinigamePlayer player) {
+        hintUse.put(player.getUUID(), System.currentTimeMillis());
+    }
+
+    public void clearHintUsage() {
+        hintUse.clear();
+    }
+
+    public void getHints(@NotNull MinigamePlayer mgPlayer) {
+        if (!hasTreasureLocation()) return;
+        Location block = getTreasureLocation();
+        if (mgPlayer.getPlayer().getWorld().getName().equals(getTreasureLocation().getWorld().getName())) {
+            Location ploc = mgPlayer.getLocation();
+            double distance = ploc.distance(block);
+            int maxradius = getMaxRadius();
+            if (canUseHint(mgPlayer)) {
+                if (distance > maxradius) {
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_DISTANCE6);
+                } else if (distance > (double) maxradius / 2) {
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_DISTANCE5);
+                } else if (distance > (double) maxradius / 4) {
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_DISTANCE4);
+                } else if (distance > 50) {
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_DISTANCE3);
+                } else if (distance > 20) {
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_DISTANCE2);
+                } else if (distance < 20) {
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_DISTANCE1);
+                }
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_TIMELEFT,
+                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(minigame.getMinigameTimer().getTimeLeft()))));
+
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_GLOBALHINTS);
+                if (getCurrentHints().isEmpty()) {
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_NOHINT);
+                } else {
+                    for (Component globalHint : getCurrentHints()) {
+                        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, globalHint);
+                    }
+                }
+
+                addHintUse(mgPlayer);
+            } else {
+                int nextUse = (300000 - (int) (System.currentTimeMillis() - getLastHintUse(mgPlayer))) / 1000;
+
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_NOUSE,
+                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(nextUse)));
+
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_TIMELEFT,
+                    Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(minigame.getMinigameTimer().getTimeLeft()))));
+            }
+        } else {
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_TREASUREHUNT_PLAYERSPECIFICHINT_WRONGWORLD,
+                Placeholder.unparsed(MinigamePlaceHolderKey.WORLD.getKey(), block.getWorld().getName()));
+        }
+    }
+
+    public long getHintDelay() {
+        return hintWaitTime.getFlag();
+    }
+
+    public void setHintDelay(long time) {
+        hintWaitTime.setFlag(time);
     }
 }

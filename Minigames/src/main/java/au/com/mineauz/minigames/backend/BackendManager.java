@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.backend.mysql.MySQLBackend;
 import au.com.mineauz.minigames.backend.sqlite.SQLiteBackend;
 import au.com.mineauz.minigames.backend.test.TestBackEnd;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.ScoreboardOrder;
+import au.com.mineauz.minigames.minigame.scoreboard.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Bukkit;

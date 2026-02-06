@@ -17,10 +17,10 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.util.NullCommandSender;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +34,7 @@ public class ExecuteCommandAction extends AAction {
     private final StringFlag comd = new StringFlag("command", "say Hello World!");
     private final BooleanFlag silentExecute = new BooleanFlag("silent", false);
 
-    protected ExecuteCommandAction(final @NotNull NamespacedKey key) {
+    protected ExecuteCommandAction(final @NotNull Key key) {
         super(key);
     }
 

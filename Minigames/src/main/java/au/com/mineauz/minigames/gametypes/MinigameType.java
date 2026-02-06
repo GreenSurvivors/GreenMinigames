@@ -1,13 +1,15 @@
 package au.com.mineauz.minigames.gametypes;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum MinigameType {
     SINGLEPLAYER("Singleplayer"),
     MULTIPLAYER("Multiplayer"),
     GLOBAL("Global");
 
-    private final String name;
+    private final @NotNull String name;
 
-    MinigameType(String name) {
+    MinigameType(final @NotNull String name) {
         this.name = name;
     }
 
@@ -19,7 +21,7 @@ public enum MinigameType {
         return false;
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 }

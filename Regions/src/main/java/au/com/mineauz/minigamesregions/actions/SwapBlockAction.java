@@ -12,8 +12,8 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockType;
@@ -32,7 +32,7 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
     private final BlockDataFlag toData = new BlockDataFlag("totype", BlockType.COBBLESTONE.createBlockData());
     private final BooleanFlag keepAttachment = new BooleanFlag("keepattachment", false);
 
-    protected SwapBlockAction(final @NotNull NamespacedKey key) {
+    protected SwapBlockAction(final @NotNull Key key) {
         super(key);
     }
 

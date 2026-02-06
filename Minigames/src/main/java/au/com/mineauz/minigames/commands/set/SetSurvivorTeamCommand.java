@@ -5,12 +5,12 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.mechanics.GameMechanicRegistry;
+import au.com.mineauz.minigames.mechanics.InfectionMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.InfectionModule;
-import au.com.mineauz.minigames.minigame.modules.MgModules;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
+import au.com.mineauz.minigames.minigame.modules.team.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -58,26 +58,24 @@ public class SetSurvivorTeamCommand extends ASetCommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String @Nullable [] args) {
-        InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
-
+    public boolean onCommand(final @NotNull CommandSender sender, final @NotNull Minigame minigame,
+                             final @NotNull String @Nullable [] args) {
         if (args != null) {
-            if (infectionModule != null) {
+            if (minigame.getMechanic() instanceof final @NotNull InfectionMechanic infectionMechanic) {
                 TeamColor teamColor = TeamColor.matchColor(args[0]);
 
                 if (args[0].equalsIgnoreCase("Default")) {
-                    teamColor = infectionModule.getDefaultSurvivorTeam();
+                    teamColor = infectionMechanic.getDefaultSurvivorTeam();
                 }
 
                 final TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
-                final Predicate<TeamColor> teamCheck = teamColor1 -> teamColor1 == infectionModule.getDefaultInfectedTeam() ||
-                    teamColor1 == infectionModule.getDefaultSurvivorTeam() ||
+                final Predicate<TeamColor> teamCheck = teamColor1 -> teamColor1 == infectionMechanic.getDefaultInfectedTeam() ||
+                    teamColor1 == infectionMechanic.getDefaultSurvivorTeam() ||
                     (teamsModule != null && teamsModule.hasTeam(teamColor1));
 
                 if (teamColor != null) {
                     if (teamCheck.test(teamColor)) {
-                        infectionModule.setSurvivorTeam(teamColor);
+                        infectionMechanic.setSurvivorTeam(teamColor);
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
@@ -99,7 +97,7 @@ public class SetSurvivorTeamCommand extends ASetCommand {
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgModules.INFECTION.getKey().value()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), GameMechanicRegistry.MgDefaultMechanic.INFECTION.getKey().value()));
             }
         }
         return false;
@@ -109,8 +107,7 @@ public class SetSurvivorTeamCommand extends ASetCommand {
     public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
                                                          @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
-            if (infectionModule != null) {
+            if (minigame.getMechanic() instanceof final @NotNull InfectionMechanic infectionMechanic) {
                 List<String> teams = new ArrayList<>();
 
                 TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
@@ -123,8 +120,8 @@ public class SetSurvivorTeamCommand extends ASetCommand {
                 teams.add(TeamColor.NONE.name().toLowerCase(Locale.ENGLISH));
                 teams.add("default");
 
-                teams.add(WordUtils.capitalizeFully(infectionModule.getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));
-                teams.add(WordUtils.capitalizeFully(infectionModule.getDefaultSurvivorTeam().toString().toLowerCase().replace("_", " ")));
+                teams.add(WordUtils.capitalizeFully(infectionMechanic.getDefaultInfectedTeam().toString().toLowerCase().replace("_", " ")));
+                teams.add(WordUtils.capitalizeFully(infectionMechanic.getDefaultSurvivorTeam().toString().toLowerCase().replace("_", " ")));
 
                 return CommandDispatcher.tabCompleteMatch(teams, args[0]);
             }

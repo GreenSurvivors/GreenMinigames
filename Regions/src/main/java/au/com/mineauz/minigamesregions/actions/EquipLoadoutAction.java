@@ -1,17 +1,17 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.*;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.minigame.modules.loadout.LoadoutModule;
+import au.com.mineauz.minigames.minigame.modules.loadout.PlayerLoadout;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +24,7 @@ public class EquipLoadoutAction extends AAction {
     private final StringFlag loadout = new StringFlag("loadout", "default");
     private final BooleanFlag equipOnTrigger = new BooleanFlag("equipOnTrigger", false);
 
-    protected EquipLoadoutAction(final @NotNull NamespacedKey key) {
+    protected EquipLoadoutAction(final @NotNull Key key) {
         super(key);
     }
 

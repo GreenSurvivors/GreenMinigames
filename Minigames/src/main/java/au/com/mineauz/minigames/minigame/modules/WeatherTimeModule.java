@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.TypeDependentDisplayData;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.key.Key;
@@ -16,11 +15,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.WeatherType;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
-
-import java.util.SequencedCollection;
 
 public class WeatherTimeModule extends AMinigameModule {
     private final TimeFlag time = new TimeFlag("customTime.value", 0L);
@@ -34,7 +30,7 @@ public class WeatherTimeModule extends AMinigameModule {
     }
 
     public static WeatherTimeModule getMinigameModule(@NotNull Minigame minigame) {
-        return (WeatherTimeModule) minigame.getModule(MgModules.WEATHER_TIME.getKey());
+        return (WeatherTimeModule) minigame.getModule(MgDefaultModules.WEATHER_TIME.getKey());
     }
 
     @Override
@@ -60,18 +56,16 @@ public class WeatherTimeModule extends AMinigameModule {
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(@NotNull Menu previosMenu) {
+    public void addEditMenuOptions(@NotNull Menu previosMenu) {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_TIMEWEATHER_NAME, previosMenu.getViewer());
 
         menu.addItem(useCustomTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_USE_NAME));
         menu.addItem(time.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_NAME, 0L, 24000L));
-        menu.addItem(useCustomWeather.getMenuItem(ItemType.WATER_BUCKET, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_USE_NAME)); // todo 1.21 use wind charge
+        menu.addItem(useCustomWeather.getMenuItem(ItemType.WIND_CHARGE, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_USE_NAME));
         menu.addItem(weather.getMenuItem(ItemType.WATER_BUCKET, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_NAME));
         menu.addItem(new MenuItemBack(previosMenu), menu.getSize() - 9);
 
         previosMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TIMEWEATHER_NAME, menu));
-
-        return null;
     }
 
     public long getTime() {

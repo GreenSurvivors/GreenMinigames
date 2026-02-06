@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.minigame;
+package au.com.mineauz.minigames.minigame.scoreboard;
 
 public enum ScoreboardOrder {
     ASCENDING,

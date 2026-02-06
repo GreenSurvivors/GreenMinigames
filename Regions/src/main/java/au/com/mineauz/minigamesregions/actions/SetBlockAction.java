@@ -10,9 +10,9 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public class SetBlockAction extends AAction {
     private final BlockDataFlag blockDataFlag = new BlockDataFlag("type", Material.STONE.createBlockData());
     private final BooleanFlag useBlockData = new BooleanFlag("usedur", false);//todo rename flag
 
-    protected SetBlockAction(final @NotNull NamespacedKey key) {
+    protected SetBlockAction(final @NotNull Key key) {
         super(key);
     }
 

@@ -11,8 +11,8 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +26,7 @@ public class ExplodeAction extends AAction {
     private final FloatFlag power = new FloatFlag("power", 4f);
     private final BooleanFlag fire = new BooleanFlag("fire", false);
 
-    protected ExplodeAction(final @NotNull NamespacedKey key) {
+    protected ExplodeAction(final @NotNull Key key) {
         super(key);
     }
 

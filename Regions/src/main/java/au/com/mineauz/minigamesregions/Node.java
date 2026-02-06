@@ -115,7 +115,7 @@ public class Node implements ActionExecutorHolder {
     @Override
     public void execute(@NotNull ActionExecutor exec, @NotNull MinigamePlayer mgPlayer) {
         for (IAction act : exec.getActions()) {
-            if (!enabled && !act.getKey().equals(RegionActions.SET_ENABLED.getKey())) {
+            if (!enabled && !act.key().equals(RegionActions.SET_ENABLED.key())) {
                 continue;
             }
 

@@ -8,9 +8,9 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.consumer.StringConsumer;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
+import au.com.mineauz.minigames.minigame.modules.team.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -26,12 +26,12 @@ public class MenuItemAddTeam extends MenuItem implements StringConsumer {
     private final @NotNull TeamsModule tm;
 
     public MenuItemAddTeam(@NotNull Component name, @NotNull TeamsModule tm) {
-        super(MenuUtility.getCreateType(), name);
+        super(MenuUtility.createType(), name);
         this.tm = tm;
     }
 
     public MenuItemAddTeam(@NotNull MinigameLangKey name, @NotNull TeamsModule tm) {
-        super(MenuUtility.getCreateType(), name);
+        super(MenuUtility.createType(), name);
         this.tm = tm;
     }
 

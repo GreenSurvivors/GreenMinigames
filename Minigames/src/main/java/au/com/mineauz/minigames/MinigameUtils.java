@@ -34,7 +34,7 @@ public class MinigameUtils {
      *
      * @return the parsed duration in milliseconds, or null if not possible
      */
-    public static @Nullable Long parsePeriod(@NotNull String periodStr) {
+    public static @Nullable Long parsePeriod(@NotNull String periodStr) { // todo DateTimeFormatter
         Matcher matcher = PERIOD_PATTERN.matcher(periodStr);
         Long millis = null;
 

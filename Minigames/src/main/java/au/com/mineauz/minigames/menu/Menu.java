@@ -54,7 +54,7 @@ public class Menu {
         return name;
     }
 
-    public boolean addItem(@NotNull MenuItem item, int slot) {
+    public boolean addItem(@NotNull MenuItem item, int slot) { // todo overflow into the next page
         if (!pageMap.containsKey(slot) && slot < pageView.length) {
             item.setContainer(this);
             item.setSlot(slot);
@@ -125,10 +125,10 @@ public class Menu {
 
     protected void addPage() {
         Menu nextPage = new Menu(rows, name, viewer);
-        addItem(new MenuItemPage(MenuUtility.getBackType(), MgMenuLangKey.MENU_PAGE_NEXT, nextPage), 9 * (rows - 1) + 5);
+        addItem(new MenuItemPage(MenuUtility.backType(), MgMenuLangKey.MENU_PAGE_NEXT, nextPage), 9 * (rows - 1) + 5);
         setNextPage(nextPage);
         nextPage.setPreviousPage(this);
-        nextPage.addItem(new MenuItemPage(MenuUtility.getBackType(), MgMenuLangKey.MENU_PAGE_PREVIOUS, this), 9 * (rows - 1) + 3);
+        nextPage.addItem(new MenuItemPage(MenuUtility.backType(), MgMenuLangKey.MENU_PAGE_PREVIOUS, this), 9 * (rows - 1) + 3);
         for (int j = 9 * (rows - 1) + 6; j < 9 * rows; j++) {
             if (getMenuItem(j) != null)
                 nextPage.addItem(getMenuItem(j), j);

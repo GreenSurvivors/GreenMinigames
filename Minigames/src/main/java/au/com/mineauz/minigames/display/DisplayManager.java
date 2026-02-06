@@ -23,12 +23,14 @@ import java.util.Map.Entry;
 
 @SuppressWarnings("UnstableApiUsage") // shut up position
 public class DisplayManager {
+    private final @NotNull Minigames plugin;
     private final @NotNull Map<@NotNull INonPersistentDisplay, @NotNull Integer> nextTickDelay = new IdentityHashMap<>();
     private final @NotNull SetMultimap<@NotNull Player, @NotNull AbstractDisplayObject> playerDisplays;
     private final @NotNull SetMultimap<@NotNull World, @NotNull AbstractDisplayObject> worldDisplays;
     private @Nullable BukkitTask refreshTask;
 
-    public DisplayManager() {
+    public DisplayManager(final @NotNull Minigames plugin) {
+        this.plugin = plugin;
         playerDisplays = HashMultimap.create();
         worldDisplays = HashMultimap.create();
     }
@@ -159,7 +161,7 @@ public class DisplayManager {
 
     private void enableRefreshTask() {
         if (refreshTask == null) {
-            refreshTask = Bukkit.getScheduler().runTaskTimer(Minigames.getPlugin(), this::doRefreshAll, 1, 1);
+            refreshTask = Bukkit.getScheduler().runTaskTimer(plugin, this::doRefreshAll, 1, 1);
         }
     }
 

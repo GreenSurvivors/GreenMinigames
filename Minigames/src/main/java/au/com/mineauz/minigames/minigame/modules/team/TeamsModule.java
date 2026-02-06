@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.minigame.modules;
+package au.com.mineauz.minigames.minigame.modules.team;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.EnumFlag;
@@ -6,8 +6,8 @@ import au.com.mineauz.minigames.config.TeamFlag;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.AMinigameModule;
+import au.com.mineauz.minigames.minigame.modules.MgDefaultModules;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -18,7 +18,10 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TeamsModule extends AMinigameModule {
@@ -30,7 +33,7 @@ public class TeamsModule extends AMinigameModule {
     }
 
     public static @Nullable TeamsModule getMinigameModule(@NotNull Minigame mgm) {
-        return ((TeamsModule) mgm.getModule(MgModules.TEAMS.getKey()));
+        return ((TeamsModule) mgm.getModule(MgDefaultModules.TEAMS.getKey()));
     }
 
     @Override
@@ -239,7 +242,7 @@ public class TeamsModule extends AMinigameModule {
     }
 
     @Override
-    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(@NotNull Menu previousMenu) {
+    public void addEditMenuOptions(@NotNull Menu previousMenu) {
         Menu menu = new Menu(6, MgMenuLangKey.MENU_TEAM_NAME, previousMenu.getViewer());
         menu.setPreviousPage(previousMenu);
         List<MenuItem> menuItems = new ArrayList<>();
@@ -263,7 +266,5 @@ public class TeamsModule extends AMinigameModule {
 
         MenuItemPage teamOptionsMenuPage = new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TEAM_OPTIONS_NAME, menu);
         previousMenu.addItem(teamOptionsMenuPage);
-
-        return null;
     }
 }

@@ -1,7 +1,8 @@
-package au.com.mineauz.minigames.minigame;
+package au.com.mineauz.minigames.minigame.scoreboard;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;

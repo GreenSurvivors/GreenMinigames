@@ -36,7 +36,7 @@ public class TakeItemAction extends AAction { // todo make material match option
     private final BooleanFlag matchEnchantments = new BooleanFlag("matchEnchantments", false);
     private final BooleanFlag matchExact = new BooleanFlag("matchExact", false);
 
-    protected TakeItemAction(final @NotNull NamespacedKey key) {
+    protected TakeItemAction(final @NotNull Key key) {
         super(key);
     }
 

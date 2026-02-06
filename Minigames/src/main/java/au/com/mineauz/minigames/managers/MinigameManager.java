@@ -14,10 +14,10 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
-import au.com.mineauz.minigames.minigame.modules.MgModules;
+import au.com.mineauz.minigames.minigame.modules.MgDefaultModules;
 import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
 import au.com.mineauz.minigames.minigame.modules.ResourcePackModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -38,7 +38,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class MinigameManager {
-    private final Minigames plugin = Minigames.getPlugin();
+    private final @NotNull Minigames plugin;
     private final @NotNull Map<@NotNull String, @NotNull Minigame> minigames = new HashMap<>();
     private final @NotNull Map<@NotNull MinigameType, @NotNull MinigameTypeBase> minigameTypes = new HashMap<>();
     private final @NotNull Map<@NotNull String, @NotNull RewardsFlag> rewardSigns = new HashMap<>();
@@ -47,8 +47,10 @@ public class MinigameManager {
     private final @NotNull Map<@NotNull Key, @NotNull ModuleFactory> modules = new HashMap<>();
     private @Nullable MinigameSave rewardSignsSave;
 
-    public MinigameManager() {
-        for (ModuleFactory moduleFactory : MgModules.values()) {
+    public MinigameManager(final @NotNull Minigames plugin) {
+        this.plugin = plugin;
+
+        for (final @NotNull ModuleFactory moduleFactory : MgDefaultModules.values()) {
             addModule(moduleFactory);
         }
     }
@@ -70,18 +72,18 @@ public class MinigameManager {
     }
 
     public void startGlobalMinigame(final @NotNull Minigame minigame, final @Nullable MinigamePlayer caller) {
-        final boolean canStart = minigame.getMechanic().checkCanStart(minigame, caller);
+        final boolean canStart = minigame.getMechanic().checkCanStart(caller);
         if (minigame.getType() == MinigameType.GLOBAL &&
             minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL) &&
             canStart) {
             final StartGlobalMinigameEvent ev = new StartGlobalMinigameEvent(minigame, caller);
             Bukkit.getPluginManager().callEvent(ev);
 
-            minigame.getMechanic().startMinigame(minigame, caller);
+            minigame.getMechanic().startMinigame(caller);
             final ResourcePackModule module = ResourcePackModule.getMinigameModule(minigame);
             if (module != null) {
                 if (module.isEnabled()) {
-                    final ResourcePack pack = plugin.getResourceManager().getResourcePack(module.getResourcePackName());
+                    final ResourcePack pack = plugin.getResourcePackManager().getResourcePack(module.getResourcePackName());
                     if (pack.isValid()) {
                         for (final MinigamePlayer player : minigame.getPlayers()) {
                             player.applyResourcePack(pack);
@@ -93,18 +95,18 @@ public class MinigameManager {
             minigame.saveMinigame();
         } else if (!minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL)) {
             if (caller == null) {
-                plugin.getComponentLogger().warn("The Minigame Type \"" + MinigameType.GLOBAL.getName() + "\" cannot use the selected Mechanic \"" + minigame.getMechanicName() + "\"!");
+                plugin.getComponentLogger().warn("The Minigame Type \"" + MinigameType.GLOBAL.getName() + "\" cannot use the selected Mechanic \"" + minigame.getMechanic().key() + "\"!");
             } else {
                 MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_INVALIDMECHANIC,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanic().key().asMinimalString()),
                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MinigameType.GLOBAL.getName()));
             }
         } else if (!canStart) {
             if (caller == null) {
-                plugin.getComponentLogger().warn("The Game Mechanic \"" + minigame.getMechanicName() + "\" has failed to initiate!");
+                plugin.getComponentLogger().warn("The Game Mechanic \"" + minigame.getMechanic().key().asMinimalString() + "\" has failed to initiate!");
             } else {
                 MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanic().key().asMinimalString()));
             }
         }
     }
@@ -114,13 +116,13 @@ public class MinigameManager {
             final StopGlobalMinigameEvent ev = new StopGlobalMinigameEvent(minigame, caller);
             Bukkit.getPluginManager().callEvent(ev);
 
-            minigame.getMechanic().stopMinigame(minigame);
+            minigame.getMechanic().stopMinigame();
 
             minigame.setEnabled(false);
             final ResourcePackModule module = ResourcePackModule.getMinigameModule(minigame);
             if (module != null) {
                 if (module.isEnabled()) {
-                    final ResourcePack pack = plugin.getResourceManager().getResourcePack("empty");
+                    final ResourcePack pack = plugin.getResourcePackManager().getResourcePack("empty");
                     if (pack.isValid()) {
                         for (final MinigamePlayer player : minigame.getPlayers()) {
                             player.applyResourcePack(pack);
@@ -307,7 +309,7 @@ public class MinigameManager {
     }
 
     public boolean minigameMechanicCheck(final @NotNull Minigame minigame, final @NotNull MinigamePlayer mgPlayer) {
-        return minigame.getMechanic() == null || minigame.getMechanic().checkCanStart(minigame, mgPlayer);
+        return minigame.getMechanic() == null || minigame.getMechanic().checkCanStart(mgPlayer);
     }
 
     public boolean minigameStartStateCheck(final @NotNull Minigame minigame, final @NotNull MinigamePlayer mgPlayer) {
@@ -316,7 +318,7 @@ public class MinigameManager {
             return false;
         } else if (!this.minigameMechanicCheck(minigame, mgPlayer)) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
-                Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
+                Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanic().key().asMinimalString()));
             return false;
         } else if (minigame.getState() == MinigameState.REGENERATING) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_REGENERATING);

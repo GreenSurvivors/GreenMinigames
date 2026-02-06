@@ -52,7 +52,7 @@ public class ConditionRegistry {
             m.addItem(new MenuItemCondition(ItemType.PAPER, con.getDisplayName(), exec, con));
         }
         m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(new MenuItemConditionAdd(MenuUtility.getCreateType(), RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_ADD_NAME), exec), m.getSize() - 1);
+        m.addItem(new MenuItemConditionAdd(MenuUtility.createType(), RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_ADD_NAME), exec), m.getSize() - 1);
         m.displayMenu(mgPlayer);
     }
 }

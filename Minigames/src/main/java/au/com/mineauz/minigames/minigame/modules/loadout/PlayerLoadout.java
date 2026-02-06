@@ -1,10 +1,9 @@
-package au.com.mineauz.minigames;
+package au.com.mineauz.minigames.minigame.modules.loadout;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.ALoadoutAddon;
-import au.com.mineauz.minigames.minigame.modules.ILoadoutAddonFactory;
+import au.com.mineauz.minigames.minigame.modules.team.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import io.leangen.geantyref.TypeFactory;
 import io.leangen.geantyref.TypeToken;

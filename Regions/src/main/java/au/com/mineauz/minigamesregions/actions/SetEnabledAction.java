@@ -11,8 +11,8 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class SetEnabledAction extends AAction {
     private final BooleanFlag state = new BooleanFlag("state", false);
 
-    protected SetEnabledAction(final @NotNull NamespacedKey key) {
+    protected SetEnabledAction(final @NotNull Key key) {
         super(key);
     }
 

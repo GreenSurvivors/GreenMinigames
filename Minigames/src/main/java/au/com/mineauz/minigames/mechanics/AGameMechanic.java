@@ -3,17 +3,17 @@ package au.com.mineauz.minigames.mechanics;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
-import au.com.mineauz.minigames.managers.MinigameManager;
-import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -21,28 +21,37 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+/// A mechanic is exclusive per minigame, every minigame can only ever have one.
 public abstract class AGameMechanic implements Listener, Keyed {
-    protected static final @NotNull Minigames plugin = Minigames.getPlugin();
-    protected final @NotNull MinigamePlayerManager playerManager;
-    protected final @NotNull MinigameManager minigameManager;
+    protected final @NotNull Minigames plugin;
+    protected final @NotNull Key key;
+    protected final @NotNull Minigame minigame;
 
-    public AGameMechanic() {
-        playerManager = plugin.getPlayerManager();
-        minigameManager = plugin.getMinigameManager();
+    public AGameMechanic(final @NotNull Minigames plugin, final @NotNull Key key, @NotNull Minigame minigame) {
+        this.plugin = plugin;
+        this.key = key;
+        this.minigame = minigame;
+
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    /**
-     * Gets the mechanics name.
-     *
-     * @return The name of the Mechanic
-     */
-    public abstract @NotNull String getMechanicName();
+    public @NotNull Key key() {
+        return key;
+    }
+
+    public abstract void save(final @NotNull CommentedConfigurationNode config) throws SerializationException;
+
+    public abstract void load(final @NotNull CommentedConfigurationNode config) throws ConfigurateException;
+
+    public abstract boolean useSeparateConfig();
 
     /**
      * Gives the valid types for this game mechanic
@@ -56,11 +65,10 @@ public abstract class AGameMechanic implements Listener, Keyed {
      * can be sent message, but can also be null, in which case, should be sent
      * to the console.
      *
-     * @param minigame The Minigame in which settings to check
-     * @param caller   The Player (or Null) to send the error messages to
+     * @param caller The Player (or Null) to send the error messages to
      * @return true if all checks pass.
      */
-    public abstract boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller); //todo better return value to indicate what went wrong
+    public abstract boolean checkCanStart(final @Nullable MinigamePlayer caller); //todo better return value to indicate what went wrong
 
     /**
      * In the case of a Minigame having teams, this should be used to balance players
@@ -69,11 +77,10 @@ public abstract class AGameMechanic implements Listener, Keyed {
      * will assign teams automatically unless overridden.
      * Additionally, teams that are flagged as autoBalance false will not have players removed or added through a team switch...
      *
-     * @param players  The players to be balanced to a team
-     * @param minigame The minigame in which the balancing occours
+     * @param players The players to be balanced to a team
      * @return List of {@link MinigamePlayer} that have been moved to a different or new team.
      */
-    public @NotNull List<@NotNull MinigamePlayer> balanceTeam(@NotNull List<@NotNull MinigamePlayer> players, @NotNull Minigame minigame) {
+    public @NotNull List<@NotNull MinigamePlayer> balanceTeam(final @NotNull List<@NotNull MinigamePlayer> players) {
         List<MinigamePlayer> result = new ArrayList<>();
         if (minigame.isTeamGame()) {
             // add teamless players to team with the least amount of other players
@@ -87,7 +94,7 @@ public abstract class AGameMechanic implements Listener, Keyed {
                             teamToJoin = teamToCheck;
                     }
                     if (teamToJoin == null) {
-                        playerManager.quitMinigame(mgPlayer, false);
+                        plugin.getPlayerManager().quitMinigame(mgPlayer, false);
                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_FULL);
                     } else {
                         teamToJoin.addPlayer(mgPlayer);
@@ -153,48 +160,42 @@ public abstract class AGameMechanic implements Listener, Keyed {
         }
     }
 
-    public abstract boolean displayMechanicSettings(final @NotNull Minigame minigame, final @NotNull Menu previous);
+    public abstract @Nullable MenuItemPage displayMechanicSettings(final @NotNull Menu previous);
 
     /**
      * Called when a global Minigame has been started.
      *
-     * @param minigame the game
-     * @param caller   The player who initiated the global Minigame or null if not by a player.
+     * @param caller The player who initiated the global Minigame or null if not by a player.
      */
-    public abstract void startMinigame(@NotNull Minigame minigame, @Nullable MinigamePlayer caller);
+    public abstract void startMinigame(final @Nullable MinigamePlayer caller);
 
     /**
      * Called when a global Minigame has been stopped.
-     *
-     * @param minigame the game
      */
-    public abstract void stopMinigame(@NotNull Minigame minigame);
+    public abstract void stopMinigame();
 
     /**
      * Called when a player joins a Minigame. Called after the player has completely joined the game.
      *
-     * @param minigame the game
-     * @param player   the player
+     * @param player the player
      */
-    public abstract void onJoinMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player);
+    public abstract void onJoinMinigame(@NotNull MinigamePlayer player);
 
     /**
      * Called when a player quits a Minigame or is forced to quit by the Minigame. Called as the quit function has started.
      *
-     * @param minigame the game
-     * @param player   the player
-     * @param forced   true if forced
+     * @param player the player
+     * @param forced true if forced
      */
-    public abstract void quitMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player, boolean forced);
+    public abstract void quitMinigame(@NotNull MinigamePlayer player, boolean forced);
 
     /**
      * Called when a player (or group of players) wins a Minigame. Called as the end function has been started, so winners and
      * losers can still be modified.
      *
-     * @param minigame the game
-     * @param winners  winning players
-     * @param losers   losing players
+     * @param winners winning players
+     * @param losers  losing players
      */
-    public abstract void endMinigame(@NotNull Minigame minigame, @NotNull List<@NotNull MinigamePlayer> winners,
+    public abstract void endMinigame(@NotNull List<@NotNull MinigamePlayer> winners,
                                      @NotNull List<@NotNull MinigamePlayer> losers);
 }

@@ -8,9 +8,9 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
+import au.com.mineauz.minigames.minigame.modules.team.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -109,7 +109,7 @@ public class EndCommand extends ACommand {
                                  */
                                 if (minigame.hasPlayers()) {
                                     for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
-                                        PLUGIN.getPlayerManager().endMinigame(mgPlayer);
+                                        PLUGIN.getPlayerManager().winMinigame(mgPlayer);
                                     }
 
                                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_END_SUCCESS_MINIGAME,
@@ -163,18 +163,18 @@ public class EndCommand extends ACommand {
                         Team teamToWin = mgPlayer.getTeam();
 
                         forceEndForTeam(sender, teamToWin, minigame);// teams module gets checked in isTeamGame()
-                    } else { // just the one player wins, everyone else looses
+                    } else { // just the one player wins, everyone else loses
                         List<MinigamePlayer> winners = List.of(mgPlayer);
-                        List<MinigamePlayer> loosers = new ArrayList<>(minigame.getPlayers());
-                        loosers.remove(mgPlayer);
+                        List<MinigamePlayer> losers = new ArrayList<>(minigame.getPlayers());
+                        losers.remove(mgPlayer);
 
-                        PLUGIN.getPlayerManager().endMinigame(minigame, winners, loosers);
+                        PLUGIN.getPlayerManager().endMinigame(minigame, winners, losers);
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_END_SUCCESS_WINNER,
                             Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), mgPlayer.displayName()));
                     }
                 }
                 case SINGLEPLAYER -> {
-                    PLUGIN.getPlayerManager().endMinigame(mgPlayer);
+                    PLUGIN.getPlayerManager().winMinigame(mgPlayer);
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_END_SUCCESS_WINNER,
                         Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), mgPlayer.displayName()));
                 }

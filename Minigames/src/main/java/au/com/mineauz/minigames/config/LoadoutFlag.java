@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.minigame.modules.loadout.PlayerLoadout;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;

@@ -6,23 +6,27 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("UnstableApiUsage") // shutup ItemType
 public class MenuUtility {
 
-    public static @NotNull ItemType getBackType() {
+    public static @NotNull ItemType backType() {
         return ItemType.REDSTONE_TORCH;
     }
 
-    public static @NotNull ItemType getSaveType() {
+    public static @NotNull ItemType saveType() {
         return ItemType.GREEN_BED;
     }
 
-    public static @NotNull ItemType getCreateType() {
+    public static @NotNull ItemType createType() {
         return ItemType.ITEM_FRAME;
     }
 
-    public static @NotNull ItemType getSlotFillerType() {
+    public static @NotNull ItemType slotFillerType() {
         return ItemType.RED_STAINED_GLASS_PANE;
     }
 
-    public static @NotNull ItemType getUnknownDisplayType() {
+    public static @NotNull ItemType timeType() {
+        return ItemType.CLOCK;
+    }
+
+    public static @NotNull ItemType unknownType() {
         return ItemType.WHITE_STAINED_GLASS_PANE;
     }
 }

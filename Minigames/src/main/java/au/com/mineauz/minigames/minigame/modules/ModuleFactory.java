@@ -5,7 +5,7 @@ import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 
 public interface ModuleFactory {
-    @NotNull AMinigameModule makeNewModule(Minigame minigame);
+    @NotNull AMinigameModule makeNewModule(final @NotNull Minigame minigame);
 
     @NotNull Key getKey();
 }

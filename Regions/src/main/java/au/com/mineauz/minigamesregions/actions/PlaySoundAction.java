@@ -13,6 +13,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -33,7 +34,7 @@ public class PlaySoundAction extends AAction {
     private final @NotNull FloatFlag volume = new FloatFlag("volume", 1f);
     private final @NotNull FloatFlag pitch = new FloatFlag("pitch", 1f);
 
-    protected PlaySoundAction(final @NotNull NamespacedKey key) {
+    protected PlaySoundAction(final @NotNull Key key) {
         super(key);
     }
 

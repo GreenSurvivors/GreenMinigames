@@ -3,12 +3,12 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
-import org.bukkit.Keyed;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AAction implements IAction, Keyed {
-    protected final @NotNull NamespacedKey key;
+    protected final @NotNull Key key;
 
-    protected AAction(final @NotNull NamespacedKey key) {
+    protected AAction(final @NotNull Key key) {
         this.key = key;
     }
 
@@ -37,7 +37,7 @@ public abstract class AAction implements IAction, Keyed {
     }
 
     @Override
-    public @NotNull NamespacedKey getKey() {
+    public @NotNull Key key() {
         return key;
     }
 
@@ -46,30 +46,30 @@ public abstract class AAction implements IAction, Keyed {
      *
      * @param winner the winner
      */
-    void setWinnersLosers(final @NotNull MinigamePlayer winner) {
+    void winMinigame(final @NotNull MinigamePlayer winner) {
         if (winner.getMinigame().getType() != MinigameType.SINGLEPLAYER) {
-            final List<MinigamePlayer> w;
-            final List<MinigamePlayer> l;
+            final @NotNull List<@NotNull MinigamePlayer> winners;
+            final @NotNull List<@NotNull MinigamePlayer> losers;
             if (winner.getMinigame().isTeamGame()) {
-                w = new ArrayList<>(winner.getTeam().getPlayers());
-                l = new ArrayList<>(winner.getMinigame().getPlayers().size()
+                winners = new ArrayList<>(winner.getTeam().getPlayers());
+                losers = new ArrayList<>(winner.getMinigame().getPlayers().size()
                         - winner.getTeam().getPlayers().size());
-                for (final Team t
+                for (final @NotNull Team team
                         : TeamsModule.getMinigameModule(winner.getMinigame()).getTeams()) {
-                    if (t != winner.getTeam()) {
-                        l.addAll(t.getPlayers());
+                    if (team != winner.getTeam()) {
+                        losers.addAll(team.getPlayers());
                     }
                 }
             } else {
-                w = new ArrayList<>(1);
-                l = new ArrayList<>(winner.getMinigame().getPlayers().size());
-                w.add(winner);
-                l.addAll(winner.getMinigame().getPlayers());
-                l.remove(winner);
+                winners = new ArrayList<>(1);
+                losers = new ArrayList<>(winner.getMinigame().getPlayers().size());
+                winners.add(winner);
+                losers.addAll(winner.getMinigame().getPlayers());
+                losers.remove(winner);
             }
-            Minigames.getPlugin().getPlayerManager().endMinigame(winner.getMinigame(), w, l);
+            Minigames.getPlugin().getPlayerManager().endMinigame(winner.getMinigame(), winners, losers);
         } else {
-            Minigames.getPlugin().getPlayerManager().endMinigame(winner);
+            Minigames.getPlugin().getPlayerManager().winMinigame(winner);
         }
     }
 }

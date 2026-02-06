@@ -34,7 +34,7 @@ public class PresetLoader {
     private static final @NotNull Pattern PRESET_FILE_NAME_PATTERN = Pattern.compile("presets/(?<filename>.*?.yml)");
 
     public static void initPresets(final @NotNull Minigames plugin) {
-        CodeSource src = plugin.getClass().getProtectionDomain().getCodeSource();
+        final @Nullable CodeSource src = plugin.getClass().getProtectionDomain().getCodeSource();
         if (src != null) {
             final @NotNull URL jarUrl = src.getLocation();
 
@@ -57,9 +57,9 @@ public class PresetLoader {
         }
     }
 
-    public static void loadPreset(@NotNull String preset, final @NotNull Minigame minigame, final @NotNull Audience audience) {
+    public static void loadPreset(@NotNull String preset, final @NotNull Minigame minigame, final @NotNull Audience audience) { // todo make this possible via menu. Something something Mechanic
         preset = preset.toLowerCase();
-        final MinigameSave save = MinigameSave.forGlobalData(Path.of("presets", preset));
+        final @NotNull MinigameSave save = MinigameSave.forGlobalData(Path.of("presets", preset));
 
         if (save.existsOnDisk()) {
             try {

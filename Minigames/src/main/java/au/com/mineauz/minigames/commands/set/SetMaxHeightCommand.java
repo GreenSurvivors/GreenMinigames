@@ -4,9 +4,9 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
+import au.com.mineauz.minigames.mechanics.GameMechanicRegistry;
+import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.MgModules;
-import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
@@ -46,12 +46,10 @@ public class SetMaxHeightCommand extends ASetCommand { //todo it isn't intuitive
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String @Nullable [] args) {
         if (args != null) {
-            TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
-
-            if (thm != null) {
+            if (minigame.getMechanic() instanceof final @NotNull TreasureHuntMechanic treasureHuntMechanic) {
                 if (args[0].matches("[0-9]+")) {
-                    int num = Integer.parseInt(args[0]);
-                    thm.setMaxHeight(num);
+                    final int num = Integer.parseInt(args[0]); // todo error handling
+                    treasureHuntMechanic.setMaxHeight(num);
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_MAXHEIGHT_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
@@ -64,7 +62,7 @@ public class SetMaxHeightCommand extends ASetCommand { //todo it isn't intuitive
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), MgModules.TREASURE_HUNT.getKey().value()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), GameMechanicRegistry.MgDefaultMechanic.TREASURE_HUNT.getKey().value()));
             }
         }
         return false;

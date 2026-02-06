@@ -2,7 +2,10 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.scheme.ARewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.MgRewardSchemes;
@@ -17,8 +20,6 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.SequencedCollection;
-
 public class RewardsModule extends AMinigameModule {
     private @NotNull ARewardScheme scheme;
 
@@ -30,7 +31,7 @@ public class RewardsModule extends AMinigameModule {
     }
 
     public static @Nullable RewardsModule getModule(@NotNull Minigame minigame) {
-        return (RewardsModule) minigame.getModule(MgModules.REWARDS.getKey());
+        return (RewardsModule) minigame.getModule(MgDefaultModules.REWARDS.getKey());
     }
 
 
@@ -75,7 +76,7 @@ public class RewardsModule extends AMinigameModule {
     }
 
     @Override
-    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu menu) {
+    public void addEditMenuOptions(final @NotNull Menu menu) {
         MenuItemCustom launcher = new MenuItemCustom(ItemType.DIAMOND,
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME));
         launcher.setClick(() -> {
@@ -85,8 +86,6 @@ public class RewardsModule extends AMinigameModule {
         });
 
         menu.addItem(launcher);
-
-        return null;
     }
 
     private @NotNull Menu createSubMenu(final @NotNull Menu parent) {

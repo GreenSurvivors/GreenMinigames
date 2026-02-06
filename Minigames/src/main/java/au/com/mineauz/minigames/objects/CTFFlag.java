@@ -5,9 +5,9 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
+import au.com.mineauz.minigames.mechanics.CTFMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.CTFModule;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
 import au.com.mineauz.minigames.signs.CTFFlagSign;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -36,7 +36,6 @@ public class CTFFlag {
     private final @NotNull BlockState spawnData;
     private final @NotNull List<@NotNull Component> signText;
     private final @NotNull Minigame minigame;
-    private final @NotNull CTFModule ctfModule;
     private final @NotNull Location spawnLocation;
     private final @Nullable Location spawnAttachedToLocation;
     private final @Nullable Team team;
@@ -56,7 +55,6 @@ public class CTFFlag {
         this.signText = sign.getSide(Side.FRONT).lines();
         this.team = team;
         this.minigame = minigame;
-        this.ctfModule = CTFModule.getMinigameModule(minigame);
         this.respawnTime = Minigames.getPlugin().getConfig().getInt("multiplayer.ctf.flagrespawntime");
 
         // get the location the sign was attached to
@@ -258,15 +256,14 @@ public class CTFFlag {
         return minigame;
     }
 
-    public void startReturnTimer() {
-        final CTFFlag self = this;
+    public void startReturnTimer(final @NotNull CTFMechanic ctfMechanic) {
         taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
             final String locationID = MinigameUtils.createBlockLocationID(currentLocation);
 
-            if (ctfModule.hasDroppedFlag(locationID)) {
-                ctfModule.removeDroppedFlag(locationID);
+            if (ctfMechanic.hasDroppedFlag(locationID)) {
+                ctfMechanic.removeDroppedFlag(locationID);
                 String newID = MinigameUtils.createBlockLocationID(spawnLocation);
-                ctfModule.addDroppedFlag(newID, self);
+                ctfMechanic.addDroppedFlag(newID, this);
             }
             respawnFlag();
 

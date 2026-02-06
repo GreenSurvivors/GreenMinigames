@@ -13,10 +13,10 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Lightable;
@@ -33,7 +33,7 @@ public class PulseRedstoneAction extends AAction {
     private final TimeFlag time = new TimeFlag("time", 1L); // in seconds
     private final BooleanFlag torch = new BooleanFlag("torch", false);
 
-    protected PulseRedstoneAction(final @NotNull NamespacedKey key) {
+    protected PulseRedstoneAction(final @NotNull Key key) {
         super(key);
     }
 

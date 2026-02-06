@@ -16,9 +16,9 @@ import au.com.mineauz.minigamesregions.*;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemType;
@@ -51,7 +51,7 @@ public class TimedTriggerAction extends AAction implements Listener {
      */
     private static final @NotNull Map<@NotNull Minigame, @NotNull Collection<BukkitTask>> globalTasks = new HashMap<>();
 
-    protected TimedTriggerAction(final @NotNull NamespacedKey key) {
+    protected TimedTriggerAction(final @NotNull Key key) {
         super(key);
 
         Bukkit.getPluginManager().registerEvents(this, Main.getPlugin());

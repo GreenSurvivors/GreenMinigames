@@ -1,19 +1,26 @@
 package au.com.mineauz.minigames.mechanics;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -21,12 +28,24 @@ import java.util.List;
 
 public class PlayerKillsMechanic extends AGameMechanic {
 
-    protected PlayerKillsMechanic() {
+
+    public PlayerKillsMechanic(final @NotNull Minigames plugin, final @NotNull Key key, final @NotNull Minigame minigame) {
+        super(plugin, key, minigame);
     }
 
     @Override
-    public @NotNull String getMechanicName() {
-        return "kills";
+    public void save(@NotNull CommentedConfigurationNode config) throws SerializationException {
+
+    }
+
+    @Override
+    public void load(@NotNull CommentedConfigurationNode config) throws ConfigurateException {
+
+    }
+
+    @Override
+    public boolean useSeparateConfig() {
+        return false;
     }
 
     @Override
@@ -35,42 +54,42 @@ public class PlayerKillsMechanic extends AGameMechanic {
     }
 
     @Override
-    public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
+    public boolean checkCanStart(@Nullable MinigamePlayer caller) {
         return true;
     }
 
     @Override
-    public boolean displayMechanicSettings(@NotNull Minigame minigame, @NotNull Menu previous) {
-        return false;
+    public @Nullable MenuItemPage displayMechanicSettings(@NotNull Menu previous) {
+        return null;
     }
 
     @Override
-    public void startMinigame(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
+    public void startMinigame(@Nullable MinigamePlayer caller) {
     }
 
     @Override
-    public void stopMinigame(@NotNull Minigame minigame) {
+    public void stopMinigame() {
     }
 
     @Override
-    public void onJoinMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player) {
+    public void onJoinMinigame(@NotNull MinigamePlayer player) {
     }
 
     @Override
-    public void quitMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player,
+    public void quitMinigame(@NotNull MinigamePlayer player,
                              boolean forced) {
     }
 
     @Override
-    public void endMinigame(@NotNull Minigame minigame, @NotNull List<@NotNull MinigamePlayer> winners,
+    public void endMinigame(@NotNull List<@NotNull MinigamePlayer> winners,
                             @NotNull List<@NotNull MinigamePlayer> losers) {
     }
 
     @EventHandler
-    private void playerAttackPlayer(@NotNull PlayerDeathEvent event) {
+    private void playerAttackPlayer(final @NotNull PlayerDeathEvent event) {
+        final @NotNull MinigamePlayerManager playerManager = plugin.getPlayerManager();
         final @NotNull MinigamePlayer mgPlayerWhoDied = playerManager.getMinigamePlayer(event.getEntity());
-        final Minigame mgm = mgPlayerWhoDied.getMinigame();
-        if (mgPlayerWhoDied.isInMinigame() && mgm.getMechanicName().equals(getMechanicName())) {
+        if (minigame.equals(mgPlayerWhoDied.getMinigame())) {
             final @NotNull MinigamePlayer attacker;
             if (mgPlayerWhoDied.getPlayer().getKiller() != null) {
                 attacker = playerManager.getMinigamePlayer(mgPlayerWhoDied.getPlayer().getKiller());
@@ -81,45 +100,45 @@ public class PlayerKillsMechanic extends AGameMechanic {
                 return;
             }
 
-            if (!mgm.equals(attacker.getMinigame())) {
+            if (!minigame.equals(attacker.getMinigame())) {
                 return;
             }
 
             if (mgPlayerWhoDied.getTeam() == null) {
                 attacker.addScore();
-                mgm.setScore(attacker, attacker.getScore());
+                minigame.setScore(attacker, attacker.getScore());
 
-                if (mgm.getMaxScore() != 0 && attacker.getScore() >= mgm.getMaxScorePerPlayer()) {
-                    List<MinigamePlayer> losers = new ArrayList<>(mgm.getPlayers().size() - 1);
-                    List<MinigamePlayer> winner = new ArrayList<>(1);
+                if (minigame.getMaxScore() != 0 && attacker.getScore() >= minigame.getMaxScorePerPlayer()) {
+                    final @NotNull List<@NotNull MinigamePlayer> losers = new ArrayList<>(minigame.getPlayers().size() - 1);
+                    final @NotNull List<MinigamePlayer> winner = new ArrayList<>(1);
                     winner.add(attacker);
-                    for (MinigamePlayer player : mgm.getPlayers()) {
+                    for (final @NotNull MinigamePlayer player : minigame.getPlayers()) {
                         if (player != attacker)
                             losers.add(player);
                     }
-                    playerManager.endMinigame(mgm, winner, losers);
+                    playerManager.endMinigame(minigame, winner, losers);
                 }
             } else {
-                Team team = mgPlayerWhoDied.getTeam();
-                Team ateam = attacker.getTeam();
+                final Team team = mgPlayerWhoDied.getTeam();
+                final Team attakerTeam = attacker.getTeam();
 
-                if (team != ateam) {
+                if (team != attakerTeam) {
                     attacker.addScore();
-                    mgm.setScore(attacker, attacker.getScore());
+                    minigame.setScore(attacker, attacker.getScore());
 
-                    ateam.addScore();
-                    if (mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()) {
-                        MinigameMessageManager.sendMinigameMessage(mgm, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_KILLS_FINALKILL,
+                    attakerTeam.addScore();
+                    if (minigame.getMaxScore() != 0 && minigame.getMaxScorePerPlayer() <= attakerTeam.getScore()) {
+                        MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_KILLS_FINALKILL,
                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), attacker.displayName()),
                             Placeholder.component(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayerWhoDied.displayName())));
 
-                        List<MinigamePlayer> w = new ArrayList<>(ateam.getPlayers());
-                        List<MinigamePlayer> l = new ArrayList<>(mgm.getPlayers().size() - ateam.getPlayers().size());
-                        for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
-                            if (t != ateam)
-                                l.addAll(t.getPlayers());
+                        final @NotNull List<@NotNull MinigamePlayer> winners = new ArrayList<>(attakerTeam.getPlayers());
+                        final @NotNull List<@NotNull MinigamePlayer> losers = new ArrayList<>(minigame.getPlayers().size() - attakerTeam.getPlayers().size());
+                        for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
+                            if (t != attakerTeam)
+                                losers.addAll(t.getPlayers());
                         }
-                        plugin.getPlayerManager().endMinigame(mgm, w, l);
+                        playerManager.endMinigame(minigame, winners, losers);
                     }
                 }
             }
@@ -127,31 +146,26 @@ public class PlayerKillsMechanic extends AGameMechanic {
     }
 
     @EventHandler
-    private void playerSuicide(@NotNull PlayerDeathEvent event) {
-        MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getEntity());
-        if (mgPlayer.isInMinigame() &&
-            (mgPlayer.getPlayer().getKiller() == null || mgPlayer.getPlayer().getKiller() == mgPlayer.getPlayer()) &&
-            mgPlayer.getMinigame().hasStarted()) {
+    private void playerSuicide(final @NotNull PlayerDeathEvent event) {
+        MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(event.getEntity());
+        if (minigame.equals(mgPlayer.getMinigame())) {
+            if ((mgPlayer.getPlayer().getKiller() == null || mgPlayer.getPlayer().getKiller() == mgPlayer.getPlayer()) &&
+                minigame.hasStarted()) {
 
-            final Minigame mgm = mgPlayer.getMinigame();
-            if (mgm.getMechanicName().equals(getMechanicName())) {
                 mgPlayer.takeScore();
-                mgm.setScore(mgPlayer, mgPlayer.getScore());
-                if (mgm.isTeamGame())
+                minigame.setScore(mgPlayer, mgPlayer.getScore());
+                if (minigame.isTeamGame())
                     mgPlayer.getTeam().setScore(mgPlayer.getTeam().getScore() - 1);
             }
         }
     }
 
     @EventHandler
-    public void playerAutoBalance(@NotNull PlayerDeathEvent event) {
-        MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getEntity());
-        if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isTeamGame()) {
-            Minigame mgm = mgPlayer.getMinigame();
+    public void playerAutoBalance(final @NotNull PlayerDeathEvent event) {
+        final @NotNull MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(event.getEntity());
 
-            if (mgm.getMechanicName().equals(getMechanicName())) {
-                autoBalanceOnDeath(mgPlayer, mgm);
-            }
+        if (minigame.isTeamGame() && minigame.equals(mgPlayer.getMinigame())) {
+            autoBalanceOnDeath(mgPlayer, minigame);
         }
     }
 }

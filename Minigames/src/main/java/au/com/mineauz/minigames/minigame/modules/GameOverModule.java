@@ -11,7 +11,6 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.TypeDependentDisplayData;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -28,7 +27,6 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SequencedCollection;
 
 public class GameOverModule extends AMinigameModule {
     private final @NotNull Minigames plugin = Minigames.getPlugin();
@@ -46,7 +44,7 @@ public class GameOverModule extends AMinigameModule {
     }
 
     public static @Nullable GameOverModule getMinigameModule(@NotNull Minigame mgm) {
-        return ((GameOverModule) mgm.getModule(MgModules.GAME_OVER.getKey()));
+        return ((GameOverModule) mgm.getModule(MgDefaultModules.GAME_OVER.getKey()));
     }
 
     @Override
@@ -69,8 +67,8 @@ public class GameOverModule extends AMinigameModule {
     }
 
     @Override
-    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu previous) {
-        Menu menu = new Menu(6, MgMenuLangKey.MENU_GAMEOVER_NAME, previous.getViewer());
+    public void addEditMenuOptions(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_GAMEOVER_NAME, previous.getIntendedViewer());
         menu.addItem(timer.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_GAMEOVER_TIME_NAME, 0L, null));
 
         menu.addItem(invincible.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_GAMEOVER_INVINCIBILITY_NAME));
@@ -81,8 +79,6 @@ public class GameOverModule extends AMinigameModule {
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         previous.addItem(new MenuItemPage(ItemType.OAK_DOOR, MgMenuLangKey.MENU_GAMEOVER_NAME, menu));
-
-        return null;
     }
 
     public void startEndGameTimer() {

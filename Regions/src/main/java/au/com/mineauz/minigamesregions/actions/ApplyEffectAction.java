@@ -12,6 +12,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -33,7 +34,7 @@ public class ApplyEffectAction extends AAction {
     private final @NotNull IntegerFlag amp = new IntegerFlag("amplifier", 1);
     private @Nullable PotionEffectType type = null;
 
-    protected ApplyEffectAction(final @NotNull NamespacedKey key) {
+    protected ApplyEffectAction(final @NotNull Key key) {
         super(key);
     }
 

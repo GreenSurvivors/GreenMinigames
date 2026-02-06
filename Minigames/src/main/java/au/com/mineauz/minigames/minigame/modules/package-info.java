@@ -1,4 +1,4 @@
 /**
- * Game modules that can be added, some are mechanic dependent
+ * Game modules that can be added
  */
 package au.com.mineauz.minigames.minigame.modules;

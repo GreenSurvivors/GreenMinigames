@@ -7,24 +7,38 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.EnumSet;
 import java.util.List;
 
 public class LivesMechanic extends AGameMechanic {
 
-    protected LivesMechanic() {
+    public LivesMechanic(final @NotNull Minigames plugin, final @NotNull Key key, final @NotNull Minigame minigame) {
+        super(plugin, key, minigame);
     }
 
     @Override
-    public @NotNull String getMechanicName() {
-        return "lives";
+    public void save(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    }
+
+    @Override
+    public void load(@NotNull CommentedConfigurationNode config) throws ConfigurateException {
+    }
+
+    @Override
+    public boolean useSeparateConfig() {
+        return false;
     }
 
     @Override
@@ -33,13 +47,13 @@ public class LivesMechanic extends AGameMechanic {
     }
 
     @Override
-    public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
+    public boolean checkCanStart(@Nullable MinigamePlayer caller) {
         if (minigame.getLives() > 0) {
             return true;
         }
 
         if (caller == null) {
-            Minigames.getPlugin().getComponentLogger().warn("The Minigame \"" + minigame.getName() + "\" must have more than 0 lives to use this type");
+            plugin.getComponentLogger().warn("The Minigame \"" + minigame.getName() + "\" must have more than 0 lives to use this type");
         } else {
             MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_LIVES_ERROR_NOLIVES);
         }
@@ -47,40 +61,39 @@ public class LivesMechanic extends AGameMechanic {
     }
 
     @Override
-    public boolean displayMechanicSettings(@NotNull Minigame minigame, @NotNull Menu previous) {
-        return false;
+    public @Nullable MenuItemPage displayMechanicSettings(@NotNull Menu previous) {
+        return null;
     }
 
     @Override
-    public void startMinigame(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
+    public void startMinigame(@Nullable MinigamePlayer caller) {
     }
 
     @Override
-    public void stopMinigame(@NotNull Minigame minigame) {
+    public void stopMinigame() {
     }
 
     @Override
-    public void onJoinMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player) {
+    public void onJoinMinigame(@NotNull MinigamePlayer player) {
     }
 
     @Override
-    public void quitMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer player,
+    public void quitMinigame(@NotNull MinigamePlayer player,
                              boolean forced) {
     }
 
     @Override
-    public void endMinigame(@NotNull Minigame minigame, @NotNull List<@NotNull MinigamePlayer> winners,
+    public void endMinigame(@NotNull List<@NotNull MinigamePlayer> winners,
                             @NotNull List<@NotNull MinigamePlayer> losers) {
     }
 
     @EventHandler
-    private void minigameStart(@NotNull StartMinigameEvent event) {
-        if (event.getMinigame().getMechanicName().equals(getMechanicName())) {
-            final List<MinigamePlayer> players = event.getPlayers();
-            final Minigame minigame = event.getMinigame();
+    private void minigameStart(final @NotNull StartMinigameEvent event) {
+        if (minigame.equals(event.getMinigame())) {
+            final @NotNull List<@NotNull MinigamePlayer> players = event.getPlayers();
             for (MinigamePlayer player : players) {
                 if (Math.abs(minigame.getLives()) < Integer.MAX_VALUE) {
-                    int lives = minigame.getLives();
+                    final int lives = minigame.getLives();
                     player.setScore(lives);
                     minigame.setScore(player, lives);
                 } else {
@@ -92,9 +105,9 @@ public class LivesMechanic extends AGameMechanic {
     }
 
     @EventHandler
-    private void playerDeath(@NotNull PlayerDeathEvent event) {
-        MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getEntity());
-        if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getMechanicName().equals(getMechanicName())) {
+    private void playerDeath(final @NotNull PlayerDeathEvent event) {
+        final @NotNull MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(event.getEntity());
+        if (minigame.equals(mgPlayer.getMinigame())) {
             mgPlayer.addScore(-1);
             mgPlayer.getMinigame().setScore(mgPlayer, mgPlayer.getScore());
         }

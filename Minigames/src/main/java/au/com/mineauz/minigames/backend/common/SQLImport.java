@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.backend.both;
+package au.com.mineauz.minigames.backend.common;
 
 import au.com.mineauz.minigames.backend.BackendImportCallback;
 import au.com.mineauz.minigames.backend.ConnectionHandler;

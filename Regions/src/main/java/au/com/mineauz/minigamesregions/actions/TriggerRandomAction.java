@@ -13,8 +13,8 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +30,7 @@ public class TriggerRandomAction extends AAction {
     private final IntegerFlag timesTriggered = new IntegerFlag("timesTriggered", 1);
     private final BooleanFlag allowSameTrigger = new BooleanFlag("randomPerTrigger", false); // todo datafixerupper rename
 
-    protected TriggerRandomAction(final @NotNull NamespacedKey key) {
+    protected TriggerRandomAction(final @NotNull Key key) {
         super(key);
     }
 

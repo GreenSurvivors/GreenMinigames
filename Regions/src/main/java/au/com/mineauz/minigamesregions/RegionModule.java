@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -10,6 +9,7 @@ import au.com.mineauz.minigames.minigame.modules.AMinigameModule;
 import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamesKey;
 import au.com.mineauz.minigames.objects.safelocation.SafeFineLocation;
 import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import au.com.mineauz.minigamesregions.actions.ActionRegistry;
@@ -106,7 +106,7 @@ public class RegionModule extends AMinigameModule {
             for (IAction act : ex.getActions()) {
                 final @NotNull CommentedConfigurationNode actionNode = executorsNode.node("actions", actionNumber++);
 
-                actionNode.node( "type").set(act.getKey());
+                actionNode.node("type").set(act.key());
                 act.saveArguments(actionNode.node("arguments"));
             }
 
@@ -186,7 +186,7 @@ public class RegionModule extends AMinigameModule {
                                 }
 
                                 if (action == null) {
-                                    final @Nullable NamespacedKey key = NamespacedKey.fromString(typeStr.toLowerCase(Locale.ROOT), Minigames.getPlugin());
+                                    final @Nullable Key key = MinigamesKey.fromString(typeStr.toLowerCase(Locale.ROOT));
 
                                     if (key != null) {
                                         action = ActionRegistry.getActionByKey(key);
@@ -362,14 +362,12 @@ public class RegionModule extends AMinigameModule {
 
 
     @Override
-    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu menu) {
+    public void addEditMenuOptions(final @NotNull Menu menu) {
         final @NotNull MenuItemCustom menuItemCustom = new MenuItemCustom(ItemType.DIAMOND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME));
         menuItemCustom.setClick(() -> {
             displayMenu(menu.getViewer(), menu);
             return ItemStack.empty();
         });
         menu.addItem(menuItemCustom);
-
-        return null;
     }
 }

@@ -9,8 +9,8 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -90,7 +90,7 @@ public class FinishSign extends AMinigameSign {
                                 l.remove(mgPlayer);
                                 plugin.getPlayerManager().endMinigame(minigame, w, l);
                             } else
-                                plugin.getPlayerManager().endMinigame(mgPlayer);
+                                plugin.getPlayerManager().winMinigame(mgPlayer);
                         }
 
                         plugin.getPlayerManager().partyMode(mgPlayer, 3, 10L);
@@ -118,7 +118,7 @@ public class FinishSign extends AMinigameSign {
                         l.remove(mgPlayer);
                         plugin.getPlayerManager().endMinigame(minigame, w, l);
                     } else
-                        plugin.getPlayerManager().endMinigame(mgPlayer);
+                        plugin.getPlayerManager().winMinigame(mgPlayer);
                 }
                 plugin.getPlayerManager().partyMode(mgPlayer);
             }

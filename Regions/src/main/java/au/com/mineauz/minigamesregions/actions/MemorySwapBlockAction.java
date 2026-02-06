@@ -16,10 +16,10 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.util.RegionUtils;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockType;
@@ -37,16 +37,16 @@ import java.util.stream.Collectors;
  * This class provides the methods necessary to fill a gameboard with pairs of randomly placed
  * blocks. It's a region action and can as such only run inside a region.
  * <p>
- * The user can define two options in the menu. A) the matchBlock, the block that is the placeholder
- * in the game and which will be replaced by the random blocks B) the white/blacklist, which restricts or removes
- * blocks from the given blockPool to provide a free choice in gameboard design. Removed blocks will
- * not appear on the game board.
+ * The user can define two options in the menu.
+ * A) the matchBlock, the block that is the placeholder in the game and which will be replaced by the random blocks.
+ * B) the white/blacklist, which restricts or removes blocks from the given blockPool to provide a free choice in gameboard design.
+ * Removed blocks will not appear on the game board.
  */
 public class MemorySwapBlockAction extends AAction {
     /*
      * Building a blockPool to provide the blocks that could be used in the game.
      */
-    private static final @NotNull SequencedSet<BlockType> blockPool = new LinkedHashSet<>();
+    private static final @NotNull SequencedSet<@NotNull BlockType> blockPool = new LinkedHashSet<>();
 
     /*
      * Filling the block pool with blocks than can be pulled and pushed by pistons manually
@@ -204,7 +204,7 @@ public class MemorySwapBlockAction extends AAction {
     // is it a white or a blacklist?
     private final BooleanFlag whitelistMode = new BooleanFlag("whitelistmode", false);
 
-    protected MemorySwapBlockAction(final @NotNull NamespacedKey key) {
+    protected MemorySwapBlockAction(final @NotNull Key key) {
         super(key);
     }
 
@@ -214,7 +214,7 @@ public class MemorySwapBlockAction extends AAction {
      *
      * @return ArrayList<PhantomBlock>
      */
-    private @NotNull SequencedSet<@NotNull BlockType> cleanUpBlockPool() {
+    private @NotNull SequencedSet<@NotNull BlockType> cleanBlockPool() {
         if (wbList.getFlag().isEmpty()) {
             return blockPool;
         }
@@ -262,8 +262,8 @@ public class MemorySwapBlockAction extends AAction {
     }
 
     /**
-     * This will search for a certain type of block (user definable over the menu) and replaced with a
-     * random block from the block pool minus the blacklisted blocks (also user definable over the
+     * This will search for a certain type of block (user definable via the menu) and replaced with a
+     * random block from the block pool minus the blacklisted blocks (also user definable via the
      * menu).
      * <p>
      * The block will always have a pair unless there is an odd number of blocks to replace. If there
@@ -274,7 +274,7 @@ public class MemorySwapBlockAction extends AAction {
     @Override
     public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
         debug(mgPlayer, region);
-        final SequencedSet<@NotNull BlockType> localBockTypePool = cleanUpBlockPool();
+        final SequencedSet<@NotNull BlockType> localBockTypePool = cleanBlockPool();
         final List<@NotNull Block> blocksToSwap = new ArrayList<>();
 
         //Collects all blocks to be swapped

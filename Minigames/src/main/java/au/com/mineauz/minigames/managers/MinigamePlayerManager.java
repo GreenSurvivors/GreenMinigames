@@ -12,11 +12,14 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.mechanics.AGameMechanic;
-import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.*;
+import au.com.mineauz.minigames.minigame.modules.GameOverModule;
+import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import au.com.mineauz.minigames.minigame.modules.ResourcePackModule;
+import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
@@ -52,14 +55,14 @@ import java.util.*;
  * Manager Class of all players playing Minigames.
  **/
 public class MinigamePlayerManager {
-    private static final @NotNull Minigames plugin = Minigames.getPlugin();
+    private final @NotNull Minigames plugin;
     private final @NotNull Map<@NotNull UUID, @NotNull MinigamePlayer> minigamePlayers = new HashMap<>();
     private final @NotNull List<@NotNull MinigamePlayer> applyingPack = new ArrayList<>();
-    private final @NotNull MinigameManager mgManager = plugin.getMinigameManager();
     private boolean partyMode = false;
     private @NotNull List<@NotNull String> deniedCommands = new ArrayList<>();
 
-    public MinigamePlayerManager() {
+    public MinigamePlayerManager(final @NotNull Minigames plugin) {
+        this.plugin = plugin;
     }
 
     public @NotNull List<@NotNull MinigamePlayer> getApplyingPack() {
@@ -78,7 +81,8 @@ public class MinigamePlayerManager {
             plugin.getComponentLogger().info("Join Event was cancelled: " + event);
             return;
         }
-        if (!mgManager.minigameStartStateCheck(minigame, mgPlayer)) return;
+        final @NotNull MinigameManager minigameManager = plugin.getMinigameManager();
+        if (!minigameManager.minigameStartStateCheck(minigame, mgPlayer)) return;
         //Do betting stuff
         if (isBetting && !handleMoneyBet(minigame, mgPlayer, betAmount)) {
             return;
@@ -96,7 +100,7 @@ public class MinigamePlayerManager {
             return;
         }
         //Check if Minigame has a lobby and teleport them there
-        if (!mgManager.teleportPlayerOnJoin(minigame, mgPlayer)) {
+        if (!minigameManager.teleportPlayerOnJoin(minigame, mgPlayer)) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOLOBY);
             return;
         }
@@ -117,7 +121,7 @@ public class MinigamePlayerManager {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_DIVIDER_LARGE);
         }
         //Prepare regeneration region for rollback.
-        mgManager.addRegenDataToRecorder(minigame);
+        minigameManager.addRegenDataToRecorder(minigame);
         //Standardize player
         mgPlayer.storePlayerData();
         mgPlayer.setMinigame(minigame);
@@ -148,10 +152,10 @@ public class MinigamePlayerManager {
             if (mod != null) mod.startTimeLoop();
         }
         //Call Type specific join
-        mgManager.minigameType(type).joinMinigame(mgPlayer, minigame);
+        minigameManager.minigameType(type).joinMinigame(mgPlayer, minigame);
 
         //Call Mechanic specific join
-        minigame.getMechanic().onJoinMinigame(minigame, mgPlayer);
+        minigame.getMechanic().onJoinMinigame(mgPlayer);
 
         //Send other players the join message.
         MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(
@@ -348,16 +352,16 @@ public class MinigamePlayerManager {
         minigame.setState(MinigameState.STARTED);
     }
 
-    public @Nullable List<@NotNull MinigamePlayer> balanceGame(@NotNull Minigame game) {
-        List<MinigamePlayer> result = null;
+    public @Nullable List<@NotNull MinigamePlayer> balanceGame(final @NotNull Minigame game) {
         if (game.isTeamGame()) {
-            AGameMechanic mech = GameMechanics.getGameMechanic(game.getMechanicName());
+            final @Nullable AGameMechanic mech = game.getMechanic();
             if (mech != null) {
                 List<MinigamePlayer> players = new ArrayList<>(game.getPlayers());
-                result = mech.balanceTeam(players, game);
+                return mech.balanceTeam(players);
             }
         }
-        return result;
+
+        return null;
     }
 
     public void teleportToStart(@NotNull Minigame minigame) {
@@ -380,7 +384,7 @@ public class MinigamePlayerManager {
     public @Nullable ResourcePack getResourcePack(final @NotNull Minigame game) {
         ResourcePackModule module = ResourcePackModule.getMinigameModule(game);
         if (module != null && module.isEnabled()) {
-            ResourcePack pack = plugin.getResourceManager().getResourcePack(module.getResourcePackName());
+            ResourcePack pack = plugin.getResourcePackManager().getResourcePack(module.getResourcePackName());
             if (pack != null && pack.isValid()) {
                 return pack;
             } else {
@@ -391,7 +395,7 @@ public class MinigamePlayerManager {
     }
 
     public void clearResourcePack(final @NotNull Minigame game) {
-        ResourcePack pack = plugin.getResourceManager().getResourcePack(
+        ResourcePack pack = plugin.getResourcePackManager().getResourcePack(
             MinigameMessageManager.getStrippedMgMessage(MgMiscLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME)); //todo ressource pack manager - allow multiple!
         if (pack != null && pack.isValid()) {
             for (MinigamePlayer mgPlayer : game.getPlayers()) {
@@ -591,10 +595,10 @@ public class MinigamePlayerManager {
                 }
 
                 //Call Types quit.
-                mgManager.minigameType(minigame.getType()).quitMinigame(mgPlayer, minigame, forced);
+                plugin.getMinigameManager().minigameType(minigame.getType()).quitMinigame(mgPlayer, minigame, forced);
 
                 //Call Mechanic quit.
-                minigame.getMechanic().quitMinigame(minigame, mgPlayer, forced);
+                minigame.getMechanic().quitMinigame(mgPlayer, forced);
 
                 //Prepare player for quit
                 if (mgPlayer.getPlayer().getVehicle() != null) {
@@ -687,7 +691,7 @@ public class MinigamePlayerManager {
                         minigame.setMpBets(null);
                     }
 
-                    mgManager.clearClaimedScore(minigame);
+                    plugin.getMinigameManager().clearClaimedScore(minigame);
 
                     WeatherTimeModule mod = WeatherTimeModule.getMinigameModule(minigame);
                     if (mod != null) {
@@ -721,7 +725,7 @@ public class MinigamePlayerManager {
                 mgPlayer.updateInventory();
             }
             if (ResourcePackModule.getMinigameModule(minigame).isEnabled()) {
-                if (mgPlayer.applyResourcePack(plugin.getResourceManager().getResourcePack("empty"))) {
+                if (mgPlayer.applyResourcePack(plugin.getResourcePackManager().getResourcePack("empty"))) {
                     plugin.getComponentLogger().warn("Could not apply empty resource pack to " + mgPlayer.getPlayer().getName());
                 } else {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_RESSOURCEPACK_REMOVE);
@@ -736,7 +740,8 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void endMinigame(@NotNull MinigamePlayer mgPlayer) {
+    /// if the player is currently in a minigame, it will end with the player as a winner.
+    public void winMinigame(final @NotNull MinigamePlayer mgPlayer) {
         if (mgPlayer.isInMinigame()) {
             List<MinigamePlayer> winner = List.of(mgPlayer);
             List<MinigamePlayer> losers = new ArrayList<>();
@@ -754,7 +759,7 @@ public class MinigamePlayerManager {
             winners = event.getWinners();
             losers = event.getLosers();
             //Call Mechanics End
-            minigame.getMechanic().endMinigame(minigame, winners, losers);
+            minigame.getMechanic().endMinigame(winners, losers);
 
             //Prepare split bet rewards
             double bets = 0;
@@ -873,16 +878,16 @@ public class MinigamePlayerManager {
                 gom.clearWinners();
             }
 
-            mgManager.clearClaimedScore(minigame);
+            plugin.getMinigameManager().clearClaimedScore(minigame);
 
             //Call Types End.
-            mgManager.minigameType(minigame.getType()).endMinigame(winners, losers, minigame);
+            plugin.getMinigameManager().minigameType(minigame.getType()).endMinigame(winners, losers, minigame);
             minigame.getScoreboardData().reload();
         }
     }
 
     public void broadcastEndGame(@NotNull List<@NotNull MinigamePlayer> winners, @NotNull Minigame minigame) { // todo to much hardcoded here
-        if (plugin.getConfig().getBoolean("broadcastCompletion") && minigame.isEnabled()) {
+        if (plugin.getConfig().getBoolean("broadcastCompletion") && minigame.isEnabled()) { // todo rename to broadcastGameEnd
             TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
             if (minigame.isTeamGame() && teamsModule != null) {
                 if (!winners.isEmpty() || teamsModule.getDefaultWinner() != null) {

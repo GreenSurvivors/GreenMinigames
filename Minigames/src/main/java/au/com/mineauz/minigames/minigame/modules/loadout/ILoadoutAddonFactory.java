@@ -1,6 +1,5 @@
-package au.com.mineauz.minigames.minigame.modules;
+package au.com.mineauz.minigames.minigame.modules.loadout;
 
-import au.com.mineauz.minigames.PlayerLoadout;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 

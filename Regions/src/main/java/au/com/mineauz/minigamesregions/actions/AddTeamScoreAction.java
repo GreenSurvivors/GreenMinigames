@@ -5,15 +5,15 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.*;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.team.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +27,7 @@ public class AddTeamScoreAction extends AScoreAction { // todo merge with addSco
     private final IntegerFlag score = new IntegerFlag("amount", 1);
     private final EnumFlag<TeamColor> team = new EnumFlag<>("team", TeamColor.NONE);
 
-    protected AddTeamScoreAction(final @NotNull NamespacedKey key) {
+    protected AddTeamScoreAction(final @NotNull Key key) {
         super(key);
     }
 

@@ -6,9 +6,8 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
-import au.com.mineauz.minigames.mechanics.GameMechanics;
+import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -18,8 +17,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class HintCommand extends ACommand { //todo make subcommands for all treasure hunt ones e.a. /minigames tr hint;  /minigames tr maxheight etc.
 
@@ -49,62 +47,67 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull String @NotNull [] args) {
-        MinigamePlayer player = PLUGIN.getPlayerManager().getMinigamePlayer((Player) sender);
-        if (args.length > 0) {
-            Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
+    public boolean onCommand(final @NotNull CommandSender sender,
+                             final @NotNull String @NotNull [] args) {
+        if (sender instanceof Player player) {
+        final @NotNull MinigamePlayer mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
+            if (args.length > 0) {
+                final @Nullable Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
-            if (mgm != null && mgm.getMinigameTimer() != null && mgm.getType() == MinigameType.GLOBAL &&
-                mgm.getMechanicName().equals(GameMechanics.MgMechanics.TREASUREHUNT.getMechanic().getMechanicName())) {
-                TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
-                if (thm != null && thm.hasTreasureLocation() && !thm.isTreasureFound()) {
-                    thm.getHints(player);
-                } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
-                }
-            } else if (mgm == null || mgm.getType() != MinigameType.GLOBAL) {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NOTTREASUREHUNT,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
-            }
-        } else {
-            List<Minigame> mgs = new ArrayList<>();
-            for (Minigame mg : PLUGIN.getMinigameManager().getAllMinigames().values()) {
-                if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals(GameMechanics.MgMechanics.TREASUREHUNT.getMechanic().getMechanicName())) {
-                    mgs.add(mg);
-                }
-            }
-            if (!mgs.isEmpty()) {
-                if (mgs.size() > 1) {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_HINT_LISTHUNTS,
-                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(),
-                            Component.join(JoinConfiguration.commas(true), mgs.stream().map(Minigame::getDisplayName).toList())));
-
-                } else {
-                    TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgs.getFirst());
-                    if (thm != null && thm.hasTreasureLocation() && !thm.isTreasureFound()) {
-                        thm.getHints(player);
+                if (minigame != null && minigame.getMinigameTimer() != null && minigame.getType() == MinigameType.GLOBAL &&
+                    minigame.getMechanic() instanceof final @NotNull TreasureHuntMechanic treasureHuntMechanic) {
+                    if (treasureHuntMechanic.hasTreasureLocation() && !treasureHuntMechanic.isTreasureFound()) {
+                        treasureHuntMechanic.getHints(mgPlayer);
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgs.getFirst().getName()));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     }
+                } else if (minigame == null || minigame.getType() != MinigameType.GLOBAL) {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NOTTREASUREHUNT,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NORUNNING);
+                final @NotNull SequencedMap<@NotNull Minigame, @NotNull TreasureHuntMechanic> minigames = new LinkedHashMap<>();
+                for (final @NotNull Minigame minigame : PLUGIN.getMinigameManager().getAllMinigames().values()) {
+                    if (minigame.getType() == MinigameType.GLOBAL && minigame.getMechanic() instanceof final @NotNull TreasureHuntMechanic treasureHuntMechanic) {
+                        minigames.put(minigame, treasureHuntMechanic);
+                    }
+                }
+                if (!minigames.isEmpty()) {
+                    if (minigames.size() > 1) {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_HINT_LISTHUNTS,
+                            Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(),
+                                Component.join(JoinConfiguration.commas(true), minigames.keySet().stream().map(Minigame::getDisplayName).toList())));
+
+                    } else {
+                        final @NotNull Map.Entry<@NotNull Minigame, @NotNull TreasureHuntMechanic> first = minigames.firstEntry();
+
+                        if (first.getValue().hasTreasureLocation() && !first.getValue().isTreasureFound()) {
+                            first.getValue().getHints(mgPlayer);
+                        } else {
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(),first.getKey().getName()));
+                        }
+                    }
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NORUNNING);
+                }
             }
+        } else {
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER);
         }
         return true;
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
-                                                         @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(final @NotNull CommandSender sender,
+                                                         final @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            List<String> mgs = new ArrayList<>();
-            for (Minigame mg : PLUGIN.getMinigameManager().getAllMinigames().values()) {
-                if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals(GameMechanics.MgMechanics.TREASUREHUNT.getMechanic().getMechanicName()))
-                    mgs.add(mg.getName());
+            final @NotNull List<String> mgs = new ArrayList<>();
+            for (final @NotNull Minigame minigame : PLUGIN.getMinigameManager().getAllMinigames().values()) {
+                if (minigame.getType() == MinigameType.GLOBAL && minigame.getMechanic() instanceof TreasureHuntMechanic) {
+                    mgs.add(minigame.getName());
+                }
             }
             return CommandDispatcher.tabCompleteMatch(mgs, args[0]);
         }

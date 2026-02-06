@@ -12,6 +12,7 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import com.mojang.serialization.DataResult;
 import io.papermc.paper.adventure.PaperAdventure;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -50,7 +51,7 @@ public class SpawnEntityAction extends AAction {
         return Bukkit.getWorlds().getFirst().createEntity(new Location(Bukkit.getWorlds().getFirst(), 0, 0, 0), Zombie.class).createSnapshot();
     }
 
-    protected SpawnEntityAction(final @NotNull NamespacedKey key) {
+    protected SpawnEntityAction(final @NotNull Key key) {
         super(key);
     }
 

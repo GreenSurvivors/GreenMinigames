@@ -74,8 +74,8 @@ public abstract class ACondition {
 
     public void debug(@NotNull Minigame mg) {
         if (Minigames.getPlugin().isDebugging()) {
-            Main.getPlugin().getComponentLogger().info("Cat " + this.getCategory() + " : " + this.getName() +
-                    " Check:" + mg.getName() + " mech: " + mg.getMechanicName() + "Condition:                     " + this);
+            Main.getPlugin().getComponentLogger().info("Cat " + getCategory() + " : " + getName() +
+                    " Check:" + mg.getName() + " mech: " + mg.getMechanic().key() + ", Condition:                     " + this);
         }
     }
 }

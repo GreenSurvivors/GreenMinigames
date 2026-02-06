@@ -1,15 +1,15 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.minigame.modules.loadout.LoadoutModule;
+import au.com.mineauz.minigames.minigame.modules.loadout.PlayerLoadout;
+import au.com.mineauz.minigames.minigame.modules.team.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -116,7 +116,7 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
         Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
 
         potionMenu.setPreviousPage(loadoutMenu);
-        potionMenu.addItem(new MenuItemStatusEffectAdd(MenuUtility.getCreateType(), MgMenuLangKey.MENU_STATUSEFFECTADD_NAME, loadout), potionMenu.getSize() - 1);
+        potionMenu.addItem(new MenuItemStatusEffectAdd(MenuUtility.createType(), MgMenuLangKey.MENU_STATUSEFFECTADD_NAME, loadout), potionMenu.getSize() - 1);
         potionMenu.addItem(menuItemBack, potionMenu.getSize() - 2);
 
         List<Component> description = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
@@ -132,7 +132,7 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
 
         loadoutMenu.addItem(new MenuItemSaveLoadoutPage(ItemType.CHEST, MgMenuLangKey.MENU_DISPLAYLOADOUT_SETTINGS_NAME, loadout, loadoutSettingsMenu), 42);
         loadoutMenu.addItem(new MenuItemSaveLoadoutPage(ItemType.POTION, MgMenuLangKey.MENU_DISPLAYLOADOUT_EFFECTS_NAME, loadout, potionMenu), 43);
-        loadoutMenu.addItem(new MenuItemSaveLoadoutPage(MenuUtility.getSaveType(), MgMenuLangKey.MENU_DISPLAYLOADOUT_SAVE_NAME, loadout, getContainer()), 44);
+        loadoutMenu.addItem(new MenuItemSaveLoadoutPage(MenuUtility.saveType(), MgMenuLangKey.MENU_DISPLAYLOADOUT_SAVE_NAME, loadout, getContainer()), 44);
         final int numOfSlots = loadout.allowOffHand() ? 41 : 40;
         for (int i = numOfSlots; i < 42; i++) {
             loadoutMenu.addItem(new MenuItem((ItemType) null, Component.empty()), i);

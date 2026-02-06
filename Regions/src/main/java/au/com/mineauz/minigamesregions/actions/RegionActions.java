@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.Minigames;
-import org.bukkit.NamespacedKey;
+import au.com.mineauz.minigames.objects.MinigamesKey;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
@@ -48,11 +48,11 @@ public enum RegionActions implements ActionFactory {
     VELOCITY("VELOCITY", VelocityAction::new),
     RANDOM_FILLING("RANDOM_FILLING", RandomFillingAction::new);
 
-    private final @NotNull NamespacedKey key;
-    private final @NotNull Function<@NotNull NamespacedKey, @NotNull IAction> constructor;
+    private final @NotNull Key key;
+    private final @NotNull Function<@NotNull Key, @NotNull IAction> constructor;
 
-    RegionActions(@NotNull String keyValue, @NotNull Function<@NotNull NamespacedKey, @NotNull IAction> constructor) {
-        this.key = new NamespacedKey(Minigames.getPlugin(), keyValue); // key value will be lower cased by NamespacedKey, I'm letting the enum contain the legacy formatting
+    RegionActions(@NotNull String keyValue, @NotNull Function<@NotNull Key, @NotNull IAction> constructor) {
+        this.key = MinigamesKey.minigames(keyValue); // key value will be lower cased by NamespacedKey, I'm letting the enum contain the legacy formatting
         this.constructor = constructor;
     }
 
@@ -62,7 +62,7 @@ public enum RegionActions implements ActionFactory {
     }
 
     @Override
-    public @NotNull NamespacedKey getKey() {
+    public @NotNull Key key() {
         return key;
     }
 }

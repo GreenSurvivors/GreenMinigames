@@ -51,7 +51,7 @@ public class MenuItemNode extends MenuItem { // todo merge with MenuItemRegion
         if (previousPage != null) {
             menu.addItem(new MenuItemBack(previousPage), menu.getSize() - 9);
         }
-        menu.addItem(new MenuItemNodeExecutorAdd(MenuUtility.getCreateType(),
+        menu.addItem(new MenuItemNodeExecutorAdd(MenuUtility.createType(),
                 RegionLangKey.MENU_EXECUTOR_ADD_NAME, node), menu.getSize() - 1);
         menu.addItems(items);
 

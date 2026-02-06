@@ -36,9 +36,9 @@ public class MenuItem {
     public MenuItem(@Nullable ItemType displayType, final @Nullable Component name, final @Nullable List<@NotNull Component> description) {
         if (displayType == null) {
             if (description == null) {
-                displayType = MenuUtility.getSlotFillerType();
+                displayType = MenuUtility.slotFillerType();
             } else {
-                displayType = MenuUtility.getUnknownDisplayType();
+                displayType = MenuUtility.unknownType();
             }
         }
         this.displayItem = displayType.createItemStack();

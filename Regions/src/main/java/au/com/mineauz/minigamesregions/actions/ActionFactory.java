@@ -1,10 +1,8 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.NotNull;
 
-public interface ActionFactory {
+public interface ActionFactory extends Keyed {
     @NotNull IAction makeNewAction();
-
-    @NotNull NamespacedKey getKey();
 }

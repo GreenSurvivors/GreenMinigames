@@ -197,7 +197,7 @@ public class Region extends MgRegion implements ActionExecutorHolder {
     @Override
     public void execute(@NotNull ActionExecutor exec, @NotNull MinigamePlayer player) {
         for (IAction act : exec.getActions()) {
-            if (!enabled && !act.getKey().equals(RegionActions.SET_ENABLED.getKey())) {
+            if (!enabled && !act.key().equals(RegionActions.SET_ENABLED.key())) {
                 continue;
             }
 
@@ -214,10 +214,10 @@ public class Region extends MgRegion implements ActionExecutorHolder {
         if (players.isEmpty()) {
             return;
         }
-        // There is no condition, which is not player specific, so we can just execute all executors.
-        for (ActionExecutor exec : executors) {
-            for (IAction act : exec.getActions()) {
-                if (!enabled && !act.getKey().equals(RegionActions.SET_ENABLED.getKey())) {
+        // There is no non-player-specific condition, so we can just execute all executors.
+        for (final @NotNull ActionExecutor exec : executors) {
+            for (final @NotNull IAction act : exec.getActions()) {
+                if (!enabled && !act.key().equals(RegionActions.SET_ENABLED.key())) {
                     continue;
                 }
                 try {

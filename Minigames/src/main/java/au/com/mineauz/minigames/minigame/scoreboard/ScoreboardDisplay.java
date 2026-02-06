@@ -1,9 +1,10 @@
-package au.com.mineauz.minigames.minigame;
+package au.com.mineauz.minigames.minigame.scoreboard;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.safelocation.SafeBlockLocation;
 import au.com.mineauz.minigames.stats.*;
@@ -307,7 +308,7 @@ public class ScoreboardDisplay {
             }
         }, ScoreboardOrder.class));
 
-        setupMenu.addItem(new MenuItemScoreboardSave(MenuUtility.getCreateType(), MgMenuLangKey.MENU_SCOREBOARD_CREATE_NAME, this),
+        setupMenu.addItem(new MenuItemScoreboardSave(MenuUtility.createType(), MgMenuLangKey.MENU_SCOREBOARD_CREATE_NAME, this),
             setupMenu.getSize() - 1);
         setupMenu.displayMenu(player);
     }

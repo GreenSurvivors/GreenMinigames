@@ -21,13 +21,15 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class ResourcePackManager { //todo work with multiple ressource packs
-    private static final @NotNull Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
-    private final @NotNull Minigames plugin = Minigames.getPlugin();
+    private final @NotNull Minigames plugin;
+    private final @NotNull Path resourceDir;
     private final @NotNull Map<@NotNull String, @NotNull ResourcePack> resources = new HashMap<>();
     private boolean enabled = true;
     private MinigameSave config;
 
-    public ResourcePackManager() {
+    public ResourcePackManager(final @NotNull Minigames plugin) {
+        this.plugin = plugin;
+        this.resourceDir = Paths.get(plugin.getDataFolder().toString(), "resources");
         if (!Files.notExists(resourceDir))
             try {
                 Path path = Files.createDirectories(resourceDir);
@@ -42,7 +44,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
             }
     }
 
-    public static @NotNull Path getResourceDir() {
+    public @NotNull Path getResourceDir() {
         return resourceDir;
     }
 

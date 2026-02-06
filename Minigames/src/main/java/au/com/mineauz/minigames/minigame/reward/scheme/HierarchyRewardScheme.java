@@ -78,7 +78,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
             submenu.addItem(new MenuItemRewardPair(ItemType.CHEST, rewards, key));
         }
 
-        submenu.addItem(new MenuItemAddReward(MenuUtility.getCreateType(), MgMenuLangKey.MENU_REWARD_SET_ADD_NAME, rewards), submenu.getSize() - 2);
+        submenu.addItem(new MenuItemAddReward(MenuUtility.createType(), MgMenuLangKey.MENU_REWARD_SET_ADD_NAME, rewards), submenu.getSize() - 2);
         submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 1);
 
         submenu.setPreviousPage(parent);

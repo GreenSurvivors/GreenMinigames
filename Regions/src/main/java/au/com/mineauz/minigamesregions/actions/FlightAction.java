@@ -11,8 +11,8 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +25,7 @@ public class FlightAction extends AAction {
     private final BooleanFlag setFly = new BooleanFlag("setFlying", true);
     private final BooleanFlag startFly = new BooleanFlag("startFly", false);
 
-    protected FlightAction(final @NotNull NamespacedKey key) {
+    protected FlightAction(final @NotNull Key key) {
         super(key);
     }
 

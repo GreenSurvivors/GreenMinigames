@@ -15,9 +15,9 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +31,7 @@ public class MessageAction extends AAction {
     private final StringFlag msg = new StringFlag("message", "Hello World");
     private final EnumFlag<MinigameMessageType> messageType = new EnumFlag<>("messageType", MinigameMessageType.INFO);
 
-    protected MessageAction(final @NotNull NamespacedKey key) {
+    protected MessageAction(final @NotNull Key key) {
         super(key);
     }
 

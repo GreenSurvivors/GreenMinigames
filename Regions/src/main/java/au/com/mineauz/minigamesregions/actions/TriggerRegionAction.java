@@ -11,8 +11,8 @@ import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class TriggerRegionAction extends AAction {
     private final StringFlag region = new StringFlag("region", "None");
 
-    protected TriggerRegionAction(final @NotNull NamespacedKey key) {
+    protected TriggerRegionAction(final @NotNull Key key) {
         super(key);
     }
 

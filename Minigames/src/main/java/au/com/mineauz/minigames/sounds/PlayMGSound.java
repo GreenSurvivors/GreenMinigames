@@ -2,13 +2,12 @@ package au.com.mineauz.minigames.sounds;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.team.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayMGSound {
-
     private static final boolean shouldPlay = Minigames.getPlugin().getConfig().getBoolean("playSounds");
 
     public static void playSound(@NotNull MinigamePlayer mgPlayer, @NotNull MGSound sound) {

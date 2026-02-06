@@ -12,10 +12,10 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,7 @@ public class VelocityAction extends AAction {
     private final FloatFlag y = new FloatFlag("yv", 5f);
     private final FloatFlag z = new FloatFlag("zv", 0f);
 
-    protected VelocityAction(final @NotNull NamespacedKey key) {
+    protected VelocityAction(final @NotNull Key key) {
         super(key);
     }
 

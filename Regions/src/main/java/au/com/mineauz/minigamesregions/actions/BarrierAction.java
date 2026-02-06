@@ -7,9 +7,9 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import io.papermc.paper.math.Position;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class BarrierAction extends AAction {
 
-    protected BarrierAction(final @NotNull NamespacedKey key) {
+    protected BarrierAction(final @NotNull Key key) {
         super(key);
     }
 

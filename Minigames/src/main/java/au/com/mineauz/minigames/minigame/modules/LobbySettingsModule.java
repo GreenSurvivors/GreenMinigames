@@ -5,18 +5,19 @@ import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.key.Key;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SequencedCollection;
 
 public class LobbySettingsModule extends AMinigameModule {
     private final BooleanFlag canMoveOnPlayerWait = new BooleanFlag("canMovePlayerWait", true);
@@ -32,7 +33,7 @@ public class LobbySettingsModule extends AMinigameModule {
     }
 
     public static LobbySettingsModule getMinigameModule(Minigame mgm) {
-        return ((LobbySettingsModule) mgm.getModule(MgModules.LOBBY_SETTINGS.getKey()));
+        return ((LobbySettingsModule) mgm.getModule(MgDefaultModules.LOBBY_SETTINGS.getKey()));
     }
 
     @Override
@@ -123,30 +124,30 @@ public class LobbySettingsModule extends AMinigameModule {
     }
 
     @Override
-    public @Nullable SequencedCollection<@NotNull TypeDependentDisplayData> addEditMenuOptions(final @NotNull Menu superMenu) {
-        final @NotNull Menu lobbyMenu = new Menu(6, getMinigame().getDisplayName(), superMenu.getViewer());
-
-        final @NotNull List<@NotNull MenuItem> itemsLobby = new ArrayList<>(4);
-
-        itemsLobby.add(canInteractPlayerWait.getMenuItem(ItemType.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_INTERACT_NAME));
-        itemsLobby.add(canInteractStartWait.getMenuItem(ItemType.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_START_INTERACT_NAME));
-        itemsLobby.add(canMoveOnPlayerWait.getMenuItem(ItemType.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_MOVE_NAME));
-        itemsLobby.add(canMoveOnStartWait.getMenuItem(ItemType.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_START_MOVE_NAME));
-        itemsLobby.add(teleportOnPlayerWait.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TELEPORT_NAME));
-        itemsLobby.add(teleportOnStart.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_NAME,
-            MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_DESCRIPTION));
-        itemsLobby.add(playerWaitTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_NAME,
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_DESCRIPTION),
-            0L, Long.MAX_VALUE));
-        lobbyMenu.addItems(itemsLobby);
-        lobbyMenu.addItem(new MenuItemBack(superMenu), lobbyMenu.getSize() - 9);
-
-        final @NotNull MenuItemPage lobbySettingsMenuItemPage = new MenuItemPage(ItemType.OAK_DOOR, MgMenuLangKey.MENU_MINIGAME_LOBBY_SETTINGS_NAME, lobbyMenu);
-
+    public void addEditMenuOptions(final @NotNull Menu superMenu) {
         if (getMinigame().getType() == MinigameType.MULTIPLAYER) {
-            superMenu.addItem(lobbySettingsMenuItemPage, 15);
-        }
+            final @NotNull Menu lobbyMenu = new Menu(6, getMinigame().getDisplayName(), superMenu.getViewer());
 
-        return List.of(new TypeDependentDisplayData(lobbySettingsMenuItemPage, List.of(MinigameType.MULTIPLAYER), 15));
+            final @NotNull List<@NotNull MenuItem> itemsLobby = new ArrayList<>(4);
+
+            itemsLobby.add(canInteractPlayerWait.getMenuItem(ItemType.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_INTERACT_NAME));
+            itemsLobby.add(canInteractStartWait.getMenuItem(ItemType.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_START_INTERACT_NAME));
+            itemsLobby.add(canMoveOnPlayerWait.getMenuItem(ItemType.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_MOVE_NAME));
+            itemsLobby.add(canMoveOnStartWait.getMenuItem(ItemType.ICE, MgMenuLangKey.MENU_LOBBY_WAIT_START_MOVE_NAME));
+            itemsLobby.add(teleportOnPlayerWait.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TELEPORT_NAME));
+            itemsLobby.add(teleportOnStart.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_NAME,
+                MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_DESCRIPTION));
+            itemsLobby.add(playerWaitTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_NAME,
+                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_DESCRIPTION),
+                0L, Long.MAX_VALUE));
+            lobbyMenu.addItems(itemsLobby);
+            lobbyMenu.addItem(new MenuItemBack(superMenu), lobbyMenu.getSize() - 9);
+
+            final @NotNull MenuItemPage lobbySettingsMenuItemPage = new MenuItemPage(ItemType.OAK_DOOR, MgMenuLangKey.MENU_MINIGAME_LOBBY_SETTINGS_NAME, lobbyMenu);
+
+            if (getMinigame().getType() == MinigameType.MULTIPLAYER) {
+                superMenu.addItem(lobbySettingsMenuItemPage, 15);
+            }
+        }
     }
 }

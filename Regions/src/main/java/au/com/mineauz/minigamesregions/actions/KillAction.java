@@ -6,8 +6,8 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class KillAction extends AAction {
 
-    protected KillAction(final @NotNull NamespacedKey key) {
+    protected KillAction(final @NotNull Key key) {
         super(key);
     }
 

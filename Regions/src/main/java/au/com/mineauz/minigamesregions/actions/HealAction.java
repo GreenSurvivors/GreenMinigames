@@ -8,8 +8,8 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.inventory.ItemType;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class HealAction extends AAction {
     private final IntegerFlag heal = new IntegerFlag("amount", 1);
 
-    protected HealAction(final @NotNull NamespacedKey key) {
+    protected HealAction(final @NotNull Key key) {
         super(key);
     }
 
