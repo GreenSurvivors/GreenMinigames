@@ -89,11 +89,11 @@ public class TriggerNodeAction extends AAction { // todo merge with TriggerRegio
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(node.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME)));
-        m.displayMenu(mgPlayer);
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.addItem(node.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME)));
+        menu.displayMenu();
         return true;
     }
 }

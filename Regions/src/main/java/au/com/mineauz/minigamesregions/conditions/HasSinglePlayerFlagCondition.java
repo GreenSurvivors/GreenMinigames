@@ -79,12 +79,12 @@ public class HasSinglePlayerFlagCondition extends ACondition { // the whole sing
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
-        Menu m = new Menu(3, getDisplayName(), player);
-        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(flagName.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME)));
-        addInvertMenuItem(m);
-        m.displayMenu(player);
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.addItem(flagName.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME)));
+        addInvertMenuItem(menu);
+        menu.displayMenu();
         return true;
     }
 

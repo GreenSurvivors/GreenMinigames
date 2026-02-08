@@ -105,16 +105,16 @@ public class PlayerXPRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
-        final Menu menu = new Menu(3, getDisplayName(), player);
-        menu.addItem(min.getMenuItem(ItemType.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME)
-                , 0.5, 1, 0.0, null));
-        menu.addItem(max.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME)
-                , 0.5, 1, 0.0, null));
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
+        menu.addItem(min.getMenuItem(ItemType.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME),
+            0.5, 1, 0.0, null));
+        menu.addItem(max.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME),
+            0.5, 1, 0.0, null));
         menu.addItem(checkType.getMenuItem(ItemType.EXPERIENCE_BOTTLE, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERXPRANGE_CHECK_LEVEL)));
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
-        menu.displayMenu(player);
+        menu.displayMenu();
         return true;
     }
 

@@ -39,7 +39,7 @@ public class MenuItemSaveLoadoutPage extends MenuItemPage {
 
     @Override
     public @NotNull ItemStack onClick() {
-        final @NotNull ItemStack @NotNull[] items = getContainer().getInventory();
+        final @NotNull ItemStack @NotNull[] items = getMenu().getInventory();
         loadout.clearLoadout();
 
         for (int i = 0; i < 36; i++) {
@@ -60,7 +60,7 @@ public class MenuItemSaveLoadoutPage extends MenuItemPage {
                 }
             }
         }
-        MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_LOADOUT_SAVE,
+        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_LOADOUT_SAVE,
             Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName()));
 
         return super.onClick();

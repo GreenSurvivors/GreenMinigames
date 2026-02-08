@@ -139,13 +139,13 @@ public class TimedTriggerAction extends AAction implements Listener {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(toTrigger.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME)));
-        m.addItem(isRegion.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME)));
-        m.addItem(delay.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME), 0L, null));
-        m.displayMenu(mgPlayer);
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.addItem(toTrigger.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME)));
+        menu.addItem(isRegion.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME)));
+        menu.addItem(delay.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME), 0L, null));
+        menu.displayMenu();
         return true;
     }
 

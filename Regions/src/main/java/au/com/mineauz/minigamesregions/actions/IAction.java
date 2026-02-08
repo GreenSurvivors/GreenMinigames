@@ -35,7 +35,7 @@ public interface IAction extends Keyed {
 
     void loadArguments(final @NotNull CommentedConfigurationNode config) throws ConfigurateException;
 
-    boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous);
+    boolean displayMenu(final @NotNull Menu previous);
 
     void debug(MinigamePlayer mgPlayer, ScriptObject scriptObject);
 }

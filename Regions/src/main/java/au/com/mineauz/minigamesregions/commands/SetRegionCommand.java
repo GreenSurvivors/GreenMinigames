@@ -94,7 +94,7 @@ public class SetRegionCommand extends ASetCommand {
 
                     } else if (args.length == 1) {
                         if (args[0].equalsIgnoreCase("modify")) {
-                            rmod.displayMenu(mgPlayer, null);
+                            rmod.displayMenu(mgPlayer);
                             return true;
                         }
                     }

@@ -94,10 +94,10 @@ public class EquipLoadoutAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(new MenuItemString(ItemType.DIAMOND_SWORD, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_NAME), new Callback<>() {
+    public boolean displayMenu(final @NotNull Menu previous) {
+        Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.addItem(new MenuItemString(ItemType.DIAMOND_SWORD, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_NAME), new Callback<>() {
 
             @Override
             public String getValue() {
@@ -110,7 +110,7 @@ public class EquipLoadoutAction extends AAction {
             }
         }));
 
-        m.addItem(new MenuItemBoolean(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_NAME),
+        menu.addItem(new MenuItemBoolean(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_DESCRIPTION), new Callback<>() {
             @Override
             public Boolean getValue() {
@@ -122,7 +122,7 @@ public class EquipLoadoutAction extends AAction {
                 equipOnTrigger.setFlag(value);
             }
         }));
-        m.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 }

@@ -119,8 +119,8 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
-        Menu menu = new Menu(3, getDisplayName(), player);
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
 
         menu.addItem(entityType.getMenuItem(ItemType.CHICKEN_SPAWN_EGG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME)));
@@ -128,7 +128,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
 
         menu.addItem(matchName.getMenuItem(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_MATCH_CUSTOMNAME_NAME)));
-        MenuItemString menuItem = customName.getMenuItem(ItemType.NAME_TAG,
+        final @NotNull MenuItemString menuItem = customName.getMenuItem(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_CUSTOMNAME_DESCRIPTION));
         menuItem.setAllowNull(true);
@@ -136,7 +136,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
 
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
-        menu.displayMenu(player);
+        menu.displayMenu();
         return true;
     }
 

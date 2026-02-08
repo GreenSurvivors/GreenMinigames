@@ -126,7 +126,7 @@ public class LobbySettingsModule extends AMinigameModule {
     @Override
     public void addEditMenuOptions(final @NotNull Menu superMenu) {
         if (getMinigame().getType() == MinigameType.MULTIPLAYER) {
-            final @NotNull Menu lobbyMenu = new Menu(6, getMinigame().getDisplayName(), superMenu.getViewer());
+            final @NotNull Menu lobbyMenu = new Menu(6, getMinigame().getDisplayName(), superMenu.getIntendedViewer());
 
             final @NotNull List<@NotNull MenuItem> itemsLobby = new ArrayList<>(4);
 

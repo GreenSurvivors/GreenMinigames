@@ -230,11 +230,12 @@ public class TreasureHuntMechanic extends AGameMechanic {
 //        return null;
 //    }
 
+    @SuppressWarnings("UnstableApiUsage") // shutup ItemType
     @Override
-    public @NotNull MenuItemPage displayMechanicSettings(@NotNull Menu previous) {
-        final @NotNull Menu treasureHuntMenu = new Menu(6, minigame.getDisplayName(), previous.getViewer());
+    public @NotNull MenuItemPage displayMechanicSettings(final @NotNull Menu previous) {
+        final @NotNull Menu treasureHuntMenu = new Menu(6, minigame.getDisplayName(), previous.getIntendedViewer());
 
-        List<MenuItem> itemsTreasureHunt = new ArrayList<>(5);
+        final @NotNull List<@NotNull MenuItem> itemsTreasureHunt = new ArrayList<>(5);
         itemsTreasureHunt.add(locationName.getMenuItem(ItemType.WHITE_BED, MgMenuLangKey.MENU_TREASUREHUNT_LOCATION_NAME,
             MgMenuLangKey.MENU_TREASUREHUNT_LOCATION_DESCRIPTION));
         itemsTreasureHunt.add(maxRadius.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_TREASUREHUNT_MAX_RADIUS_NAME, 10, null));

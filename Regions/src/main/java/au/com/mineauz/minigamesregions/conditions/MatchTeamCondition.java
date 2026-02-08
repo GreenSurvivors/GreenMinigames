@@ -79,13 +79,13 @@ public class MatchTeamCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
-        Menu m = new Menu(3, getDisplayName(), player);
-        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
 
-        List<TeamColor> teams = new ArrayList<>(TeamColor.validColors());
+        final @NotNull List<@NotNull TeamColor> teams = new ArrayList<>(TeamColor.validColors());
 
-        m.addItem(new MenuItemList<>(getTeamMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<TeamColor>() { // don't know why but for some reason the compiler doesn't like when I remove the redundant Teamcolor from the callback. Please let it in there for now!
+        menu.addItem(new MenuItemList<>(getTeamMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<TeamColor>() { // don't know why but for some reason the compiler doesn't like when I remove the redundant Teamcolor from the callback. Please let it in there for now!
             @Override
             public TeamColor getValue() {
                 return teamColor.getFlag();
@@ -103,8 +103,8 @@ public class MatchTeamCondition extends ACondition {
             }
         });
 
-        addInvertMenuItem(m);
-        m.displayMenu(player);
+        addInvertMenuItem(menu);
+        menu.displayMenu();
         return true;
     }
 

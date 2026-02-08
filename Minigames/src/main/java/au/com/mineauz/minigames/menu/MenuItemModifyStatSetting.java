@@ -29,8 +29,8 @@ public class MenuItemModifyStatSetting extends MenuItem {
 
     @Override
     public @NotNull ItemStack onClick() {
-        Menu subMenu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_EDIT_NAME,
-            Placeholder.component(MinigamePlaceHolderKey.STAT.getKey(), stat.getDisplayName())), getContainer().getViewer());
+        final @NotNull Menu subMenu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_EDIT_NAME,
+            Placeholder.component(MinigamePlaceHolderKey.STAT.getKey(), stat.getDisplayName())), getMenu().getIntendedViewer());
 
         subMenu.addItem(new MenuItemComponent(ItemType.NAME_TAG,
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DISPLAYNAME_NAME), new Callback<>() {
@@ -59,8 +59,8 @@ public class MenuItemModifyStatSetting extends MenuItem {
             }, Arrays.asList(StatFormat.values())));
         }
 
-        subMenu.addItem(new MenuItemBack(getContainer()), subMenu.getSize() - 9);
-        subMenu.displayMenu(getContainer().getViewer());
+        subMenu.addItem(new MenuItemBack(getMenu()), subMenu.getSize() - 9);
+        subMenu.displayMenu();
 
         return super.onClick();
     }

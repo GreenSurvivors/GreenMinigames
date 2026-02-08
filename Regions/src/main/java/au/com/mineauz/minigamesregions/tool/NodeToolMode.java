@@ -52,7 +52,7 @@ public class NodeToolMode implements ToolMode {
     @Override
     public void onSetMode(final @NotNull MinigamePlayer player, final @NotNull MinigameTool tool) {
         tool.setSetting("Node", "None");
-        final Menu menu = new Menu(2, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_SELECT_NAME), player);
+        final @NotNull Menu menu = new Menu(2, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_SELECT_NAME), player);
         if (player.isInMenu()) {
             menu.addItem(new MenuItemBack(player.getMenu()), menu.getSize() - 9);
         }
@@ -82,7 +82,7 @@ public class NodeToolMode implements ToolMode {
                 // Set the node and go back to the main menu
                 item.setClick(() -> {
                     tool.setSetting("Node", node.getName());
-                    menu.displayMenu(player);
+                    menu.displayMenu();
 
                     return ItemStack.empty();
                 });
@@ -95,7 +95,7 @@ public class NodeToolMode implements ToolMode {
 
             menu.addItem(new MenuItemPage(ItemType.STONE_BUTTON, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_EDIT_NAME), nodeMenu));
         }
-        menu.displayMenu(player);
+        menu.displayMenu();
     }
 
     @Override

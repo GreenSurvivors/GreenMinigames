@@ -67,9 +67,7 @@ public class MenuItemString extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onDoubleClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
+        final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final @NotNull Duration reopenTime = Duration.ofSeconds(20);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
@@ -78,8 +76,7 @@ public class MenuItemString extends MenuItem implements StringConsumer {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ALLOWNULL,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
         }
-        mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenTime);
+        getMenu().closeAndWaitForInput(reopenTime, this);
 
         return ItemStack.empty();
     }
@@ -93,7 +90,7 @@ public class MenuItemString extends MenuItem implements StringConsumer {
         }
 
         updateDescription();
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        getMenu().cancelWaitForInput();
+        getMenu().displayMenu();
     }
 }

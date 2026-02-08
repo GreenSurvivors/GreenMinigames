@@ -128,9 +128,7 @@ public class MenuItemDecimal extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onDoubleClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
+        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(15);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,
@@ -138,21 +136,20 @@ public class MenuItemDecimal extends MenuItem implements StringConsumer {
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)),
             Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()),
             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), this.max == null ? "N/A" : this.max.toString()));
-        mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenTime);
+        getMenu().closeAndWaitForInput(reopenTime, this);
 
         return ItemStack.empty();
     }
 
     @Override
-    public void acceptString(@NotNull String entry) {
+    public void acceptString(final @NotNull String entry) {
         if (DOUBLE_PATTERN.matcher(entry).matches()) {
             double entryValue = Double.parseDouble(entry);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {
                 value.setValue(entryValue);
                 updateDescription();
             } else {
-                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+                MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                     MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(min)),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(max)));
@@ -162,12 +159,12 @@ public class MenuItemDecimal extends MenuItem implements StringConsumer {
             value.setValue(entryValue);
             updateDescription();
         } else {
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                 MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
         }
 
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        getMenu().cancelWaitForInput();
+        getMenu().displayMenu();
     }
 }

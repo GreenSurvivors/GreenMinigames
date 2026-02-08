@@ -144,7 +144,7 @@ public class MoneyReward extends ARewardType {
 
         @Override
         public @NotNull ItemStack onShiftClick() {
-            Menu m = new Menu(3, MgMenuLangKey.MENU_MONEYREWARD_MENU_NAME, getContainer().getViewer());
+            final @NotNull Menu menu = new Menu(3, MgMenuLangKey.MENU_MONEYREWARD_MENU_NAME, getMenu().getIntendedViewer());
             MenuItemDecimal dec = new MenuItemDecimal(ItemType.PAPER,
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MONEYREWARD_ITEM_NAME),
                 new Callback<>() {
@@ -168,16 +168,16 @@ public class MoneyReward extends ARewardType {
                         getDisplayItem().setItemMeta(meta);
                     }
                 }, 50d, 100d, 1d, null);
-            m.addItem(dec);
-            m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
-            m.displayMenu(getContainer().getViewer());
+            menu.addItem(dec);
+            menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+            menu.displayMenu();
             return ItemStack.empty();
         }
 
         @Override
         public @NotNull ItemStack onShiftRightClick() {
             getRewards().removeReward(reward);
-            getContainer().removeItem(getSlot());
+            getMenu().removeItem(getSlot());
             return ItemStack.empty();
         }
     }

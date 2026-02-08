@@ -69,9 +69,9 @@ public class CommandReward extends ARewardType {
 
     private class CommandRewardItem extends MenuItem implements StringConsumer {
         private static final @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
-        private final CommandReward reward;
+        private final @NotNull CommandReward reward;
 
-        public CommandRewardItem(CommandReward reward) {
+        public CommandRewardItem(final @NotNull CommandReward reward) {
             super(ItemType.COMMAND_BLOCK, Component.text("/" + command));
 
             this.reward = reward;
@@ -140,22 +140,19 @@ public class CommandReward extends ARewardType {
         @Override
         public @NotNull ItemStack onShiftRightClick() {
             getRewards().removeReward(reward);
-            getContainer().removeItem(getSlot());
+            getMenu().removeItem(getSlot());
             return ItemStack.empty();
         }
 
         @Override
         public @NotNull ItemStack onShiftClick() {
-            MinigamePlayer mgPlayer = getContainer().getViewer();
-            mgPlayer.setNoClose(true);
-            mgPlayer.getPlayer().closeInventory();
+            MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
             final @NotNull Duration reopenTime = Duration.ofSeconds(40);
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
-            mgPlayer.setManualEntry(this);
-            getContainer().startReopenTimer(reopenTime);
+            getMenu().closeAndWaitForInput(reopenTime, this);
 
             return ItemStack.empty();
         }
@@ -168,8 +165,8 @@ public class CommandReward extends ARewardType {
             command = input;
 
             updateDescription();
-            getContainer().cancelReopenTimer();
-            getContainer().displayMenu(getContainer().getViewer());
+            getMenu().cancelWaitForInput();
+            getMenu().displayMenu();
 
             updateName(input);
         }

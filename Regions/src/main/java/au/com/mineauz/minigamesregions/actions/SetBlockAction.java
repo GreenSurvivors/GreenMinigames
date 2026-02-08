@@ -115,12 +115,12 @@ public class SetBlockAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(blockDataFlag.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME)));
         menu.addItem(useBlockData.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME)));
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 }

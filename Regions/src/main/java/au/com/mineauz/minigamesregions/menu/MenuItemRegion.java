@@ -15,6 +15,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
@@ -41,18 +42,28 @@ public class MenuItemRegion extends MenuItem {
         this.rmod = rmod;
     }
 
-    public static @NotNull Menu createMenu(@NotNull MinigamePlayer viewer, @Nullable Menu previousPage, @NotNull Region region) {
+
+    public static @NotNull Menu createMenu(final @NotNull MinigamePlayer viewer, final @NotNull Region region) {
+        return createMenu(viewer, null, region);
+    }
+
+    public static @NotNull Menu createMenu(final @NotNull Menu previousPage, final @NotNull Region region) {
+        return createMenu(previousPage.getIntendedViewer(), previousPage, region);
+    }
+
+    @ApiStatus.Obsolete
+    protected static @NotNull Menu createMenu(@NotNull MinigamePlayer viewer, @Nullable Menu previousPage, @NotNull Region region) {
         Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_REGION_NAME,
                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), region.getName())), viewer);
         menu.setPreviousPage(previousPage);
         List<MenuItem> items = new ArrayList<>();
         for (ActionExecutor ex : region.getExecutors()) {
-            items.add(new MenuItemRegionExecutor(region, ex));
+            items.add(new MenuItemActionExecutor(region, ex));
         }
         if (previousPage != null) {
             menu.addItem(new MenuItemBack(previousPage), menu.getSize() - 9);
         }
-        menu.addItem(new MenuItemRegionExecutorAdd(MenuUtility.createType(),
+        menu.addItem(new MenuItemActionExecutorAdd(MenuUtility.createType(),
                 RegionLangKey.MENU_EXECUTOR_ADD_NAME, region), menu.getSize() - 1);
         menu.addItems(items);
 
@@ -61,15 +72,15 @@ public class MenuItemRegion extends MenuItem {
 
     @Override
     public @NonNull ItemStack onClick() {
-        Menu menu = createMenu(getContainer().getViewer(), getContainer(), region);
-        menu.displayMenu(getContainer().getViewer());
+        final @NotNull Menu menu = createMenu(getMenu(), region);
+        menu.displayMenu();
         return ItemStack.empty();
     }
 
     @Override
     public @NonNull ItemStack onRightClick() {
         rmod.removeRegion(region.getName());
-        getContainer().removeItem(getSlot());
+        getMenu().removeItem(getSlot());
         return ItemStack.empty();
     }
 }

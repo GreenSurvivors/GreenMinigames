@@ -56,8 +56,8 @@ public class WeatherTimeModule extends AMinigameModule {
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void addEditMenuOptions(@NotNull Menu previosMenu) {
-        Menu menu = new Menu(6, MgMenuLangKey.MENU_TIMEWEATHER_NAME, previosMenu.getViewer());
+    public void addEditMenuOptions(final @NotNull Menu previosMenu) {
+        final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_TIMEWEATHER_NAME, previosMenu.getIntendedViewer());
 
         menu.addItem(useCustomTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_USE_NAME));
         menu.addItem(time.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_NAME, 0L, 24000L));

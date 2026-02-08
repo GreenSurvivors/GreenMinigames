@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
@@ -51,25 +51,30 @@ public class GlobalLoadoutCommand extends ACommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull String @NotNull [] args) {
-        MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
-        Menu globalLoadoutMenu = new Menu(6, MgMenuLangKey.MENU_GLOBALLOADOUT_NAME, player);
-        List<MenuItem> menuItems = new ArrayList<>();
+    public boolean onCommand(final @NotNull CommandSender sender,
+                             final @NotNull String @NotNull [] args) {
+        if (sender instanceof final @NotNull Player player) {
+            final @NotNull MinigamePlayer mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
+            final @NotNull Menu globalLoadoutMenu = new Menu(6, MgMenuLangKey.MENU_GLOBALLOADOUT_NAME, mgPlayer);
+            final @NotNull List<@NotNull MenuItem> menuItems = new ArrayList<>();
 
-        for (PlayerLoadout globalLoadout : LoadoutModule.getGlobalLoadouts()) {
-            ItemType displayType = ItemType.WHITE_STAINED_GLASS_PANE;
-            if (!globalLoadout.getItemSlots().isEmpty()) {
-                displayType = globalLoadout.getItem((Integer) globalLoadout.getItemSlots().toArray()[0]).getType().asItemType();
+            for (PlayerLoadout globalLoadout : LoadoutModule.getGlobalLoadouts()) {
+                ItemType displayType = ItemType.WHITE_STAINED_GLASS_PANE;
+                if (!globalLoadout.getItemSlots().isEmpty()) {
+                    displayType = globalLoadout.getItem((Integer) globalLoadout.getItemSlots().toArray()[0]).getType().asItemType();
+                }
+                menuItems.add(new MenuItemDisplayLoadout(displayType, globalLoadout.getDisplayName(),
+                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), globalLoadout));
             }
-            menuItems.add(new MenuItemDisplayLoadout(displayType, globalLoadout.getDisplayName(),
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), globalLoadout));
-        }
-        globalLoadoutMenu.addItem(new MenuItemLoadoutAdd(MenuUtility.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
-            LoadoutModule.getGlobalLoadoutMap()), 53);
-        globalLoadoutMenu.addItems(menuItems);
+            globalLoadoutMenu.addItem(new MenuItemLoadoutAdd(MenuUtility.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+                LoadoutModule.getGlobalLoadoutMap()), 53);
+            globalLoadoutMenu.addItems(menuItems);
 
-        globalLoadoutMenu.displayMenu(player);
+            globalLoadoutMenu.displayMenu();
+        } else {
+            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+        }
+
         return true;
     }
 

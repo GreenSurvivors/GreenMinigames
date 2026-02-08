@@ -118,18 +118,18 @@ public class ExecutorHolderEditToolMode implements ToolMode {
         }
     }
 
-    private void openMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @NotNull ExecutableScriptObject hit) {
-        final Menu menu;
+    private void openMenu(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @NotNull ExecutableScriptObject hit) {
+        final @NotNull Menu menu;
         if (hit instanceof Region region) {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.TOOL_REGION_EDIT,
                     Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), region.getName()));
-            menu = MenuItemRegion.createMenu(mgPlayer, null, region);
+            menu = MenuItemRegion.createMenu(mgPlayer, region);
         } else if (hit instanceof Node node) {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.TOOL_NODE_EDIT,
                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), node.getName()));
-            menu = MenuItemNode.createMenu(mgPlayer, null, node);
+            menu = MenuItemNode.createMenu(mgPlayer, node);
         } else {
             throw new UnsupportedOperationException("Unknown ExecutableScriptObject  type!");
         }
@@ -138,11 +138,12 @@ public class ExecutorHolderEditToolMode implements ToolMode {
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName())), minigame), menu.getSize() - 9);
 
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
     }
 
-    private void openChooseMenu(@NotNull MinigamePlayer mgPlayer, @NotNull RegionModule module, @NotNull Set<@NotNull ExecutableScriptObject> objects) {
-        Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_CHOOSE_NAME), mgPlayer);
+    private void openChooseMenu(final @NotNull MinigamePlayer mgPlayer, final @NotNull RegionModule module,
+                                final @NotNull Set<@NotNull ExecutableScriptObject> objects) {
+        final @NotNull Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_CHOOSE_NAME), mgPlayer);
 
         StringBuilder options = new StringBuilder();
         for (ExecutableScriptObject object : objects) {
@@ -152,11 +153,11 @@ public class ExecutorHolderEditToolMode implements ToolMode {
 
             if (object instanceof Region region) {
                 options.append(region.getName());
-                MenuItemRegion item = new MenuItemRegion(ItemType.CHEST, Component.text(region.getName()), region, module);
+                final @NotNull MenuItemRegion item = new MenuItemRegion(ItemType.CHEST, Component.text(region.getName()), region, module);
                 menu.addItem(item);
             } else if (object instanceof Node node) {
                 options.append(node.getName());
-                MenuItemNode item = new MenuItemNode(ItemType.STONE_BUTTON, Component.text(node.getName()), node, module);
+                final @NotNull MenuItemNode item = new MenuItemNode(ItemType.STONE_BUTTON, Component.text(node.getName()), node, module);
                 menu.addItem(item);
             }
         }
@@ -166,7 +167,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), module.getMinigame().getDisplayName())),
                 module.getMinigame()), menu.getSize() - 9);
 
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
 
         MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                 RegionLangKey.TOOL_NODEREGION_SELECTED,

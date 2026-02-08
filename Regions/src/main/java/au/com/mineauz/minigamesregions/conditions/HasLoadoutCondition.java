@@ -84,8 +84,8 @@ public class HasLoadoutCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu prev) {
-        Menu menu = new Menu(3, getDisplayName(), mgPlayer);
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
         menu.addItem(new MenuItemString(ItemType.DIAMOND_SWORD, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASLOADOUT_LOADOUT_NAME), new Callback<>() { //todo this to list and use loadouts of minigame
 
@@ -100,7 +100,7 @@ public class HasLoadoutCondition extends ACondition {
             }
         }));
         addInvertMenuItem(menu);
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 

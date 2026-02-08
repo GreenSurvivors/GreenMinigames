@@ -54,7 +54,7 @@ public class RegenAreaMode implements ToolMode {
     @Override
     public void onSetMode(final @NotNull MinigamePlayer mgPlayer, final @NotNull MinigameTool tool) {
         tool.setSetting(SETTING_KEY, "None");
-        final Menu menu = new Menu(2, MgMenuLangKey.MENU_TOOL_REGENAREA_SELECT_NAME, mgPlayer);
+        final @NotNull Menu menu = new Menu(2, MgMenuLangKey.MENU_TOOL_REGENAREA_SELECT_NAME, mgPlayer);
 
         if (mgPlayer.isInMenu()) {
             menu.addItem(new MenuItemBack(mgPlayer.getMenu()), menu.getSize() - 9);
@@ -84,7 +84,7 @@ public class RegenAreaMode implements ToolMode {
                 customMenuItem.setClick(() -> {
                     tool.setSetting(SETTING_KEY, region.getName());
 
-                    menu.displayMenu(mgPlayer);
+                    menu.displayMenu();
 
                     return ItemStack.empty();
                 });
@@ -97,7 +97,7 @@ public class RegenAreaMode implements ToolMode {
 
             menu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONEDIT_NAME, regionMenu));
         }
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
     }
 
     @Override

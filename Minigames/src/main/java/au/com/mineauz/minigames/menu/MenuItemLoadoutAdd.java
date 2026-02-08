@@ -68,15 +68,12 @@ public class MenuItemLoadoutAdd extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
+        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final @NotNull Duration reopenTime = Duration.ofSeconds(30);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LOADOUT_ADD_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
-        mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(reopenTime);
+        getMenu().closeAndWaitForInput(reopenTime, this);
         return ItemStack.empty();
     }
 
@@ -85,27 +82,27 @@ public class MenuItemLoadoutAdd extends MenuItem implements StringConsumer {
         string = string.replace(" ", "_");
         if (!loadouts.containsKey(string)) {
             for (int i = 0; i < 45; i++) {
-                if (!getContainer().hasMenuItem(i)) {
-                    PlayerLoadout loadout = new PlayerLoadout(string);
+                if (!getMenu().hasMenuItem(i)) {
+                    final @NotNull PlayerLoadout loadout = new PlayerLoadout(string);
                     loadouts.put(string, loadout);
                     List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
 
                     if (minigame != null) {
-                        getContainer().addItem(new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout, minigame), i);
+                        getMenu().addItem(new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout, minigame), i);
                     } else {
-                        getContainer().addItem(new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout), i);
+                        getMenu().addItem(new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout), i);
                     }
                     break;
                 }
             }
 
-            getContainer().cancelReopenTimer();
-            getContainer().displayMenu(getContainer().getViewer());
+            getMenu().cancelWaitForInput();
+            getMenu().displayMenu();
         } else {
-            getContainer().cancelReopenTimer();
-            getContainer().displayMenu(getContainer().getViewer());
+            getMenu().cancelWaitForInput();
+            getMenu().displayMenu();
 
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_LOADOUT_ERROR_ALREADYEXISTS,
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_LOADOUT_ERROR_ALREADYEXISTS,
                 Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), string));
         }
     }

@@ -267,9 +267,9 @@ public class MinigameTool {
     }
 
     public void openMenu(final @NotNull MinigamePlayer player) {
-        Menu menu = new Menu(2, MgMenuLangKey.MENU_TOOL_SETMODE_NAME, player);
+        final @NotNull Menu menu = new Menu(2, MgMenuLangKey.MENU_TOOL_SETMODE_NAME, player);
 
-        final MenuItemCustom miselect = new MenuItemCustom(ItemType.DIAMOND_BLOCK, MgMenuLangKey.MENU_TOOL_SELECT_NAME,
+        final @NotNull MenuItemCustom miselect = new MenuItemCustom(ItemType.DIAMOND_BLOCK, MgMenuLangKey.MENU_TOOL_SELECT_NAME,
             MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_SELECT_DESCRIPTION));
         miselect.setClick(() -> {
             if (minigame != null && mode != null) {
@@ -280,7 +280,7 @@ public class MinigameTool {
         menu.addItem(miselect, menu.getSize() - 2);
 
 
-        final MenuItemCustom mideselect = new MenuItemCustom(ItemType.GLASS, MgMenuLangKey.MENU_TOOL_DESELECT_NAME,
+        final @NotNull MenuItemCustom mideselect = new MenuItemCustom(ItemType.GLASS, MgMenuLangKey.MENU_TOOL_DESELECT_NAME,
             MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_DESELECT_DESCRIPTION));
         mideselect.setClick(() -> {
             if (minigame != null && mode != null) {
@@ -306,10 +306,10 @@ public class MinigameTool {
             }
         }, Arrays.asList(TeamColor.values())), menu.getSize() - 3);
 
-        for (ToolMode toolMode : ToolModes.getToolModes()) {
+        for (final @NotNull ToolMode toolMode : ToolModes.getToolModes()) {
             menu.addItem(new MenuItemToolMode(toolMode.getIcon(), toolMode.getDisplayName(), toolMode.getDescription(), toolMode));
         }
 
-        menu.displayMenu(player);
+        menu.displayMenu();
     }
 }

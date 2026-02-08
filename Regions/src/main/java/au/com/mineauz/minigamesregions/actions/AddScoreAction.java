@@ -85,9 +85,9 @@ public class AddScoreAction extends AScoreAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemInteger(ItemType.ENDER_PEARL,
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
+        menu.addItem(new MenuItemInteger(ItemType.ENDER_PEARL,
                 MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), new Callback<>() {
 
             @Override
@@ -100,8 +100,8 @@ public class AddScoreAction extends AScoreAction {
                 amount.setFlag(value);
             }
         }, null, null));
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.displayMenu(mgPlayer);
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.displayMenu();
         return true;
     }
 }

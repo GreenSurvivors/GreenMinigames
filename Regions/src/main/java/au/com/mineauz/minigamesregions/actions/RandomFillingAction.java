@@ -133,16 +133,16 @@ public class RandomFillingAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(4, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(4, getDisplayname(), previous.getIntendedViewer());
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         //The menu entry for the block that will be placed
         toData.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME));
 
         //Percentage of blocks that will get replaced
-        m.addItem(new MenuItemNewLine());
-        m.addItem(new MenuItemInteger(ItemType.BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME),
+        menu.addItem(new MenuItemNewLine());
+        menu.addItem(new MenuItemInteger(ItemType.BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME),
                 new Callback<>() {
 
                     @Override
@@ -158,10 +158,10 @@ public class RandomFillingAction extends AAction {
                 }, 0, 100));
 
         //Replace all or replace selectively
-        m.addItem(new MenuItemNewLine());
-        m.addItem(replaceAll.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_MISSES_NAME)));
+        menu.addItem(new MenuItemNewLine());
+        menu.addItem(replaceAll.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_MISSES_NAME)));
 
-        m.displayMenu(mgPlayer);
+        menu.displayMenu();
 
         return false;
     }

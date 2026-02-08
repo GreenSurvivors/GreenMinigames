@@ -27,7 +27,7 @@ public abstract class ACondition {
         this.name = name;
     }
 
-    protected void addInvertMenuItem(@NotNull Menu menu) {
+    protected void addInvertMenuItem(final @NotNull Menu menu) {
         menu.addItem(isInverted.getMenuItem(ItemType.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_INVERT_NAME)), menu.getSize() - 1);
     }
 
@@ -63,7 +63,7 @@ public abstract class ACondition {
 
     public abstract void loadArguments(@NotNull CommentedConfigurationNode config) throws SerializationException;
 
-    public abstract boolean displayMenu(@NotNull MinigamePlayer player, Menu prev);
+    public abstract boolean displayMenu(final @NotNull Menu prev);
 
     /**
      * Returns if the condition needs a player who caused the check to happen.

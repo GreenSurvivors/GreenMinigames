@@ -98,15 +98,15 @@ public class MinigameTimeRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
-        Menu m = new Menu(3, getDisplayName(), player);
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
 
-        m.addItem(minTime.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0L, null));
-        m.addItem(maxTime.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 0L, null));
+        menu.addItem(minTime.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0L, null));
+        menu.addItem(maxTime.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 0L, null));
 
-        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        addInvertMenuItem(m);
-        m.displayMenu(player);
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        addInvertMenuItem(menu);
+        menu.displayMenu();
         return true;
     }
 

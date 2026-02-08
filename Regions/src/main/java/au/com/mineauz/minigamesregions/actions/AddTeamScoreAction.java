@@ -101,10 +101,10 @@ public class AddTeamScoreAction extends AScoreAction { // todo merge with addSco
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SCORE_TEAMADD_NAME), mgPlayer);
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(new MenuItemInteger(ItemType.STONE,
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SCORE_TEAMADD_NAME), previous.getIntendedViewer());
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.addItem(new MenuItemInteger(ItemType.STONE,
                 MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), new Callback<>() {
 
             @Override
@@ -120,8 +120,8 @@ public class AddTeamScoreAction extends AScoreAction { // todo merge with addSco
 
         }, null, null));
 
-        List<TeamColor> teams = List.of(TeamColor.values());
-        m.addItem(new MenuItemList<>(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME),
+        final @NotNull List<@NotNull TeamColor> teams = List.of(TeamColor.values());
+        menu.addItem(new MenuItemList<>(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_TEAM_DESCRIPTION), new Callback<>() {
 
             @Override
@@ -134,7 +134,7 @@ public class AddTeamScoreAction extends AScoreAction { // todo merge with addSco
                 team.setFlag(value);
             }
         }, teams));
-        m.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 }

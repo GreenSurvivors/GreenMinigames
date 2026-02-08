@@ -42,7 +42,7 @@ public class MenuItemTime extends MenuItemLong {
 
     @Override
     public void acceptString(@NotNull String string) {
-        MinigameUtils.parsePeriod(string);
+        MinigameUtils.parsePeriod(string); // todo use
 
         if (LONG_PATTERN.matcher(string).matches()) {
             long entryValue = Long.parseLong(string);
@@ -50,14 +50,14 @@ public class MenuItemTime extends MenuItemLong {
                 value.setValue(entryValue);
                 updateDescription();
 
-                getContainer().cancelReopenTimer();
-                getContainer().displayMenu(getContainer().getViewer());
+                getMenu().cancelWaitForInput();
+                getMenu().displayMenu();
             }
         } else {
-            getContainer().cancelReopenTimer();
-            getContainer().displayMenu(getContainer().getViewer());
+            getMenu().cancelWaitForInput();
+            getMenu().displayMenu();
 
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                 MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
         }

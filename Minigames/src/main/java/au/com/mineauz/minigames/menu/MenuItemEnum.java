@@ -1,12 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.apache.commons.text.WordUtils;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,144 +10,20 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
-    private static final @NotNull String DESCRIPTION_VALUE_TOKEN = "EnumValue_description";
-    private final @NotNull List<T> enumList;
-    private final @NotNull Callback<T> callback;
-
-    public MenuItemEnum(@Nullable ItemType displayType, @Nullable Component name,
-                        @Nullable List<@NotNull Component> description, @NotNull Callback<T> callback,
-                        @NotNull Class<T> enumClass) {
-        super(displayType, name, description);
-        this.callback = callback;
-        enumList = new ArrayList<>(EnumSet.allOf(enumClass));
-        updateDescription();
+public class MenuItemEnum<T extends Enum<T>> extends MenuItemList<T> {
+    public MenuItemEnum(final @Nullable ItemType displayType, final @Nullable Component name,
+                        final @NotNull Callback<T> callback, final @NotNull Class<T> enumClass) {
+        this(displayType, name, null, callback, enumClass);
     }
 
-    public MenuItemEnum(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<T> callback,
-                        @NotNull Class<T> enumClass) {
-        super(displayType, name);
-        this.callback = callback;
-        enumList = new ArrayList<>(EnumSet.allOf(enumClass));
-        updateDescription();
+    public MenuItemEnum(final @Nullable ItemType displayType, final @Nullable Component name,
+                        final @Nullable List<@NotNull Component> description,
+                        final @NotNull Callback<T> callback, final @NotNull Class<T> enumClass) {
+        super(displayType, name, description, callback, new ArrayList<>(EnumSet.allOf(enumClass)));
     }
 
-    public MenuItemEnum(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<T> callback,
-                        @NotNull Class<T> enumClass) {
-        super(displayType, langKey);
-        this.callback = callback;
-        enumList = new ArrayList<>(EnumSet.allOf(enumClass));
-        updateDescription();
-    }
-
-    protected final void updateDescription() {
-        if (enumList.isEmpty()) {
-            return;
-        }
-
-        int position = enumList.indexOf(callback.getValue());
-        if (position == -1) {
-            setDescriptionPart(DESCRIPTION_VALUE_TOKEN, List.of(
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ERROR_UNKNOWN)));
-        } else {
-            int last = position - 1;
-            int next = position + 1;
-            if (last < 0) {
-                last = enumList.size() - 1;
-            }
-            if (next >= enumList.size()) {
-                next = 0;
-            }
-
-            List<Component> options = new ArrayList<>(3);
-            options.add(Component.text(getEnumName(enumList.get(last)), NamedTextColor.GRAY));
-            options.add(Component.text(getEnumName(enumList.get(position)), NamedTextColor.GREEN));
-            options.add(Component.text(getEnumName(enumList.get(next)), NamedTextColor.GRAY));
-
-            setDescriptionPart(DESCRIPTION_VALUE_TOKEN, options);
-        }
-    }
-
-    private String getEnumName(@NotNull T val) {
-        return WordUtils.capitalizeFully(val.name().replace('_', ' '));
-    }
-
-    public final @NotNull ItemStack onClick() {
-        T oldValue = callback.getValue();
-        T newValue = increaseValue(oldValue, false);
-        callback.setValue(newValue);
-
-        updateDescription();
-
-        return getDisplayItem();
-    }
-
-    @Override
-    public final @NotNull ItemStack onShiftClick() {
-        T oldValue = callback.getValue();
-        T newValue = increaseValue(oldValue, true);
-        callback.setValue(newValue);
-
-        updateDescription();
-
-        return getDisplayItem();
-    }
-
-    @Override
-    public final @NotNull ItemStack onRightClick() {
-        T oldValue = callback.getValue();
-        T newValue = decreaseValue(oldValue, false);
-        callback.setValue(newValue);
-
-        updateDescription();
-
-        return getDisplayItem();
-    }
-
-    @Override
-    public final @NotNull ItemStack onShiftRightClick() {
-        T oldValue = callback.getValue();
-        T newValue = decreaseValue(oldValue, true);
-        callback.setValue(newValue);
-
-        updateDescription();
-
-        return getDisplayItem();
-    }
-
-    protected @Nullable T increaseValue(T current, boolean shift) {
-        if (enumList.isEmpty()) {
-            return null;
-        }
-
-        int index = enumList.indexOf(current);
-        if (index == -1) {
-            return enumList.getFirst();
-        }
-
-        ++index;
-        if (index >= enumList.size()) {
-            index = 0;
-        }
-
-        return enumList.get(index);
-    }
-
-    protected @Nullable T decreaseValue(T current, boolean shift) {
-        if (enumList.isEmpty()) {
-            return null;
-        }
-
-        int index = enumList.indexOf(current);
-        if (index == -1) {
-            return enumList.getFirst();
-        }
-
-        --index;
-        if (index < 0) {
-            index = enumList.size() - 1;
-        }
-
-        return enumList.get(index);
+    public MenuItemEnum(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                        final @NotNull Callback<T> callback, final @NotNull Class<T> enumClass) {
+        super(displayType, langKey, callback, new ArrayList<>(EnumSet.allOf(enumClass)));
     }
 }

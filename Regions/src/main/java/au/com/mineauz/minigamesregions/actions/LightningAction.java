@@ -99,11 +99,11 @@ public class LightningAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
+    public boolean displayMenu(final @NotNull Menu previous) {
+        Menu m = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(effect.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LIGHTNING_EFFECT_NAME)));
-        m.displayMenu(mgPlayer);
+        m.displayMenu();
         return true;
     }
 }

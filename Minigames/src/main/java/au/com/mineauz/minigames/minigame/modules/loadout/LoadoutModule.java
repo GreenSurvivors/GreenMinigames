@@ -44,7 +44,7 @@ public class LoadoutModule extends AMinigameModule {
 
     public LoadoutModule(final @NotNull Minigame mgm, final @NotNull Key key) {
         super(mgm, key);
-        PlayerLoadout defaultLoadout = new PlayerLoadout("default");
+        final @NotNull PlayerLoadout defaultLoadout = new PlayerLoadout("default");
         registeredAddons.values().forEach(defaultLoadout::registerAddon);
         defaultLoadout.setDeletable(false);
         loadouts.put("default", defaultLoadout);
@@ -319,9 +319,9 @@ public class LoadoutModule extends AMinigameModule {
     }
 
     public void displaySelectionMenu(final @NotNull MinigamePlayer mgPlayer, final boolean equip) {
-        Menu menu = new Menu(6, MgMenuLangKey.MENU_LOADOUT_SELECT_NAME, mgPlayer);
+        final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_LOADOUT_SELECT_NAME, mgPlayer);
 
-        for (final PlayerLoadout loadout : loadouts.values()) {
+        for (final @NotNull PlayerLoadout loadout : loadouts.values()) {
             if (loadout.isDisplayedInMenu()) {
                 if (!loadout.usesPermissions() || mgPlayer.getPlayer().hasPermission("minigame.loadout." + loadout.getName().toLowerCase())) {
                     if (mgPlayer.isInMinigame() && !mgPlayer.getMinigame().isTeamGame() || loadout.getTeamColor() == null ||
@@ -350,12 +350,12 @@ public class LoadoutModule extends AMinigameModule {
                 }
             }
         }
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
     }
 
     @Override
     public void addEditMenuOptions(final @NotNull Menu superMenu) {
-        final Menu loadouts = new Menu(6, getMinigame().getDisplayName(), superMenu.getViewer());
+        final Menu loadouts = new Menu(6, getMinigame().getDisplayName(), superMenu.getIntendedViewer());
         final @NotNull List<@NotNull MenuItem> loadoutMenuItems = new ArrayList<>();
 
         for (final @NotNull PlayerLoadout playerLoadout : getLoadouts()) {

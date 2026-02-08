@@ -78,8 +78,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
     private boolean canInteract = true;
     private @Nullable Team team;
     private @Nullable Menu menu;
-    private boolean noClose;
-    private @Nullable MenuItem manualEntry;
+    private @Nullable MenuItem menuItemWaitingForManualInput;
     private @Nullable SafeFineLocation selection1;
     private @Nullable SafeFineLocation selection2;
     private @Nullable DisplayCuboid selectionDisplay;
@@ -541,20 +540,16 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
         return menu != null;
     }
 
-    public boolean getNoClose() {
-        return noClose;
+    public boolean isMenuWaitingForInput() {
+        return menuItemWaitingForManualInput != null;
     }
 
-    public void setNoClose(final boolean value) {
-        noClose = value;
+    public @Nullable MenuItem getMenuItemWaitingForManualInput() {
+        return menuItemWaitingForManualInput;
     }
 
-    public @Nullable MenuItem getManualEntry() {
-        return manualEntry;
-    }
-
-    public void setManualEntry(final @Nullable MenuItem item) {
-        manualEntry = item;
+    public void setMenuItemWaitingForManualInput(final @Nullable MenuItem item) {
+        menuItemWaitingForManualInput = item;
     }
 
     public void addSelectionPoint(final @NotNull Location loc) {

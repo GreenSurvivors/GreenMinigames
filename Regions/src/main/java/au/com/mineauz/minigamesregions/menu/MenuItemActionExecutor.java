@@ -4,13 +4,15 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.ActionExecutor;
+import au.com.mineauz.minigamesregions.ActionExecutorHolder;
+import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.actions.ActionRegistry;
 import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemStack;
@@ -20,20 +22,30 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
-public class MenuItemRegionExecutor extends MenuItem { // todo merge with MenuItemNodeExecutor
+public class MenuItemActionExecutor extends MenuItem {
     private static final String DESCRIPTION_TOKEN = "Executor_description";
-    private final @NotNull Region region;
-    private final @NotNull ActionExecutor ex;
+    private final @NotNull ActionExecutorHolder actionExecutorHolder;
+    private final @NotNull ActionExecutor actionExecutor;
 
-    public MenuItemRegionExecutor(@NotNull Region region, @NotNull ActionExecutor ex) {
-        super(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONEXECUTOR_NAME));
-        this.region = region;
-        this.ex = ex;
+    protected static @NotNull Component getName(final @NotNull ActionExecutorHolder holder) {
+        if (holder instanceof Region){
+            return RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONEXECUTOR_NAME);
+        } else if (holder instanceof Node) {
+            return RegionMessageManager.getMessage(RegionLangKey.MENU_NODEEXECUTOR_NAME);
+        } else {
+            throw new IllegalArgumentException("Unknown ActionExecutorHolder type: " + holder.getClass());
+        }
+    }
+
+    public MenuItemActionExecutor(final @NotNull ActionExecutorHolder actionExecutorHolder, final @NotNull ActionExecutor actionExecutor) {
+        super(ItemType.ENDER_PEARL, getName(actionExecutorHolder));
+        this.actionExecutorHolder = actionExecutorHolder;
+        this.actionExecutor = actionExecutor;
         setDescriptionPart(DESCRIPTION_TOKEN, List.of(
                 RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_TRIGGER,
-                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), ex.getTrigger().getDisplayName())),
+                        Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), actionExecutor.getTrigger().getDisplayName())),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_ACTION,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(ex.getActions().size()))),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(actionExecutor.getActions().size()))),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK).
                         color(NamedTextColor.DARK_PURPLE),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_EDIT)));
@@ -42,46 +54,47 @@ public class MenuItemRegionExecutor extends MenuItem { // todo merge with MenuIt
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public @NonNull ItemStack onClick() {
-        final MinigamePlayer fviewer = getContainer().getViewer();
-        final Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONEXECUTOR_NAME), fviewer);
+        final @NotNull Menu menu = new Menu(3, getName(actionExecutorHolder),
+            getMenu().getIntendedViewer());
 
-        MenuItemCustom actionItem = new MenuItemCustom(ItemType.CHEST,
+        final @NotNull MenuItemCustom actionItem = new MenuItemCustom(ItemType.CHEST,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME));
         actionItem.setClick(() -> {
-            ActionRegistry.displayMenu(fviewer, ex, menu);
+            ActionRegistry.displayMenu(actionExecutor, menu);
             return ItemStack.empty();
         });
         menu.addItem(actionItem);
 
-        MenuItemCustom c2 = new MenuItemCustom(ItemType.CHEST,
+        final @NotNull MenuItemCustom conditionsMenuItem = new MenuItemCustom(ItemType.CHEST,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME));
-        c2.setClick(() -> {
-            ConditionRegistry.displayMenu(fviewer, ex, menu);
+        conditionsMenuItem.setClick(() -> {
+            ConditionRegistry.displayMenu(actionExecutor, menu);
             return ItemStack.empty();
         });
-        menu.addItem(c2);
+        menu.addItem(conditionsMenuItem);
 
         menu.addItem(new MenuItemNewLine());
-        if (ex.getTrigger().triggerOnPlayerAvailable()) {
+
+        if (actionExecutor.getTrigger().triggerOnPlayerAvailable()) {
             menu.addItem(new MenuItemInteger(ItemType.STONE,
                     RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_NAME),
                     RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_DESCRIPTION),
-                    ex.getTriggerCountCallback(), 0, null));
+                    actionExecutor.getTriggerCountCallback(), 0, null));
 
-            menu.addItem(new MenuItemBoolean(ItemType.PLAYER_HEAD,
+            menu.addItem(new MenuItemBoolean(MenuUtility.playerType(),
                     RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_PERPLAYER_NAME),
                     RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_PERPLAYER_DESCRIPTION),
-                    ex.getIsTriggerPerPlayerCallback()));
+                    actionExecutor.getIsTriggerPerPlayerCallback()));
         }
-        menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
-        menu.displayMenu(fviewer);
+        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+        menu.displayMenu();
         return ItemStack.empty();
     }
 
     @Override
     public @NonNull ItemStack onRightClick() {
-        region.removeExecutor(ex);
-        getContainer().removeItem(getSlot());
+        actionExecutorHolder.removeExecutor(actionExecutor);
+        getMenu().removeItem(getSlot());
         return ItemStack.empty();
     }
 }

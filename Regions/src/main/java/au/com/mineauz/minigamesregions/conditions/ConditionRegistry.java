@@ -3,7 +3,6 @@ package au.com.mineauz.minigamesregions.conditions;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuUtility;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
@@ -45,14 +44,14 @@ public class ConditionRegistry {
         return conditions.values().stream().map(ConditionFactory::makeNewCondition).collect(Collectors.toSet());
     }
 
-    public static void displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull ActionExecutor exec, @NotNull Menu prev) {
-        Menu m = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), mgPlayer);
-        m.setPreviousPage(prev);
+    public static void displayMenu(final @NotNull ActionExecutor exec, final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), prev.getIntendedViewer());
+        menu.setPreviousPage(prev);
         for (ACondition con : exec.getConditions()) {
-            m.addItem(new MenuItemCondition(ItemType.PAPER, con.getDisplayName(), exec, con));
+            menu.addItem(new MenuItemCondition(ItemType.PAPER, con.getDisplayName(), exec, con));
         }
-        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.addItem(new MenuItemConditionAdd(MenuUtility.createType(), RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_ADD_NAME), exec), m.getSize() - 1);
-        m.displayMenu(mgPlayer);
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.addItem(new MenuItemConditionAdd(MenuUtility.createType(), RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_ADD_NAME), exec), menu.getSize() - 1);
+        menu.displayMenu();
     }
 }

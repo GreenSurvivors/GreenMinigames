@@ -18,7 +18,7 @@ public class MenuItem {
     private static final String BASE_DESCRIPTION_TOKEN = "Base_description";
     private final @NotNull List<@NotNull IdComponent> descriptionRegistry = new ArrayList<>();
     private @NotNull ItemStack displayItem;
-    private @MonotonicNonNull Menu container = null;
+    private @MonotonicNonNull Menu containingMenu = null;
     private int slot = 0;
 
     public MenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {
@@ -270,19 +270,19 @@ public class MenuItem {
         return getDisplayItem();
     }
 
-    public @MonotonicNonNull Menu getContainer() {
-        return container;
+    public @MonotonicNonNull Menu getMenu() {
+        return containingMenu;
     }
 
-    public void setContainer(final @NotNull Menu container) {
-        this.container = container;
+    public void setContainingMenu(final @NotNull Menu containingMenu) {
+        this.containingMenu = containingMenu;
     }
 
     public int getSlot() {
         return slot;
     }
 
-    public void setSlot(int slot) {
+    public void setSlot(final int slot) {
         this.slot = slot;
     }
 

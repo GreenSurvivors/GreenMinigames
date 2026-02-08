@@ -80,12 +80,12 @@ public class SetScoreAction extends AScoreAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.addItem(amount.getMenuItem(ItemType.ENDER_PEARL,
                 MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), null, null));
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 }

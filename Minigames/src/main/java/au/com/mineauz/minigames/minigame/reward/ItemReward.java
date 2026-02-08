@@ -172,7 +172,7 @@ public class ItemReward extends ARewardType {
         @Override
         public @NotNull ItemStack onShiftRightClick() {
             getRewards().removeReward(reward);
-            getContainer().removeItem(getSlot());
+            getMenu().removeItem(getSlot());
             return ItemStack.empty();
         }
     }

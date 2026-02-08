@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.consumer.StringConsumer;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -131,36 +130,33 @@ public class MenuItemLong extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onDoubleClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,
+        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)),
             Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()),
             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), this.max == null ? "N/A" : this.max.toString()));
-        getContainer().startReopenTimer(reopenTime);
+        getMenu().closeAndWaitForInput(reopenTime, this);
 
         return ItemStack.empty();
     }
 
     @Override
-    public void acceptString(@NotNull String string) {
+    public void acceptString(final @NotNull String string) {
         if (LONG_PATTERN.matcher(string).matches()) {
             long entryValue = Long.parseLong(string);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {
                 value.setValue(entryValue);
                 updateDescription();
 
-                getContainer().cancelReopenTimer();
-                getContainer().displayMenu(getContainer().getViewer());
+                getMenu().cancelWaitForInput();
+                getMenu().displayMenu();
             }
         } else {
-            getContainer().cancelReopenTimer();
-            getContainer().displayMenu(getContainer().getViewer());
+            getMenu().cancelWaitForInput();
+            getMenu().displayMenu();
 
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                 MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
         }

@@ -131,9 +131,7 @@ public class MenuItemInteger extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onDoubleClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
+        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,
@@ -142,14 +140,13 @@ public class MenuItemInteger extends MenuItem implements StringConsumer {
             Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()), //todo don't hardcode N/A
             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), this.max == null ? "N/A" : this.max.toString()));
 
-        mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenTime);
+        getMenu().closeAndWaitForInput(reopenTime, this);
 
         return ItemStack.empty();
     }
 
     @Override
-    public void acceptString(@NotNull String string) {
+    public void acceptString(final @NotNull String string) {
         if (INT_PATTERN.matcher(string).matches()) {
             int entryValue = Integer.parseInt(string);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {
@@ -157,18 +154,18 @@ public class MenuItemInteger extends MenuItem implements StringConsumer {
                 updateDescription();
 
             } else {
-                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+                MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                     MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), this.max == null ? "N/A" : this.max.toString()));
             }
         } else {
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                 MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
         }
 
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        getMenu().cancelWaitForInput();
+        getMenu().displayMenu();
     }
 }

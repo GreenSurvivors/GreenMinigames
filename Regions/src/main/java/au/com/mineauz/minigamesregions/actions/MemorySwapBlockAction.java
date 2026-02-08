@@ -361,16 +361,16 @@ public class MemorySwapBlockAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         //The menu entry for the from-block, aka the block that will be replaced
-        m.addItem(matchType.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MATCHBLOCK_NAME)));
+        menu.addItem(matchType.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MATCHBLOCK_NAME)));
 
         //Menu entry for the white/blacklist entry, aka the blocks that will be only accounted for / removed from the block pool
-        m.addItem(new MenuItemNewLine());
-        m.addItem(new MenuItemDisplayWhitelist(ItemType.BOOK, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME),
+        menu.addItem(new MenuItemNewLine());
+        menu.addItem(new MenuItemDisplayWhitelist(ItemType.BOOK, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_DESCRIPTION),
                 wbList.getFlag(), new Callback<>() {
 
@@ -385,8 +385,7 @@ public class MemorySwapBlockAction extends AAction {
             }
         }, RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_MODE_DESCRIPTION)));
 
-        m.displayMenu(mgPlayer);
-
+        menu.displayMenu();
         return false;
     }
 }

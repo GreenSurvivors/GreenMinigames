@@ -224,8 +224,8 @@ public class ScoreboardDisplay {
         sign.update();
     }
 
-    public void displayMenu(@NotNull MinigamePlayer player) {
-        final Menu setupMenu = new Menu(3, MgMenuLangKey.MENU_SCOREBOARD_SETUP_NAME, player);
+    public void displayMenu(final @NotNull MinigamePlayer player) {
+        final @NotNull Menu setupMenu = new Menu(3, MgMenuLangKey.MENU_SCOREBOARD_SETUP_NAME, player);
 
         StatSettings settings = minigame.getSettings(stat);
         final MenuItemCustom statisticChoice = new MenuItemCustom(ItemType.WRITABLE_BOOK, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_NAME,
@@ -235,7 +235,7 @@ public class ScoreboardDisplay {
             List.of(field.getTitle().color(NamedTextColor.GREEN)));
 
         statisticChoice.setClick(() -> {
-            Menu childMenu = MinigameStatistics.createStatSelectMenu(setupMenu, new Callback<>() {
+            final @NotNull Menu childMenu = MinigameStatistics.createStatSelectMenu(setupMenu, new Callback<>() {
                 @Override
                 public MinigameStat getValue() {
                     throw new UnsupportedOperationException();
@@ -248,9 +248,9 @@ public class ScoreboardDisplay {
                     statisticChoice.setBaseDescriptionPart(List.of(settings12.getDisplayName().color(NamedTextColor.GREEN)));
 
                     // Check that the field is valid
-                    StatisticValueField first = null;
+                    @Nullable StatisticValueField first = null;
                     boolean valid = false;
-                    for (StatisticValueField sfield : settings12.getFormat().getFields()) {
+                    for (final @NotNull StatisticValueField sfield : settings12.getFormat().getFields()) {
                         if (first == null) {
                             first = sfield;
                         }
@@ -269,7 +269,7 @@ public class ScoreboardDisplay {
                 }
             });
 
-            childMenu.displayMenu(setupMenu.getViewer());
+            childMenu.displayMenu();
             return ItemStack.empty();
         });
 
@@ -288,7 +288,7 @@ public class ScoreboardDisplay {
                 }
             });
 
-            childMenu.displayMenu(setupMenu.getViewer());
+            childMenu.displayMenu();
             return ItemStack.empty();
         });
 
@@ -310,7 +310,7 @@ public class ScoreboardDisplay {
 
         setupMenu.addItem(new MenuItemScoreboardSave(MenuUtility.createType(), MgMenuLangKey.MENU_SCOREBOARD_CREATE_NAME, this),
             setupMenu.getSize() - 1);
-        setupMenu.displayMenu(player);
+        setupMenu.displayMenu();
     }
 
     private void clearSign(@NotNull Block block) {

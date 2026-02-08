@@ -84,7 +84,7 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
             ItemStack stackUpdate = getDisplayItem();
             setDisplayItem(stackUpdate.withType(item.getType()));
         } else {
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_BLOCKDATA_ERROR_INVALID,
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_BLOCKDATA_ERROR_INVALID,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(item.getType().translationKey())));
         }
         return getDisplayItem();
@@ -92,15 +92,12 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
 
     @Override
     public @NotNull ItemStack onDoubleClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
+        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_BLOCKDATA_CLICKBLOCK,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
-        mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenTime);
+        getMenu().closeAndWaitForInput(reopenTime, this);
         return ItemStack.empty();
     }
 
@@ -109,12 +106,12 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
         try {
             acceptBlockData(Bukkit.createBlockData(string));
         } catch (IllegalArgumentException e) {
-            MinigameMessageManager.sendMessage(getContainer().getViewer(), MinigameMessageType.ERROR, Component.text(e.getLocalizedMessage()));
+            MinigameMessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, Component.text(e.getLocalizedMessage()));
         }
     }
 
     @Override
-    public void acceptBlockData(@NotNull BlockData blockData) {
+    public void acceptBlockData(final @NotNull BlockData blockData) {
         dataCallback.setValue(blockData);
         setDescriptionPart(DESCRIPTION_TOKEN, createDescription(dataCallback.getValue()));
 
@@ -126,7 +123,7 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
             // todo - does never happen, hopefully
         }
 
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        getMenu().cancelWaitForInput();
+        getMenu().displayMenu();
     }
 }

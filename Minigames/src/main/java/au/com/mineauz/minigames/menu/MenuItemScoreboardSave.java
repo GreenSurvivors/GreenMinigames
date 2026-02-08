@@ -34,7 +34,7 @@ public class MenuItemScoreboardSave extends MenuItem {
         disp.placeRootSign();
         disp.reload();
 
-        getContainer().getViewer().getPlayer().closeInventory();
+        getMenu().getIntendedViewer().getPlayer().closeInventory();
         return ItemStack.empty();
     }
 }

@@ -36,8 +36,8 @@ public class MenuItemPage extends MenuItem {
 
     @Override
     public @NotNull ItemStack onClick() {
-        menu.setPreviousPage(getContainer());
-        menu.displayMenu(getContainer().getViewer());
+        menu.setPreviousPage(getMenu());
+        menu.displayMenu();
         return ItemStack.empty();
     }
 }

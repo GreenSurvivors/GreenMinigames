@@ -6,8 +6,12 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("UnstableApiUsage") // shutup ItemType
 public class MenuUtility {
 
-    public static @NotNull ItemType backType() {
+    public static @NotNull ItemType pageBackType() {
         return ItemType.REDSTONE_TORCH;
+    }
+
+    public static @NotNull ItemType pageNextType() {
+        return ItemType.COPPER_TORCH;
     }
 
     public static @NotNull ItemType saveType() {
@@ -18,12 +22,16 @@ public class MenuUtility {
         return ItemType.ITEM_FRAME;
     }
 
-    public static @NotNull ItemType slotFillerType() {
-        return ItemType.RED_STAINED_GLASS_PANE;
-    }
-
     public static @NotNull ItemType timeType() {
         return ItemType.CLOCK;
+    }
+
+    public static @NotNull ItemType playerType() {
+        return ItemType.PLAYER_HEAD;
+    }
+
+    public static @NotNull ItemType slotFillerType() {
+        return ItemType.RED_STAINED_GLASS_PANE;
     }
 
     public static @NotNull ItemType unknownType() {

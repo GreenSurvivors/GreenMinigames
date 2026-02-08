@@ -70,7 +70,7 @@ public class QuitAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(final @NotNull Menu previous) {
         return false;
     }
 }

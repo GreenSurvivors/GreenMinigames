@@ -188,8 +188,8 @@ public class TakeItemAction extends AAction { // todo make material match option
     }
 
     @Override
-    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) { // todo hide turned of matches
-        final Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+    public boolean displayMenu(final @NotNull Menu previous) { // todo hide turned of matches
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         // we need a reference for two object we will create soon down the line
@@ -283,7 +283,7 @@ public class TakeItemAction extends AAction { // todo make material match option
         menu.addItem(matchExact.getMenuItem(ItemType.BOOKSHELF,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_EXACT_NAME))); //todo with callback to turn the others on/off
 
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 }

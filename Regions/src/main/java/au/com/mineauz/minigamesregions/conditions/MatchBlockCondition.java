@@ -93,8 +93,8 @@ public class MatchBlockCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
-        Menu menu = new Menu(3, getDisplayName(), player);
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
 
         final MenuItem menuItemBData = blockData.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME));
@@ -103,7 +103,7 @@ public class MatchBlockCondition extends ACondition {
         menu.addItem(menuItemUseData);
 
         addInvertMenuItem(menu);
-        menu.displayMenu(player);
+        menu.displayMenu();
         return true;
     }
 

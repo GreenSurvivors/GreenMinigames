@@ -31,9 +31,9 @@ public class MenuItemDisplayRewards extends MenuItem {
 
     @Override
     public @NotNull ItemStack onClick() {
-        Menu rewardMenu = rewards.createMenu(getName(), getContainer().getViewer(), getContainer());
+        final @NotNull Menu rewardMenu = rewards.createMenu(getName(), getMenu());
 
-        rewardMenu.displayMenu(getContainer().getViewer());
+        rewardMenu.displayMenu();
         return ItemStack.empty();
     }
 }

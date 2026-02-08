@@ -32,11 +32,11 @@ public class MenuItemFlag extends MenuItem {
 
     @Override
     public @NotNull ItemStack onShiftRightClick() {
-        MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_FLAG_REMOVED,
+        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_FLAG_REMOVED,
             Placeholder.unparsed(MinigamePlaceHolderKey.FLAG.getKey(), flag));
         flags.remove(flag);
 
-        getContainer().removeItem(getSlot());
+        getMenu().removeItem(getSlot());
         return ItemStack.empty();
     }
 }

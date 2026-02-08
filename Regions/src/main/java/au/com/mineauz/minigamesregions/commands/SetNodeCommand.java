@@ -74,7 +74,7 @@ public class SetNodeCommand extends ASetCommand {
                         }
                         return true;
                     } else if (args[0].equalsIgnoreCase("modify")) {
-                        rmod.displayMenu(mgPlayer, null);
+                        rmod.displayMenu(mgPlayer);
                         return true;
                     } else if (args[0].equalsIgnoreCase("remove") && args.length >= 2) {
                         if (rmod.hasNode(args[1])) {

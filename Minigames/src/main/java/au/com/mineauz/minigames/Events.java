@@ -291,12 +291,10 @@ public class Events implements Listener {
         if (event.getDamager() instanceof Player player) {
             final MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
 
-            if (mgPlayer.isInMenu() && mgPlayer.getNoClose() && mgPlayer.getManualEntry() instanceof EntityConsumer entityConsumer) {
+            if (mgPlayer.isInMenu() && mgPlayer.getMenuItemWaitingForManualInput() instanceof EntityConsumer entityConsumer) {
                 event.setCancelled(true);
-                mgPlayer.setNoClose(false);
-                mgPlayer.setNoClose(false);
                 entityConsumer.acceptEntity(event.getEntity());
-                mgPlayer.setManualEntry(null);
+                mgPlayer.setMenuItemWaitingForManualInput(null);
             }
         }
     }
@@ -309,14 +307,13 @@ public class Events implements Listener {
             event.setCancelled(true);
             return;
         }
-        if (mgPlayer.isInMenu() && mgPlayer.getNoClose() && mgPlayer.getManualEntry() instanceof BlockDataConsumer blockDataConsumer) {
+        if (mgPlayer.isInMenu() &&
+            event.getClickedBlock() != null &&
+            mgPlayer.getMenuItemWaitingForManualInput() instanceof BlockDataConsumer blockDataConsumer) {
+
             event.setCancelled(true);
-            mgPlayer.setNoClose(false);
-            if (event.getClickedBlock() != null) {
-                mgPlayer.setNoClose(false);
-                blockDataConsumer.acceptBlockData(event.getClickedBlock().getBlockData());
-                mgPlayer.setManualEntry(null);
-            }
+            blockDataConsumer.acceptBlockData(event.getClickedBlock().getBlockData());
+            mgPlayer.setMenuItemWaitingForManualInput(null);
             return;
         }
         if (event.getClickedBlock() != null && event.getClickedBlock().getType().asBlockType() == BlockType.DRAGON_EGG) {
@@ -797,7 +794,7 @@ public class Events implements Listener {
     private void closeMenu(@NotNull InventoryCloseEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer((Player) event.getPlayer());
 
-        if (mgPlayer.isInMenu() && !mgPlayer.getNoClose()) {
+        if (mgPlayer.isInMenu() && !mgPlayer.isMenuWaitingForInput()) {
             mgPlayer.setMenu(null);
         }
     }
@@ -805,11 +802,10 @@ public class Events implements Listener {
     @EventHandler
     private void manualItemEntry(@NotNull AsyncPlayerChatEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
-        if (mgPlayer.isInMenu() && mgPlayer.getNoClose() && mgPlayer.getManualEntry() instanceof StringConsumer stringAcceptor) {
+        if (mgPlayer.isInMenu() && mgPlayer.getMenuItemWaitingForManualInput() instanceof StringConsumer stringAcceptor) {
             event.setCancelled(true);
-            mgPlayer.setNoClose(false);
             stringAcceptor.acceptString(event.getMessage());
-            mgPlayer.setManualEntry(null);
+            mgPlayer.setMenuItemWaitingForManualInput(null);
         }
     }
 

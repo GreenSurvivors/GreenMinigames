@@ -56,7 +56,7 @@ public class MenuItemStatusEffect extends MenuItem {
     @Override
     public @NotNull ItemStack onShiftRightClick() {
         loadout.removePotionEffect(eff);
-        getContainer().removeItem(getSlot());
+        getMenu().removeItem(getSlot());
         return ItemStack.empty();
     }
 

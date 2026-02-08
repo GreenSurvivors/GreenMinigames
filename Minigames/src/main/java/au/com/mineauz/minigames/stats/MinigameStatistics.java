@@ -147,13 +147,13 @@ public final class MinigameStatistics {
      */
     @NotNull
     public static Menu createStatSelectMenu(final @NotNull Menu parent, final @NotNull Callback<MinigameStat> statCallback) {
-        final Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_NAME, parent.getViewer());
+        final @NotNull Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_NAME, parent.getIntendedViewer());
 
-        for (final MinigameStat stat : getAllStats().values()) {
+        for (final @NotNull MinigameStat stat : getAllStats().values()) {
             MenuItemCustom item = new MenuItemCustom(ItemType.WRITABLE_BOOK, stat.getDisplayName());
             item.setClick(() -> {
                 statCallback.setValue(stat);
-                parent.displayMenu(submenu.getViewer());
+                parent.displayMenu();
                 return ItemStack.empty();
             });
 
@@ -174,13 +174,13 @@ public final class MinigameStatistics {
      */
     @NotNull
     public static Menu createStatFieldSelectMenu(final @NotNull Menu parent, @NotNull StatFormat format, final @NotNull Callback<StatisticValueField> callback) {
-        final Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_FIELD_NAME, parent.getViewer());
+        final @NotNull Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_FIELD_NAME, parent.getIntendedViewer());
 
-        for (final StatisticValueField field : format.getFields()) {
-            MenuItemCustom item = new MenuItemCustom(ItemType.PAPER, field.getTitle());
+        for (final @NotNull StatisticValueField field : format.getFields()) {
+            final @NotNull MenuItemCustom item = new MenuItemCustom(ItemType.PAPER, field.getTitle());
             item.setClick(() -> {
                 callback.setValue(field);
-                parent.displayMenu(submenu.getViewer());
+                parent.displayMenu();
                 return ItemStack.empty();
             });
 

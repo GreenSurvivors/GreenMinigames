@@ -139,14 +139,14 @@ public class ApplyEffectAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
 
         List<PotionEffectType> pots = Registry.EFFECT.stream().toList();
 
-        m.addItem(new MenuItemList<>(ItemType.POTION, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_EFFECT_NAME), new Callback<>() {
+        menu.addItem(new MenuItemList<>(ItemType.POTION, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_EFFECT_NAME), new Callback<>() {
             @Override
             public @Nullable PotionEffectType getValue() {
                 return type;
@@ -158,8 +158,8 @@ public class ApplyEffectAction extends AAction {
                 type = value;
             }
         }, pots));
-        m.addItem(dur.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_DURATION_NAME), 0L, 86400L));
-        m.addItem(new MenuItemInteger(ItemType.EXPERIENCE_BOTTLE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_LEVEL_NAME), new Callback<>() {
+        menu.addItem(dur.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_DURATION_NAME), 0L, 86400L));
+        menu.addItem(new MenuItemInteger(ItemType.EXPERIENCE_BOTTLE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_LEVEL_NAME), new Callback<>() {
 
             @Override
             public Integer getValue() {
@@ -172,7 +172,7 @@ public class ApplyEffectAction extends AAction {
             }
 
         }, 0, 100));
-        m.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 }

@@ -30,6 +30,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -321,9 +322,18 @@ public class RegionModule extends AMinigameModule {
         }
     }
 
-    public void displayMenu(@NotNull MinigamePlayer viewer, @Nullable Menu previous) {
-        Menu rm = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME), viewer);
-        List<MenuItem> items = new ArrayList<>(regions.size());
+    public void displayMenu(final @NotNull MinigamePlayer viewer) {
+        displayMenu(viewer, null);
+    }
+
+    public void displayMenu(final @NotNull Menu previous) {
+        displayMenu(previous.getIntendedViewer(), previous);
+    }
+
+    @ApiStatus.Obsolete
+    protected void displayMenu(final @NotNull MinigamePlayer viewer, final @Nullable Menu previous) {
+        final @NotNull Menu regionsAndNodesMenu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME), viewer);
+        final @NotNull List<MenuItem> items = new ArrayList<>(regions.size());
         for (Region region : regions.values()) {
             MenuItemRegion mir = new MenuItemRegion(ItemType.ENDER_CHEST, Component.text(region.getName()), region, this);
             items.add(mir);
@@ -353,11 +363,12 @@ public class RegionModule extends AMinigameModule {
                     region, this);
             items.add(min);
         }
-        rm.addItems(items);
+        regionsAndNodesMenu.addItems(items);
 
-        if (previous != null)
-            rm.addItem(new MenuItemBack(previous), rm.getSize() - 9);
-        rm.displayMenu(viewer);
+        if (previous != null) {
+            regionsAndNodesMenu.addItem(new MenuItemBack(previous), regionsAndNodesMenu.getSize() - 9);
+        }
+        regionsAndNodesMenu.displayMenu();
     }
 
 
@@ -365,7 +376,7 @@ public class RegionModule extends AMinigameModule {
     public void addEditMenuOptions(final @NotNull Menu menu) {
         final @NotNull MenuItemCustom menuItemCustom = new MenuItemCustom(ItemType.DIAMOND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME));
         menuItemCustom.setClick(() -> {
-            displayMenu(menu.getViewer(), menu);
+            displayMenu(menu);
             return ItemStack.empty();
         });
         menu.addItem(menuItemCustom);

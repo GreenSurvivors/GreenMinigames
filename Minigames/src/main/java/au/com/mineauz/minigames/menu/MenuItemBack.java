@@ -8,13 +8,13 @@ public class MenuItemBack extends MenuItem {
     private final @NotNull Menu prev;
 
     public MenuItemBack(@NotNull Menu prev) {
-        super(MenuUtility.backType(), MgMenuLangKey.MENU_PAGE_BACK);
+        super(MenuUtility.pageBackType(), MgMenuLangKey.MENU_PAGE_BACK);
         this.prev = prev;
     }
 
     @Override
     public @NotNull ItemStack onClick() {
-        prev.displayMenu(prev.getViewer());
+        prev.displayMenu();
         return ItemStack.empty();
     }
 }

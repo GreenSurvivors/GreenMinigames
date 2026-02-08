@@ -29,10 +29,10 @@ public class MenuItemConditionAdd extends MenuItem {
 
     @Override
     public @NonNull ItemStack onClick() {
-        Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), getContainer().getViewer());
-        menu.setPreviousPage(getContainer());
-        Map<IConditionCategory, Menu> cats = new HashMap<>();
-        List<ACondition> cons = new ArrayList<>(ConditionRegistry.getAllConditions());
+        final @NotNull Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), getMenu().getIntendedViewer());
+        menu.setPreviousPage(getMenu());
+        final @NotNull Map<IConditionCategory, Menu> cats = new HashMap<>();
+        final @NotNull List<ACondition> cons = new ArrayList<>(ConditionRegistry.getAllConditions());
         for (ACondition condition : cons) {
             if (condition.useInNodes() || condition.useInRegions()) {
                 if (!exec.getTrigger().triggerOnPlayerAvailable()) {
@@ -41,29 +41,29 @@ public class MenuItemConditionAdd extends MenuItem {
                     }
                 }
 
-                IConditionCategory category = condition.getCategory();
-                Menu catMenu;
+                final @NotNull IConditionCategory category = condition.getCategory();
+                final @NotNull Menu catMenu;
                 if (!cats.containsKey(category)) {
-                    catMenu = new Menu(6, category.getDisplayName(), getContainer().getViewer());
+                    catMenu = new Menu(6, category.getDisplayName(), getMenu().getIntendedViewer());
                     cats.put(category, catMenu);
                     menu.addItem(new MenuItemPage(ItemType.CHEST, category.getDisplayName(), catMenu));
                     catMenu.addItem(new MenuItemBack(menu), catMenu.getSize() - 9);
                 } else {
                     catMenu = cats.get(category);
                 }
-                MenuItemCustom menuItemCustom = new MenuItemCustom(ItemType.PAPER, condition.getDisplayName());
+                final @NotNull MenuItemCustom menuItemCustom = new MenuItemCustom(ItemType.PAPER, condition.getDisplayName());
 
                 menuItemCustom.setClick(() -> {
                     exec.addCondition(condition);
-                    getContainer().addItem(new MenuItemCondition(ItemType.PAPER, condition.getDisplayName(), exec, condition));
-                    getContainer().displayMenu(getContainer().getViewer());
+                    getMenu().addItem(new MenuItemCondition(ItemType.PAPER, condition.getDisplayName(), exec, condition));
+                    getMenu().displayMenu();
                     return ItemStack.empty();
                 });
                 catMenu.addItem(menuItemCustom);
             }
         }
-        menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
-        menu.displayMenu(getContainer().getViewer());
+        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+        menu.displayMenu();
         return ItemStack.empty();
     }
 }

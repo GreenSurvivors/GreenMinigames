@@ -69,11 +69,11 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public @NotNull ItemStack onClick() {
-        Menu loadoutMenu = new Menu(5, loadout.getDisplayName(), getContainer().getViewer());
-        Menu loadoutSettingsMenu = new Menu(6, loadout.getDisplayName(), getContainer().getViewer());
+        final @NotNull Menu loadoutMenu = new Menu(5, loadout.getDisplayName(), getMenu().getIntendedViewer());
+        final @NotNull Menu loadoutSettingsMenu = new Menu(6, loadout.getDisplayName(), getMenu().getIntendedViewer());
         loadoutSettingsMenu.setPreviousPage(loadoutMenu);
 
-        List<MenuItem> menuItems = new ArrayList<>();
+        final @NotNull List<@NotNull MenuItem> menuItems = new ArrayList<>();
         if (!loadout.getName().equals("default")) {
             menuItems.add(new MenuItemBoolean(ItemType.GOLD_INGOT,
                 MgMenuLangKey.MENU_DISPLAYLOADOUT_USEPERMISSIONS_NAME,
@@ -81,7 +81,7 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
                     Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName().toLowerCase())),
                 loadout.getUsePermissionsCallback()));
         }
-        MenuItemComponent disName = new MenuItemComponent(ItemType.PAPER, MgMenuLangKey.MENU_DISPLAYNAME_NAME, loadout.getDisplayNameCallback());
+        final @NotNull MenuItemComponent disName = new MenuItemComponent(ItemType.PAPER, MgMenuLangKey.MENU_DISPLAYNAME_NAME, loadout.getDisplayNameCallback());
         disName.setAllowNull(true);
         menuItems.add(disName);
         menuItems.add(new MenuItemBoolean(ItemType.LEATHER_BOOTS,
@@ -109,18 +109,18 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
             loadout.getTeamColorCallback(), List.of(TeamColor.values())));
         loadoutSettingsMenu.addItems(menuItems);
         MenuItemBack menuItemBack = new MenuItemBack(loadoutMenu);
-        loadoutSettingsMenu.addItem(menuItemBack, getContainer().getSize() - 9);
+        loadoutSettingsMenu.addItem(menuItemBack, getMenu().getSize() - 9);
 
         loadout.addAddonMenuItems(loadoutSettingsMenu);
 
-        Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
+        Menu potionMenu = new Menu(5, getMenu().getTitle(), getMenu().getIntendedViewer());
 
         potionMenu.setPreviousPage(loadoutMenu);
         potionMenu.addItem(new MenuItemStatusEffectAdd(MenuUtility.createType(), MgMenuLangKey.MENU_STATUSEFFECTADD_NAME, loadout), potionMenu.getSize() - 1);
         potionMenu.addItem(menuItemBack, potionMenu.getSize() - 2);
 
-        List<Component> description = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
-        List<MenuItem> potionMenuItems = new ArrayList<>();
+        final @NotNull List<@NotNull Component> description = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
+        final @NotNull List<@NotNull MenuItem> potionMenuItems = new ArrayList<>();
 
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
             potionMenuItems.add(new MenuItemStatusEffect(ItemType.POTION, Component.translatable(eff.getType().translationKey()), description, eff, loadout));
@@ -128,16 +128,16 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
         potionMenu.addItems(potionMenuItems);
 
         loadoutMenu.setAllowModify(true);
-        loadoutMenu.setPreviousPage(getContainer());
+        loadoutMenu.setPreviousPage(getMenu());
 
         loadoutMenu.addItem(new MenuItemSaveLoadoutPage(ItemType.CHEST, MgMenuLangKey.MENU_DISPLAYLOADOUT_SETTINGS_NAME, loadout, loadoutSettingsMenu), 42);
         loadoutMenu.addItem(new MenuItemSaveLoadoutPage(ItemType.POTION, MgMenuLangKey.MENU_DISPLAYLOADOUT_EFFECTS_NAME, loadout, potionMenu), 43);
-        loadoutMenu.addItem(new MenuItemSaveLoadoutPage(MenuUtility.saveType(), MgMenuLangKey.MENU_DISPLAYLOADOUT_SAVE_NAME, loadout, getContainer()), 44);
+        loadoutMenu.addItem(new MenuItemSaveLoadoutPage(MenuUtility.saveType(), MgMenuLangKey.MENU_DISPLAYLOADOUT_SAVE_NAME, loadout, getMenu()), 44);
         final int numOfSlots = loadout.allowOffHand() ? 41 : 40;
         for (int i = numOfSlots; i < 42; i++) {
             loadoutMenu.addItem(new MenuItem((ItemType) null, Component.empty()), i);
         }
-        loadoutMenu.displayMenu(getContainer().getViewer());
+        loadoutMenu.displayMenu();
 
         for (Integer slot : loadout.getItemSlots()) {
             if (slot >= 0 && slot < 100) {
@@ -157,22 +157,19 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
             }
         }
 
-        return null;
+        return ItemStack.empty();
     }
 
     @Override
     public @NotNull ItemStack onShiftRightClick() {
         if (allowDelete) {
-            MinigamePlayer mgPlayer = getContainer().getViewer();
-            mgPlayer.setNoClose(true);
-            mgPlayer.getPlayer().closeInventory();
+            MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
             final @NotNull Duration reopenTime = Duration.ofSeconds(10);
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_DISPLAYLOADOUT_ENTERCHAT,
                 Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), getName()),
                 Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName()),
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
-            mgPlayer.setManualEntry(this);
-            getContainer().startReopenTimer(reopenTime);
+            getMenu().closeAndWaitForInput(reopenTime, this);
             return ItemStack.empty();
         }
 
@@ -180,7 +177,7 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
     }
 
     @Override
-    public void acceptString(@NotNull String string) {
+    public void acceptString(final @NotNull String string) {
         String loadoutName = loadout.getName();
 
         if (string.equalsIgnoreCase("yes")) {
@@ -189,20 +186,20 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
             } else {
                 LoadoutModule.deleteGlobalLoadout(loadoutName);
             }
-            getContainer().removeItem(getSlot());
-            getContainer().cancelReopenTimer();
-            getContainer().displayMenu(getContainer().getViewer());
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.SUCCESS, MgMenuLangKey.MENU_DISPLAYLOADOUT_DELETE,
+            getMenu().removeItem(getSlot());
+            getMenu().cancelWaitForInput();
+            getMenu().displayMenu();
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.SUCCESS, MgMenuLangKey.MENU_DISPLAYLOADOUT_DELETE,
                 Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
         } else {
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.WARNING, MgMenuLangKey.MENU_DISPLAYLOADOUT_NOTDELETE,
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.WARNING, MgMenuLangKey.MENU_DISPLAYLOADOUT_NOTDELETE,
                 Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
-            getContainer().cancelReopenTimer();
-            getContainer().displayMenu(getContainer().getViewer());
+            getMenu().cancelWaitForInput();
+            getMenu().displayMenu();
         }
     }
 
-    public void setAllowDelete(boolean bool) {
+    public void setAllowDelete(final boolean bool) {
         allowDelete = bool;
     }
 }

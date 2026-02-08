@@ -12,33 +12,31 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MenuItemToolTeam extends MenuItemList<TeamColor> {
-    private final @NotNull Callback<TeamColor> value;
 
-    public MenuItemToolTeam(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<TeamColor> value,
-                            @NotNull List<@NotNull TeamColor> options) {
-        super(displayType, langKey, value, options);
-        this.value = value;
+    public MenuItemToolTeam(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                            final @NotNull Callback<TeamColor> callback, final @NotNull List<@NotNull TeamColor> options) {
+        super(displayType, langKey, callback, options);
     }
 
     @Override
     public @NotNull ItemStack onClick() {
-        super.onClick();
-        MinigamePlayer mgPlayer = getContainer().getViewer();
+        final @NotNull ItemStack result = super.onClick();
+        final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         if (MinigameTool.hasMinigameTool(mgPlayer)) {
             MinigameTool tool = MinigameTool.getMinigameTool(mgPlayer);
-            tool.setTeamColor(value.getValue());
+            tool.setTeamColor(callback.getValue());
         }
-        return getDisplayItem();
+        return result;
     }
 
     @Override
     public @NotNull ItemStack onRightClick() {
-        super.onRightClick();
-        MinigamePlayer mgPlayer = getContainer().getViewer();
+        final @NotNull ItemStack result = super.onRightClick();
+        final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         if (MinigameTool.hasMinigameTool(mgPlayer)) {
             MinigameTool tool = MinigameTool.getMinigameTool(mgPlayer);
-            tool.setTeamColor(value.getValue());
+            tool.setTeamColor(callback.getValue());
         }
-        return getDisplayItem();
+        return result;
     }
 }

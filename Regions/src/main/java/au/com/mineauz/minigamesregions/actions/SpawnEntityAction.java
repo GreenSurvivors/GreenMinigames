@@ -143,8 +143,8 @@ public class SpawnEntityAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         final MenuItem entitySelector = entitySnapshotFlag.getMenuItem(ItemType.SPAWNER, RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_SELECT_NAME));
@@ -180,7 +180,7 @@ public class SpawnEntityAction extends AAction {
             }
         }, options));
 
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 

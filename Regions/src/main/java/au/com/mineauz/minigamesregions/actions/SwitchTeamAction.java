@@ -106,11 +106,11 @@ public class SwitchTeamAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu prev) {
-        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), prev.getIntendedViewer());
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
 
-        List<String> teams = Arrays.stream(TeamColor.values()).map(TeamColor::getUserFriendlyName).collect(Collectors.toCollection(ArrayList::new));
+        final @NotNull List<@NotNull String> teams = Arrays.stream(TeamColor.values()).map(TeamColor::getUserFriendlyName).collect(Collectors.toCollection(ArrayList::new));
         teams.add("All"); //todo ?
         menu.addItem(new MenuItemList<>(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_DESCRIPTION), new Callback<>() {
@@ -139,7 +139,7 @@ public class SwitchTeamAction extends AAction {
                 teamTo.setFlag(value.toUpperCase());
             }
         }, teams));
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 }

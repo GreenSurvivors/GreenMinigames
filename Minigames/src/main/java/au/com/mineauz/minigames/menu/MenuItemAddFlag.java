@@ -40,26 +40,23 @@ public class MenuItemAddFlag extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
+        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(20);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_FLAGADD_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
-        mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenTime);
+        getMenu().closeAndWaitForInput(reopenTime, this);
 
         return ItemStack.empty();
     }
 
     @Override
-    public void acceptString(@NotNull String string) {
+    public void acceptString(final @NotNull String string) {
         mgm.addSinglePlayerFlag(string);
-        getContainer().addItem(new MenuItemFlag(ItemType.OAK_SIGN, string, mgm.getSinglePlayerFlags()));
+        getMenu().addItem(new MenuItemFlag(ItemType.OAK_SIGN, string, mgm.getSinglePlayerFlags()));
 
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        getMenu().cancelWaitForInput();
+        getMenu().displayMenu();
     }
 }

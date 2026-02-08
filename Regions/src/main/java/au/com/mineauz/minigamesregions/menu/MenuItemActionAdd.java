@@ -30,36 +30,37 @@ public class MenuItemActionAdd extends MenuItem {
 
     @Override
     public @NonNull ItemStack onClick() { // miau
-        Menu m = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), getContainer().getViewer());
-        m.setPreviousPage(getContainer());
-        Map<IActionCategory, Menu> cats = new HashMap<>();
-        List<ActionFactory> acts = new ArrayList<>(ActionRegistry.getAllActionFactories());
-        for (ActionFactory factory : acts) {
-            final IAction action = factory.makeNewAction();
+        final @NotNull Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), getMenu().getIntendedViewer());
+        menu.setPreviousPage(getMenu());
+        final @NotNull Map<@NotNull IActionCategory, @NotNull Menu> cats = new HashMap<>();
+        final @NotNull List<@NotNull ActionFactory> acts = new ArrayList<>(ActionRegistry.getAllActionFactories());
+        for (final @NotNull ActionFactory factory : acts) {
+            final @NotNull IAction action = factory.makeNewAction();
             if (action.useInNodes() || action.useInRegions()) {
-                IActionCategory category = action.getCategory();
-                Menu menuCat;
+                final @NotNull IActionCategory category = action.getCategory();
+                final @NotNull Menu menuCat;
                 if (!cats.containsKey(category)) {
-                    menuCat = new Menu(6, category.getDisplayName(), getContainer().getViewer());
+                    menuCat = new Menu(6, category.getDisplayName(), getMenu().getIntendedViewer());
                     cats.put(category, menuCat);
-                    m.addItem(new MenuItemPage(ItemType.CHEST, category.getDisplayName(), menuCat));
-                    menuCat.addItem(new MenuItemBack(m), menuCat.getSize() - 9);
+                    menu.addItem(new MenuItemPage(ItemType.CHEST, category.getDisplayName(), menuCat));
+                    menuCat.addItem(new MenuItemBack(menu), menuCat.getSize() - 9);
                 } else {
                     menuCat = cats.get(category);
                 }
 
-                MenuItemCustom menuItemCustom = new MenuItemCustom(ItemType.PAPER, action.getDisplayname());
-                menuItemCustom.setClick(() -> {
+                // I myself use a bit of string to add action to my cat.
+                final @NotNull MenuItemCustom addActionToCatMenuItem = new MenuItemCustom(ItemType.PAPER, action.getDisplayname());
+                addActionToCatMenuItem.setClick(() -> {
                     exec.addAction(action);
-                    getContainer().addItem(new MenuItemAction(ItemType.PAPER, action.getDisplayname(), exec, action));
-                    getContainer().displayMenu(getContainer().getViewer());
+                    getMenu().addItem(new MenuItemAction(ItemType.PAPER, action.getDisplayname(), exec, action));
+                    getMenu().displayMenu();
                     return ItemStack.empty();
                 });
-                menuCat.addItem(menuItemCustom);
+                menuCat.addItem(addActionToCatMenuItem);
             }
         }
-        m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
-        m.displayMenu(getContainer().getViewer());
+        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+        menu.displayMenu();
         return ItemStack.empty();
     }
 }

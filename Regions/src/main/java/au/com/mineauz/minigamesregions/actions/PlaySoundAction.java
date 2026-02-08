@@ -129,12 +129,12 @@ public class PlaySoundAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(3, MgMenuLangKey.MENU_PLAYSOUND_MENU_NAME, mgPlayer);
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(3, MgMenuLangKey.MENU_PLAYSOUND_MENU_NAME, previous.getIntendedViewer());
 
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         List<Sound> sounds = Registry.SOUNDS.stream().toList();
-        m.addItem(new MenuItemList<>(ItemType.NOTE_BLOCK, MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME, new Callback<>() {
+        menu.addItem(new MenuItemList<>(ItemType.NOTE_BLOCK, MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME, new Callback<>() {
 
             @Override
             public @NotNull Sound getValue() {
@@ -152,8 +152,8 @@ public class PlaySoundAction extends AAction {
             }
         }, sounds));
 
-        m.addItem(privatePlayBack.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME));
-        m.addItem(new MenuItemDecimal(ItemType.JUKEBOX, MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME, new Callback<>() {
+        menu.addItem(privatePlayBack.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME));
+        menu.addItem(new MenuItemDecimal(ItemType.JUKEBOX, MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME, new Callback<>() {
 
             @Override
             public @NotNull Double getValue() {
@@ -166,7 +166,7 @@ public class PlaySoundAction extends AAction {
             }
         }, 0.1, 1d, 0.5, null));
 
-        m.addItem(new MenuItemDecimal(ItemType.ENDER_EYE, MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME, new Callback<>() {
+        menu.addItem(new MenuItemDecimal(ItemType.ENDER_EYE, MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME, new Callback<>() {
 
             @Override
             public @NotNull Double getValue() {
@@ -174,13 +174,13 @@ public class PlaySoundAction extends AAction {
             }
 
             @Override
-            public void setValue(@NotNull Double value) {
+            public void setValue(final @NotNull Double value) {
                 pitch.setFlag(value.floatValue());
             }
 
 
         }, 0.05, 0.1, 0d, 2d));
-        m.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 

@@ -85,11 +85,11 @@ public class SetLivesAction extends AAction { //todo unused!
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) { // todo description that a player can't have more lives than the minigame (minigame#getLives()) can support
-        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+    public boolean displayMenu(final @NotNull Menu previous) { // todo description that a player can't have more lives than the minigame (minigame#getLives()) can support
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(amount.getMenuItem(ItemType.TOTEM_OF_UNDYING, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETLIVES_NAME), 0, null));
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
 
         return true;
     }

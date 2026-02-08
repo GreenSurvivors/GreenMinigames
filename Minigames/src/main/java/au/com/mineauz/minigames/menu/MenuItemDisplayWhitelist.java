@@ -34,7 +34,7 @@ public class MenuItemDisplayWhitelist extends MenuItem {
 
     @Override
     public @NotNull ItemStack onClick() {
-        final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_WHITELIST_BLOCK_NAME, getContainer().getViewer());
+        final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_WHITELIST_BLOCK_NAME, getMenu().getIntendedViewer());
         final @NotNull List<@NotNull MenuItem> items = new ArrayList<>();
         for (final @NotNull BlockType blockType : whitelist) {
             if (blockType.hasItemType()) {
@@ -43,12 +43,12 @@ public class MenuItemDisplayWhitelist extends MenuItem {
                 // todo create a placeholder item
             }
         }
-        menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
+        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
         menu.addItem(new MenuItemAddWhitelistBlock(MgMenuLangKey.MENU_WHITELIST_ADDBLOCKTYPE_NAME, whitelist), menu.getSize() - 1);
         menu.addItem(new MenuItemBoolean(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_WHITELIST_MODE, modeDescription,
             whitelistMode), menu.getSize() - 2);
         menu.addItems(items);
-        menu.displayMenu(getContainer().getViewer());
+        menu.displayMenu();
         return ItemStack.empty();
     }
 }

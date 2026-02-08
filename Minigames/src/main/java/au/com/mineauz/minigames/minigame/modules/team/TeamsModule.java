@@ -242,12 +242,12 @@ public class TeamsModule extends AMinigameModule {
     }
 
     @Override
-    public void addEditMenuOptions(@NotNull Menu previousMenu) {
-        Menu menu = new Menu(6, MgMenuLangKey.MENU_TEAM_NAME, previousMenu.getViewer());
+    public void addEditMenuOptions(final @NotNull Menu previousMenu) {
+        final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_TEAM_NAME, previousMenu.getIntendedViewer());
         menu.setPreviousPage(previousMenu);
-        List<MenuItem> menuItems = new ArrayList<>();
+        final @NotNull List<@NotNull MenuItem> menuItems = new ArrayList<>();
 
-        List<TeamColor> teamColors = new ArrayList<>(teams.keySet());
+        final @NotNull List<@NotNull TeamColor> teamColors = new ArrayList<>(teams.keySet());
         teamColors.add(TeamColor.NONE);
         menuItems.add(new MenuItemList<>(ItemType.PAPER, MgMenuLangKey.MENU_TEAM_DEFAULTWIN_NAME,
                 getDefaultWinnerCallback(), teamColors));
@@ -264,7 +264,7 @@ public class TeamsModule extends AMinigameModule {
 
         menu.addItem(new MenuItemBack(previousMenu), menu.getSize() - 9);
 
-        MenuItemPage teamOptionsMenuPage = new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TEAM_OPTIONS_NAME, menu);
+        final @NotNull MenuItemPage teamOptionsMenuPage = new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TEAM_OPTIONS_NAME, menu);
         previousMenu.addItem(teamOptionsMenuPage);
     }
 }

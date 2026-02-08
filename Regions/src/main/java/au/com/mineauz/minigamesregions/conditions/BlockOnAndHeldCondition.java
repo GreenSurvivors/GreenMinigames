@@ -96,11 +96,11 @@ public class BlockOnAndHeldCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
-        Menu m = new Menu(3, getDisplayName(), player);
-        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        addInvertMenuItem(m);
-        m.displayMenu(player);
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        addInvertMenuItem(menu);
+        menu.displayMenu();
         return true;
     }
 

@@ -79,8 +79,8 @@ public class ResourcePackModule extends AMinigameModule { //todo rework to work 
     }
 
     @Override
-    public void addEditMenuOptions(@NotNull Menu previousMenu) {
-        Menu menu = new Menu(3, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_NAME, previousMenu.getViewer());
+    public void addEditMenuOptions(final @NotNull Menu previousMenu) {
+        final @NotNull Menu menu = new Menu(3, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_NAME, previousMenu.getIntendedViewer());
         menu.setPreviousPage(previousMenu);
         menu.addItem(enabled.getMenuItem(ItemType.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_ENABLE_NAME));
         MenuItemComponent item = new MenuItemComponent(ItemType.PAPER, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_DISPLAYNAME_NAME,
@@ -91,22 +91,22 @@ public class ResourcePackModule extends AMinigameModule { //todo rework to work 
                 }
 
                 @Override
-                public void setValue(@NotNull Component value) {
+                public void setValue(final @NotNull Component value) {
                     resourcePackDisplayName.setFlag(value);
                     resourcePackName = PlainTextComponentSerializer.plainText().serialize(value);
                 }
             }) {
             @Override
-            public void acceptString(@NotNull String string) {
+            public void acceptString(final @NotNull String string) {
                 if (string.isEmpty()) {
                     super.acceptString(string);
                     return;
                 }
                 ResourcePack pack = Minigames.getPlugin().getResourcePackManager().getResourcePack(string);
                 if (pack == null) {
-                    getContainer().cancelReopenTimer();
-                    getContainer().displayMenu(getContainer().getViewer());
-                    MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+                    getMenu().cancelWaitForInput();
+                    getMenu().displayMenu();
+                    MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                         MgMiscLangKey.MINIGAME_RESSOURCEPACK_NORESSOURCEPACK,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
                 } else {

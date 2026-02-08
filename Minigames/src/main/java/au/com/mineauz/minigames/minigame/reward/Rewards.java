@@ -5,7 +5,6 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemType;
@@ -119,8 +118,9 @@ public class Rewards {
         return groups;
     }
 
-    public @NotNull Menu createMenu(@NotNull Component name, @NotNull MinigamePlayer player, @NotNull Menu parent) {
-        Menu rewardMenu = new Menu(5, name, player);
+    @NotNull
+    public Menu createMenu(final @NotNull Component name, final @NotNull Menu parent) {
+        final @NotNull Menu rewardMenu = new Menu(5, name, parent.getIntendedViewer());
 
         rewardMenu.setPreviousPage(parent);
 

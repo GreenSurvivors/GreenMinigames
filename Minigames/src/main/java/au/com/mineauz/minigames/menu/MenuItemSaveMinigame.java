@@ -31,7 +31,7 @@ public class MenuItemSaveMinigame extends MenuItem {
     @Override
     public @NotNull ItemStack onClick() {
         mgm.saveMinigame();
-        MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.SUCCESS,
+        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.SUCCESS,
             MgMiscLangKey.MINIGAME_SAVED,
             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
         return getDisplayItem();

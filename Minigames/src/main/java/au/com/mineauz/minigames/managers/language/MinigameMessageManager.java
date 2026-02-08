@@ -500,28 +500,12 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         sendMessage(audience, messageType, null, key, resolvers);
     }
 
-    public static void sendMgMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType messageType,
-                                     @NotNull MinigameLangKey key, @NotNull TagResolver... resolvers) {
-        sendMessage(mgPlayer.getPlayer(), messageType, null, key, resolvers);
-    }
-
-    public static void sendMgMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type,
-                                     @NotNull MinigameLangKey key) {
-        sendMessage(mgPlayer.getPlayer(), type, null, key);
-    }
-
     public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType,
                                    @NotNull Component message) {
         // don't use color of prefix
         message = message.colorIfAbsent(NamedTextColor.WHITE);
         audience.sendMessage(getPluginPrefix(messageType).append(message));
     }
-
-    public static void sendMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type,
-                                   @NotNull Component message) {
-        sendMessage(mgPlayer.getPlayer(), type, message);
-    }
-
 
     public static void debugMessage(@NotNull String message) {
         debugMessage(Component.text(message));

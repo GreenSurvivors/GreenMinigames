@@ -304,13 +304,13 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
-        final Menu menu = new Menu(3, getDisplayName(), player);
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
 
         // we need a reference for two object we will create soon down the line
-        final CompletableFuture<MenuItemString> futureNameItem = new CompletableFuture<>();
-        final CompletableFuture<MenuItemString> futureLoreItem = new CompletableFuture<>();
+        final @NotNull CompletableFuture<MenuItemString> futureNameItem = new CompletableFuture<>();
+        final @NotNull CompletableFuture<MenuItemString> futureLoreItem = new CompletableFuture<>();
 
         final MenuItemItemNbt itemMenuItem = new MenuItemItemNbt(itemToSearchFor.getFlagOrDefault(),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME), new Callback<>() {
@@ -428,7 +428,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_EXACT_NAME))); //todo with callback to turn the others on
 
         addInvertMenuItem(menu);
-        menu.displayMenu(player);
+        menu.displayMenu();
         return true;
     }
 

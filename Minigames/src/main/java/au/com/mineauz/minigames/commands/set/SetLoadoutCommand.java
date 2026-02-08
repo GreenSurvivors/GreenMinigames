@@ -54,18 +54,17 @@ public class SetLoadoutCommand extends ASetCommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, final @NotNull Minigame minigame,
+                             final @NotNull String @Nullable [] args) {
+        if (sender instanceof final @NotNull Player player) {
+            final @NotNull MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
+            final @NotNull Menu loadoutMenu = new Menu(6, Component.text(getName()), mgPlayer);
+            final @NotNull List<@NotNull MenuItem> menuItems = new ArrayList<>();
+            final @Nullable LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
 
-        if (sender instanceof Player player) {
-            MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
-            Menu loadoutMenu = new Menu(6, Component.text(getName()), mgPlayer);
-            List<MenuItem> mi = new ArrayList<>();
-            LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);
-
-            if (mod != null) {
-                ItemType displayType;
-                for (final @NotNull PlayerLoadout loadout : mod.getLoadouts()) {
+            if (loadoutModule != null) {
+                @NotNull ItemType displayType;
+                for (final @NotNull PlayerLoadout loadout : loadoutModule.getLoadouts()) {
                     displayType = ItemType.WHITE_STAINED_GLASS_PANE;
                     if (!loadout.getItemSlots().isEmpty()) {
                         displayType = loadout.getItem((Integer) loadout.getItemSlots().toArray()[0]).getType().asItemType();
@@ -75,13 +74,13 @@ public class SetLoadoutCommand extends ASetCommand {
                             MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), loadout, minigame);
 
                     mil.setAllowDelete(loadout.isDeletable());
-                    mi.add(mil);
+                    menuItems.add(mil);
                 }
                 loadoutMenu.addItem(new MenuItemLoadoutAdd(ItemType.ITEM_FRAME, MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
-                        mod.getLoadoutMap(), minigame), 53);
-                loadoutMenu.addItems(mi);
+                        loadoutModule.getLoadoutMap(), minigame), 53);
+                loadoutMenu.addItems(menuItems);
 
-                loadoutMenu.displayMenu(mgPlayer);
+                loadoutMenu.displayMenu();
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),

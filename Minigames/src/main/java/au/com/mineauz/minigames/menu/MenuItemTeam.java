@@ -59,7 +59,7 @@ public class MenuItemTeam extends MenuItem {
     @SuppressWarnings("UnstableApiUsage") // shutup ItemType.Typed
     @Override
     public @NotNull ItemStack onClick() {
-        Menu menu = new Menu(3, getName(), getContainer().getViewer());
+        final @NotNull Menu menu = new Menu(3, getName(), getMenu().getIntendedViewer());
         menu.addItem(new MenuItemString(ItemType.NAME_TAG, MgMenuLangKey.MENU_DISPLAYNAME_NAME, new Callback<>() {
 
             @Override
@@ -85,7 +85,6 @@ public class MenuItemTeam extends MenuItem {
             }
         }, 0, null));
 
-
         menu.addItem(team.getPlayerAssignMessageFlag().getMenuItem(ItemType.PAPER, MgMenuLangKey.MENU_TEAM_ASSIGNMSG_NAME,
             MgMenuLangKey.MENU_TEAM_ASSIGNMSG_DESCRIPTION));
         menu.addItem(team.getAutoBalanceMsgFlag().getMenuItem(ItemType.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCEMSG_NAME,
@@ -103,15 +102,15 @@ public class MenuItemTeam extends MenuItem {
             Arrays.stream(org.bukkit.scoreboard.Team.OptionStatus.values()).map(Enum::name).toList()));
         menu.addItem(new MenuItemBoolean(ItemType.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCE, team.getAutoBalanceCallBack()));
 
-        menu.addItem(new MenuItemBack(getContainer()), menu.getSize() - 9);
-        menu.displayMenu(getContainer().getViewer());
+        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+        menu.displayMenu();
         return ItemStack.empty();
     }
 
     @Override
     public @NotNull ItemStack onRightClick() {
         TeamsModule.getMinigameModule(team.getMinigame()).removeTeam(team.getColor());
-        getContainer().removeItem(getSlot());
+        getMenu().removeItem(getSlot());
         return ItemStack.empty();
     }
 }

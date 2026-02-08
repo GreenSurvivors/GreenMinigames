@@ -42,40 +42,37 @@ public class MenuItemRewardGroupAdd extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
+        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final @NotNull Duration reopenTime = Duration.ofSeconds(30);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_REWARD_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
-        mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(reopenTime);
+        getMenu().closeAndWaitForInput(reopenTime, this);
         return ItemStack.empty();
     }
 
     @Override
     public void acceptString(@NotNull String string) {
-        getContainer().cancelReopenTimer();
+        getMenu().cancelWaitForInput();
 
         string = string.replace(" ", "_");
         for (RewardGroup group : rewards.getGroups()) {
             if (group.getName().equals(string)) {
-                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR,
+                MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                     MgMenuLangKey.MENU_REWARD_ERROR_GROUPEXISTS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
-                getContainer().displayMenu(getContainer().getViewer());
+                getMenu().displayMenu();
                 return;
             }
         }
 
         RewardGroup group = rewards.addGroup(string, RewardRarity.NORMAL);
 
-        MenuItemRewardGroup mrg = new MenuItemRewardGroup(ItemType.CHEST,
+        final @NotNull MenuItemRewardGroup menuItemRewardGroup = new MenuItemRewardGroup(ItemType.CHEST,
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string)), group, rewards);
-        getContainer().addItem(mrg);
+        getMenu().addItem(menuItemRewardGroup);
 
-        getContainer().displayMenu(getContainer().getViewer());
+        getMenu().displayMenu();
     }
 }

@@ -124,10 +124,10 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), mgPlayer);
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(new MenuItemBlockData(matchType.getFlag().getPlacementMaterial().asItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), new Callback<>() {
+    public boolean displayMenu(final @NotNull Menu previous) {
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
+        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.addItem(new MenuItemBlockData(matchType.getFlag().getPlacementMaterial().asItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), new Callback<>() {
 
             @Override
             public BlockData getValue() {
@@ -141,8 +141,8 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
 
 
         }));
-        m.addItem(new MenuItemNewLine());
-        m.addItem(new MenuItemBlockData(toData.getFlag().getPlacementMaterial().asItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME), new Callback<>() {
+        menu.addItem(new MenuItemNewLine());
+        menu.addItem(new MenuItemBlockData(toData.getFlag().getPlacementMaterial().asItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME), new Callback<>() {
 
             @Override
             public BlockData getValue() {
@@ -155,9 +155,9 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
             }
         }));
 
-        m.addItem(keepAttachment.getMenuItem(ItemType.PISTON, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_NAME),
+        menu.addItem(keepAttachment.getMenuItem(ItemType.PISTON, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_DESCRIPTION)));
-        m.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 }

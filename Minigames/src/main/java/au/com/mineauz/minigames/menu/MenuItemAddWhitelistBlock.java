@@ -45,9 +45,9 @@ public class MenuItemAddWhitelistBlock extends MenuItem implements StringConsume
         if (blockType != null) {
             if (!whitelist.contains(blockType)) {
                 whitelist.add(blockType);
-                getContainer().addItem(new MenuItemWhitelistBlock(item.getType().asItemType(), whitelist));
+                getMenu().addItem(new MenuItemWhitelistBlock(item.getType().asItemType(), whitelist));
             } else {
-                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
+                MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
             }
         } else {
             // todo
@@ -57,15 +57,12 @@ public class MenuItemAddWhitelistBlock extends MenuItem implements StringConsume
 
     @Override
     public @NotNull ItemStack onClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
+        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final @NotNull Duration reopenTime = Duration.ofSeconds(30);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_WHITELIST_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
-        mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(reopenTime);
+        getMenu().closeAndWaitForInput(reopenTime, this);
         return ItemStack.empty();
     }
 
@@ -87,15 +84,15 @@ public class MenuItemAddWhitelistBlock extends MenuItem implements StringConsume
             }
         }
         // didn't work.
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        getMenu().cancelWaitForInput();
+        getMenu().displayMenu();
 
-        MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBLOCKTYPE,
+        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBLOCKTYPE,
             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
 
         /* cancel automatic reopening and reopen {@link MenuItemDisplayWhitelist}*/
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        getMenu().cancelWaitForInput();
+        getMenu().displayMenu();
     }
 
     @Override
@@ -106,16 +103,16 @@ public class MenuItemAddWhitelistBlock extends MenuItem implements StringConsume
 
             // visual
             if (blockType.hasItemType()) {
-                getContainer().addItem(new MenuItemWhitelistBlock(blockType.getItemType(), whitelist));
+                getMenu().addItem(new MenuItemWhitelistBlock(blockType.getItemType(), whitelist));
             } else {
                 // todo add placeholder here
             }
         } else {
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
         }
 
         /* cancel automatic reopening and reopen {@link MenuItemDisplayWhitelist}*/
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        getMenu().cancelWaitForInput();
+        getMenu().displayMenu();
     }
 }

@@ -69,11 +69,11 @@ public class HasRequiredFlagsCondition extends ACondition { // the whole singlep
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
-        Menu m = new Menu(3, getDisplayName(), player);
-        addInvertMenuItem(m);
-        m.addItem(new MenuItemBack(prev), m.getSize() - 9);
-        m.displayMenu(player);
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
+        addInvertMenuItem(menu);
+        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.displayMenu();
         return true;
     }
 

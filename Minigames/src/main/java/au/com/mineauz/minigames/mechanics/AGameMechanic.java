@@ -29,7 +29,10 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-/// A mechanic is exclusive per minigame, every minigame can only ever have one.
+/**
+ * A mechanic is exclusive per minigame, every minigame can only ever have one.
+ * It's literally the core mechanic of a minigame.
+ */
 public abstract class AGameMechanic implements Listener, Keyed {
     protected final @NotNull Minigames plugin;
     protected final @NotNull Key key;

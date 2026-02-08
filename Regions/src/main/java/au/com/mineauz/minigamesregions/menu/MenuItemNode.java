@@ -15,6 +15,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
@@ -40,18 +41,27 @@ public class MenuItemNode extends MenuItem { // todo merge with MenuItemRegion
         this.rmod = rmod;
     }
 
-    public static @NotNull Menu createMenu(@NotNull MinigamePlayer viewer, @Nullable Menu previousPage, @NotNull Node node) {
-        Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_NODE_NAME,
+    public static @NotNull Menu createMenu(final @NotNull MinigamePlayer viewer, final @NotNull Node node) {
+        return createMenu(viewer, null, node);
+    }
+
+    public static @NotNull Menu createMenu(final @NotNull Menu previousPage, final @NotNull Node node) {
+        return createMenu(previousPage.getIntendedViewer(), previousPage, node);
+    }
+
+    @ApiStatus.Obsolete
+    protected static @NotNull Menu createMenu(final @NotNull MinigamePlayer viewer, final @Nullable Menu previousPage, final @NotNull Node node) {
+        final @NotNull Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_NODE_NAME,
                 Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), node.getName())), viewer);
         menu.setPreviousPage(previousPage);
         List<MenuItem> items = new ArrayList<>();
         for (ActionExecutor ex : node.getExecutors()) {
-            items.add(new MenuItemNodeExecutor(node, ex));
+            items.add(new MenuItemActionExecutor(node, ex));
         }
         if (previousPage != null) {
             menu.addItem(new MenuItemBack(previousPage), menu.getSize() - 9);
         }
-        menu.addItem(new MenuItemNodeExecutorAdd(MenuUtility.createType(),
+        menu.addItem(new MenuItemActionExecutorAdd(MenuUtility.createType(),
                 RegionLangKey.MENU_EXECUTOR_ADD_NAME, node), menu.getSize() - 1);
         menu.addItems(items);
 
@@ -60,15 +70,15 @@ public class MenuItemNode extends MenuItem { // todo merge with MenuItemRegion
 
     @Override
     public @NonNull ItemStack onClick() {
-        Menu m = createMenu(getContainer().getViewer(), getContainer(), node);
-        m.displayMenu(getContainer().getViewer());
+        final @NotNull Menu menu = createMenu(getMenu(), node);
+        menu.displayMenu();
         return ItemStack.empty();
     }
 
     @Override
     public @NonNull ItemStack onRightClick() {
         rmod.removeNode(node.getName());
-        getContainer().removeItem(getSlot());
+        getMenu().removeItem(getSlot());
         return ItemStack.empty();
     }
 }

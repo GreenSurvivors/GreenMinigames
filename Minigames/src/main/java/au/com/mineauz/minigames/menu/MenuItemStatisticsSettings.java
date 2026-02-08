@@ -28,14 +28,14 @@ public class MenuItemStatisticsSettings extends MenuItem {
     @Override
     public @NotNull ItemStack onClick() {
         final @NotNull Menu subMenu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_SETTINGS_NAME),
-            getContainer().getViewer());
+            getMenu().getIntendedViewer());
 
-        for (MinigameStat stat : MinigameStatistics.getAllStats().values()) {
+        for (final @NotNull MinigameStat stat : MinigameStatistics.getAllStats().values()) {
             subMenu.addItem(new MenuItemModifyStatSetting(ItemType.WRITABLE_BOOK, minigame, stat));
         }
 
-        subMenu.addItem(new MenuItemBack(getContainer()), subMenu.getSize() - 9);
-        subMenu.displayMenu(getContainer().getViewer());
+        subMenu.addItem(new MenuItemBack(getMenu()), subMenu.getSize() - 9);
+        subMenu.displayMenu();
 
         return super.onClick();
     }

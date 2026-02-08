@@ -74,7 +74,7 @@ public class CheckpointAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+    public boolean displayMenu(@NotNull Menu previous) {
         return false;
     }
 }

@@ -51,7 +51,7 @@ public class RegionToolMode implements ToolMode {
     }
 
     @Override
-    public void onSetMode(final @NotNull MinigamePlayer player, @NotNull MinigameTool tool) {
+    public void onSetMode(final @NotNull MinigamePlayer player, final @NotNull MinigameTool tool) {
         tool.setSetting("Region", "None");
         final @NotNull Menu menu = new Menu(2, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_SELECT_NAME), player);
         if (player.isInMenu()) {
@@ -75,8 +75,8 @@ public class RegionToolMode implements ToolMode {
             // Node selection menu
             RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
 
-            Menu regionMenu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_LIST_NAME), player);
-            List<MenuItem> items = new ArrayList<>();
+            final @NotNull Menu regionMenu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_LIST_NAME), player);
+            final @NotNull List<@NotNull MenuItem> items = new ArrayList<>();
 
             for (final Region region : module.getRegions()) {
                 MenuItemCustom item = new MenuItemCustom(ItemType.CHEST, Component.text(region.getName()));
@@ -85,7 +85,7 @@ public class RegionToolMode implements ToolMode {
                 item.setClick(() -> {
                     ftool.setSetting("Region", region.getName());
 
-                    menu.displayMenu(player);
+                    menu.displayMenu();
 
                     return ItemStack.empty();
                 });
@@ -98,7 +98,7 @@ public class RegionToolMode implements ToolMode {
 
             menu.addItem(new MenuItemPage(ItemType.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_EDIT_NAME), regionMenu));
         }
-        menu.displayMenu(player);
+        menu.displayMenu();
     }
 
     @Override

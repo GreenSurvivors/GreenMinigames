@@ -71,18 +71,14 @@ public class MenuItemSelectEntity extends MenuItem implements EntityConsumer {
 
     @Override
     public @NonNull ItemStack onDoubleClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
+        final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final Duration reopenTime = Duration.ofSeconds(10);
 
         MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO,
             RegionMessageManager.getMessage(RegionLangKey.MENU_SELECT_ENTITY_CLICK_ENTITY,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime))));
-        mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenTime);
-
+        getMenu().closeAndWaitForInput(reopenTime, this);
 
         return super.onDoubleClick();
     }
@@ -92,8 +88,8 @@ public class MenuItemSelectEntity extends MenuItem implements EntityConsumer {
         entitySnapshotCallback.setValue(entity.createSnapshot());
         update();
 
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        getMenu().cancelWaitForInput();
+        getMenu().displayMenu();
     }
 
     public void update() {

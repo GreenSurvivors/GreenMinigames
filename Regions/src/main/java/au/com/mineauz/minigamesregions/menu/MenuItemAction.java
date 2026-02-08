@@ -68,7 +68,7 @@ public class MenuItemAction extends MenuItem {
 
     @Override
     public @NonNull ItemStack onClick() {
-        if (act.displayMenu(getContainer().getViewer(), getContainer())) {
+        if (act.displayMenu(getMenu())) {
             return ItemStack.empty();
         }
         return getDisplayItem();
@@ -77,7 +77,7 @@ public class MenuItemAction extends MenuItem {
     @Override
     public @NonNull ItemStack onRightClick() {
         exec.removeAction(act);
-        getContainer().removeItem(getSlot());
+        getMenu().removeItem(getSlot());
         return ItemStack.empty();
     }
 }

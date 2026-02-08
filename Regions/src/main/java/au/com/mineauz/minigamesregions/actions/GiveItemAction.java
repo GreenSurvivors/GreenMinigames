@@ -143,8 +143,8 @@ public class GiveItemAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, @NotNull Menu previous) {
-        Menu menu = new Menu(3, getDisplayname(), mgPlayer);
+    public boolean displayMenu(final @NotNull Menu previous) {
+        Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
 
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(item.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME)));
@@ -167,17 +167,17 @@ public class GiveItemAction extends AAction {
             }
 
             @Override
-            public void setValue(@Nullable Component value) {
-                ItemStack itemStack = item.getFlag();
-                ItemMeta meta = itemStack.getItemMeta();
+            public void setValue(final @Nullable Component value) {
+                final @NotNull ItemStack itemStack = item.getFlag();
+                final @NotNull ItemMeta meta = itemStack.getItemMeta();
 
                 if (value == null) {
                     meta.lore(null);
                 } else {
-                    MiniMessage miniMessage = MiniMessage.miniMessage();
+                    final @NotNull MiniMessage miniMessage = MiniMessage.miniMessage();
 
-                    String valueStr = miniMessage.serialize(value);
-                    List<Component> newLore = Arrays.stream(valueStr.split(";")).map(miniMessage::deserialize).toList();
+                    final @NotNull String valueStr = miniMessage.serialize(value);
+                    final @NotNull List<@NotNull Component> newLore = Arrays.stream(valueStr.split(";")).map(miniMessage::deserialize).toList();
 
                     meta.lore(newLore);
                 }
@@ -188,7 +188,7 @@ public class GiveItemAction extends AAction {
         });
         menuItemLore.setAllowNull(true);
         menu.addItem(menuItemLore);
-        menu.displayMenu(mgPlayer);
+        menu.displayMenu();
         return true;
     }
 }

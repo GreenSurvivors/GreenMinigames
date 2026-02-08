@@ -120,14 +120,14 @@ public class InfectionMechanic extends AGameMechanic {
 
     @Override
     public @NotNull MenuItemPage displayMechanicSettings(final @NotNull Menu previous) {
-        Menu menu = new Menu(6, MgMenuLangKey.MENU_INFECTED_NAME, previous.getViewer());
+        final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_INFECTED_NAME, previous.getIntendedViewer());
         menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         menu.addItem(infectedPercent.getMenuItem(ItemType.ZOMBIE_HEAD, MgMenuLangKey.MENU_INFECTED_PERCENT_NAME,
             MgMenuLangKey.MENU_INFECTED_PERCENT_DESCRIPTION, 1, 99));
 
-        TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
-        List<TeamColor> teams = new ArrayList<>(teamsModule.getTeamColors().size() + 3);
+        final @Nullable TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+        final @NotNull List<@NotNull TeamColor> teams = new ArrayList<>(teamsModule.getTeamColors().size() + 3);
         for (TeamColor teamColor : teamsModule.getTeamColors()) {
             if (teamColor != infectedTeam.getDefaultFlag() && teamColor != survivorTeam.getDefaultFlag()) {
                 teams.add(teamColor);

@@ -9,6 +9,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,46 +18,35 @@ import java.util.*;
 
 public class Menu {
     private final int rows;
+    protected final @NotNull Minigames plugin = Minigames.getPlugin();
     private final @Nullable ItemStack @NotNull [] pageView;
     private final @NotNull TreeMap<@NotNull Integer, @NotNull MenuItem> pageMap = new TreeMap<>(); // sorts by index
-    private final @NotNull Component name;
-    private final @NotNull MinigamePlayer viewer;
+    private final @NotNull Component title;
+    private final @NotNull MinigamePlayer intendedViewer;
     private boolean allowModify = false;
     private @Nullable Menu previousPage = null;
     private @Nullable Menu nextPage = null;
-    private int reopenTimerID = -1;
-    private Inventory inv = null;
+    private int reopenTimerTaskID = -1;
+    private @MonotonicNonNull Inventory inv = null;
 
-    public Menu(int rows, @NotNull MinigameLangKey langKey, @NotNull MinigamePlayer viewer) {
-        if (rows > 6)
-            rows = 6;
-        else if (rows < 2)
-            rows = 2;
-        this.rows = rows;
-        this.name = MinigameMessageManager.getMgMessage(langKey);
-        pageView = new ItemStack[rows * 9];
-        this.viewer = viewer;
+    public Menu(final int rows, final @NotNull MinigameLangKey langKey, final @NotNull MinigamePlayer intendedViewer) {
+        this(rows, MinigameMessageManager.getMgMessage(langKey), intendedViewer);
     }
 
-    public Menu(int rows, @NotNull Component name, @NotNull MinigamePlayer viewer) {
-        if (rows > 6) {
-            rows = 6;
-        } else if (rows < 2) {
-            rows = 2;
-        }
-        this.rows = rows;
-        this.name = name;
+    public Menu(final int rows, final @NotNull Component title, final @NotNull MinigamePlayer intendedViewer) {
+        this.rows = Math.clamp(rows, 2, 6);
+        this.title = title;
         pageView = new ItemStack[rows * 9];
-        this.viewer = viewer;
+        this.intendedViewer = intendedViewer;
     }
 
-    public @NotNull Component getName() {
-        return name;
+    public @NotNull Component getTitle() {
+        return title;
     }
 
     public boolean addItem(@NotNull MenuItem item, int slot) { // todo overflow into the next page
         if (!pageMap.containsKey(slot) && slot < pageView.length) {
-            item.setContainer(this);
+            item.setContainingMenu(this);
             item.setSlot(slot);
             pageMap.put(slot, item);
             if (inv != null) {
@@ -71,6 +61,7 @@ public class Menu {
         return menuItem instanceof MenuItemNewLine;
     }
 
+    /// overflows into next page if necessary
     public void addItem(@NotNull MenuItem item) {
         int inc = 0;
         @NotNull Menu menu = this;
@@ -124,18 +115,18 @@ public class Menu {
     }
 
     protected void addPage() {
-        Menu nextPage = new Menu(rows, name, viewer);
-        addItem(new MenuItemPage(MenuUtility.backType(), MgMenuLangKey.MENU_PAGE_NEXT, nextPage), 9 * (rows - 1) + 5);
+        final @NotNull Menu nextPage = new Menu(rows, title, intendedViewer);
+        addItem(new MenuItemPage(MenuUtility.pageNextType(), MgMenuLangKey.MENU_PAGE_NEXT, nextPage), 9 * (rows - 1) + 5);
         setNextPage(nextPage);
         nextPage.setPreviousPage(this);
-        nextPage.addItem(new MenuItemPage(MenuUtility.backType(), MgMenuLangKey.MENU_PAGE_PREVIOUS, this), 9 * (rows - 1) + 3);
+        nextPage.addItem(new MenuItemPage(MenuUtility.pageBackType(), MgMenuLangKey.MENU_PAGE_PREVIOUS, this), 9 * (rows - 1) + 3);
         for (int j = 9 * (rows - 1) + 6; j < 9 * rows; j++) {
             if (getMenuItem(j) != null)
                 nextPage.addItem(getMenuItem(j), j);
         }
     }
 
-    public void removeItem(int slot) {
+    public void removeItem(final int slot) {
         if (pageMap.containsKey(slot)) {
             pageMap.remove(slot);
             pageView[slot] = null;
@@ -146,7 +137,7 @@ public class Menu {
     }
 
     public void clearMenu() {
-        for (Integer i : new ArrayList<>(pageMap.keySet())) {
+        for (final int i : new ArrayList<>(pageMap.keySet())) {
             pageMap.remove(i);
             pageView[i] = null;
         }
@@ -169,15 +160,15 @@ public class Menu {
         }
     }
 
-    public void displayMenu(final @NotNull MinigamePlayer mgPlayer) {
+    public void displayMenu() {
         updateAll();
         populateMenu();
-        inv = Bukkit.createInventory(mgPlayer.getPlayer(), rows * 9, name);
+        inv = Bukkit.createInventory(intendedViewer.getPlayer(), rows * 9, title);
         inv.setContents(pageView);
         // Some calls of displayMenu are async, which is not allowed.
-        Minigames.getPlugin().getServer().getScheduler().runTask(Minigames.getPlugin(), () -> {
-            mgPlayer.getPlayer().openInventory(inv);
-            mgPlayer.setMenu(this);
+        plugin.getServer().getScheduler().runTask(plugin, () -> {
+            intendedViewer.getPlayer().openInventory(inv);
+            intendedViewer.setMenu(this);
         });
     }
 
@@ -189,7 +180,7 @@ public class Menu {
         allowModify = canModify;
     }
 
-    public MenuItem getMenuItem(int slot) {
+    public @Nullable MenuItem getMenuItem(final int slot) {
         return pageMap.get(slot);
     }
 
@@ -225,23 +216,30 @@ public class Menu {
         return previousPage != null;
     }
 
-    public @NotNull MinigamePlayer getViewer() {
-        return viewer;
+    /**
+     * note: This method does not make any guarantees about this menu being viewed currently by the returned player.
+     * the viewer might open this menu in the future, have already closed it, or never actually see it.
+    */
+    public @NotNull MinigamePlayer getIntendedViewer() {
+        return intendedViewer;
     }
 
-    public void startReopenTimer(final @NotNull Duration time) {
-        reopenTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
-            viewer.setNoClose(false);
-            viewer.setManualEntry(null);
-            displayMenu(viewer);
-        }, time.toSeconds() * 20L);
+    public void closeAndWaitForInput(final @NotNull Duration reopenIn, final @NotNull MenuItem itemWaitingForInput) {
+        intendedViewer.getPlayer().closeInventory();
+        intendedViewer.setMenuItemWaitingForManualInput(itemWaitingForInput);
+        reopenTimerTaskID = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            if (itemWaitingForInput.equals(intendedViewer.getMenuItemWaitingForManualInput())) {
+                intendedViewer.setMenuItemWaitingForManualInput(null);
+                displayMenu();
+            }
+        }, reopenIn.toSeconds() * 20L);
     }
 
-    public void cancelReopenTimer() {
-        if (reopenTimerID != -1) {
-            viewer.setNoClose(false);
-            viewer.setManualEntry(null);
-            Bukkit.getScheduler().cancelTask(reopenTimerID);
+    public void cancelWaitForInput() {
+        if (reopenTimerTaskID != -1) {
+            intendedViewer.setMenuItemWaitingForManualInput(null);
+            Bukkit.getScheduler().cancelTask(reopenTimerTaskID);
+            reopenTimerTaskID = -1;
         }
     }
 
@@ -266,6 +264,6 @@ public class Menu {
         return pageMap.keySet();
     }
 
-    public record AddMenuItemResult (@NotNull Menu menuPage, int slot) {
+    public record AddMenuItemResult (@NotNull Menu menuPage, int slot) { // todo once addItem with slot parameter can overflow into a new page return this for both methods
     }
 }

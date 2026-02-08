@@ -139,8 +139,8 @@ public class ScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean displayMenu(@NotNull MinigamePlayer player, @NotNull Menu prev) {
-        Menu menu = new Menu(3, getDisplayName(), player);
+    public boolean displayMenu(final @NotNull Menu prev) {
+        final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
         menu.addItem(min.getMenuItem(ItemType.STONE_SLAB,
             RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0, null));
         menu.addItem(max.getMenuItem(ItemType.STONE,
@@ -165,7 +165,7 @@ public class ScoreRangeCondition extends ACondition {
         menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
 
-        menu.displayMenu(player);
+        menu.displayMenu();
         return true;
     }
 

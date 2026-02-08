@@ -26,7 +26,7 @@ public class MenuItemWhitelistBlock extends MenuItem {
         if (itemTypeNow.hasBlockType()) { // pure sanity check, our whitelist should never allow anything other than a block to become the current item
             whitelist.remove(itemTypeNow.getBlockType());
         }
-        getContainer().removeItem(getSlot());
+        getMenu().removeItem(getSlot());
         return ItemStack.empty();
     }
 }

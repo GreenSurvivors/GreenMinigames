@@ -77,11 +77,11 @@ public class RewardsModule extends AMinigameModule {
 
     @Override
     public void addEditMenuOptions(final @NotNull Menu menu) {
-        MenuItemCustom launcher = new MenuItemCustom(ItemType.DIAMOND,
+        final @NotNull MenuItemCustom launcher = new MenuItemCustom(ItemType.DIAMOND,
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME));
         launcher.setClick(() -> {
-            Menu submenu = createSubMenu(menu);
-            submenu.displayMenu(menu.getViewer());
+            final @NotNull Menu submenu = createSubMenu(menu);
+            submenu.displayMenu();
             return ItemStack.empty();
         });
 
@@ -90,7 +90,7 @@ public class RewardsModule extends AMinigameModule {
 
     private @NotNull Menu createSubMenu(final @NotNull Menu parent) {
         final Menu submenu = new Menu(6,
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME), parent.getViewer());
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME), parent.getIntendedViewer());
         scheme.addMenuItems(submenu);
 
         submenu.addItem(RewardSchemeRegistry.newMenuItem(ItemType.PAPER,
@@ -104,8 +104,8 @@ public class RewardsModule extends AMinigameModule {
                 public void setValue(@NotNull String value) {
                     scheme = RewardSchemeRegistry.createScheme(value);
                     // Update the menu
-                    Menu menu = createSubMenu(parent);
-                    menu.displayMenu(submenu.getViewer());
+                    final @NotNull Menu menu = createSubMenu(parent);
+                    menu.displayMenu();
                 }
             }), submenu.getSize() - 1);
 

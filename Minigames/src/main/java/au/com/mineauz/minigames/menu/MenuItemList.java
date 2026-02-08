@@ -12,6 +12,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -24,42 +25,46 @@ import java.util.function.Function;
 
 public class MenuItemList<T> extends MenuItem implements StringConsumer {
     private static final @NotNull String DESCRIPTION_TOKEN = "List_description";
-    private final @NotNull Callback<T> valueCallback;
-    private final @NotNull List<T> options;
-    private final @NotNull Function<T, @NotNull String> displayFunction;
+    protected final @NotNull Callback<T> callback;
+    protected final @NotNull List<T> options;
+    protected final @NotNull Function<T, @NotNull String> displayFunction;
 
     /// uses the value#toString() to display it
     public MenuItemList(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
-                        final @NotNull Callback<@NotNull T> valueCallback, final @NotNull List<@NotNull T> options) {
-        this(displayType, langKey, null, valueCallback, options);
+                        final @NotNull Callback<@NotNull T> callback, final @NotNull List<@NotNull T> options) {
+        this(displayType, langKey, null, callback, options);
     }
 
     /// uses the value#toString() to display it
     public MenuItemList(final @Nullable ItemType displayType, final @Nullable Component name,
-                        final @NotNull Callback<@NotNull T> valueCallback, final @NotNull List<@NotNull T> options) {
-        this(displayType, name, null, valueCallback, options);
+                        final @NotNull Callback<@NotNull T> callback, final @NotNull List<@NotNull T> options) {
+        this(displayType, name, null, callback, options);
     }
 
     /// uses the value#toString() to display it
     public MenuItemList(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
                         final @Nullable List<@NotNull Component> description,
-                        final @NotNull Callback<@NotNull T> valueCallback, final @NotNull List<@NotNull T> options) {
-        this(displayType, langKey, description, Object::toString, valueCallback, options);
+                        final @NotNull Callback<@NotNull T> callback, final @NotNull List<@NotNull T> options) {
+        this(displayType, langKey, description,
+            value -> WordUtils.capitalizeFully(value.toString().replace('_', ' ')),
+            callback, options);
     }
 
     /// uses the value#toString() to display it
     public MenuItemList(final @Nullable ItemType displayType, final @Nullable Component name,
                         final @Nullable List<@NotNull Component> description,
-                        final @NotNull Callback<@NotNull T> valueCallback, final @NotNull List<@NotNull T> options) {
-        this(displayType, name, description, Object::toString, valueCallback, options);
+                        final @NotNull Callback<@NotNull T> callback, final @NotNull List<@NotNull T> options) {
+        this(displayType, name, description,
+            value -> WordUtils.capitalizeFully(value.toString().replace('_', ' ')),
+            callback, options);
     }
 
     /// the display function should return a minimessage formatted String
     public MenuItemList(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
                         final @Nullable List<@NotNull Component> description, final @NotNull Function<T, @NotNull String> displayFunction,
-                        final @NotNull Callback<@NotNull T> valueCallback, final @NotNull List<@NotNull T> options) {
+                        final @NotNull Callback<@NotNull T> callback, final @NotNull List<@NotNull T> options) {
         super(displayType, langKey, description);
-        this.valueCallback = valueCallback;
+        this.callback = callback;
         this.options = options;
         this.displayFunction = displayFunction;
         updateDescription();
@@ -68,9 +73,9 @@ public class MenuItemList<T> extends MenuItem implements StringConsumer {
     /// the display function should return a minimessage formatted String
     public MenuItemList(final @Nullable ItemType displayType, final @Nullable Component name,
                         final @Nullable List<@NotNull Component> description, final @NotNull Function<T, @NotNull String> displayFunction,
-                        final @NotNull Callback<@NotNull T> valueCallback, final @NotNull List<@NotNull T> options) {
+                        final @NotNull Callback<@NotNull T> callback, final @NotNull List<@NotNull T> options) {
         super(displayType, name, description);
-        this.valueCallback = valueCallback;
+        this.callback = callback;
         this.options = options;
         this.displayFunction = displayFunction;
         updateDescription();
@@ -81,27 +86,26 @@ public class MenuItemList<T> extends MenuItem implements StringConsumer {
             return;
         }
 
-        final int pos = options.indexOf(valueCallback.getValue());
-
+        final int pos = options.indexOf(callback.getValue());
         if (pos == -1) {
             setDescriptionPart(DESCRIPTION_TOKEN, MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_ERROR_UNKNOWN));
         } else {
-            final @NotNull List<@NotNull Component> description = new ArrayList<>();
+            final @NotNull List<@NotNull Component> description = new ArrayList<>(3);
 
             int before = pos - 1;
-            int after = pos + 1;
+            int next = pos + 1;
             if (before < 0) {
                 before = options.size() - 1;
             }
-            if (after >= options.size()) {
-                after = 0;
+            if (next >= options.size()) {
+                next = 0;
             }
 
             final @NotNull MiniMessage miniMessage = MiniMessage.miniMessage();
 
             description.add(miniMessage.deserialize(displayFunction.apply(options.get(before))).color(NamedTextColor.GRAY));
             description.add(miniMessage.deserialize(displayFunction.apply(options.get(pos))).color(NamedTextColor.GREEN));
-            description.add(miniMessage.deserialize(displayFunction.apply(options.get(after))).color(NamedTextColor.GRAY));
+            description.add(miniMessage.deserialize(displayFunction.apply(options.get(next))).color(NamedTextColor.GRAY));
 
             setDescriptionPart(DESCRIPTION_TOKEN, description);
         }
@@ -109,13 +113,21 @@ public class MenuItemList<T> extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onClick() {
-        int ind = options.lastIndexOf(valueCallback.getValue());
-        ind++;
-        if (ind == options.size()) {
-            ind = 0;
-        }
+        T oldValue = callback.getValue();
+        T newValue = increaseValue(oldValue, false);
+        callback.setValue(newValue);
 
-        valueCallback.setValue(options.get(ind));
+        updateDescription();
+
+        return getDisplayItem();
+    }
+
+    @Override
+    public final @NotNull ItemStack onShiftClick() {
+        T oldValue = callback.getValue();
+        T newValue = increaseValue(oldValue, true);
+        callback.setValue(newValue);
+
         updateDescription();
 
         return getDisplayItem();
@@ -123,13 +135,21 @@ public class MenuItemList<T> extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onRightClick() {
-        int ind = options.lastIndexOf(valueCallback.getValue());
-        ind--;
-        if (ind == -1) {
-            ind = options.size() - 1;
-        }
+        T oldValue = callback.getValue();
+        T newValue = decreaseValue(oldValue, false);
+        callback.setValue(newValue);
 
-        valueCallback.setValue(options.get(ind));
+        updateDescription();
+
+        return getDisplayItem();
+    }
+
+    @Override
+    public final @NotNull ItemStack onShiftRightClick() {
+        T oldValue = callback.getValue();
+        T newValue = decreaseValue(oldValue, true);
+        callback.setValue(newValue);
+
         updateDescription();
 
         return getDisplayItem();
@@ -137,10 +157,8 @@ public class MenuItemList<T> extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onDoubleClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
+        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LIST_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
@@ -154,8 +172,7 @@ public class MenuItemList<T> extends MenuItem implements StringConsumer {
                 Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), optionsStr));
         }
 
-        mgPlayer.setManualEntry(this);
-        getContainer().startReopenTimer(reopenTime);
+        getMenu().closeAndWaitForInput(reopenTime, this);
 
         return ItemStack.empty();
     }
@@ -166,17 +183,53 @@ public class MenuItemList<T> extends MenuItem implements StringConsumer {
 
         for (final @NotNull T opt : options) {
             if (miniMessage.stripTags(displayFunction.apply(opt)).equalsIgnoreCase(string)) {
-                valueCallback.setValue(opt);
+                callback.setValue(opt);
                 updateDescription();
 
-                getContainer().cancelReopenTimer();
-                getContainer().displayMenu(getContainer().getViewer());
+                getMenu().cancelWaitForInput();
+                getMenu().displayMenu();
                 return;
             }
         }
-        getContainer().cancelReopenTimer();
-        getContainer().displayMenu(getContainer().getViewer());
+        getMenu().cancelWaitForInput();
+        getMenu().displayMenu();
 
-        MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_LIST_ERROR_INVALID);
+        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_LIST_ERROR_INVALID);
+    }
+
+    protected @Nullable T increaseValue(T current, boolean shift) {
+        if (options.isEmpty()) {
+            return null;
+        }
+
+        int index = options.indexOf(current);
+        if (index == -1) {
+            return options.getFirst();
+        }
+
+        ++index;
+        if (index >= options.size()) {
+            index = 0;
+        }
+
+        return options.get(index);
+    }
+
+    protected @Nullable T decreaseValue(T current, boolean shift) {
+        if (options.isEmpty()) {
+            return null;
+        }
+
+        int index = options.indexOf(current);
+        if (index == -1) {
+            return options.getFirst();
+        }
+
+        --index;
+        if (index < 0) {
+            index = options.size() - 1;
+        }
+
+        return options.get(index);
     }
 }

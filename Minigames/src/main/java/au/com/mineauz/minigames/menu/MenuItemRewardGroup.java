@@ -96,41 +96,38 @@ public class MenuItemRewardGroup extends MenuItem implements StringConsumer {
     }
 
     @Override
-    public void acceptString(@NotNull String string) {
-        getContainer().cancelReopenTimer();
+    public void acceptString(final @NotNull String string) {
+        getMenu().cancelWaitForInput();
 
         if (string.equalsIgnoreCase("yes")) { // todo?
             rewards.removeGroup(group);
-            getContainer().removeItem(this.getSlot());
+            getMenu().removeItem(this.getSlot());
 
-            getContainer().displayMenu(getContainer().getViewer());
+            getMenu().displayMenu();
         } else {
-            MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_REWARD_NOTREMOVED);
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_REWARD_NOTREMOVED);
 
-            getContainer().displayMenu(getContainer().getViewer());
+            getMenu().displayMenu();
         }
     }
 
     @Override
     public @NotNull ItemStack onShiftRightClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
-        mgPlayer.setNoClose(true);
-        mgPlayer.getPlayer().closeInventory();
+        final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_REWARD_GROUP_ENTERCHAT,
             Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), group.getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
-        mgPlayer.setManualEntry(this);
 
-        getContainer().startReopenTimer(reopenTime);
+        getMenu().closeAndWaitForInput(reopenTime, this);
         return ItemStack.empty();
     }
 
     @Override
     public @NotNull ItemStack onShiftClick() {
-        Menu rewardMenu = new Menu(5, getName(), getContainer().getViewer());
-        rewardMenu.setPreviousPage(getContainer());
+        final @NotNull Menu rewardMenu = new Menu(5, getName(), getMenu().getIntendedViewer());
+        rewardMenu.setPreviousPage(getMenu());
 
         rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME,
             MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_REWARD_ITEM_ADD_DESCRIPTION), group), 43);
@@ -144,7 +141,7 @@ public class MenuItemRewardGroup extends MenuItem implements StringConsumer {
         }
 
         rewardMenu.addItems(menuItems);
-        rewardMenu.displayMenu(getContainer().getViewer());
+        rewardMenu.displayMenu();
         return ItemStack.empty();
     }
 }

@@ -26,7 +26,7 @@ public class MenuItemToolMode extends MenuItem {
     }
 
     public @NotNull ItemStack onClick() {
-        MinigamePlayer mgPlayer = getContainer().getViewer();
+        final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         if (MinigameTool.hasMinigameTool(mgPlayer)) {
             MinigameTool tool = MinigameTool.getMinigameTool(mgPlayer);
             if (tool.getMode() != null) {

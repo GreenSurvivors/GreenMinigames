@@ -40,7 +40,7 @@ public class MenuItemRegenRegion extends MenuItem {
     @Override
     public @NonNull ItemStack onRightClick() {
         rmod.getMinigame().removeRegenRegion(region.getName());
-        getContainer().removeItem(getSlot());
+        getMenu().removeItem(getSlot());
         return ItemStack.empty();
     }
 }
