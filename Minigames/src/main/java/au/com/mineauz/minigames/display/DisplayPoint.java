@@ -49,7 +49,7 @@ public class DisplayPoint extends AbstractDisplayObject implements INonPersisten
 
     @Override
     public void refresh() {
-        if (player != null && player.getWorld() != getWorld()) {
+        if (playerUUID != null && getPlayer().getWorld() != getWorld()) {
             return;
         }
 
@@ -88,8 +88,8 @@ public class DisplayPoint extends AbstractDisplayObject implements INonPersisten
         if (getWorld() != null) {
             final @NotNull Location temp = new Location(getWorld(), x, y, z);
 
-            if (player != null) {
-                player.spawnParticle(Particle.FLAME, temp, 1);
+            if (playerUUID != null) {
+                getPlayer().spawnParticle(Particle.FLAME, temp, 1);
             } else {
                 getWorld().spawnParticle(Particle.FLAME, temp, 1);
             }

@@ -13,8 +13,10 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,18 +68,25 @@ public class BetSign extends AMinigameSign {
     public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
         Minigame mgm = plugin.getMinigameManager().getMinigame(PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(2)));
         if (mgm != null) {
+            final @Nullable Player player = mgPlayer.getPlayer();
+
+            if (player == null) {
+                return false;
+            }
+
             boolean invOk = true;
             final boolean fullInv;
 
-            final Double moneyBetAmount = getMoneyBet(sign);
+            final @Nullable Double moneyBetAmount = getMoneyBet(sign);
             final boolean isMoneyBet = moneyBetAmount != null;
 
+            final @NotNull PlayerInventory inventory = player.getInventory();
             if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
                 fullInv = true;
-                ItemStack[] contents = mgPlayer.getPlayer().getInventory().getContents();
+                ItemStack[] contents = inventory.getContents();
                 for (int i = 0; i < contents.length; ++i) {
                     // Non money bets can hold an item
-                    if (!isMoneyBet && i == mgPlayer.getPlayer().getInventory().getHeldItemSlot()) {
+                    if (!isMoneyBet && i == inventory.getHeldItemSlot()) {
                         continue;
                     }
 
@@ -87,7 +96,7 @@ public class BetSign extends AMinigameSign {
                     }
                 }
 
-                for (ItemStack item : mgPlayer.getPlayer().getInventory().getArmorContents()) {
+                for (ItemStack item : inventory.getArmorContents()) {
                     if (item != null && !item.isEmpty()) {
                         invOk = false;
                         break;
@@ -95,11 +104,11 @@ public class BetSign extends AMinigameSign {
                 }
             } else {
                 fullInv = false;
-                invOk = (isMoneyBet == (mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()));
+                invOk = (isMoneyBet == (inventory.getItemInMainHand().isEmpty()));
             }
 
             if (invOk) {
-                if (mgm.isEnabled() && (!mgm.getUsePermissions() || mgPlayer.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
+                if (mgm.isEnabled() && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
                     if (mgm.isSpectator(mgPlayer)) {
                         return false;
                     }
@@ -120,7 +129,7 @@ public class BetSign extends AMinigameSign {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
                 }
             } else if (!isMoneyBet) {
-                if (fullInv && !mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
+                if (fullInv && !inventory.getItemInMainHand().isEmpty()) {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_FULLINV);
                 } else {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_BET_ERROR_NOBET);

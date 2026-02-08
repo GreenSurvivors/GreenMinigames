@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.block.BlockType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemType;
@@ -120,10 +121,15 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
 
     @Override
     public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+        final @Nullable Player player = mgPlayer.getPlayer();
+        if (player == null) {
+            return;
+        }
+
         if (team != null) {
             for (SafeFullLocation loc : team.getStartLocations()) {
-                if (mgPlayer.getLocation().getWorld().equals(loc.getWorld())) {
-                    mgPlayer.getPlayer().sendBlockChange(loc.toLocation(), BlockType.SKELETON_SKULL.createBlockData());
+                if (player.getWorld().equals(loc.getWorld())) {
+                    player.sendBlockChange(loc.toLocation(), BlockType.SKELETON_SKULL.createBlockData());
                 }
             }
 
@@ -132,8 +138,8 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
             for (SafeFullLocation loc : minigame.getStartLocations()) {
-                if (mgPlayer.getLocation().getWorld().equals(loc.getWorld())) {
-                    mgPlayer.getPlayer().sendBlockChange(loc.toLocation(), BlockType.SKELETON_SKULL.createBlockData());
+                if (player.getWorld().equals(loc.getWorld())) {
+                    player.sendBlockChange(loc.toLocation(), BlockType.SKELETON_SKULL.createBlockData());
                 }
             }
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_STARTLOCATION,
@@ -143,11 +149,16 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
     }
 
     @Override
-    public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+    public void deselect(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @Nullable Team team) {
+        final @Nullable Player player = mgPlayer.getPlayer();
+        if (player == null) {
+            return;
+        }
+
         if (team != null) {
             for (final @NotNull SafeFullLocation loc : team.getStartLocations()) {
-                if (mgPlayer.getLocation().getWorld().equals(loc.getWorld())) {
-                    mgPlayer.getPlayer().sendBlockChange(loc.toLocation(), loc.getBlockAt().getBlockData());
+                if (player.getLocation().getWorld().equals(loc.getWorld())) {
+                    player.sendBlockChange(loc.toLocation(), loc.getBlockAt().getBlockData());
                 }
             }
 
@@ -156,8 +167,8 @@ public class StartLocationMode implements ToolMode { //todo waring if other worl
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
             for (SafeFullLocation loc : minigame.getStartLocations()) {
-                if (mgPlayer.getLocation().getWorld().equals(loc.getWorld())) {
-                    mgPlayer.getPlayer().sendBlockChange(loc.toLocation(), loc.getBlockAt().getBlockData());
+                if (player.getWorld().equals(loc.getWorld())) {
+                    player.sendBlockChange(loc.toLocation(), loc.getBlockAt().getBlockData());
                 }
             }
 

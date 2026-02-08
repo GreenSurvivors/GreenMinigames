@@ -21,6 +21,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -95,7 +96,7 @@ public class MinigameTool {
      * @param player - The player to give the tool to.
      * @return The Minigame Tool
      */
-    public static @NotNull MinigameTool giveMinigameTool(@NotNull MinigamePlayer player) {
+    public static @NotNull MinigameTool giveMinigameTool(final @NotNull MinigamePlayer player) {
         ItemType toolType = null;
 
         final @Nullable String confStr = Minigames.getPlugin().getConfig().getString("tool");
@@ -150,22 +151,23 @@ public class MinigameTool {
      * Gets the item, Minigames considers as a Minigame tool, from the players inventory
      * It will prefer the item in main/offhand
      *
-     * @param player The player to get the tool from
+     * @param mgPlayer The player to get the tool from
      * @return null if no tool was found
      */
-    public static @Nullable MinigameTool getMinigameTool(@NotNull MinigamePlayer player) {
-        ItemStack inHand = player.getPlayer().getInventory().getItemInMainHand();
+    public static @Nullable MinigameTool getMinigameTool(final @NotNull MinigamePlayer mgPlayer) {
+        final @NotNull PlayerInventory inventory = mgPlayer.getPlayer().getInventory();
+        @NotNull ItemStack inHand = inventory.getItemInMainHand();
         if (isMinigameTool(inHand)) {
             return new MinigameTool(inHand);
         }
 
-        inHand = player.getPlayer().getInventory().getItemInOffHand();
+        inHand = inventory.getItemInOffHand();
         if (isMinigameTool(inHand)) {
             return new MinigameTool(inHand);
         }
 
         //was not in hands, search in inventory.
-        for (ItemStack item : player.getPlayer().getInventory().getContents()) {
+        for (ItemStack item : inventory.getContents()) {
             if (isMinigameTool(item)) {
                 return new MinigameTool(item);
             }

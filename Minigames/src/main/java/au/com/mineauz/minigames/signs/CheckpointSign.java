@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,14 +41,15 @@ public class CheckpointSign extends AMinigameSign {
     }
 
     @Override
-    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
+    public boolean signUse(final @NotNull Sign sign, final @NotNull MinigamePlayer mgPlayer) {
+        final Player player = mgPlayer.getPlayer();
         if ((mgPlayer.isInMinigame() || (!mgPlayer.isInMinigame() && sign.getLine(2).equals(ChatColor.BLUE + "Global"))) &&
-            mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
+            player.getInventory().getItemInMainHand().isEmpty()) {
             if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isSpectator(mgPlayer)) {
                 return false;
             }
-            if (mgPlayer.getPlayer().isOnGround()) { // todo why? if really necessary use something working
-                final @NotNull SafeFullLocation newloc = new SafeFullLocation(mgPlayer.getPlayer().getLocation());
+            if (player.isOnGround()) { // todo why? if really necessary use something working
+                final @NotNull SafeFullLocation newloc = mgPlayer.getSafeLocation();
                 if (!sign.getLine(2).equals(ChatColor.BLUE + "Global")) {
                     mgPlayer.setCheckpoint(newloc);
                 } else {

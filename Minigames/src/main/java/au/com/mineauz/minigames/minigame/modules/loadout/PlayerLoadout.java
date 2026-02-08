@@ -15,6 +15,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -133,43 +134,46 @@ public class PlayerLoadout {
         return effects;
     }
 
-    public void equipLoadout(@NotNull MinigamePlayer mgPlayer) {
-        mgPlayer.getPlayer().getInventory().clear();
-        mgPlayer.getPlayer().getInventory().setHelmet(null);
-        mgPlayer.getPlayer().getInventory().setChestplate(null);
-        mgPlayer.getPlayer().getInventory().setLeggings(null);
-        mgPlayer.getPlayer().getInventory().setBoots(null);
-        for (PotionEffect potion : mgPlayer.getPlayer().getActivePotionEffects()) {
-            mgPlayer.getPlayer().removePotionEffect(potion.getType());
+    public void equipLoadout(final @NotNull MinigamePlayer mgPlayer) {
+        final @Nullable Player player = mgPlayer.getPlayer();
+        if (player == null) {
+            return;
+        }
+
+        final @NotNull PlayerInventory inventory = player.getInventory();
+        inventory.clear();
+        inventory.setHelmet(ItemStack.empty());
+        inventory.setChestplate(ItemStack.empty());
+        inventory.setLeggings(ItemStack.empty());
+        inventory.setBoots(ItemStack.empty());
+        for (PotionEffect potion : player.getActivePotionEffects()) {
+            player.removePotionEffect(potion.getType());
         }
         if (!itemSlots.isEmpty()) {
-            Player player = mgPlayer.getPlayer();
-
             for (Map.Entry<Integer, ItemStack> slotItem : itemSlots.entrySet()) {
                 if (slotItem.getKey() >= 0 && slotItem.getKey() < 100) {
-                    player.getInventory().setItem(slotItem.getKey(), slotItem.getValue());
+                    inventory.setItem(slotItem.getKey(), slotItem.getValue());
                 } else {
                     switch (slotItem.getKey()) {
-                        case 100 -> player.getInventory().setBoots(slotItem.getValue());
-                        case 101 -> player.getInventory().setLeggings(slotItem.getValue());
-                        case 102 -> player.getInventory().setChestplate(slotItem.getValue());
-                        case 103 -> player.getInventory().setHelmet(slotItem.getValue());
-                        case -106 -> player.getInventory().setItemInOffHand(slotItem.getValue());
+                        case 100 -> inventory.setBoots(slotItem.getValue());
+                        case 101 -> inventory.setLeggings(slotItem.getValue());
+                        case 102 -> inventory.setChestplate(slotItem.getValue());
+                        case 103 -> inventory.setHelmet(slotItem.getValue());
+                        case -106 -> inventory.setItemInOffHand(slotItem.getValue());
                     }
                 }
             }
             mgPlayer.updateInventory();
         }
 
-        final MinigamePlayer fplayer = mgPlayer;
-        Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> fplayer.getPlayer().addPotionEffects(effects));
+        Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> mgPlayer.getPlayer().addPotionEffects(effects));
 
         for (final @NotNull ALoadoutAddon addon : addons.values()) {
             addon.applyLoadout(mgPlayer);
         }
 
         if (level != -1) {
-            mgPlayer.getPlayer().setLevel(level);
+            player.setLevel(level);
         }
     }
 

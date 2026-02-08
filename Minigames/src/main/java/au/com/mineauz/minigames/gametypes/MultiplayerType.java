@@ -22,6 +22,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -67,15 +68,16 @@ public class MultiplayerType extends MinigameTypeBase {
     }
 
     @Override
-    public boolean teleportOnJoin(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {
+    public boolean teleportOnJoin(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame mgm) {
         final @Nullable SafeFullLocation location = mgm.getLobbyLocation();
         boolean result = false;
         if (location == null) {
             plugin.getLogger().warning("Game has no lobby set and it was expected:" + mgm.getName());
         } else {
             result = mgPlayer.teleport(location);
-            if (plugin.getConfig().getBoolean("warnings") && mgPlayer.getPlayer().getWorld() != location.getWorld() &&
-                mgPlayer.getPlayer().hasPermission("minigame.set.lobby")) { //todo permission manager
+            final Player player = mgPlayer.getPlayer();
+            if (plugin.getConfig().getBoolean("warnings") && player.getWorld() != location.getWorld() &&
+                player.hasPermission("minigame.set.lobby")) { //todo permission manager
 
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
             }
@@ -84,7 +86,7 @@ public class MultiplayerType extends MinigameTypeBase {
     }
 
     @Override
-    public boolean joinMinigame(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {
+    public boolean joinMinigame(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame mgm) {
         if (!LobbySettingsModule.getMinigameModule(mgm).canInteractPlayerWait()) mgPlayer.setCanInteract(false);
         if (!LobbySettingsModule.getMinigameModule(mgm).canMoveOnPlayerWait()) mgPlayer.setFrozen(true);
         if (!mgm.isWaitingForPlayers() && !mgm.hasStarted()) {
@@ -162,9 +164,10 @@ public class MultiplayerType extends MinigameTypeBase {
     }
 
     @Override
-    public void quitMinigame(final @NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm, boolean forced) {
+    public void quitMinigame(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame mgm, boolean forced) {
         int teamsWithPlayers = 0;
 
+        final Player player = mgPlayer.getPlayer();
         if (mgm.isTeamGame()) {
             mgPlayer.removeTeam();
             for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
@@ -174,7 +177,7 @@ public class MultiplayerType extends MinigameTypeBase {
 
             if (mgm.getMpBets() != null && mgm.isWaitingForPlayers() && !forced) {
                 if (mgm.getMpBets().getPlayersMoneyBet(mgPlayer) != null) {
-                    plugin.getEconomy().depositPlayer(mgPlayer.getPlayer().getPlayer(), mgm.getMpBets().getPlayersMoneyBet(mgPlayer));
+                    plugin.getEconomy().depositPlayer(player.getPlayer(), mgm.getMpBets().getPlayersMoneyBet(mgPlayer));
                 }
                 mgm.getMpBets().removePlayersBet(mgPlayer);
             }
@@ -182,9 +185,9 @@ public class MultiplayerType extends MinigameTypeBase {
             if (mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)) {
                 if (mgm.getMpBets().getPlayersItemBet(mgPlayer) != null) {
                     final ItemStack item = mgm.getMpBets().getPlayersItemBet(mgPlayer).clone();
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> mgPlayer.getPlayer().getInventory().addItem(item));
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.getInventory().addItem(item));
                 } else if (mgm.getMpBets().getPlayersMoneyBet(mgPlayer) != null) {
-                    plugin.getEconomy().depositPlayer(mgPlayer.getPlayer().getPlayer(), mgm.getMpBets().getPlayersMoneyBet(mgPlayer));
+                    plugin.getEconomy().depositPlayer(player.getPlayer(), mgm.getMpBets().getPlayersMoneyBet(mgPlayer));
                 }
                 mgm.getMpBets().removePlayersBet(mgPlayer);
             }
@@ -459,7 +462,7 @@ public class MultiplayerType extends MinigameTypeBase {
     /*----------------*/
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    private void playerRespawn(@NotNull PlayerRespawnEvent event) {
+    private void playerRespawn(final @NotNull PlayerRespawnEvent event) {
         final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().getType() == MinigameType.MULTIPLAYER) {
             Minigame mg = mgPlayer.getMinigame();

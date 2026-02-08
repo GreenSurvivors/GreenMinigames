@@ -95,8 +95,8 @@ public class GiveItemAction extends AAction {
         execute(mgPlayer);
     }
 
-    private void execute(@NotNull MinigamePlayer player) {
-        player.getPlayer().give(item.getFlag());
+    private void execute(final @NotNull MinigamePlayer mgPlayer) {
+        mgPlayer.getPlayer().give(item.getFlag());
     }
 
     @Override

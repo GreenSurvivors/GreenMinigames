@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Flag of Capture the Flag.
@@ -277,9 +278,16 @@ public class CTFFlag {
         }, respawnTime * 20L);
     }
 
-    public void startCarrierParticleEffect(final @NotNull Player player) {
-        cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () ->
-            player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 0), 15L, 15L
+    public void startCarrierParticleEffect(final @NotNull UUID playerUUID) {
+        cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
+            final @Nullable Player player = Bukkit.getPlayer(playerUUID);
+            if (player == null) {
+                Bukkit.getScheduler().cancelTask(cParticleID);
+                return;
+            }
+
+            player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
+            }, 15L, 15L
         );
     }
 
@@ -294,9 +302,9 @@ public class CTFFlag {
         return spawnAttachedToLocation;
     }
 
-    @Contract(pure = true)
-    public boolean isFlag(final @NotNull ItemStack item) {
-        return item.getPersistentDataContainer().has(flagKey);
+    @Contract(pure = true, value = "null -> false")
+    public boolean isFlag(final @Nullable ItemStack item) {
+        return item != null && item.getPersistentDataContainer().has(flagKey);
     }
 
     public @NotNull ItemStack getAsItem() {

@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import org.bukkit.block.BlockType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -53,10 +54,11 @@ public class QuitLocationMode implements ToolMode {
     }
 
     @Override
-    public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+    public void select(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @Nullable Team team) {
         if (minigame.getQuitLocation() != null) {
-            if (mgPlayer.getLocation().getWorld().equals(minigame.getQuitLocation().getWorld())) {
-                mgPlayer.getPlayer().sendBlockChange(minigame.getQuitLocation().toLocation(), BlockType.SKELETON_SKULL.createBlockData());
+            final @Nullable Player player = mgPlayer.getPlayer();
+            if (player != null && player.getWorld().equals(minigame.getQuitLocation().getWorld())) {
+               player.sendBlockChange(minigame.getQuitLocation().toLocation(), BlockType.SKELETON_SKULL.createBlockData());
             }
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_QUITLOCATION);
         } else {
@@ -65,10 +67,11 @@ public class QuitLocationMode implements ToolMode {
     }
 
     @Override
-    public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+    public void deselect(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @Nullable Team team) {
         if (minigame.getQuitLocation() != null) {
-            if (mgPlayer.getLocation().getWorld().equals(minigame.getQuitLocation().getWorld())) {
-                mgPlayer.getPlayer().sendBlockChange(minigame.getQuitLocation().toLocation(),
+            final @Nullable Player player = mgPlayer.getPlayer();
+            if (player != null && player.getWorld().equals(minigame.getQuitLocation().getWorld())) {
+               player.sendBlockChange(minigame.getQuitLocation().toLocation(),
                     minigame.getQuitLocation().getBlockAt().getBlockData());
             }
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_QUITLOCATION);

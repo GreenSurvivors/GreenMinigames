@@ -86,16 +86,16 @@ public class PlaySoundAction extends AAction {
         execute(mgPlayer, node.getSafeLocation().toLocation());
     }
 
-    private void execute(@NotNull MinigamePlayer player, @NotNull Location loc) {
-        if (!player.isInMinigame()) return;
+    private void execute(final @NotNull MinigamePlayer mgPlayer, final @NotNull Location loc) {
+        if (!mgPlayer.isInMinigame()) return;
         if (privatePlayBack.getFlag()) {
-            player.getPlayer().playSound(
+            mgPlayer.getPlayer().playSound(
                     loc,
                     getSound(),
                     volume.getFlag(),
                     pitch.getFlag());
         } else {
-            player.getPlayer().getWorld().playSound(
+            mgPlayer.getPlayer().getWorld().playSound(
                     loc,
                     getSound(),
                     volume.getFlag(),

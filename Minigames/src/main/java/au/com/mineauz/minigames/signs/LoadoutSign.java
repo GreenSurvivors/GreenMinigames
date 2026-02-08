@@ -16,6 +16,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,8 +48,9 @@ public class LoadoutSign extends AMinigameSign {
     }
 
     @Override
-    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        if (mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty() && mgPlayer.isInMinigame()) {
+    public boolean signUse(final @NotNull Sign sign, final @NotNull MinigamePlayer mgPlayer) {
+        final @Nullable Player player = mgPlayer.getPlayer();
+        if (player != null && player.getInventory().getItemInMainHand().isEmpty() && mgPlayer.isInMinigame()) {
             Minigame mgm = mgPlayer.getMinigame();
 
             if (mgm == null || mgm.isSpectator(mgPlayer)) {
@@ -70,7 +72,7 @@ public class LoadoutSign extends AMinigameSign {
                 }
 
                 if (loadout != null) {
-                    if (!loadout.usesPermissions() || mgPlayer.getPlayer().hasPermission("minigame.loadout." + sign.getSide(Side.FRONT).getLine(2).toLowerCase())) {
+                    if (!loadout.usesPermissions() || player.hasPermission("minigame.loadout." + sign.getSide(Side.FRONT).getLine(2).toLowerCase())) {
                         if (mgPlayer.setLoadout(loadout)) {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_EQUIPPED,
                                 Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), sign.getSide(Side.FRONT).line(2)));
@@ -97,7 +99,7 @@ public class LoadoutSign extends AMinigameSign {
                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_ERROR_NOLOADOUT);
                 }
             }
-        } else if (!mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
+        } else if (player != null && !player.getInventory().getItemInMainHand().isEmpty()) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
         }
         return false;

@@ -11,6 +11,7 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,17 +57,20 @@ public class PlayerHealthRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
-        if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
-        return mgPlayer.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
-                mgPlayer.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue();
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
+        return checkHealth(mgPlayer);
     }
 
     @Override
-    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
+        return checkHealth(mgPlayer);
+    }
+
+    private boolean checkHealth(final @Nullable MinigamePlayer mgPlayer) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
-        return mgPlayer.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
-                mgPlayer.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue();
+        final Player player = mgPlayer.getPlayer();
+        return player != null && player.getHealth() >= minHealth.getFlag().doubleValue() &&
+            player.getHealth() <= maxHealth.getFlag().doubleValue();
     }
 
     @Override

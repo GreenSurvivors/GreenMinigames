@@ -549,12 +549,12 @@ public class TreasureHuntMechanic extends AGameMechanic {
         hintUse.clear();
     }
 
-    public void getHints(@NotNull MinigamePlayer mgPlayer) {
+    public void getHints(final @NotNull MinigamePlayer mgPlayer) {
         if (!hasTreasureLocation()) return;
-        Location block = getTreasureLocation();
-        if (mgPlayer.getPlayer().getWorld().getName().equals(getTreasureLocation().getWorld().getName())) {
-            Location ploc = mgPlayer.getLocation();
-            double distance = ploc.distance(block);
+        final @NotNull Location block = getTreasureLocation();
+        final @NotNull Location playerLoc = mgPlayer.getLocation();
+        if (playerLoc.getWorld().getName().equals(getTreasureLocation().getWorld().getName())) {
+            double distance = playerLoc.distance(block);
             int maxradius = getMaxRadius();
             if (canUseHint(mgPlayer)) {
                 if (distance > maxradius) {

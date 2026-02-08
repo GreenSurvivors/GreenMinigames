@@ -61,7 +61,7 @@ public class Main extends JavaPlugin {
                 return;
             }
 
-            display = new RegionDisplayManager();
+            display = new RegionDisplayManager(minigames);
 
             minigames.getMinigameManager().addModule(RegionModule.getFactory());
 

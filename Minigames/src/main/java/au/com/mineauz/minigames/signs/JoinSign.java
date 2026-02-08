@@ -14,8 +14,10 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,9 +91,11 @@ public class JoinSign extends AMinigameSign {
 
         boolean invOk = true;
         boolean fullInv;
+        final Player player = mgPlayer.getPlayer();
+        final PlayerInventory inventory = player.getInventory();
         if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
             fullInv = true;
-            for (ItemStack item : mgPlayer.getPlayer().getInventory().getContents()) {
+            for (ItemStack item : inventory.getContents()) {
                 if (item != null) {
                     MinigameMessageManager.debugMessage("Found: " + item);
                     invOk = false;
@@ -99,7 +103,7 @@ public class JoinSign extends AMinigameSign {
                 }
             }
 
-            for (ItemStack item : mgPlayer.getPlayer().getInventory().getArmorContents()) {
+            for (ItemStack item : inventory.getArmorContents()) {
                 if (item != null && !item.isEmpty()) {
                     MinigameMessageManager.debugMessage("Found armor: " + item);
                     invOk = false;
@@ -108,17 +112,17 @@ public class JoinSign extends AMinigameSign {
             }
         } else {
             fullInv = false;
-            invOk = mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty();
+            invOk = inventory.getItemInMainHand().isEmpty();
         }
         if (invOk) {
             final @NotNull Minigame mgm = getMinigame(sign);
             if (mgm != null && (!mgm.getUsePermissions() ||
-                mgPlayer.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
+                player.hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
                 if (mgm.isEnabled()) {
                     final @Nullable Double moneyBet = getMoneyBet(sign);
 
                     if (moneyBet != null && Minigames.getPlugin().hasEconomy()) {
-                        if (!Minigames.getPlugin().getEconomy().withdrawPlayer(mgPlayer.getPlayer().getPlayer(), moneyBet).transactionSuccess()) {
+                        if (!Minigames.getPlugin().getEconomy().withdrawPlayer(player, moneyBet).transactionSuccess()) {
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_JOIN_ERROR_NOTENOUGH_MONEY);
                             return false;
                         }
@@ -134,7 +138,7 @@ public class JoinSign extends AMinigameSign {
             } else if (mgm.getUsePermissions()) {
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
             }
-        } else if (!MinigameTool.isMinigameTool(mgPlayer.getPlayer().getInventory().getItemInMainHand())) {
+        } else if (!MinigameTool.isMinigameTool(inventory.getItemInMainHand())) {
             if (fullInv) {
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_FULLINV);
             } else {

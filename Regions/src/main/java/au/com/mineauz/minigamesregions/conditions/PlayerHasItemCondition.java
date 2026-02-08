@@ -102,10 +102,10 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         return check(mgPlayer);
     }
 
-    private boolean check(@NotNull MinigamePlayer player) {
+    private boolean check(final @NotNull MinigamePlayer mgPlayer) {
         PositionType checkType = where.getFlag();
 
-        PlayerInventory inventory = player.getPlayer().getInventory();
+        final @NotNull PlayerInventory inventory = mgPlayer.getPlayer().getInventory();
         ItemStack[] searchItems;
         int startSlot;
         int endSlot;

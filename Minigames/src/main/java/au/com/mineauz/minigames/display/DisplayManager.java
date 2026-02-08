@@ -20,19 +20,18 @@ import org.jetbrains.annotations.Nullable;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 @SuppressWarnings("UnstableApiUsage") // shut up position
 public class DisplayManager {
     private final @NotNull Minigames plugin;
     private final @NotNull Map<@NotNull INonPersistentDisplay, @NotNull Integer> nextTickDelay = new IdentityHashMap<>();
-    private final @NotNull SetMultimap<@NotNull Player, @NotNull AbstractDisplayObject> playerDisplays;
-    private final @NotNull SetMultimap<@NotNull World, @NotNull AbstractDisplayObject> worldDisplays;
+    private final @NotNull SetMultimap<@NotNull UUID, @NotNull AbstractDisplayObject> playerDisplays = HashMultimap.create();
+    private final @NotNull SetMultimap<@NotNull World, @NotNull AbstractDisplayObject> worldDisplays = HashMultimap.create();
     private @Nullable BukkitTask refreshTask;
 
     public DisplayManager(final @NotNull Minigames plugin) {
         this.plugin = plugin;
-        playerDisplays = HashMultimap.create();
-        worldDisplays = HashMultimap.create();
     }
 
     public @NotNull DisplayCuboid displayCuboid(@NotNull Player player, @NotNull ASafeLocation corner1, @NotNull ASafeLocation corner2) {
@@ -99,8 +98,8 @@ public class DisplayManager {
         return new DisplayPoint(this, world, Position.fine(x, y, z), yaw, pitch, showDirection);
     }
 
-    public void removeAll(@NotNull Player player) {
-        for (IDisplayObject display : playerDisplays.removeAll(player)) {
+    public void removeAll(final @NotNull Player player) {
+        for (IDisplayObject display : playerDisplays.removeAll(player.getUniqueId())) {
             display.hide();
         }
     }

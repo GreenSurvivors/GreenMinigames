@@ -148,8 +148,8 @@ public class MultiplayerTimer {
         }
     }
 
-    private void reclearInventories(@NotNull Minigame minigame) {
-        for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
+    private void reclearInventories(final @NotNull Minigame minigame) {
+        for (final @NotNull MinigamePlayer mgPlayer : minigame.getPlayers()) {
             mgPlayer.getPlayer().getInventory().clear();
         }
     }

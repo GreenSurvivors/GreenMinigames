@@ -9,8 +9,9 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,25 +64,36 @@ public class BlockOnAndHeldCondition extends ACondition {
         return check(mgPlayer);
     }
 
-    private boolean check(@Nullable MinigamePlayer player) {
+    private boolean check(final @Nullable MinigamePlayer mgPlayer) {
+        if (mgPlayer == null) {
+            return false;
+        }
+
+        final @Nullable Player player = mgPlayer.getPlayer();
         if (player == null) {
             return false;
         }
 
-        ItemStack heldItem = player.getPlayer().getInventory().getItemInMainHand();
+        final @NotNull ItemStack heldItem = player.getInventory().getItemInMainHand();
 
-        Location plyLoc = player.getPlayer().getLocation();
+        if (heldItem.isEmpty()) {
+            return false;
+        }
+
+        final @NotNull World world = player.getWorld();
+
+        final @NotNull Location plyLoc = player.getLocation();
         int plyY = plyLoc.getBlockY();
-        //In case that the player is in the air, this searches for the first solid block and checks if it is equal
+        //In case that the player is in the air, this searches for the first solid block below and checks if it is equal
         while (plyY >= 0) {
             plyY -= 1;
-            Block tempBlock = player.getPlayer().getWorld().getBlockAt(plyLoc.getBlockX(), plyY, plyLoc.getBlockZ());
-            if (tempBlock.getType().equals(heldItem.getType())) {
+            final @NotNull Block tempBlock = world.getBlockAt(plyLoc.getBlockX(), plyY, plyLoc.getBlockZ());
+
+            if (tempBlock.getType().asBlockType().equals(heldItem.getType().asBlockType())) {
                 return true;
-            } else if (!tempBlock.getType().equals(Material.AIR)) {
+            } else if (!tempBlock.isEmpty()) {
                 return false;
             }
-
         }
 
         return false;

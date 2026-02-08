@@ -22,10 +22,13 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -45,8 +48,8 @@ import java.util.*;
  * wrapper class to keep track of players with additional information.
  * A MinigamePlayer does NOT have to be in a Minigame to be valid!
  */
-public class MinigamePlayer implements ScriptObject, ScoreHolder {
-    private final @NotNull Player player; //todo storing this object is a BAD idea
+public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudience.Single {
+    private final @NotNull UUID uuid;
 //    private final @NotNull List<@NotNull String> singlePlayerFlags = new ArrayList<>(); // the whole singleplayer flag system is unused.
     private final @NotNull List<@NotNull String> tempClaimedRewards = new ArrayList<>();
     private final @NotNull List<@NotNull ItemStack> tempRewardItems = new ArrayList<>();
@@ -88,7 +91,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
     private final @NotNull Minigames plugin = Minigames.getPlugin();
 
     public MinigamePlayer(final @NotNull Player player) {
-        this.player = player;
+        this.uuid = player.getUniqueId();
         spc = new StoredPlayerCheckpoints(getUUID());
 
         final @NotNull Path checkpointPath = plugin.getDataPath()
@@ -112,31 +115,44 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
         this.startPos = startPos;
     }
 
-    public @NotNull Player getPlayer() {
-        return player;
+    public @Nullable Player getPlayer() {
+        return plugin.getServer().getPlayer(uuid);
+    }
+
+    public @NotNull OfflinePlayer getOfflinePlayer() {
+        return plugin.getServer().getOfflinePlayer(uuid);
     }
 
     public @NotNull String getName() {
-        return player.getName();
+        // we can guarantee not nullness here, since every MinigamePlayer gets created with a player object, meaning the player has played before!
+        return getOfflinePlayer().getName();
     }
 
-    public @NotNull Component displayName() {
-        return player.displayName();
+    public @Nullable Component displayName() {
+        final @Nullable Player player = getPlayer();
+        return player == null ? null : player.displayName();
     }
 
     public @NotNull UUID getUUID() {
-        return player.getUniqueId();
+        return uuid;
     }
 
     public @NotNull Location getLocation() {
-        return player.getLocation();
+        // we can guarantee not nullness here, since every MinigamePlayer gets created with a player object, meaning the player has played before!
+        return getOfflinePlayer().getLocation();
     }
 
     public @NotNull SafeFullLocation getSafeLocation() {
-        return new SafeFullLocation(player.getLocation());
+        return new SafeFullLocation(getLocation());
     }
 
     public void storePlayerData() {
+        final @Nullable Player player = getPlayer();
+
+        if (player == null) {
+            return;
+        }
+
         final ItemStack[] storedItems = player.getInventory().getContents();
         final ItemStack[] storedArmour = player.getInventory().getArmorContents();
         final int food = player.getFoodLevel();
@@ -165,6 +181,11 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
     }
 
     public void restorePlayerData() {
+        final @Nullable Player player = getPlayer();
+        if (player == null) {
+            return;
+        }
+
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
 
@@ -490,7 +511,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
 
     public void setCanFly(final boolean bool) {
         canFly = bool;
-        player.setAllowFlight(bool);
+        getPlayer().setAllowFlight(bool);
     }
 
     public void resetAllStats() {
@@ -508,7 +529,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
         setInvincible(false);
         setCanInteract(true);
         setLatejoining(false);
-        if (player.getGameMode() != GameMode.CREATIVE) {
+        if (getPlayer().getGameMode() != GameMode.CREATIVE) {
             setCanFly(false);
         }
         tempClaimedRewards.clear();
@@ -553,6 +574,8 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
     }
 
     public void addSelectionPoint(final @NotNull Location loc) {
+        final Player player = getPlayer();
+
         if (DependencyManager.isWorldEditEnabled()) {
             if (DependencyManager.getLocation1(player) != null) {
                 if (DependencyManager.getLocation2(player) != null) {
@@ -590,7 +613,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
 
     public boolean hasSelection() {
         if (DependencyManager.isWorldEditEnabled()) {
-            return DependencyManager.hasSelection(player);
+            return DependencyManager.hasSelection(getPlayer());
         } else {
             return selection1 != null && selection2 != null;
         }
@@ -600,7 +623,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
         final SafeFineLocation[] loc = new SafeFineLocation[2];
 
         if (DependencyManager.isWorldEditEnabled()) {
-            DependencyManager.SelectedRegionStatusWrapper statusWrapper = DependencyManager.getSelectedRegion(player);
+            DependencyManager.SelectedRegionStatusWrapper statusWrapper = DependencyManager.getSelectedRegion(getPlayer());
 
             loc[0] = new SafeFineLocation(statusWrapper.pos1());
             loc[1] = new SafeFineLocation(statusWrapper.pos2());
@@ -613,7 +636,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
 
     public void clearSelection() {
         if (DependencyManager.isWorldEditEnabled()) {
-            DependencyManager.clearSelection(player);
+            DependencyManager.clearSelection(getPlayer());
         } else {
             showSelection(false);
             selection1 = null;
@@ -623,7 +646,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
 
     public void setSelection1(final @NotNull Location point1) {
         if (DependencyManager.isWorldEditEnabled()) {
-            DependencyManager.setPos1(player, point1);
+            DependencyManager.setPos1(getPlayer(), point1);
         } else {
             selection1 = new SafeFineLocation(point1);
             showSelection(false);
@@ -632,7 +655,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
 
     public void setSelection2(final @NotNull Location point2) {
         if (DependencyManager.isWorldEditEnabled()) {
-            DependencyManager.setPos2(player, point2);
+            DependencyManager.setPos2(getPlayer(), point2);
         } else {
             selection2 = new SafeFineLocation(point2);
             showSelection(true);
@@ -640,6 +663,8 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
     }
 
     public void setSelection(final @NotNull MgRegion region) {
+        final Player player = getPlayer();
+
         if (DependencyManager.isWorldEditEnabled()) {
             DependencyManager.setPos2(player, region.getFirstPoint().toLocation());
             DependencyManager.setPos2(player, region.getSecondPoint().toLocation());
@@ -685,19 +710,27 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
 
     public void setGamemode(final @NotNull GameMode gamemode) {
         setAllowGamemodeChange(true);
-        player.setGameMode(gamemode);
+        getPlayer().setGameMode(gamemode);
         setAllowGamemodeChange(false);
     }
 
+    /// returns true, if the player was successfully teleported.
     @ApiStatus.Obsolete
     public boolean teleport(final @NotNull Location location) {
+        final Player player = getPlayer();
+
+        if (player == null) {
+            return false;
+        }
+
         setAllowTeleport(true);
-        boolean bool = getPlayer().teleport(location);
+        boolean bool = player.teleport(location);
         setAllowTeleport(false);
 
         return bool;
     }
 
+    /// returns true if the player was successfully teleported.
     public boolean teleport(final @NotNull ASafeLocation safeLocation) {
         if (safeLocation.getWorld() != null) {
             return teleport(safeLocation.toLocation());
@@ -711,7 +744,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
     }
 
     public boolean isLiving() {
-        return !player.isDead();
+        return !getPlayer().isDead();
     }
 
     public @Nullable Team getTeam() {
@@ -785,7 +818,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
 
     public boolean applyResourcePack(final @NotNull ResourcePack pack) {
         try {
-            player.getPlayer().setResourcePack(pack.getUrl().toString(), pack.getSH1Hash());
+            getPlayer().setResourcePack(pack.getUrl().toString(), pack.getSH1Hash());
             return true;
         } catch (final IllegalArgumentException e) {
             plugin.getComponentLogger().warn("Could not apply resource pack to player " + getPlayer().getName(), e);
@@ -799,36 +832,14 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
     }
 
     public void claimTempRewardItems() {
-        if (isLiving()) {
-            final List<ItemStack> tempItems = new ArrayList<>(getTempRewardItems());
-
-            if (!tempItems.isEmpty()) {
-                for (final ItemStack item : tempItems) {
-                    final Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(item);
-                    if (!m.isEmpty()) {
-                        for (final ItemStack i : m.values()) {
-                            player.getPlayer().getWorld().dropItemNaturally(player.getPlayer().getLocation(), i);
-                        }
-                    }
-                }
-            }
+        if (isLiving() && !getTempRewardItems().isEmpty()) {
+            getPlayer().give(getTempRewardItems());
         }
     }
 
     public void claimRewards() {
-        if (isLiving()) {
-            final List<ItemStack> tempItems = new ArrayList<>(getRewardItems());
-
-            if (!tempItems.isEmpty()) {
-                for (final ItemStack item : tempItems) {
-                    final Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(item);
-                    if (!m.isEmpty()) {
-                        for (final ItemStack i : m.values()) {
-                            player.getPlayer().getWorld().dropItemNaturally(player.getPlayer().getLocation(), i);
-                        }
-                    }
-                }
-            }
+        if (isLiving() && !getRewardItems().isEmpty()) {
+            getPlayer().give(getTempRewardItems());
         }
     }
 
@@ -838,6 +849,8 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
 
     @Override
     public @Nullable ScriptReference resolveReference(final @NotNull String name) {
+        final Player player = getPlayer();
+
         return switch (name.toLowerCase()) {
             case "name" -> ScriptValue.of(player.getName());
             case "displayname" -> ScriptValue.of(player.getDisplayName());
@@ -860,5 +873,10 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder {
     @Override
     public @NotNull String getAsString() {
         return getName();
+    }
+
+    @Override
+    public @NotNull Audience audience() {
+        return getPlayer();
     }
 }

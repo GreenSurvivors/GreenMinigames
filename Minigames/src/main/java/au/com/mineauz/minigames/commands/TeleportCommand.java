@@ -57,10 +57,10 @@ public class TeleportCommand extends ACommand {
     public boolean onCommand(@NotNull CommandSender sender,
                              @NotNull String @NotNull [] args) {
         if (args.length > 0) {
-            List<Player> plys = PLUGIN.getServer().matchPlayer(args[0]);
+            @NotNull List<@NotNull Player> matchedPlayer = PLUGIN.getServer().matchPlayer(args[0]);
             MinigamePlayer mgPlayer;
-            if (!plys.isEmpty()) {
-                mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(plys.getFirst());
+            if (!matchedPlayer.isEmpty()) {
+                mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(matchedPlayer.getFirst());
             } else {
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
@@ -74,48 +74,53 @@ public class TeleportCommand extends ACommand {
                 float yaw = mgPlayer.getLocation().getYaw();
                 float pitch = mgPlayer.getLocation().getPitch();
 
+                final Player player = matchedPlayer.getFirst();
                 if (args[1].contains("~")) {
-                    if (args[1].equals("~"))
-                        x = mgPlayer.getPlayer().getLocation().getX();
-                    else
-                        x = mgPlayer.getPlayer().getLocation().getX() + Double.parseDouble(args[1].replace("~", ""));
+                    if (args[1].equals("~")) {
+                        x = player.getLocation().getX();
+                    } else {
+                        x = player.getLocation().getX() + Double.parseDouble(args[1].replace("~", ""));
+                    }
                 } else {
                     x = Double.parseDouble(args[1]);
                 }
 
                 if (args[2].contains("~")) {
-                    if (args[2].equals("~"))
-                        y = mgPlayer.getPlayer().getLocation().getY();
-                    else
-                        y = mgPlayer.getPlayer().getLocation().getY() + Double.parseDouble(args[2].replace("~", ""));
+                    if (args[2].equals("~")) {
+                        y = player.getLocation().getY();
+                    } else {
+                        y = player.getLocation().getY() + Double.parseDouble(args[2].replace("~", ""));
+                    }
                 } else {
                     y = Double.parseDouble(args[2]);
                 }
 
                 if (args[3].contains("~")) {
-                    if (args[3].equals("~"))
-                        z = mgPlayer.getPlayer().getLocation().getZ();
-                    else
-                        z = mgPlayer.getPlayer().getLocation().getZ() + Double.parseDouble(args[3].replace("~", ""));
+                    if (args[3].equals("~")) {
+                        z = player.getLocation().getZ();
+                    } else {
+                        z = player.getLocation().getZ() + Double.parseDouble(args[3].replace("~", ""));
+                    }
                 } else {
                     z = Double.parseDouble(args[3]);
                 }
 
                 if (args.length == 6 && COORD_PATTERN.matcher(args[4]).matches() && COORD_PATTERN.matcher(args[5]).matches()) {
                     if (args[4].contains("~")) {
-                        if (args[4].equals("~"))
-                            yaw = mgPlayer.getPlayer().getLocation().getYaw();
-                        else
-                            yaw = mgPlayer.getPlayer().getLocation().getYaw() + Float.parseFloat(args[4].replace("~", ""));
+                        if (args[4].equals("~")) {
+                            yaw = player.getLocation().getYaw();
+                        } else {
+                            yaw = player.getLocation().getYaw() + Float.parseFloat(args[4].replace("~", ""));
+                        }
                     } else {
                         yaw = Float.parseFloat(args[4]);
                     }
 
                     if (args[5].contains("~")) {
-                        if (args[5].equals("~"))
-                            pitch = mgPlayer.getPlayer().getLocation().getPitch();
-                        else {
-                            pitch = mgPlayer.getPlayer().getLocation().getPitch() + Float.parseFloat(args[5].replace("~", ""));
+                        if (args[5].equals("~")) {
+                            pitch = player.getLocation().getPitch();
+                        } else {
+                            pitch = player.getLocation().getPitch() + Float.parseFloat(args[5].replace("~", ""));
                         }
                     } else {
                         pitch = Float.parseFloat(args[5]);
@@ -130,7 +135,7 @@ public class TeleportCommand extends ACommand {
 
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_TPCOORDS,
                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
-                mgPlayer.teleport(new Location(mgPlayer.getPlayer().getWorld(), x, y, z, yaw, pitch));
+                mgPlayer.teleport(new Location(player.getWorld(), x, y, z, yaw, pitch));
                 return true;
             } else if (args.length >= 2 && args[1].equalsIgnoreCase("start")) {
                 if (mgPlayer.isInMinigame()) {
@@ -180,21 +185,21 @@ public class TeleportCommand extends ACommand {
                 }
                 return true;
             } else if (args.length == 2) {
-                plys = PLUGIN.getServer().matchPlayer(args[1]);
-                MinigamePlayer mgPlayer2;
+                matchedPlayer = PLUGIN.getServer().matchPlayer(args[1]);
+                final @NotNull MinigamePlayer mgPlayerSelected;
 
-                if (!plys.isEmpty()) {
-                    mgPlayer2 = PLUGIN.getPlayerManager().getMinigamePlayer(plys.getFirst());
+                if (!matchedPlayer.isEmpty()) {
+                    mgPlayerSelected = PLUGIN.getPlayerManager().getMinigamePlayer(matchedPlayer.getFirst());
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                     return true;
                 }
 
-                mgPlayer.teleport(mgPlayer2.getPlayer().getLocation());
+                mgPlayer.teleport(mgPlayerSelected.getLocation());
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_PLAYER2PLAYER,
                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
-                        Placeholder.component(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayer2.displayName()));
+                        Placeholder.component(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayerSelected.displayName()));
                 return true;
             }
         }

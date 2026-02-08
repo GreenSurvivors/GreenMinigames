@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,11 +38,12 @@ public class QuitSign extends AMinigameSign {
     }
 
     @Override
-    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        if (mgPlayer.isInMinigame() && mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
+    public boolean signUse(final @NotNull Sign sign, final @NotNull MinigamePlayer mgPlayer) {
+        final PlayerInventory inventory = mgPlayer.getPlayer().getInventory();
+        if (mgPlayer.isInMinigame() && inventory.getItemInMainHand().isEmpty()) {
             plugin.getPlayerManager().quitMinigame(mgPlayer, false);
             return true;
-        } else if (!mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
+        } else if (!inventory.getItemInMainHand().isEmpty()) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
         }
         return false;

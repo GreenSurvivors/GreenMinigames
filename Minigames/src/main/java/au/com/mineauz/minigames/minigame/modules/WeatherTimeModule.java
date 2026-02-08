@@ -80,11 +80,11 @@ public class WeatherTimeModule extends AMinigameModule {
         return useCustomTime.getFlag();
     }
 
-    public void setUseCustomTime(boolean bool) {
+    public void setUseCustomTime(final boolean bool) {
         useCustomTime.setFlag(bool);
     }
 
-    public void applyCustomTime(@NotNull MinigamePlayer player) {
+    public void applyCustomTime(final @NotNull MinigamePlayer player) {
         if (isUsingCustomTime()) {
             player.getPlayer().setPlayerTime(time.getFlag(), false);
         }
@@ -106,16 +106,17 @@ public class WeatherTimeModule extends AMinigameModule {
         weather.setFlag(type);
     }
 
-    public void applyCustomWeather(@NotNull MinigamePlayer player) {
-        if (isUsingCustomWeather())
+    public void applyCustomWeather(final @NotNull MinigamePlayer player) {
+        if (isUsingCustomWeather()) {
             player.getPlayer().setPlayerWeather(weather.getFlag());
+        }
     }
 
     public void startTimeLoop() {
-        final Minigame fmgm = getMinigame();
+        final @NotNull Minigame minigame = getMinigame();
         if (task == -1 && isUsingCustomTime()) {
             task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
-                for (MinigamePlayer player : fmgm.getPlayers()) {
+                for (MinigamePlayer player : minigame.getPlayers()) {
                     player.getPlayer().setPlayerTime(time.getFlag(), false);
                 }
             }, 20 * 5, 20 * 5);

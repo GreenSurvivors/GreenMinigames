@@ -22,6 +22,8 @@ import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team.Option;
@@ -223,31 +225,38 @@ public class Team implements ScriptObject, ScoreHolder {
     /**
      * Adds a player to the team.
      *
-     * @param player - The player to add.
+     * @param mgPlayer - The player to add.
      */
-    public void addPlayer(@NotNull MinigamePlayer player) {
-        players.add(player);
-        player.setTeam(this);
-        player.getPlayer().setScoreboard(mgm.getScoreboard());
+    public void addPlayer(final @NotNull MinigamePlayer mgPlayer) {
+        final @Nullable Player player = mgPlayer.getPlayer();
+        if (player == null) {
+            return;
+        }
+        players.add(mgPlayer);
+        mgPlayer.setTeam(this);
+        player.setScoreboard(mgm.getScoreboard());
         org.bukkit.scoreboard.Team team = mgm.getScoreboard().getTeam(scoreboardName);
         if (team != null) {
-            team.addPlayer(player.getPlayer());
+            team.addPlayer(player);
         }
     }
 
     /**
      * Removes a player from the team.
      *
-     * @param player - The player to remove.
+     * @param mgPlayer - The player to remove.
      */
-    public void removePlayer(@NotNull MinigamePlayer player) {
-        players.remove(player);
-        Scoreboard board = mgm.getScoreboard();
-        org.bukkit.scoreboard.Team team = board.getTeam(scoreboardName);
+    public void removePlayer(final @NotNull MinigamePlayer mgPlayer) {
+        players.remove(mgPlayer);
+        final Scoreboard board = mgm.getScoreboard();
+        final org.bukkit.scoreboard.Team team = board.getTeam(scoreboardName);
+        final @NotNull OfflinePlayer offlinePlayer = mgPlayer.getOfflinePlayer();
         if (team != null) {
-            team.removePlayer(player.getPlayer());
+            team.removePlayer(offlinePlayer);
         }
-        player.getPlayer().setScoreboard(plugin.getServer().getScoreboardManager().getMainScoreboard());
+        if (offlinePlayer.isOnline()) {
+            offlinePlayer.getPlayer().setScoreboard(plugin.getServer().getScoreboardManager().getMainScoreboard());
+        }
     }
 
     /**

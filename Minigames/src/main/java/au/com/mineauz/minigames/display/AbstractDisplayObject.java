@@ -1,11 +1,13 @@
 package au.com.mineauz.minigames.display;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
+import java.util.UUID;
 
 /**
  * The type Abstract display object.
@@ -13,7 +15,7 @@ import java.lang.ref.WeakReference;
 public abstract class AbstractDisplayObject implements IDisplayObject {
     private final @NotNull DisplayManager manager;
     private final @NotNull WeakReference<World> worldReference;
-    protected final @Nullable Player player;
+    protected final @Nullable UUID playerUUID;
 
     /**
      * Instantiates a new Abstract display object.
@@ -24,7 +26,7 @@ public abstract class AbstractDisplayObject implements IDisplayObject {
     public AbstractDisplayObject(final @NotNull DisplayManager manager, final @NotNull World world) {
         this.manager = manager;
         this.worldReference = new WeakReference<>(world);
-        this.player = null;
+        this.playerUUID = null;
     }
 
     /**
@@ -36,56 +38,39 @@ public abstract class AbstractDisplayObject implements IDisplayObject {
     public AbstractDisplayObject(final @NotNull DisplayManager manager, final @NotNull Player player) {
         this.manager = manager;
         this.worldReference = new WeakReference<>(player.getWorld());
-        this.player = player;
+        this.playerUUID = player.getUniqueId();
     }
 
-    /**
-     * True if player display.
-     *
-     * @return boolean
-     */
     @Override
     public boolean isPlayerDisplay() {
-        return player != null;
+        return playerUUID != null;
     }
 
-    /**
-     * Get the player.
-     *
-     * @return the player
-     */
     @Override
     public @Nullable Player getPlayer() {
-        return player;
+        return playerUUID == null ? null : Bukkit.getPlayer(playerUUID);
     }
 
-    /**
-     * @return the world
-     */
+    @Override
+    public @Nullable UUID getPayerUUID() {
+        return playerUUID;
+    }
+
     @Override
     public @Nullable World getWorld() {
         return worldReference.get();
     }
 
-    /**
-     * Show the Display.
-     */
     @Override
     public void show() {
         manager.onShow(this);
     }
 
-    /**
-     * Hide the display.
-     */
     @Override
     public void hide() {
         manager.onHide(this);
     }
 
-    /**
-     * remove the display.
-     */
     @Override
     public void remove() {
         hide();

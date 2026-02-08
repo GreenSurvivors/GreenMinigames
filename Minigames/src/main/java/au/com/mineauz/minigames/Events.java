@@ -104,12 +104,13 @@ public class Events implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void onPlayerDeath(@NotNull PlayerDeathEvent event) {
-        final MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getEntity().getPlayer());
+        final @NotNull MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getEntity());
         if (mgPlayer.isInMinigame()) {
-            Minigame mgm = mgPlayer.getMinigame();
+            final @NotNull Minigame mgm = mgPlayer.getMinigame();
+            final @NotNull Player player = mgPlayer.getPlayer();
             if (!mgm.hasDeathDrops()) {
                 if (mgm.keepInventory()) {
-                    List<ItemStack> drops = Arrays.asList(mgPlayer.getPlayer().getInventory().getContents());
+                    List<ItemStack> drops = Arrays.asList(player.getInventory().getContents());
                     PlayerLoadout l = new PlayerLoadout("deathDrops");
                     for (int i = 0; i < drops.size(); i++) {
                         l.addItem(drops.get(i), i);
@@ -119,7 +120,7 @@ public class Events implements Listener {
                 event.getDrops().clear();
             }
 
-            Component msg = event.deathMessage();
+            final @Nullable Component msg = event.deathMessage();
             event.deathMessage(Component.empty());
             event.setDroppedExp(0);
 
@@ -128,8 +129,8 @@ public class Events implements Listener {
 
             playerManager.partyMode(mgPlayer);
 
-            if (mgPlayer.getPlayer().getKiller() != null) {
-                MinigamePlayer killer = playerManager.getMinigamePlayer(mgPlayer.getPlayer().getKiller());
+            if (player.getKiller() != null) {
+                MinigamePlayer killer = playerManager.getMinigamePlayer(player.getKiller());
                 if (killer != null)
                     killer.addKill();
             }
@@ -155,12 +156,13 @@ public class Events implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    private void playerSpawn(@NotNull PlayerRespawnEvent event) {
-        final MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
+    private void playerSpawn(final @NotNull PlayerRespawnEvent event) {
+        final @NotNull MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
         if (mgPlayer.isInMinigame()) {
             final WeatherTimeModule mod = WeatherTimeModule.getMinigameModule(mgPlayer.getMinigame());
             if (mod != null && mod.isUsingCustomWeather()) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> mgPlayer.getPlayer().setPlayerWeather(mod.getCustomWeather()));
+                // delay one tick to give the player time to respawn
+                Bukkit.getScheduler().runTaskLater(plugin, () -> mgPlayer.getPlayer().setPlayerWeather(mod.getCustomWeather()), 1L);
             }
 
             if (mgPlayer.getMinigame().getState() == MinigameState.ENDED) {
@@ -168,7 +170,8 @@ public class Events implements Listener {
             }
         }
         if (mgPlayer.isRequiredQuit()) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, mgPlayer::restorePlayerData);
+            // delay one tick to give the player time to respawn
+            Bukkit.getScheduler().runTaskLater(plugin, mgPlayer::restorePlayerData, 1L);
             if (mgPlayer.getQuitPos() != null) {
                 event.setRespawnLocation(mgPlayer.getQuitPos().toLocation());
             }
@@ -207,7 +210,7 @@ public class Events implements Listener {
     // the priority was changed to lowest, since having it to normal would mean worldguard
     // would be served first unload the player and didn't allow them to teleport to the quit location inside a region. (pdata.quitMinigame)
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerDisconnect(@NotNull PlayerQuitEvent event) {
+    public void onPlayerDisconnect(final @NotNull PlayerQuitEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
         if (mgPlayer.isInMinigame()) {
             if (mgPlayer.getPlayer().isDead()) {
@@ -501,7 +504,7 @@ public class Events implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void playerRevert(@NotNull RevertCheckpointEvent event) {
-        MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
+        final @NotNull MinigamePlayer mgPlayer = event.getMinigamePlayer();
         if (event.getMinigamePlayer().isInMinigame() &&
             event.getMinigamePlayer().getMinigame().getType() == MinigameType.MULTIPLAYER &&
             !event.getMinigamePlayer().getMinigame().isAllowedMPCheckpoints() &&
@@ -616,19 +619,19 @@ public class Events implements Listener {
         if (event.getEntityType() == EntityType.SNOWBALL) {
             Snowball snowball = (Snowball) event.getEntity();
 
-            if (snowball.getShooter() instanceof Player player) {
-                MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
+            if (snowball.getShooter() instanceof final @NotNull Player shooter) {
+                final @NotNull MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(shooter);
 
                 if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().hasUnlimitedAmmo()) {
                     //wait for the inventory to update
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        ItemStack itemInMainHand = mgPlayer.getPlayer().getInventory().getItemInMainHand();
+                        ItemStack itemInMainHand = shooter.getInventory().getItemInMainHand();
 
                         if (itemInMainHand.getType().asItemType() == ItemType.SNOWBALL) {
                             itemInMainHand.setAmount(16);
-                            mgPlayer.getPlayer().updateInventory();
+                            shooter.updateInventory();
                         } else {
-                            mgPlayer.getPlayer().getInventory().addItem(ItemType.SNOWBALL.createItemStack());
+                            shooter.getInventory().addItem(ItemType.SNOWBALL.createItemStack());
                         }
                     }, 1L);
                 }
@@ -637,18 +640,18 @@ public class Events implements Listener {
         } else if (event.getEntityType() == EntityType.EGG) {
             Egg egg = (Egg) event.getEntity();
             if (egg.getShooter() != null && egg.getShooter() instanceof Player player) {
-                MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
+                final @NotNull MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
 
                 if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().hasUnlimitedAmmo()) {
                     //wait for the inventory to update
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        ItemStack itemInMainHand = mgPlayer.getPlayer().getInventory().getItemInMainHand();
+                        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
                         if (itemInMainHand.getType().asItemType() == ItemType.EGG) {
                             itemInMainHand.setAmount(16);
-                            mgPlayer.getPlayer().updateInventory();
+                            player.updateInventory();
                         } else {
-                            mgPlayer.getPlayer().getInventory().addItem(ItemType.EGG.createItemStack());
+                            player.getInventory().addItem(ItemType.EGG.createItemStack());
                         }
                     }, 1L);
                 }

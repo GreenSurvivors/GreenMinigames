@@ -70,17 +70,17 @@ public class JuggernautMechanic extends AGameMechanic {
         return juggernaut;
     }
 
-    public void setJuggernaut(@Nullable MinigamePlayer player) {
+    public void setJuggernaut(final @Nullable MinigamePlayer mgPlayer) {
         if (juggernaut != null) {
-            Team team = minigame.getScoreboard().getTeam("juggernaut");
+            final Team team = minigame.getScoreboard().getTeam("juggernaut");
             juggernaut.setLoadout(null);
             team.removePlayer(juggernaut.getPlayer());
         }
-        juggernaut = player;
+        juggernaut = mgPlayer;
 
         if (juggernaut != null) {
-            Team team = minigame.getScoreboard().getTeam("juggernaut");
-            team.addPlayer(player.getPlayer());
+            final Team team = minigame.getScoreboard().getTeam("juggernaut");
+            team.addPlayer(mgPlayer.getPlayer());
 
             MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
             MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
@@ -89,8 +89,8 @@ public class JuggernautMechanic extends AGameMechanic {
 
             LoadoutModule lm = LoadoutModule.getMinigameModule(minigame);
             if (lm.hasLoadout("juggernaut")) {
-                player.setLoadout(lm.getLoadout("juggernaut"));
-                player.getLoadout().equipLoadout(player);
+                mgPlayer.setLoadout(lm.getLoadout("juggernaut"));
+                mgPlayer.getLoadout().equipLoadout(mgPlayer);
             }
         }
     }

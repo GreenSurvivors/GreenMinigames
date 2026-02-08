@@ -14,6 +14,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
@@ -68,13 +70,16 @@ public class MinigameTimer {
                     level = timeLeft;
                 }
 
-                for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
-                    if (timeLeftpercent < 0) {
-                        mgPlayer.getPlayer().setExp(0);
-                        mgPlayer.getPlayer().setLevel(0);
-                    } else {
-                        mgPlayer.getPlayer().setExp(timeLeftpercent);
-                        mgPlayer.getPlayer().setLevel((int) level);
+                for (final @NotNull MinigamePlayer mgPlayer : minigame.getPlayers()) {
+                    final Player player = mgPlayer.getPlayer();
+                    if (player != null) {
+                        if (timeLeftpercent < 0) {
+                            player.setExp(0);
+                            player.setLevel(0);
+                        } else {
+                            player.setExp(timeLeftpercent);
+                            player.setLevel((int) level);
+                        }
                     }
                 }
             }
@@ -88,8 +93,8 @@ public class MinigameTimer {
                     bossBar.progress(Math.max(BossBar.MIN_PROGRESS, (float) timeLeft / timeLength));
                 }
 
-                for (MinigamePlayer ply : minigame.getPlayers()) {
-                    bossBar.addViewer(ply.getPlayer());
+                for (final @NotNull MinigamePlayer mgPlayer : minigame.getPlayers()) {
+                    bossBar.addViewer(mgPlayer.getPlayer());
                 }
             }
             case NONE -> {

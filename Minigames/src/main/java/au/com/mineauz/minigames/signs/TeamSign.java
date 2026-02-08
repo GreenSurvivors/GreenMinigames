@@ -69,28 +69,29 @@ public class TeamSign extends AMinigameSign {
 
                 if (mgPlayer.getTeam() != matchTeam(mgm, frontSide.line(2))) {
                     if (!mgm.isWaitingForPlayers() && !isNeutral(frontSide.line(2))) {
-                        Team sm = null;
-                        Team nt = matchTeam(mgm, frontSide.line(2));
-                        if (nt != null) {
-                            if (nt.hasRoom()) {
-                                for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
-                                    if (sm == null || t.getPlayers().size() < sm.getPlayers().size())
-                                        sm = t;
+                        Team teamToJoin = null;
+                        final Team teamChosen = matchTeam(mgm, frontSide.line(2));
+                        if (teamChosen != null) {
+                            if (teamChosen.hasRoom()) {
+                                for (final @NotNull Team team : TeamsModule.getMinigameModule(mgm).getTeams()) {
+                                    if (teamToJoin == null || team.getPlayers().size() < teamToJoin.getPlayers().size()) {
+                                        teamToJoin = team;
+                                    }
                                 }
-                                if (nt.getPlayers().size() - sm.getPlayers().size() < 1) {
-                                    MultiplayerType.switchTeam(mgm, mgPlayer, nt);
-                                    MinigameMessageManager.sendMinigameMessage(mgm, MiniMessage.miniMessage().deserialize(nt.getJoinAnnounceMessage(),
+                                if (teamChosen.getPlayers().size() - teamToJoin.getPlayers().size() < 1) {
+                                    MultiplayerType.switchTeam(mgm, mgPlayer, teamChosen);
+                                    MinigameMessageManager.sendMinigameMessage(mgm, MiniMessage.miniMessage().deserialize(teamChosen.getJoinAnnounceMessage(),
                                                     Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
-                                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(nt.getDisplayName(), nt.getTextColor()))),
+                                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamChosen.getDisplayName(), teamChosen.getTextColor()))),
                                             MinigameMessageType.INFO, mgPlayer);
 
-                                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(nt.getPlayerAssignMessage(),
-                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(nt.getDisplayName(), nt.getTextColor()))));
+                                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(teamChosen.getPlayerAssignMessage(),
+                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamChosen.getDisplayName(), teamChosen.getTextColor()))));
                                 } else {
                                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_TEAM_ERROR_UNBALANCE);
                                 }
 
-                                mgPlayer.getPlayer().damage(mgPlayer.getPlayer().getHealth());
+                                mgPlayer.getPlayer().setHealth(0);
                             } else {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_TEAM_ASSIGN_ERROR_FULL);
                             }

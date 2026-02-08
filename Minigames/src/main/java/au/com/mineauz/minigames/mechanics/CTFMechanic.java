@@ -32,6 +32,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
@@ -153,13 +154,14 @@ public class CTFMechanic extends AGameMechanic {
 
     @EventHandler
     private void takeFlag(final @NotNull PlayerInteractEvent event) { //todo better system of getting type of sign --> should be a getter in sign base
-        final @NotNull MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(event.getPlayer());
-        if (mgPlayer.isInMinigame() && !mgPlayer.getPlayer().isDead() && mgPlayer.getMinigame().hasStarted()) {
+        final @NotNull Player player = event.getPlayer();
+        final @NotNull MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(player);
+        if (player != null && mgPlayer.isInMinigame() && !player.isDead() && mgPlayer.getMinigame().hasStarted()) {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK &&
                 event.getClickedBlock() != null &&
                 event.getClickedBlock().getState() instanceof Sign sign &&
 
-                mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
+                player.getInventory().getItemInMainHand().isEmpty()) {
                 SignSide signFrontSide = sign.getSide(Side.FRONT);
                 PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
 
@@ -218,12 +220,12 @@ public class CTFMechanic extends AGameMechanic {
                                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(flagTeam.getDisplayName(), flagTeam.getTextColor())))
                                     );
-                                    getCarriedFlag(mgPlayer).startCarrierParticleEffect(mgPlayer.getPlayer());
+                                    getCarriedFlag(mgPlayer).startCarrierParticleEffect(mgPlayer.getUUID());
                                 } else {
                                     sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_STOLE,
                                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()))
                                     );
-                                    getCarriedFlag(mgPlayer).startCarrierParticleEffect(mgPlayer.getPlayer());
+                                    getCarriedFlag(mgPlayer).startCarrierParticleEffect(mgPlayer.getUUID());
                                 }
                             }
                         }
@@ -350,17 +352,18 @@ public class CTFMechanic extends AGameMechanic {
 
     @EventHandler(ignoreCancelled = true)
     public void placeFlag(final PlayerInteractEvent event) {
-        final @NotNull MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(event.getPlayer());
+        final Player player = event.getPlayer();
+        final @NotNull MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(player);
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && mgPlayer.isInMinigame() &&
             minigame.equals(mgPlayer.getMinigame()) &&
-            !mgPlayer.getPlayer().isDead() && minigame.hasStarted()) {
+            !player.isDead() && minigame.hasStarted()) {
 
             if (shouldCarryFlagAsItem() && isFlagCarrier(mgPlayer) &&
                 !(event.getClickedBlock().getState() instanceof Sign)) {
                 final CTFFlag flag = getCarriedFlag(mgPlayer);
 
-                final PlayerInventory inventory = mgPlayer.getPlayer().getInventory();
+                final PlayerInventory inventory = player.getInventory();
                 if (flag.isFlag(inventory.getItemInMainHand())) {
                     final @Nullable Location flagLocation = flag.spawnFlag(event.getClickedBlock().getLocation(), event.getBlockFace());
 
@@ -376,14 +379,15 @@ public class CTFMechanic extends AGameMechanic {
 
     @EventHandler
     private void dropFlagOnDeath(final @NotNull PlayerDeathEvent event) {
-        final @NotNull MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(event.getEntity());
+        final @NotNull Player player = event.getEntity();
+        final @NotNull MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(player);
         if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().equals(minigame)) {
 
             if (isFlagCarrier(mgPlayer)) {
                 CTFFlag flag = getCarriedFlag(mgPlayer);
 
                 event.getDrops().removeIf(flag::isFlag);
-                doDropFlag(flag, mgPlayer, flag.spawnFlag(mgPlayer.getPlayer().getLocation(), null));
+                doDropFlag(flag, mgPlayer, flag.spawnFlag(player.getLocation(), null));
             }
         }
     }
@@ -481,8 +485,8 @@ public class CTFMechanic extends AGameMechanic {
         final @Nullable CTFFlag flag = flagCarriers.remove(mgPlayer);
 
         if (shouldCarryFlagAsItem() && flag != null) {
-            final PlayerInventory inventory = mgPlayer.getPlayer().getInventory();
-            final ItemStack[] items = inventory.getStorageContents();
+            final @NotNull PlayerInventory inventory = mgPlayer.getPlayer().getInventory();
+            final @Nullable ItemStack @NotNull[] items = inventory.getStorageContents();
 
             for (int i = 0; i < items.length; i++) {
                 if (flag.isFlag(items[i])) {

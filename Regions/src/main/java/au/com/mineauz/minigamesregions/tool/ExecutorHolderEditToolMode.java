@@ -53,15 +53,15 @@ public class ExecutorHolderEditToolMode implements ToolMode {
     }
 
     @Override
-    public void onSetMode(@NotNull MinigamePlayer player, @NotNull MinigameTool tool) {
+    public void onSetMode(final @NotNull MinigamePlayer mgPlayer, final @NotNull MinigameTool tool) {
         if (tool.getMinigame() != null) {
-            Main.getPlugin().getDisplayManager().hideAll(player.getPlayer());
-            Main.getPlugin().getDisplayManager().showAll(tool.getMinigame(), player);
+            Main.getPlugin().getDisplayManager().hideAll(mgPlayer.getPlayer());
+            Main.getPlugin().getDisplayManager().showAll(tool.getMinigame(), mgPlayer);
         }
     }
 
     @Override
-    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool) {
+    public void onUnsetMode(final @NotNull MinigamePlayer mgPlayer, final @NotNull MinigameTool tool) {
         if (tool.getMinigame() != null) {
             Main.getPlugin().getDisplayManager().hideAll(mgPlayer.getPlayer());
         }
@@ -175,12 +175,12 @@ public class ExecutorHolderEditToolMode implements ToolMode {
     }
 
     @Override
-    public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+    public void select(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @Nullable Team team) {
         Main.getPlugin().getDisplayManager().showAll(minigame, mgPlayer);
     }
 
     @Override
-    public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+    public void deselect(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @Nullable Team team) {
         Main.getPlugin().getDisplayManager().hideAll(mgPlayer.getPlayer());
     }
 }

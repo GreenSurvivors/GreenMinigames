@@ -22,6 +22,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
@@ -64,7 +65,8 @@ public class RewardSign extends AMinigameSign {
     @Override
     public boolean signUse(final @NotNull Sign sign, final @NotNull MinigamePlayer mgPlayer) {
         final @NotNull Location loc = sign.getLocation();
-        if (!MinigameTool.isMinigameTool(mgPlayer.getPlayer().getInventory().getItemInMainHand())) {
+        final Player player = mgPlayer.getPlayer();
+        if (!MinigameTool.isMinigameTool(player.getInventory().getItemInMainHand())) {
             final @NotNull String label = LegacyComponentSerializer.legacySection().serialize(sign.getSide(Side.FRONT).line(2)).toLowerCase(); // note: legacy serialize to stay backwards compatible with already paid rewards
             if (mgPlayer.isInMinigame()) {
                 if (!mgPlayer.hasTempClaimedReward(label)) {
@@ -89,7 +91,7 @@ public class RewardSign extends AMinigameSign {
                     mgPlayer.addClaimedReward(label);
                 }
             }
-        } else if (mgPlayer.getPlayer().hasPermission("minigame.tool")) {
+        } else if (player.hasPermission("minigame.tool")) {
             Rewards rew;
             if (!mdata.hasRewardSign(loc)) {
                 mdata.addRewardSign(loc);

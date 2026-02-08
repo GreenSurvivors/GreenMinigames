@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import org.bukkit.block.BlockType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -55,8 +56,9 @@ public class LobbyLocationMode implements ToolMode {
     @Override
     public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         if (minigame.getLobbyLocation() != null) {
-            if (mgPlayer.getLocation().getWorld().equals(minigame.getLobbyLocation().getWorld())) {
-                mgPlayer.getPlayer().sendBlockChange(minigame.getLobbyLocation().toLocation(), BlockType.SKELETON_SKULL.createBlockData());
+            final @Nullable Player player = mgPlayer.getPlayer();
+            if (player != null && player.getWorld().equals(minigame.getLobbyLocation().getWorld())) {
+                player.sendBlockChange(minigame.getLobbyLocation().toLocation(), BlockType.SKELETON_SKULL.createBlockData());
             }
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_LOBBYLOCATION);
         } else {
@@ -67,8 +69,9 @@ public class LobbyLocationMode implements ToolMode {
     @Override
     public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         if (minigame.getLobbyLocation() != null) {
-            if (mgPlayer.getLocation().getWorld().equals(minigame.getLobbyLocation().getWorld())) {
-                mgPlayer.getPlayer().sendBlockChange(minigame.getLobbyLocation().toLocation(),
+            final @Nullable Player player = mgPlayer.getPlayer();
+            if (player != null && player.getWorld().equals(minigame.getLobbyLocation().getWorld())) {
+                player.sendBlockChange(minigame.getLobbyLocation().toLocation(),
                     minigame.getLobbyLocation().getBlockAt().getBlockData());
             }
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_LOBBYLOCATION);

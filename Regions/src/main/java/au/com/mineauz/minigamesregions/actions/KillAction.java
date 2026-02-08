@@ -46,8 +46,7 @@ public class KillAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         if (!mgPlayer.isInMinigame()) return;
         if (!mgPlayer.isLiving())
@@ -55,11 +54,12 @@ public class KillAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
         debug(mgPlayer, region);
-        if (mgPlayer.isLiving())
+        if (mgPlayer.isLiving()) {
             mgPlayer.getPlayer().setHealth(0.0);
+        }
     }
 
     @Override

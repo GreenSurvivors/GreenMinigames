@@ -16,6 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,8 +61,9 @@ public class FinishSign extends AMinigameSign {
     }
 
     @Override
-    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
-        if (mgPlayer.isInMinigame() && mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
+    public boolean signUse(final @NotNull Sign sign, final @NotNull MinigamePlayer mgPlayer) {
+        final @NotNull ItemStack itemInMainHand = mgPlayer.getPlayer().getInventory().getItemInMainHand();
+        if (mgPlayer.isInMinigame() && itemInMainHand.isEmpty()) {
             Minigame minigame = mgPlayer.getMinigame();
 
             if (minigame.isSpectator(mgPlayer) || minigame.getState() == MinigameState.ENDED) {
@@ -123,7 +125,7 @@ public class FinishSign extends AMinigameSign {
                 plugin.getPlayerManager().partyMode(mgPlayer);
             }
             return true;
-        } else if (!mgPlayer.getPlayer().getInventory().getItemInMainHand().isEmpty()) {
+        } else if (!itemInMainHand.isEmpty()) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
         }
         return false;

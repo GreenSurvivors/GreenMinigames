@@ -341,11 +341,6 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         target.sendMessage(init.append(message));
     }
 
-    public static void sendMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type, @Nullable String identifier,
-                                   @NotNull LangKey key, TagResolver... resolvers) {
-        sendMessage(mgPlayer.getPlayer(), type, identifier, key, resolvers);
-    }
-
     public static void sendMessage(@NotNull Audience target, @NotNull MinigameMessageType type, @Nullable String identifier, @NotNull LangKey key,
                                    TagResolver... resolvers) {
         Component init = getPluginPrefix(type);

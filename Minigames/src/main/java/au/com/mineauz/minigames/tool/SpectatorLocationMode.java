@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import net.kyori.adventure.text.Component;
 import org.bukkit.block.BlockType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -52,10 +53,11 @@ public class SpectatorLocationMode implements ToolMode { //todo waring if other 
     }
 
     @Override
-    public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+    public void select(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @Nullable Team team) {
         if (minigame.getSpectatorLocation() != null) {
-            if (mgPlayer.getLocation().getWorld().equals(minigame.getSpectatorLocation().getWorld())) {
-                mgPlayer.getPlayer().sendBlockChange(minigame.getSpectatorLocation().toLocation(), BlockType.SKELETON_SKULL.createBlockData());
+            final @Nullable Player player = mgPlayer.getPlayer();
+            if (player != null && player.getWorld().equals(minigame.getSpectatorLocation().getWorld())) {
+                player.sendBlockChange(minigame.getSpectatorLocation().toLocation(), BlockType.SKELETON_SKULL.createBlockData());
             }
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_SPECTATORLOCATION);
         } else {
@@ -64,10 +66,11 @@ public class SpectatorLocationMode implements ToolMode { //todo waring if other 
     }
 
     @Override
-    public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+    public void deselect(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @Nullable Team team) {
         if (minigame.getSpectatorLocation() != null) {
-            if (mgPlayer.getLocation().getWorld().equals(minigame.getSpectatorLocation().getWorld())) {
-                mgPlayer.getPlayer().sendBlockChange(minigame.getSpectatorLocation().toLocation(),
+            final @Nullable Player player = mgPlayer.getPlayer();
+            if (player != null && player.getWorld().equals(minigame.getSpectatorLocation().getWorld())) {
+                player.sendBlockChange(minigame.getSpectatorLocation().toLocation(),
                     minigame.getSpectatorLocation().getBlockAt().getBlockData());
             }
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_SPECTATORLOCATION);

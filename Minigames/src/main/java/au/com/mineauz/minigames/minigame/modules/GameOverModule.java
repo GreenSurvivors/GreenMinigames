@@ -17,8 +17,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemType;
-import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -86,27 +86,27 @@ public class GameOverModule extends AMinigameModule {
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(timer.getFlag())))));
         getMinigame().setState(MinigameState.ENDED);
 
-        List<MinigamePlayer> allPlys = new ArrayList<>(winners.size() + losers.size());
+        final @NotNull List<@NotNull MinigamePlayer> allPlys = new ArrayList<>(winners.size() + losers.size());
         allPlys.addAll(losers);
         allPlys.addAll(winners);
 
-        for (MinigamePlayer p : allPlys) {
+        for (final @NotNull MinigamePlayer mgPlayer : allPlys) {
             if (!isInteractAllowed()) {
-                p.setCanInteract(false);
+                mgPlayer.setCanInteract(false);
             }
-            if (isHumiliationMode() && losers.contains(p)) {
-                p.getPlayer().getInventory().clear();
-                p.getPlayer().getInventory().setHelmet(null);
-                p.getPlayer().getInventory().setChestplate(null);
-                p.getPlayer().getInventory().setLeggings(null);
-                p.getPlayer().getInventory().setBoots(null);
 
-                for (PotionEffect potion : p.getPlayer().getActivePotionEffects()) {
-                    p.getPlayer().removePotionEffect(potion.getType());
-                }
+            final @Nullable Player player = mgPlayer.getPlayer();
+            if (player != null && isHumiliationMode() && losers.contains(mgPlayer)) {
+                player.getInventory().clear();
+                player.getInventory().setHelmet(null);
+                player.getInventory().setChestplate(null);
+                player.getInventory().setLeggings(null);
+                player.getInventory().setBoots(null);
+
+                player.clearActivePotionEffects();
             }
             if (isInvincible()) {
-                p.setInvincible(true);
+                mgPlayer.setInvincible(true);
             }
         }
 

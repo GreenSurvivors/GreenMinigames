@@ -12,6 +12,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -65,23 +66,24 @@ public class HealAction extends AAction {
         execute(mgPlayer);
     }
 
-    private void execute(@Nullable MinigamePlayer player) {
-        if (player == null || !player.isInMinigame()) return;
+    private void execute(final @Nullable MinigamePlayer mgPlayer) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        final Player player = mgPlayer.getPlayer();
         if (heal.getFlag() > 0) {
-            if (player.getPlayer().getHealth() != 20) {
-                double health = heal.getFlag() + player.getPlayer().getHealth();
+            if (player.getHealth() != 20) {
+                double health = heal.getFlag() + player.getHealth();
 
-                AttributeInstance healthAttribute = player.getPlayer().getAttribute(Attribute.MAX_HEALTH);
+                AttributeInstance healthAttribute = player.getAttribute(Attribute.MAX_HEALTH);
                 if (healthAttribute != null) {
                     health = Math.min(health, healthAttribute.getValue());
                 } else {
                     health = Math.min(health, 20.0f);
                 }
 
-                player.getPlayer().setHealth(health);
+                player.setHealth(health);
             }
         } else {
-            player.getPlayer().damage(heal.getFlag() * -1);
+            player.damage(heal.getFlag() * -1);
         }
     }
 

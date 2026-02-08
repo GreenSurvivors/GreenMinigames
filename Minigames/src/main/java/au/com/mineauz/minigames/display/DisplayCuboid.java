@@ -42,7 +42,7 @@ public class DisplayCuboid extends AbstractDisplayObject implements INonPersiste
     @Override
     public void refresh() {
         // Don't display effect if they cant see it
-        if (player != null && player.getWorld() != getWorld()) {
+        if (playerUUID != null && getPlayer().getWorld() != getWorld()) {
             return;
         }
         double step = 0.5;
@@ -81,10 +81,10 @@ public class DisplayCuboid extends AbstractDisplayObject implements INonPersiste
             lastBarrier = 0;
             final @NotNull Location temp = new Location(getWorld(), x, y, z);
 
-            if (player == null) {
+            if (playerUUID == null) {
                 getWorld().spawnParticle(Particle.BLOCK_MARKER, temp, 1, BlockType.BARRIER.createBlockData());
             } else {
-                player.spawnParticle(Particle.BLOCK_MARKER, temp, 1, BlockType.BARRIER.createBlockData());
+                getPlayer().spawnParticle(Particle.BLOCK_MARKER, temp, 1, BlockType.BARRIER.createBlockData());
             }
         } else {
             remove();

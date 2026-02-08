@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+// list chosen instead of enum, because not every color is applicable
 public class MenuItemToolTeam extends MenuItemList<TeamColor> {
 
     public MenuItemToolTeam(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,

@@ -74,10 +74,10 @@ public class FlightAction extends AAction {
         execute(mgPlayer);
     }
 
-    private void execute(@NotNull MinigamePlayer player) {
-        player.setCanFly(setFly.getFlag());
+    private void execute(final @NotNull MinigamePlayer mgPlayer) {
+        mgPlayer.setCanFly(setFly.getFlag());
         if (setFly.getFlag()) {
-            player.getPlayer().setFlying(startFly.getFlag());
+            mgPlayer.getPlayer().setFlying(startFly.getFlag());
         }
     }
 

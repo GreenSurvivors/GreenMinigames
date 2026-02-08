@@ -12,22 +12,21 @@ import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class RegionDisplayManager {
-    private final @NotNull Map<@NotNull Player, @NotNull Map<@NotNull Region, @NotNull IDisplayObject>> regionDisplays;
-    private final @NotNull Map<@NotNull Player, @NotNull Map<@NotNull Node, @NotNull IDisplayObject>> nodeDisplays;
+    private final @NotNull Map<@NotNull UUID, @NotNull Map<@NotNull Region, @NotNull IDisplayObject>> regionDisplays = new HashMap<>();
+    private final @NotNull Map<@NotNull UUID, @NotNull Map<@NotNull Node, @NotNull IDisplayObject>> nodeDisplays = new HashMap<>();
 
-    private final @NotNull SetMultimap<@NotNull Object, @NotNull MinigamePlayer> activeWatchers;
-    private final @NotNull Map<@NotNull Object, @NotNull ArmorStand> nameDisplay;
+    private final @NotNull SetMultimap<@NotNull Object, @NotNull MinigamePlayer> activeWatchers = HashMultimap.create();
+    private final @NotNull Map<@NotNull Object, @NotNull ArmorStand> nameDisplay = new IdentityHashMap<>();
+    
+    private final @NotNull Minigames minigamesPlugin;
 
-    public RegionDisplayManager() {
-        regionDisplays = new HashMap<>();
-        nodeDisplays = new HashMap<>();
-
-        activeWatchers = HashMultimap.create();
-        nameDisplay = new IdentityHashMap<>();
+    public RegionDisplayManager(@NotNull Minigames minigamesPlugin) {
+        this.minigamesPlugin = minigamesPlugin;
     }
 
     private void showInfo(final @NotNull Region region, final @NotNull MinigamePlayer player) {
@@ -98,33 +97,33 @@ public class RegionDisplayManager {
         }
     }
 
-    public void show(@NotNull Region region, @NotNull MinigamePlayer player) {
-        Map<Region, IDisplayObject> regions = regionDisplays.computeIfAbsent(player.getPlayer(), k -> new IdentityHashMap<>());
+    public void show(final @NotNull Region region, final @NotNull MinigamePlayer player) {
+        final @NotNull Map<@NotNull Region, @NotNull IDisplayObject> regions = regionDisplays.computeIfAbsent(player.getUUID(), k -> new IdentityHashMap<>());
 
-        IDisplayObject display = Minigames.getPlugin().getDisplayManager().displayCuboid(player.getPlayer(), region);
+        final @NotNull IDisplayObject display = minigamesPlugin.getDisplayManager().displayCuboid(player.getPlayer(), region);
         display.show();
         regions.put(region, display);
 
         showInfo(region, player);
     }
 
-    public void show(@NotNull Node node, @NotNull MinigamePlayer player) {
-        Map<Node, IDisplayObject> nodes = nodeDisplays.computeIfAbsent(player.getPlayer(), k -> new IdentityHashMap<>());
+    public void show(final @NotNull Node node, final @NotNull MinigamePlayer mgPlayer) {
+        final @NotNull Map<@NotNull Node, @NotNull IDisplayObject> nodes = nodeDisplays.computeIfAbsent(mgPlayer.getUUID(), k -> new IdentityHashMap<>());
 
-        IDisplayObject display = Minigames.getPlugin().getDisplayManager().displayPoint(player.getPlayer(), node.getSafeLocation(), true);
+        final @NotNull IDisplayObject display = minigamesPlugin.getDisplayManager().displayPoint(mgPlayer.getPlayer(), node.getSafeLocation(), true);
         display.show();
         nodes.put(node, display);
 
-        showInfo(node, player);
+        showInfo(node, mgPlayer);
     }
 
-    public void hide(@NotNull Region region, @NotNull MinigamePlayer player) {
-        Map<Region, IDisplayObject> regions = regionDisplays.get(player.getPlayer());
+    public void hide(final @NotNull Region region, final @NotNull MinigamePlayer player) {
+        final @Nullable Map<@NotNull Region, @NotNull IDisplayObject> regions = regionDisplays.get(player.getUUID());
         if (regions == null) {
             return;
         }
 
-        IDisplayObject display = regions.remove(region);
+        final @Nullable IDisplayObject display = regions.remove(region);
         if (display != null) {
             display.remove();
         }
@@ -132,13 +131,13 @@ public class RegionDisplayManager {
         hideInfo(region, player);
     }
 
-    public void hide(@NotNull Node node, @NotNull MinigamePlayer player) {
-        Map<Node, IDisplayObject> nodes = nodeDisplays.get(player.getPlayer());
+    public void hide(final @NotNull Node node, final @NotNull MinigamePlayer player) {
+        final @Nullable Map<@NotNull Node, @NotNull IDisplayObject> nodes = nodeDisplays.get(player.getUUID());
         if (nodes == null) {
             return;
         }
 
-        IDisplayObject display = nodes.remove(node);
+        final @Nullable IDisplayObject display = nodes.remove(node);
         if (display != null) {
             display.remove();
         }
@@ -146,8 +145,8 @@ public class RegionDisplayManager {
         hideInfo(node, player);
     }
 
-    public void showAll(@NotNull Minigame minigame, @NotNull MinigamePlayer player) {
-        RegionModule module = RegionModule.getMinigameModule(minigame);
+    public void showAll(final @NotNull Minigame minigame, final @NotNull MinigamePlayer player) {
+        final RegionModule module = RegionModule.getMinigameModule(minigame);
         for (Region region : module.getRegions()) {
             show(region, player);
         }
@@ -157,20 +156,20 @@ public class RegionDisplayManager {
         }
     }
 
-    public void hideAll(@NotNull Minigame minigame, @NotNull MinigamePlayer player) {
-        RegionModule module = RegionModule.getMinigameModule(minigame);
+    public void hideAll(final @NotNull Minigame minigame, final @NotNull MinigamePlayer mgPlayer) {
+        final RegionModule module = RegionModule.getMinigameModule(minigame);
         for (Region region : module.getRegions()) {
-            hide(region, player);
+            hide(region, mgPlayer);
         }
 
         for (Node node : module.getNodes()) {
-            hide(node, player);
+            hide(node, mgPlayer);
         }
     }
 
-    public void hideAll(@NotNull Player player) {
-        MinigamePlayer mplayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
-        Map<Region, IDisplayObject> regions = regionDisplays.remove(player);
+    public void hideAll(final @NotNull Player player) {
+        MinigamePlayer mplayer = minigamesPlugin.getPlayerManager().getMinigamePlayer(player);
+        final @Nullable Map<@NotNull Region, @NotNull IDisplayObject> regions = regionDisplays.remove(player.getUniqueId());
         if (regions != null) {
             for (IDisplayObject display : regions.values()) {
                 display.remove();
@@ -181,7 +180,7 @@ public class RegionDisplayManager {
             }
         }
 
-        Map<Node, IDisplayObject> nodes = nodeDisplays.remove(player);
+        final @Nullable Map<@NotNull Node, @NotNull IDisplayObject> nodes = nodeDisplays.remove(player.getUniqueId());
         if (nodes != null) {
             for (IDisplayObject display : nodes.values()) {
                 display.remove();
@@ -194,7 +193,7 @@ public class RegionDisplayManager {
     }
 
     public void shutdown() {
-        for (ArmorStand stand : nameDisplay.values()) {
+        for (final @NotNull ArmorStand stand : nameDisplay.values()) {
             stand.remove();
         }
     }

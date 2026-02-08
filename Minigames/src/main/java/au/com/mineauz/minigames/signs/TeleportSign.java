@@ -54,7 +54,7 @@ public class TeleportSign extends AMinigameSign {
     }
 
     @Override
-    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
+    public boolean signUse(final @NotNull Sign sign, final @NotNull MinigamePlayer mgPlayer) {
         final String line2 = PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(2));
         Matcher coordMatcher = coordPattern.matcher(line2);
         if (coordMatcher.matches()) {
@@ -63,14 +63,15 @@ public class TeleportSign extends AMinigameSign {
             double z = Double.parseDouble(coordMatcher.group("z"));
 
             Matcher angleMatcher = anglePattern.matcher(PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(3)));
+            final @NotNull Location playerLocation = mgPlayer.getLocation();
             if (angleMatcher.matches()) {
                 float yaw = Float.parseFloat(angleMatcher.group("yaw"));
                 float pitch = Float.parseFloat(angleMatcher.group("pitch"));
 
-                mgPlayer.teleport(new Location(mgPlayer.getPlayer().getWorld(), x + 0.5, y, z + 0.5, yaw, pitch));
+                mgPlayer.teleport(new Location(playerLocation.getWorld(), x + 0.5, y, z + 0.5, yaw, pitch));
                 return true;
             }
-            mgPlayer.teleport(new Location(mgPlayer.getPlayer().getWorld(), x + 0.5, y, z + 0.5));
+            mgPlayer.teleport(new Location(playerLocation.getWorld(), x + 0.5, y, z + 0.5));
             return true;
         }
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_TELEPORT_INVALID);

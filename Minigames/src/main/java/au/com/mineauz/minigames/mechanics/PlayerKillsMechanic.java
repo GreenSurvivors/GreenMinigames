@@ -14,6 +14,7 @@ import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
@@ -88,48 +89,49 @@ public class PlayerKillsMechanic extends AGameMechanic {
     @EventHandler
     private void playerAttackPlayer(final @NotNull PlayerDeathEvent event) {
         final @NotNull MinigamePlayerManager playerManager = plugin.getPlayerManager();
-        final @NotNull MinigamePlayer mgPlayerWhoDied = playerManager.getMinigamePlayer(event.getEntity());
+        final @NotNull Player player = event.getEntity();
+        final @NotNull MinigamePlayer mgPlayerWhoDied = playerManager.getMinigamePlayer(player);
         if (minigame.equals(mgPlayerWhoDied.getMinigame())) {
-            final @NotNull MinigamePlayer attacker;
-            if (mgPlayerWhoDied.getPlayer().getKiller() != null) {
-                attacker = playerManager.getMinigamePlayer(mgPlayerWhoDied.getPlayer().getKiller());
-                if (attacker == mgPlayerWhoDied) {
+            final @NotNull MinigamePlayer mgPlayerAttacker;
+            if (player.getKiller() != null) {
+                mgPlayerAttacker = playerManager.getMinigamePlayer(player.getKiller());
+                if (player.equals(player.getKiller())) {
                     return;
                 }
             } else {
                 return;
             }
 
-            if (!minigame.equals(attacker.getMinigame())) {
+            if (!minigame.equals(mgPlayerAttacker.getMinigame())) {
                 return;
             }
 
             if (mgPlayerWhoDied.getTeam() == null) {
-                attacker.addScore();
-                minigame.setScore(attacker, attacker.getScore());
+                mgPlayerAttacker.addScore();
+                minigame.setScore(mgPlayerAttacker, mgPlayerAttacker.getScore());
 
-                if (minigame.getMaxScore() != 0 && attacker.getScore() >= minigame.getMaxScorePerPlayer()) {
+                if (minigame.getMaxScore() != 0 && mgPlayerAttacker.getScore() >= minigame.getMaxScorePerPlayer()) {
                     final @NotNull List<@NotNull MinigamePlayer> losers = new ArrayList<>(minigame.getPlayers().size() - 1);
                     final @NotNull List<MinigamePlayer> winner = new ArrayList<>(1);
-                    winner.add(attacker);
-                    for (final @NotNull MinigamePlayer player : minigame.getPlayers()) {
-                        if (player != attacker)
-                            losers.add(player);
+                    winner.add(mgPlayerAttacker);
+                    for (final @NotNull MinigamePlayer mgPlayer : minigame.getPlayers()) {
+                        if (mgPlayer != mgPlayerAttacker)
+                            losers.add(mgPlayer);
                     }
                     playerManager.endMinigame(minigame, winner, losers);
                 }
             } else {
                 final Team team = mgPlayerWhoDied.getTeam();
-                final Team attakerTeam = attacker.getTeam();
+                final Team attakerTeam = mgPlayerAttacker.getTeam();
 
                 if (team != attakerTeam) {
-                    attacker.addScore();
-                    minigame.setScore(attacker, attacker.getScore());
+                    mgPlayerAttacker.addScore();
+                    minigame.setScore(mgPlayerAttacker, mgPlayerAttacker.getScore());
 
                     attakerTeam.addScore();
                     if (minigame.getMaxScore() != 0 && minigame.getMaxScorePerPlayer() <= attakerTeam.getScore()) {
                         MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_KILLS_FINALKILL,
-                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), attacker.displayName()),
+                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayerAttacker.displayName()),
                             Placeholder.component(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayerWhoDied.displayName())));
 
                         final @NotNull List<@NotNull MinigamePlayer> winners = new ArrayList<>(attakerTeam.getPlayers());
@@ -147,9 +149,10 @@ public class PlayerKillsMechanic extends AGameMechanic {
 
     @EventHandler
     private void playerSuicide(final @NotNull PlayerDeathEvent event) {
-        MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(event.getEntity());
+        final @NotNull Player player = event.getEntity();
+        final @NotNull MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(player);
         if (minigame.equals(mgPlayer.getMinigame())) {
-            if ((mgPlayer.getPlayer().getKiller() == null || mgPlayer.getPlayer().getKiller() == mgPlayer.getPlayer()) &&
+            if ((player.getKiller() == null || player.equals(player.getKiller())) &&
                 minigame.hasStarted()) {
 
                 mgPlayer.takeScore();
