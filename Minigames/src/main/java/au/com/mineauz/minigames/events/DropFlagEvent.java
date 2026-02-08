@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class DropFlagEvent extends AbstractCancellableMinigameEvent {
     private final @NotNull CTFFlag flag;
     private final @NotNull MinigamePlayer player;
-    private boolean displayMessage = true;// todo
+    private boolean displayMessage = true;
 
     public DropFlagEvent(@NotNull Minigame mgm, @NotNull CTFFlag flag, @NotNull MinigamePlayer player) {
         super(mgm);
@@ -28,7 +28,7 @@ public class DropFlagEvent extends AbstractCancellableMinigameEvent {
         return displayMessage;
     }
 
-    public void setShouldDisplayMessage(boolean arg0) {
-        displayMessage = arg0;
+    public void setShouldDisplayMessage(final boolean shouldDisplayMessage) {
+        displayMessage = shouldDisplayMessage;
     }
 }

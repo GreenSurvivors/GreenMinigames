@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.backend;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.mysql.MySQLBackend;
 import au.com.mineauz.minigames.backend.sqlite.SQLiteBackend;
-import au.com.mineauz.minigames.backend.test.TestBackEnd;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.scoreboard.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
@@ -192,10 +191,6 @@ public class BackendManager {
      * @return A ListenableFuture to get the status of the save
      */
     public @Nullable CompletableFuture<Void> saveStatSettings(final @NotNull Minigame minigame, final @NotNull Collection<@NotNull StatSettings> settings) {
-        if (backend instanceof TestBackEnd) {
-            backend.saveStatSettings(minigame, settings);
-            return null;
-        }
         return CompletableFuture.supplyAsync(() -> {
             backend.saveStatSettings(minigame, settings);
             return null;

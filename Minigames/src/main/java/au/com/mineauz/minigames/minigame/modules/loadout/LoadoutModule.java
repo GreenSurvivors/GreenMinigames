@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.minigame.modules.loadout;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.LoadoutFlag;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
@@ -119,10 +118,8 @@ public class LoadoutModule extends AMinigameModule {
 
     @Override
     public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
-        LoadoutFlag loadoutFlag;
         for (Map.Entry<String, PlayerLoadout> loadoutEntry : loadouts.entrySet()) {
-            loadoutFlag = new LoadoutFlag(loadoutEntry.getKey(), loadoutEntry.getValue());
-            loadoutFlag.saveValue(config.node("loadouts"));
+            loadoutEntry.getValue().save(config.node("loadouts"));
         }
     }
 
@@ -130,16 +127,15 @@ public class LoadoutModule extends AMinigameModule {
     public void load(final @NotNull CommentedConfigurationNode config) throws ConfigurateException {
         final @NotNull CommentedConfigurationNode loadOutsNode = config.node("loadouts");
         if (!loadOutsNode.virtual() && !loadOutsNode.isNull()) {
-            LoadoutFlag loadoutFlag;
 
             for (final @NotNull CommentedConfigurationNode loadoutNode : loadOutsNode.childrenList()) {
                 final @NotNull String loadoutName = loadoutNode.key().toString();
-                loadoutFlag = new LoadoutFlag(loadoutName, new PlayerLoadout(loadoutName));
+                final @NotNull PlayerLoadout loadout = new PlayerLoadout(loadoutName);
                 if (loadoutName.equals("default")) {
-                    loadoutFlag.getFlag().setDeletable(false);
+                    loadout.setDeletable(false);
                 }
-                loadoutFlag.loadValue(loadoutNode);
-                loadouts.put(loadoutFlag.getName(), loadoutFlag.getFlag());
+                loadout.load(loadoutNode);
+                loadouts.put(loadoutName, loadout);
             }
         }
 
@@ -355,7 +351,7 @@ public class LoadoutModule extends AMinigameModule {
 
     @Override
     public void addEditMenuOptions(final @NotNull Menu superMenu) {
-        final Menu loadouts = new Menu(6, getMinigame().getDisplayName(), superMenu.getIntendedViewer());
+        final @NotNull Menu loadoutMenu = new Menu(6, getMinigame().getDisplayName(), superMenu.getIntendedViewer());
         final @NotNull List<@NotNull MenuItem> loadoutMenuItems = new ArrayList<>();
 
         for (final @NotNull PlayerLoadout playerLoadout : getLoadouts()) {
@@ -372,11 +368,11 @@ public class LoadoutModule extends AMinigameModule {
             }
         }
 
-        loadouts.addItem(new MenuItemLoadoutAdd(MenuUtility.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+        loadoutMenu.addItem(new MenuItemLoadoutAdd(MenuUtility.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
             getLoadoutMap(), getMinigame()), 53);
-        loadouts.addItem(new MenuItemBack(superMenu), loadouts.getSize() - 9);
-        loadouts.addItems(loadoutMenuItems);
+        loadoutMenu.addItem(new MenuItemBack(superMenu), loadoutMenu.getSize() - 9);
+        loadoutMenu.addItems(loadoutMenuItems);
 
-        superMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_MINIGAME_LOADOUTS_NAME, loadouts));
+        superMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_MINIGAME_LOADOUTS_NAME, loadoutMenu));
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 public class LoadoutFlag extends AFlag<PlayerLoadout> {
 
     public LoadoutFlag(final @NotNull String name, final PlayerLoadout value) {
-        super(name, null, value); // todo why force null default?
+        super(name, value);
     }
 
     @Override

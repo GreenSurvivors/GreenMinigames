@@ -10,10 +10,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TestBackEnd extends Backend {
     private final List<StoredGameStats> playerGameStats = new ArrayList<>();
-    private final Map<Minigame, Collection<StatSettings>> gameSettings = new HashMap<>();
+    private final Map<Minigame, Collection<StatSettings>> gameSettings = new ConcurrentHashMap<>();
 
     /**
      * Initializes the backend. This may include creating / converting tables as needed

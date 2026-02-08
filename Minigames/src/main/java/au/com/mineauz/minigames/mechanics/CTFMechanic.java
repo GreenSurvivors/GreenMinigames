@@ -27,7 +27,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -188,22 +187,20 @@ public class CTFMechanic extends AGameMechanic {
                     } else if ((colorOnLine2 != team.getColor() && !CTFFlagSign.isCapture(signFrontSide.line(2))) ||
                         CTFFlagSign.isNeutral(signFrontSide.line(2))) {
                         if (getCarriedFlag(mgPlayer) == null) {
-                            TakeCTFFlagEvent ev = null;
+                            TakeCTFFlagEvent takeCTFFlagEvent = null;
                             if (!hasDroppedFlag(sloc) &&
                                 (TeamsModule.getMinigameModule(minigame).hasTeam(colorOnLine2) || CTFFlagSign.isNeutral(signFrontSide.line(2)))) {
                                 Team oTeam = TeamsModule.getMinigameModule(minigame).getTeam(colorOnLine2);
                                 CTFFlag flag = new CTFFlag(sign, oTeam, minigame);
-                                ev = new TakeCTFFlagEvent(minigame, mgPlayer, flag);
-                                Bukkit.getPluginManager().callEvent(ev);
-                                if (!ev.isCancelled()) {
+                                takeCTFFlagEvent = new TakeCTFFlagEvent(minigame, mgPlayer, flag);
+                                if (takeCTFFlagEvent.callEvent()) {
                                     addFlagCarrier(mgPlayer, flag);
                                     flag.removeFlag();
                                 }
                             } else if (hasDroppedFlag(sloc)) {
                                 CTFFlag flag = getDroppedFlag(sloc);
-                                ev = new TakeCTFFlagEvent(minigame, mgPlayer, flag);
-                                Bukkit.getPluginManager().callEvent(ev);
-                                if (!ev.isCancelled()) {
+                                takeCTFFlagEvent = new TakeCTFFlagEvent(minigame, mgPlayer, flag);
+                                if (takeCTFFlagEvent.callEvent()) {
                                     addFlagCarrier(mgPlayer, flag);
 
                                     if (!flag.isAtHome()) {
@@ -213,18 +210,22 @@ public class CTFMechanic extends AGameMechanic {
                                 }
                             }
 
-                            if (getCarriedFlag(mgPlayer) != null && !ev.isCancelled()) {
+                            if (getCarriedFlag(mgPlayer) != null && !takeCTFFlagEvent.isCancelled()) {
                                 if (getCarriedFlag(mgPlayer).getTeam() != null) {
-                                    Team flagTeam = getCarriedFlag(mgPlayer).getTeam();
-                                    sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_STOLE,
-                                        Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
-                                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(flagTeam.getDisplayName(), flagTeam.getTextColor())))
-                                    );
+                                    if (takeCTFFlagEvent.shouldDisplayMessage()) {
+                                        final @NotNull Team flagTeam = getCarriedFlag(mgPlayer).getTeam();
+                                        sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_STOLE,
+                                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
+                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(flagTeam.getDisplayName(), flagTeam.getTextColor())))
+                                        );
+                                    }
                                     getCarriedFlag(mgPlayer).startCarrierParticleEffect(mgPlayer.getUUID());
                                 } else {
-                                    sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_STOLE,
-                                        Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()))
-                                    );
+                                    if (takeCTFFlagEvent.shouldDisplayMessage()) {
+                                        sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_STOLE,
+                                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()))
+                                        );
+                                    }
                                     getCarriedFlag(mgPlayer).startCarrierParticleEffect(mgPlayer.getUUID());
                                 }
                             }
@@ -235,13 +236,12 @@ public class CTFMechanic extends AGameMechanic {
                             CTFFlagSign.isCapture(signFrontSide.line(2))) ||
                         (CTFFlagSign.isCapture(signFrontSide.line(2)) && CTFFlagSign.isNeutral(signFrontSide.line(3)))) {
 
-                        String clickID = MinigameUtils.createBlockLocationID(event.getClickedBlock().getLocation());
+                        final @NotNull String clickID = MinigameUtils.createBlockLocationID(event.getClickedBlock().getLocation());
 
-                        CTFFlag flag = getCarriedFlag(mgPlayer);
+                        @Nullable CTFFlag flag = getCarriedFlag(mgPlayer);
                         if (flag != null && (!hasDroppedFlag(clickID) || getDroppedFlag(clickID).isAtHome())) {
-                            FlagCaptureEvent ev = new FlagCaptureEvent(minigame, mgPlayer, flag);
-                            Bukkit.getPluginManager().callEvent(ev);
-                            if (!ev.isCancelled()) {
+                            final @NotNull FlagCaptureEvent flagCaptureEvent = new FlagCaptureEvent(minigame, mgPlayer, flag);
+                            if (flagCaptureEvent.callEvent()) {
                                 flag.respawnFlag();
                                 String id = MinigameUtils.createBlockLocationID(flag.getSpawnLocation());
                                 addDroppedFlag(id, flag);
@@ -255,7 +255,7 @@ public class CTFMechanic extends AGameMechanic {
                                         end = true;
                                     }
 
-                                    if (!end) {
+                                    if (!end && flagCaptureEvent.shouldDisplayMessage()) {
                                         sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_CAPTURE,
                                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(mgPlayer.getTeam().getDisplayName(), mgPlayer.getTeam().getTextColor()))
@@ -266,17 +266,19 @@ public class CTFMechanic extends AGameMechanic {
                                     minigame.setScore(mgPlayer, mgPlayer.getScore());
 
                                     if (end) {
-                                        sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_CAPTUREFINAL,
-                                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
-                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(mgPlayer.getTeam().getDisplayName(), mgPlayer.getTeam().getTextColor())))
-                                        );
-                                        List<MinigamePlayer> w = new ArrayList<>(mgPlayer.getTeam().getPlayers());
-                                        List<MinigamePlayer> l = new ArrayList<>(minigame.getPlayers().size() - mgPlayer.getTeam().getPlayers().size());
+                                        if (flagCaptureEvent.shouldDisplayMessage()) {
+                                            sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_CAPTUREFINAL,
+                                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
+                                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(mgPlayer.getTeam().getDisplayName(), mgPlayer.getTeam().getTextColor())))
+                                            );
+                                        }
+                                        final @NotNull List<@NotNull MinigamePlayer> winners = new ArrayList<>(mgPlayer.getTeam().getPlayers());
+                                        final @NotNull List<@NotNull MinigamePlayer> losers = new ArrayList<>(minigame.getPlayers().size() - mgPlayer.getTeam().getPlayers().size());
                                         for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
                                             if (t != mgPlayer.getTeam())
-                                                l.addAll(t.getPlayers());
+                                                losers.addAll(t.getPlayers());
                                         }
-                                        plugin.getPlayerManager().endMinigame(minigame, w, l);
+                                        plugin.getPlayerManager().endMinigame(minigame, winners, losers);
                                         resetFlags();
                                     }
                                 } else {
@@ -286,13 +288,17 @@ public class CTFMechanic extends AGameMechanic {
                                         end = true;
                                     }
 
-                                    sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_CAPTURE,
-                                        Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName())));
+                                    if (flagCaptureEvent.shouldDisplayMessage()) {
+                                        sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_CAPTURE,
+                                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName())));
+                                    }
                                     flag.stopCarrierParticleEffect();
 
                                     if (end) {
-                                        sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_CAPTUREFINAL,
-                                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName())));
+                                        if (flagCaptureEvent.shouldDisplayMessage()) {
+                                            sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_CAPTUREFINAL,
+                                                Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName())));
+                                        }
 
                                         plugin.getPlayerManager().winMinigame(mgPlayer);
                                         resetFlags();
@@ -324,17 +330,20 @@ public class CTFMechanic extends AGameMechanic {
     private void doDropFlag(final @NotNull CTFFlag flag,
                             final @NotNull MinigamePlayer mgPlayer, final @Nullable Location newFlagLocation) {
         if (newFlagLocation != null) {
-            if (new DropFlagEvent(minigame, flag, mgPlayer).callEvent()) {
+            final DropFlagEvent dropFlagEvent = new DropFlagEvent(minigame, flag, mgPlayer);
+            if (dropFlagEvent.callEvent()) {
                 String id = MinigameUtils.createBlockLocationID(newFlagLocation);
                 Team team = getCarriedFlag(mgPlayer).getTeam();
                 addDroppedFlag(id, flag);
                 removeFlagCarrier(mgPlayer);
 
                 if (team != null) {
-                    sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_DROPPED,
-                        Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
-                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName(), team.getTextColor())))
-                    );
+                    if (dropFlagEvent.shouldDisplayMessage()) {
+                        sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_DROPPED,
+                            Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
+                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName(), team.getTextColor())))
+                        );
+                    }
                 } else {
                     sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_DROPPED,
                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()))

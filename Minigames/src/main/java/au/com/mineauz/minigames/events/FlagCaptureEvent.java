@@ -6,10 +6,9 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.jetbrains.annotations.NotNull;
 
 public class FlagCaptureEvent extends AbstractCancellableMinigameEvent {
-
     private final @NotNull MinigamePlayer player;
     private final @NotNull CTFFlag flag;
-    private boolean displayMessage = true; // todo
+    private boolean displayMessage = true;
 
     public FlagCaptureEvent(@NotNull Minigame minigame, @NotNull MinigamePlayer player, @NotNull CTFFlag flag) {
         super(minigame);
@@ -30,7 +29,7 @@ public class FlagCaptureEvent extends AbstractCancellableMinigameEvent {
         return displayMessage;
     }
 
-    public void setShouldDisplayMessage(boolean arg0) {
-        displayMessage = arg0;
+    public void setShouldDisplayMessage(final boolean shouldDisplayMessage) {
+        displayMessage = shouldDisplayMessage;
     }
 }

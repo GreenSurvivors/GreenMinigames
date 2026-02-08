@@ -27,11 +27,11 @@ public class MinigamePluginBootstrap implements PluginBootstrap, PluginLoader {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
         resolver.addRepository(new RemoteRepository.Builder("central", "default", MavenLibraryResolver.MAVEN_CENTRAL_DEFAULT_MIRROR).build());
         resolver.addRepository(new RemoteRepository.Builder("bstats", "default", "https://repo.codemc.org/repository/maven-public").build());
-        resolver.addRepository(new RemoteRepository.Builder("addstar-repo", "default", "https://maven.addstar.com.au/artifactory/ext-snapshot-local").build()); // pastegg only exists as snapshots for now.
+        resolver.addRepository(new RemoteRepository.Builder("greensurvivors-repo", "default", "https://maven.greensurvivors.de/releases").build());
 
 
         resolver.addDependency(new Dependency(new DefaultArtifact("org.bstats:bstats-bukkit:3.0.2"), null)); // todo insert versions
-        resolver.addDependency(new Dependency(new DefaultArtifact("org.kitteh:paste-gg-api:1.0.0-SNAPSHOT"), null)); // todo use 2.0.0
+        resolver.addDependency(new Dependency(new DefaultArtifact("de.greensurvivors:PastefyAPI:1.0.2-SNAPSHOT"), null));
         resolver.addDependency(new Dependency(new DefaultArtifact("org.apache.commons:commons-text:1.10.0"), null));
         resolver.addDependency(new Dependency(new DefaultArtifact("commons-io:commons-io:2.15.1"), null));
         // commons-lang3 is already shipped with the server

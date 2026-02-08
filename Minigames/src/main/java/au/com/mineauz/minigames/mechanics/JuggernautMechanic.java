@@ -87,9 +87,9 @@ public class JuggernautMechanic extends AGameMechanic {
                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.displayName())
             ), MinigameMessageType.INFO, juggernaut);
 
-            LoadoutModule lm = LoadoutModule.getMinigameModule(minigame);
-            if (lm.hasLoadout("juggernaut")) {
-                mgPlayer.setLoadout(lm.getLoadout("juggernaut"));
+            final LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
+            if (loadoutModule.hasLoadout("juggernaut")) {
+                mgPlayer.setLoadout(loadoutModule.getLoadout("juggernaut"));
                 mgPlayer.getLoadout().equipLoadout(mgPlayer);
             }
         }
