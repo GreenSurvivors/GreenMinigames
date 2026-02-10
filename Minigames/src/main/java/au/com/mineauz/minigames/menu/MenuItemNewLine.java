@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 
-public class MenuItemNewLine extends MenuItem {
+public class MenuItemNewLine extends AMenuItem {
 
     public MenuItemNewLine() {
         super((ItemType) null, Component.text("NL")); // since it will never be visible anyway we can hardcode the name

@@ -5,8 +5,8 @@ import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -20,19 +20,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LobbySettingsModule extends AMinigameModule {
-    private final BooleanFlag canMoveOnPlayerWait = new BooleanFlag("canMovePlayerWait", true);
-    private final BooleanFlag canMoveOnStartWait = new BooleanFlag("canMoveStartWait", true);
-    private final BooleanFlag canInteractPlayerWait = new BooleanFlag("canInteractPlayerWait", true);
-    private final BooleanFlag canInteractStartWait = new BooleanFlag("canInteractStartWait", true);
-    private final BooleanFlag teleportOnPlayerWait = new BooleanFlag("teleportOnPlayerWait", false);
-    private final BooleanFlag teleportOnStart = new BooleanFlag("teleportOnStart", true);
-    private final TimeFlag playerWaitTime = new TimeFlag("playerWaitTime", 0L);
+    private final @NotNull BooleanFlag canMoveOnPlayerWait = new BooleanFlag("canMovePlayerWait", true);
+    private final @NotNull BooleanFlag canMoveOnStartWait = new BooleanFlag("canMoveStartWait", true);
+    private final @NotNull BooleanFlag canInteractPlayerWait = new BooleanFlag("canInteractPlayerWait", true);
+    private final @NotNull BooleanFlag canInteractStartWait = new BooleanFlag("canInteractStartWait", true);
+    private final @NotNull BooleanFlag teleportOnPlayerWait = new BooleanFlag("teleportOnPlayerWait", false);
+    private final @NotNull BooleanFlag teleportOnStart = new BooleanFlag("teleportOnStart", true);
+    private final @NotNull TimeFlag playerWaitTime = new TimeFlag("playerWaitTime", 0L);
 
     public LobbySettingsModule(final @NotNull Minigame mgm, final @NotNull Key key) {
         super(mgm, key);
     }
 
-    public static LobbySettingsModule getMinigameModule(Minigame mgm) {
+    public static LobbySettingsModule getMinigameModule(final @NotNull Minigame mgm) {
         return ((LobbySettingsModule) mgm.getModule(MgDefaultModules.LOBBY_SETTINGS.getKey()));
     }
 
@@ -65,7 +65,7 @@ public class LobbySettingsModule extends AMinigameModule {
         return canMoveOnPlayerWait.getFlag();
     }
 
-    public void setCanMoveOnPlayerWait(boolean canMoveOnPlayerWait) {
+    public void setCanMoveOnPlayerWait(final boolean canMoveOnPlayerWait) {
         this.canMoveOnPlayerWait.setFlag(canMoveOnPlayerWait);
     }
 
@@ -73,7 +73,7 @@ public class LobbySettingsModule extends AMinigameModule {
         return canMoveOnStartWait.getFlag();
     }
 
-    public void setCanMoveOnStartWait(boolean canMoveOnStartWait) {
+    public void setCanMoveOnStartWait(final boolean canMoveOnStartWait) {
         this.canMoveOnStartWait.setFlag(canMoveOnStartWait);
     }
 
@@ -81,7 +81,7 @@ public class LobbySettingsModule extends AMinigameModule {
         return canInteractPlayerWait.getFlag();
     }
 
-    public void setCanInteractPlayerWait(boolean canInteractPlayerWait) {
+    public void setCanInteractPlayerWait(final boolean canInteractPlayerWait) {
         this.canInteractPlayerWait.setFlag(canInteractPlayerWait);
     }
 
@@ -89,7 +89,7 @@ public class LobbySettingsModule extends AMinigameModule {
         return canInteractStartWait.getFlag();
     }
 
-    public void setCanInteractStartWait(boolean canInteractStartWait) {
+    public void setCanInteractStartWait(final boolean canInteractStartWait) {
         this.canInteractStartWait.setFlag(canInteractStartWait);
     }
 
@@ -97,7 +97,7 @@ public class LobbySettingsModule extends AMinigameModule {
         return teleportOnStart.getFlag();
     }
 
-    public void setTeleportOnStart(boolean teleportOnStart) {
+    public void setTeleportOnStart(final boolean teleportOnStart) {
         this.teleportOnStart.setFlag(teleportOnStart);
     }
 
@@ -105,7 +105,7 @@ public class LobbySettingsModule extends AMinigameModule {
         return teleportOnPlayerWait.getFlag();
     }
 
-    public void setTeleportOnPlayerWait(boolean teleportOnPlayerWait) {
+    public void setTeleportOnPlayerWait(final boolean teleportOnPlayerWait) {
         this.teleportOnPlayerWait.setFlag(teleportOnPlayerWait);
     }
 
@@ -119,7 +119,7 @@ public class LobbySettingsModule extends AMinigameModule {
     /**
      * in seconds
      */
-    public void setPlayerWaitTime(long time) {
+    public void setPlayerWaitTime(final long time) {
         playerWaitTime.setFlag(time);
     }
 
@@ -128,7 +128,7 @@ public class LobbySettingsModule extends AMinigameModule {
         if (getMinigame().getType() == MinigameType.MULTIPLAYER) {
             final @NotNull Menu lobbyMenu = new Menu(6, getMinigame().getDisplayName(), superMenu.getIntendedViewer());
 
-            final @NotNull List<@NotNull MenuItem> itemsLobby = new ArrayList<>(4);
+            final @NotNull List<@NotNull AMenuItem> itemsLobby = new ArrayList<>(4);
 
             itemsLobby.add(canInteractPlayerWait.getMenuItem(ItemType.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_INTERACT_NAME));
             itemsLobby.add(canInteractStartWait.getMenuItem(ItemType.STONE_BUTTON, MgMenuLangKey.MENU_LOBBY_WAIT_START_INTERACT_NAME));
@@ -141,12 +141,12 @@ public class LobbySettingsModule extends AMinigameModule {
                 MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_DESCRIPTION),
                 0L, Long.MAX_VALUE));
             lobbyMenu.addItems(itemsLobby);
-            lobbyMenu.addItem(new MenuItemBack(superMenu), lobbyMenu.getSize() - 9);
+            lobbyMenu.setItem(new MenuItemBack(superMenu), lobbyMenu.getSize() - 9);
 
             final @NotNull MenuItemPage lobbySettingsMenuItemPage = new MenuItemPage(ItemType.OAK_DOOR, MgMenuLangKey.MENU_MINIGAME_LOBBY_SETTINGS_NAME, lobbyMenu);
 
             if (getMinigame().getType() == MinigameType.MULTIPLAYER) {
-                superMenu.addItem(lobbySettingsMenuItemPage, 15);
+                superMenu.setItem(lobbySettingsMenuItemPage, 15);
             }
         }
     }

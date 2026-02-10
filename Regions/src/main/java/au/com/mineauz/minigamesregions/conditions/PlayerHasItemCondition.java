@@ -42,7 +42,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     private final BooleanFlag matchEnchantments = new BooleanFlag("matchEnchantments", false);
     private final BooleanFlag matchExact = new BooleanFlag("matchExact", false);
 
-    protected PlayerHasItemCondition(@NotNull String name) {
+    protected PlayerHasItemCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -58,7 +58,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        HashMap<Component, Component> out = new HashMap<>();
+        final Map<@NotNull Component, @NotNull Component> out = new HashMap<>();
 
         out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME),
                 Component.translatable(itemToSearchFor.getFlag().translationKey()));
@@ -93,17 +93,17 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     }
 
     @Override
-    public boolean checkRegionCondition(@NotNull MinigamePlayer mgPlayer, @Nullable Region region) {
+    public boolean checkRegionCondition(final @NotNull MinigamePlayer mgPlayer,final  @Nullable Region region) {
         return check(mgPlayer);
     }
 
     @Override
-    public boolean checkNodeCondition(@NotNull MinigamePlayer mgPlayer, @Nullable Node node) {
+    public boolean checkNodeCondition(final @NotNull MinigamePlayer mgPlayer, final @Nullable Node node) {
         return check(mgPlayer);
     }
 
     private boolean check(final @NotNull MinigamePlayer mgPlayer) {
-        PositionType checkType = where.getFlag();
+        final @NotNull PositionType checkType = where.getFlag();
 
         final @NotNull PlayerInventory inventory = mgPlayer.getPlayer().getInventory();
         ItemStack[] searchItems;
@@ -152,7 +152,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
             lorePattern = createLorePattern();
         }
 
-        Map<Enchantment, Integer> enchantmentsToMatch = itemToSearchFor.getFlag().getEnchantments();
+        final @NotNull Map<@NotNull Enchantment, @NotNull Integer> enchantmentsToMatch = itemToSearchFor.getFlag().getEnchantments();
 
         int slotIndex = 0;
         for (ItemStack itemInSlot : searchItems) {
@@ -173,11 +173,11 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
                         continue;
                     }
                 } else {
-                    ItemMeta meta = itemInSlot.getItemMeta();
+                    final @NotNull ItemMeta meta = itemInSlot.getItemMeta();
 
                     if (namePattern != null) {
-                        Matcher m = namePattern.matcher(meta.getDisplayName());
-                        if (!m.matches()) {
+                        final @NotNull Matcher matcher = namePattern.matcher(meta.getDisplayName());
+                        if (!matcher.matches()) {
                             continue;
                         }
                     }
@@ -212,7 +212,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     }
 
     private @NotNull Pattern createNamePattern() {
-        ItemMeta meta = itemToSearchFor.getFlag().getItemMeta();
+        final @NotNull ItemMeta meta = itemToSearchFor.getFlag().getItemMeta();
 
         if (meta.hasDisplayName()) {
             StringBuffer buffer = new StringBuffer();
@@ -226,20 +226,20 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     }
 
     private @NotNull Pattern createLorePattern() {
-        ItemMeta meta = itemToSearchFor.getFlag().getItemMeta();
-        List<String> loreList = meta.getLore();
+        final @NotNull ItemMeta meta = itemToSearchFor.getFlag().getItemMeta();
+        final List<@NotNull String> loreList = meta.getLore();
 
         if (loreList == null) {
             return Pattern.compile(".*");
         } else {
-            StringBuffer buffer = new StringBuffer();
+            final @NotNull StringBuffer buffer = new StringBuffer();
             RegionUtils.createWildcardPattern(String.join("\n", loreList), buffer);
             return Pattern.compile(buffer.toString());
         }
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         itemToSearchFor.saveValue(config);
         count.saveValue(config);
         where.saveValue(config);
@@ -259,7 +259,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         if (config.hasChild( "type")) { // load legacy data
             Material flag = Material.getMaterial(config.node("type").getString(""));
 
@@ -306,7 +306,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     @Override
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
 
         // we need a reference for two object we will create soon down the line
         final @NotNull CompletableFuture<MenuItemString> futureNameItem = new CompletableFuture<>();
@@ -342,9 +342,9 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         menu.addItem(count.getMenuItem(ItemType.STONE_SLAB,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 999));
 
-        final MenuItemInteger slotMenuItem = slot.getMenuItem(ItemType.DIAMOND,
+        final @NotNull MenuItemInteger slotMenuItem = slot.getMenuItem(ItemType.DIAMOND,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_SLOT_NAME), null, 0, 40);
-        final MenuItemEnum<PositionType> whereMenuItem = new MenuItemEnum<>(ItemType.COMPASS,
+        final @NotNull MenuItemEnum<PositionType> whereMenuItem = new MenuItemEnum<>(ItemType.COMPASS,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_WHERE_NAME), new Callback<>() {
             @Override
             public PositionType getValue() {
@@ -352,10 +352,10 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
             }
 
             @Override
-            public void setValue(PositionType value) {
+            public void setValue(final PositionType value) {
                 // only enable if relevant
                 if (value == PositionType.SLOT) {
-                    menu.addItem(slotMenuItem, 3);
+                    menu.setItem(slotMenuItem, 3);
                 } else {
                     menu.removeItem(3);
                 }
@@ -369,7 +369,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
         menu.addItem(matchName.getMenuItem(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_DISPLAYNAME_NAME)));
-        final MenuItemString nameMenuItem = new MenuItemString(ItemType.NAME_TAG,
+        final @NotNull MenuItemString nameMenuItem = new MenuItemString(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_DESCRIPTION),
                 new Callback<>() {
@@ -393,7 +393,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
         menu.addItem(matchLore.getMenuItem(ItemType.WRITTEN_BOOK,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_LORE_NAME)));
-        final MenuItemString loreMenuItem = new MenuItemString(ItemType.BOOK,
+        final @NotNull MenuItemString loreMenuItem = new MenuItemString(ItemType.BOOK,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_LORE_DESCRIPTION),
                 new Callback<>() {
@@ -405,7 +405,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
                     }
 
                     @Override
-                    public void setValue(@NotNull String value) {
+                    public void setValue(final @NotNull String value) {
                         MiniMessage miniMessage = MiniMessage.miniMessage();
 
                         String[] loreArray = value.split(";");
@@ -446,7 +446,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
         private final @NotNull RegionLangKey langKey;
 
-        PositionType(@NotNull RegionLangKey langKey) {
+        PositionType(final @NotNull RegionLangKey langKey) {
             this.langKey = langKey;
         }
 

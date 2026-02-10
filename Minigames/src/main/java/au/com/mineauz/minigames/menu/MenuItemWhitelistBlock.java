@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class MenuItemWhitelistBlock extends MenuItem {
+public class MenuItemWhitelistBlock extends AMenuItem {
     private final @NotNull List<BlockType> whitelist;
 
     public MenuItemWhitelistBlock(final @NotNull ItemType displayType, final @NotNull List<@NotNull BlockType> whitelist) {

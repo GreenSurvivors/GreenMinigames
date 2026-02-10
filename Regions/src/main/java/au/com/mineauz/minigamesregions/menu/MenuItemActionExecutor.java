@@ -22,7 +22,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
-public class MenuItemActionExecutor extends MenuItem {
+public class MenuItemActionExecutor extends AMenuItem {
     private static final String DESCRIPTION_TOKEN = "Executor_description";
     private final @NotNull ActionExecutorHolder actionExecutorHolder;
     private final @NotNull ActionExecutor actionExecutor;
@@ -81,12 +81,12 @@ public class MenuItemActionExecutor extends MenuItem {
                     RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_TRIGGERCOUNT_DESCRIPTION),
                     actionExecutor.getTriggerCountCallback(), 0, null));
 
-            menu.addItem(new MenuItemBoolean(MenuUtility.playerType(),
+            menu.addItem(new MenuItemBoolean(MenuDisplayTypes.playerType(),
                     RegionMessageManager.getMessage(RegionLangKey.MENU_EXECUTOR_PERPLAYER_NAME),
                     RegionMessageManager.getMessageList(RegionLangKey.MENU_EXECUTOR_PERPLAYER_DESCRIPTION),
                     actionExecutor.getIsTriggerPerPlayerCallback()));
         }
-        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
         menu.displayMenu();
         return ItemStack.empty();
     }

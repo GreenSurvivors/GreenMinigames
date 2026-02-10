@@ -100,7 +100,7 @@ public class AddScoreAction extends AScoreAction {
                 amount.setFlag(value);
             }
         }, null, null));
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.displayMenu();
         return true;
     }

@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.loadout.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.loadout.PlayerLoadout;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
@@ -21,49 +22,53 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-public class MenuItemLoadoutAdd extends MenuItem implements StringConsumer {
+public class MenuItemLoadoutAdd extends AMenuItem implements StringConsumer {
     private final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts;
-    private @Nullable Minigame minigame = null;
+    private final @Nullable Minigame minigame;
 
-    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Map<@NotNull String,
-                              @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
+    /// since no minigame was given, the loadout will be assumed to be global.
+    public MenuItemLoadoutAdd(final @Nullable ItemType displayType, final @NotNull MgMenuLangKey langKey,
+                              final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
+        this(displayType, langKey, loadouts, null);
+    }
+
+    /// if a valid minigame is given, the new loadout will be added to the minigames {@link LoadoutModule}, elsewise the new Loadout will be global.
+    public MenuItemLoadoutAdd(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                              final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts,
+                              final @Nullable Minigame minigame) {
         super(displayType, langKey);
         this.loadouts = loadouts;
-        this.minigame = mgm;
+        this.minigame = minigame;
     }
 
-    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @Nullable Component name, @NotNull Map<@NotNull String,
-                              @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
-        super(displayType, name);
-        this.loadouts = loadouts;
-        this.minigame = mgm;
+    /// since no minigame was given, the loadout will be assumed to be global.
+    public MenuItemLoadoutAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                              final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
+        this(displayType, name, loadouts, null);
     }
 
-    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @Nullable Component name,
-                              @Nullable List<@NotNull Component> description,
-                              @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts, @Nullable Minigame mgm) {
+    /// since no minigame was given, the loadout will be assumed to be global.
+    public MenuItemLoadoutAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                              final @Nullable List<@NotNull Component> description,
+                              final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
+        this(displayType, name, description, loadouts, null);
+    }
+
+    /// if a valid minigame is given, the new loadout will be added to the minigames {@link LoadoutModule}, elsewise the new Loadout will be global.
+    public MenuItemLoadoutAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                              final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts,
+                              final @Nullable Minigame minigame) {
+        this(displayType, name, null, loadouts, minigame);
+    }
+
+    /// if a valid minigame is given, the new loadout will be added to the minigames {@link LoadoutModule}, elsewise the new Loadout will be global.
+    public MenuItemLoadoutAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                              final @Nullable List<@NotNull Component> description,
+                              final @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts,
+                              final @Nullable Minigame minigame) {
         super(displayType, name, description);
         this.loadouts = loadouts;
-        this.minigame = mgm;
-    }
-
-    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @Nullable Component name,
-                              @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
-        super(displayType, name);
-        this.loadouts = loadouts;
-    }
-
-    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @Nullable Component name,
-                              @Nullable List<@NotNull Component> description,
-                              @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
-        super(displayType, name, description);
-        this.loadouts = loadouts;
-    }
-
-    public MenuItemLoadoutAdd(@Nullable ItemType displayType, @NotNull MgMenuLangKey langKey,
-                              @NotNull Map<@NotNull String, @NotNull PlayerLoadout> loadouts) {
-        super(displayType, langKey);
-        this.loadouts = loadouts;
+        this.minigame = minigame;
     }
 
     @Override
@@ -85,13 +90,9 @@ public class MenuItemLoadoutAdd extends MenuItem implements StringConsumer {
                 if (!getMenu().hasMenuItem(i)) {
                     final @NotNull PlayerLoadout loadout = new PlayerLoadout(string);
                     loadouts.put(string, loadout);
-                    List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
+                    final List<@NotNull Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
 
-                    if (minigame != null) {
-                        getMenu().addItem(new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout, minigame), i);
-                    } else {
-                        getMenu().addItem(new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout), i);
-                    }
+                    getMenu().setItem(new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout, minigame), i);
                     break;
                 }
             }

@@ -95,8 +95,8 @@ public class EquipLoadoutAction extends AAction {
 
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
-        Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(new MenuItemString(ItemType.DIAMOND_SWORD, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_NAME), new Callback<>() {
 
             @Override

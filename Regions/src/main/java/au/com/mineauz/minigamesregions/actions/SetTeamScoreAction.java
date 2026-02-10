@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SetTeamScoreAction extends AScoreAction { // todo merge with setScoreAction
-    private final IntegerFlag score = new IntegerFlag("amount", 1);
-    private final EnumFlag<TeamColor> team = new EnumFlag<>("team", TeamColor.NONE);
+    private final @NotNull IntegerFlag score = new IntegerFlag("amount", 1);
+    private final @NotNull EnumFlag<TeamColor> team = new EnumFlag<>("team", TeamColor.NONE);
 
     protected SetTeamScoreAction(final @NotNull Key key) {
         super(key);
@@ -62,27 +62,25 @@ public class SetTeamScoreAction extends AScoreAction { // todo merge with setSco
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
-                                    @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         executeAction(mgPlayer);
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         executeAction(mgPlayer);
     }
 
-    private void executeAction(@Nullable MinigamePlayer player) {
+    private void executeAction(final @Nullable MinigamePlayer player) {
         if (player != null && player.isInMinigame()) {
             if (team.getFlag().equals(TeamColor.NONE)) {
                 if (player.getTeam() != null) {
                     player.getTeam().setScore(score.getFlag());
                 }
             } else {
-                TeamsModule tm = TeamsModule.getMinigameModule(player.getMinigame());
+                final @Nullable TeamsModule tm = TeamsModule.getMinigameModule(player.getMinigame());
                 if (tm != null && tm.hasTeam(team.getFlag())) {
                     tm.getTeam(team.getFlag()).setScore(score.getFlag());
                 }
@@ -108,7 +106,7 @@ public class SetTeamScoreAction extends AScoreAction { // todo merge with setSco
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(score.getMenuItem(ItemType.STONE, MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME),
                 null, null));
 

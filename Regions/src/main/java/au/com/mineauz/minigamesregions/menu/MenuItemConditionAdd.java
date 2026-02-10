@@ -19,10 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MenuItemConditionAdd extends MenuItem {
+public class MenuItemConditionAdd extends AMenuItem {
     private final @NotNull ActionExecutor exec;
 
-    public MenuItemConditionAdd(@Nullable ItemType displayType, @NotNull Component name, @NotNull ActionExecutor exec) {
+    public MenuItemConditionAdd(final @Nullable ItemType displayType, final @NotNull Component name,
+                                final @NotNull ActionExecutor exec) {
         super(displayType, name);
         this.exec = exec;
     }
@@ -47,7 +48,7 @@ public class MenuItemConditionAdd extends MenuItem {
                     catMenu = new Menu(6, category.getDisplayName(), getMenu().getIntendedViewer());
                     cats.put(category, catMenu);
                     menu.addItem(new MenuItemPage(ItemType.CHEST, category.getDisplayName(), catMenu));
-                    catMenu.addItem(new MenuItemBack(menu), catMenu.getSize() - 9);
+                    catMenu.setItem(new MenuItemBack(menu), catMenu.getSize() - 9);
                 } else {
                     catMenu = cats.get(category);
                 }
@@ -62,7 +63,7 @@ public class MenuItemConditionAdd extends MenuItem {
                 catMenu.addItem(menuItemCustom);
             }
         }
-        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
         menu.displayMenu();
         return ItemStack.empty();
     }

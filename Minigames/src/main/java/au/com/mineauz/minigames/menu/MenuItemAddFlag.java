@@ -19,23 +19,25 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.List;
 
-public class MenuItemAddFlag extends MenuItem implements StringConsumer {
-    private final @NotNull Minigame mgm;
+public class MenuItemAddFlag extends AMenuItem implements StringConsumer {
+    private final @NotNull Minigame minigame;
 
-    public MenuItemAddFlag(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Minigame mgm) {
+    public MenuItemAddFlag(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                           final @NotNull Minigame minigame) {
         super(displayType, langKey);
-        this.mgm = mgm;
+        this.minigame = minigame;
     }
 
-    public MenuItemAddFlag(@Nullable ItemType displayType, @NotNull Component name, @NotNull Minigame mgm) {
-        super(displayType, name);
-        this.mgm = mgm;
+    public MenuItemAddFlag(final @Nullable ItemType displayType, final @NotNull Component name,
+                           final @NotNull Minigame minigame) {
+        this(displayType, name, null, minigame);
     }
 
-    public MenuItemAddFlag(@Nullable ItemType displayType, @Nullable Component name, List<@NotNull Component> description,
-                           @NotNull Minigame mgm) {
+    public MenuItemAddFlag(final @Nullable ItemType displayType, final @Nullable Component name,
+                           final @Nullable List<@NotNull Component> description,
+                           final @NotNull Minigame minigame) {
         super(displayType, name, description);
-        this.mgm = mgm;
+        this.minigame = minigame;
     }
 
     @Override
@@ -53,8 +55,8 @@ public class MenuItemAddFlag extends MenuItem implements StringConsumer {
 
     @Override
     public void acceptString(final @NotNull String string) {
-        mgm.addSinglePlayerFlag(string);
-        getMenu().addItem(new MenuItemFlag(ItemType.OAK_SIGN, string, mgm.getSinglePlayerFlags()));
+        minigame.addSinglePlayerFlag(string);
+        getMenu().addItem(new MenuItemFlag(ItemType.OAK_SIGN, string, minigame.getSinglePlayerFlags()));
 
         getMenu().cancelWaitForInput();
         getMenu().displayMenu();

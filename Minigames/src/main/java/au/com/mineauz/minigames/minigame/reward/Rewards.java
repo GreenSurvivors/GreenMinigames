@@ -27,9 +27,9 @@ public class Rewards {
     }
 
     public @Nullable List<@NotNull ARewardType> getReward() {
-        double rand = ThreadLocalRandom.current().nextDouble();
-        RewardRarity rarity;
-        List<Object> itemsCopyList = new ArrayList<>();
+        final double rand = ThreadLocalRandom.current().nextDouble();
+        @NotNull RewardRarity rarity;
+        final @NotNull List<Object> itemsCopyList = new ArrayList<>();
         itemsCopyList.addAll(items);
         itemsCopyList.addAll(groups);
         Collections.shuffle(itemsCopyList);
@@ -47,20 +47,20 @@ public class Rewards {
         }
 
         if (!itemsCopyList.isEmpty()) {
-            ARewardType item = null;
-            RewardGroup group = null;
+            @Nullable ARewardType item = null;
+            @Nullable RewardGroup group = null;
             final RewardRarity originalRarity = rarity;
             boolean up = false;
 
             while (item == null && group == null) {
-                for (Object ritem : itemsCopyList) {
-                    if (ritem instanceof ARewardType ri) {
+                for (final @NotNull Object ritem : itemsCopyList) {
+                    if (ritem instanceof final @NotNull ARewardType ri) {
                         if (ri.getRarity() == rarity) {
                             item = ri;
                             break;
                         }
                     } else {
-                        RewardGroup rg = (RewardGroup) ritem;
+                        final @NotNull RewardGroup rg = (RewardGroup) ritem;
                         if (rg.getRarity() == rarity) {
                             group = rg;
                             break;
@@ -92,11 +92,11 @@ public class Rewards {
         return null;
     }
 
-    public void addReward(ARewardType reward) {
+    public void addReward(final @NotNull ARewardType reward) {
         items.add(reward);
     }
 
-    public void removeReward(ARewardType item) {
+    public void removeReward(final @NotNull ARewardType item) {
         items.remove(item);
     }
 
@@ -110,7 +110,7 @@ public class Rewards {
         return group;
     }
 
-    public void removeGroup(@NotNull RewardGroup group) {
+    public void removeGroup(final @NotNull RewardGroup group) {
         groups.remove(group);
     }
 
@@ -124,21 +124,21 @@ public class Rewards {
 
         rewardMenu.setPreviousPage(parent);
 
-        rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.createType(),
+        rewardMenu.setItem(new MenuItemRewardGroupAdd(MenuDisplayTypes.createType(),
             MgMenuLangKey.MENU_REWARD_GROUP_ADD_NAME, this), 42);
-        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, this), 43);
-        rewardMenu.addItem(new MenuItemPage(MenuUtility.saveType(),
+        rewardMenu.setItem(new MenuItemRewardAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, this), 43);
+        rewardMenu.setItem(new MenuItemPage(MenuDisplayTypes.saveType(),
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
                 Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), name)),
             parent), 44);
 
-        List<MenuItem> mi = new ArrayList<>();
-        for (ARewardType item : items) {
+        final @NotNull List<AMenuItem> mi = new ArrayList<>();
+        for (final @NotNull ARewardType item : items) {
             mi.add(item.getMenuItem());
         }
 
-        List<Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_SHIFTLEFT);
-        for (RewardGroup group : groups) {
+        final @NotNull List<@NotNull Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_SHIFTLEFT);
+        for (final @NotNull RewardGroup group : groups) {
             MenuItemRewardGroup rwg = new MenuItemRewardGroup(ItemType.CHEST,
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), group.getName())),

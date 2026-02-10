@@ -12,29 +12,29 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unused") // api
-public class MenuItemCustom extends MenuItem {
+public class MenuItemCustom extends AMenuItem {
     private @Nullable Supplier<@NotNull ItemStack> click = null;
-    private @Nullable Function<ItemStack, @NotNull ItemStack> clickItem = null;
+    private @Nullable Function<@NotNull ItemStack, @NotNull ItemStack> clickItem = null;
     private @Nullable Supplier<@NotNull ItemStack> rightClick = null;
     private @Nullable Supplier<@NotNull ItemStack> shiftClick = null;
     private @Nullable Supplier<@NotNull ItemStack> shiftRightClick = null;
     private @Nullable Supplier<@NotNull ItemStack> doubleClick = null;
 
-    public MenuItemCustom(@Nullable ItemType displayType, @Nullable Component name) {
-        super(displayType, name);
+    public MenuItemCustom(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey) {
+        this(displayType, langKey, null);
     }
 
-    public MenuItemCustom(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey) {
-        super(displayType, langKey);
-    }
-
-    public MenuItemCustom(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
-                          @Nullable List<@NotNull Component> description) {
+    public MenuItemCustom(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                          final @Nullable List<@NotNull Component> description) {
         super(displayType, langKey, description);
     }
 
-    public MenuItemCustom(@Nullable ItemType displayType, @Nullable Component name,
-                          @Nullable List<@NotNull Component> description) {
+
+    public MenuItemCustom(final @Nullable ItemType displayType, final @Nullable Component name) {
+        super(displayType, name);
+    }
+    public MenuItemCustom(final @Nullable ItemType displayType, final @Nullable Component name,
+                          final @Nullable List<@NotNull Component> description) {
         super(displayType, name, description);
     }
 
@@ -46,18 +46,18 @@ public class MenuItemCustom extends MenuItem {
         return getDisplayItem();
     }
 
-    public void setClick(@Nullable Supplier<@NotNull ItemStack> sup) {
+    public void setClick(final @Nullable Supplier<@NotNull ItemStack> sup) {
         click = sup;
     }
 
     @Override
-    public @NotNull ItemStack onClickWithItem(@NotNull ItemStack item) {
+    public @NotNull ItemStack onClickWithItem(final @NotNull ItemStack item) {
         if (clickItem != null)
             return clickItem.apply(item);
         return getDisplayItem();
     }
 
-    public void setClickItem(@Nullable Function<ItemStack, @NotNull ItemStack> func) {
+    public void setClickItem(final @Nullable Function<@NotNull ItemStack, @NotNull ItemStack> func) {
         clickItem = func;
     }
 
@@ -69,7 +69,7 @@ public class MenuItemCustom extends MenuItem {
         return getDisplayItem();
     }
 
-    public void setRightClick(@Nullable Supplier<@NotNull ItemStack> sup) {
+    public void setRightClick(final @Nullable Supplier<@NotNull ItemStack> sup) {
         rightClick = sup;
     }
 
@@ -81,7 +81,7 @@ public class MenuItemCustom extends MenuItem {
         return getDisplayItem();
     }
 
-    public void setShiftClick(@Nullable Supplier<@NotNull ItemStack> sup) {
+    public void setShiftClick(final @Nullable Supplier<@NotNull ItemStack> sup) {
         shiftClick = sup;
     }
 
@@ -93,7 +93,7 @@ public class MenuItemCustom extends MenuItem {
         return getDisplayItem();
     }
 
-    public void setShiftRightClick(@Nullable Supplier<@NotNull ItemStack> sup) {
+    public void setShiftRightClick(final @Nullable Supplier<@NotNull ItemStack> sup) {
         shiftRightClick = sup;
     }
 
@@ -105,7 +105,7 @@ public class MenuItemCustom extends MenuItem {
         return getDisplayItem();
     }
 
-    public void setDoubleClick(@Nullable Supplier<@NotNull ItemStack> sup) {
+    public void setDoubleClick(final @Nullable Supplier<@NotNull ItemStack> sup) {
         doubleClick = sup;
     }
 }

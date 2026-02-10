@@ -96,10 +96,11 @@ public class CTFMechanic extends AGameMechanic {
         }
     }
 
+    @SuppressWarnings("UnstableApiUsage") // shutup itemtype
     @Override
     public @NotNull MenuItemPage displayMechanicSettings(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_CTF_NAME, previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         menu.addItem(useFlagAsCapturePoint.getMenuItem(ItemType.BLACK_BANNER, MgMenuLangKey.MENU_CTF_CAPTUREPOINT_NAME,
             MgMenuLangKey.MENU_CTF_CAPTUREPOINT_DESCRIPTION));
@@ -155,7 +156,7 @@ public class CTFMechanic extends AGameMechanic {
     private void takeFlag(final @NotNull PlayerInteractEvent event) { //todo better system of getting type of sign --> should be a getter in sign base
         final @NotNull Player player = event.getPlayer();
         final @NotNull MinigamePlayer mgPlayer = plugin.getPlayerManager().getMinigamePlayer(player);
-        if (player != null && mgPlayer.isInMinigame() && !player.isDead() && mgPlayer.getMinigame().hasStarted()) {
+        if (mgPlayer.isInMinigame() && !player.isDead() && mgPlayer.getMinigame().hasStarted()) {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK &&
                 event.getClickedBlock() != null &&
                 event.getClickedBlock().getState() instanceof Sign sign &&
@@ -426,7 +427,7 @@ public class CTFMechanic extends AGameMechanic {
                 if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
                     event.setCancelled(true);
                 } else { // waring: may lead to floating flags, or them maybe plopping of upon returning
-                    MinigameMessageManager.sendMgMessage(Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()),
+                    MinigameMessageManager.sendMgMessage(plugin.getPlayerManager().getMinigamePlayer(event.getPlayer()),
                         MinigameMessageType.WARNING, MgMiscLangKey.SIGN_CTF_FLAG_BROKEN_SUPPORT);
                 }
 
@@ -510,15 +511,15 @@ public class CTFMechanic extends AGameMechanic {
     }
 
     public void resetFlags() {
-        for (CTFFlag ctfFlag : flagCarriers.values()) {
+        for (final @NotNull CTFFlag ctfFlag : flagCarriers.values()) {
             ctfFlag.respawnFlag();
             ctfFlag.stopCarrierParticleEffect();
         }
         flagCarriers.clear();
-        for (String id : droppedFlag.keySet()) {
-            if (!getDroppedFlag(id).isAtHome()) {
-                getDroppedFlag(id).stopTimer();
-                getDroppedFlag(id).respawnFlag();
+        for (final @NotNull CTFFlag flag : droppedFlag.values()) {
+            if (!flag.isAtHome()) {
+                flag.stopTimer();
+                flag.respawnFlag();
             }
         }
         droppedFlag.clear();

@@ -1,9 +1,9 @@
 package au.com.mineauz.minigamesregions.menu;
 
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuDisplayTypes;
 import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.Node;
@@ -23,7 +23,7 @@ import org.jspecify.annotations.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemNode extends MenuItem { // todo merge with MenuItemRegion
+public class MenuItemNode extends AMenuItem { // todo merge with MenuItemRegion
     private final @NotNull Node node;
     private final @NotNull RegionModule rmod;
 
@@ -54,14 +54,14 @@ public class MenuItemNode extends MenuItem { // todo merge with MenuItemRegion
         final @NotNull Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_NODE_NAME,
                 Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), node.getName())), viewer);
         menu.setPreviousPage(previousPage);
-        List<MenuItem> items = new ArrayList<>();
-        for (ActionExecutor ex : node.getExecutors()) {
+        final @NotNull List<@NotNull AMenuItem> items = new ArrayList<>();
+        for (final @NotNull ActionExecutor ex : node.getExecutors()) {
             items.add(new MenuItemActionExecutor(node, ex));
         }
         if (previousPage != null) {
-            menu.addItem(new MenuItemBack(previousPage), menu.getSize() - 9);
+            menu.setItem(new MenuItemBack(previousPage), menu.getSize() - 9);
         }
-        menu.addItem(new MenuItemActionExecutorAdd(MenuUtility.createType(),
+        menu.setItem(new MenuItemActionExecutorAdd(MenuDisplayTypes.createType(),
                 RegionLangKey.MENU_EXECUTOR_ADD_NAME, node), menu.getSize() - 1);
         menu.addItems(items);
 

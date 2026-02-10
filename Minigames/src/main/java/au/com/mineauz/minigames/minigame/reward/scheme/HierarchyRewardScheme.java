@@ -33,13 +33,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARewardScheme {
-    private final EnumFlag<Comparison> comparisonType = new EnumFlag<>("comparison", Comparison.Greater);
-    private final BooleanFlag enableRewardsOnLoss = new BooleanFlag("loss-rewards", false);
-    private final BooleanFlag lossUsesSecondary = new BooleanFlag("loss-use-secondary", true);
+public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> extends ARewardScheme {
+    private final @NotNull EnumFlag<Comparison> comparisonType = new EnumFlag<>("comparison", Comparison.Greater);
+    private final @NotNull BooleanFlag enableRewardsOnLoss = new BooleanFlag("loss-rewards", false);
+    private final @NotNull BooleanFlag lossUsesSecondary = new BooleanFlag("loss-use-secondary", true);
 
-    private final TreeMap<T, Rewards> primaryRewards = new TreeMap<>();
-    private final TreeMap<T, Rewards> secondaryRewards = new TreeMap<>();
+    private final @NotNull TreeMap<T, @NotNull Rewards> primaryRewards = new TreeMap<>();
+    private final @NotNull TreeMap<T, @NotNull Rewards> secondaryRewards = new TreeMap<>();
 
     public HierarchyRewardScheme(@NotNull String name) {
         super(name);
@@ -78,29 +78,30 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
             submenu.addItem(new MenuItemRewardPair(ItemType.CHEST, rewards, key));
         }
 
-        submenu.addItem(new MenuItemAddReward(MenuUtility.createType(), MgMenuLangKey.MENU_REWARD_SET_ADD_NAME, rewards), submenu.getSize() - 2);
-        submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 1);
+        submenu.setItem(new MenuItemAddReward(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_REWARD_SET_ADD_NAME, rewards), submenu.getSize() - 2);
+        submenu.setItem(new MenuItemBack(parent), submenu.getSize() - 1);
 
         submenu.setPreviousPage(parent);
 
         submenu.displayMenu();
     }
 
-    protected abstract T getValue(MinigamePlayer player, StoredGameStats data, Minigame minigame);
+    protected abstract T getValue(final @NotNull MinigamePlayer player, final @NotNull StoredGameStats data, final Minigame minigame);
 
     @Override
-    public void awardPlayer(@NotNull MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
-        T value = getValue(player, data, minigame);
-        Rewards reward;
+    public void awardPlayer(final @NotNull MinigamePlayer player, final @NotNull StoredGameStats data, final Minigame minigame,
+                            final boolean firstCompletion) {
+        final T value = getValue(player, data, minigame);
+        @Nullable Rewards reward;
 
-        TreeMap<T, Rewards> rewards = (firstCompletion ? primaryRewards : secondaryRewards);
+        final @NotNull TreeMap<T, @NotNull Rewards> rewards = (firstCompletion ? primaryRewards : secondaryRewards);
 
         // Calculate rewards
         switch (comparisonType.getFlag()) {
             case Equal -> reward = rewards.get(value);
             case Lesser -> {
                 reward = null;
-                for (Entry<T, Rewards> entry : rewards.entrySet()) {
+                for (final @NotNull Entry<T, @NotNull Rewards> entry : rewards.entrySet()) {
                     if (value.compareTo(entry.getKey()) < 0) {
                         reward = entry.getValue();
                         break;
@@ -109,7 +110,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
             }
             case Greater -> {
                 reward = null;
-                for (Entry<T, Rewards> entry : rewards.descendingMap().entrySet()) {
+                for (final @NotNull Entry<T, @NotNull Rewards> entry : rewards.descendingMap().entrySet()) {
                     if (value.compareTo(entry.getKey()) > 0) {
                         reward = entry.getValue();
                         break;
@@ -121,15 +122,17 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
 
         // Apply reward
         if (reward != null) {
-            List<ARewardType> rewardItems = reward.getReward();
-            for (ARewardType item : rewardItems) {
-                item.giveReward(player);
+            final @Nullable List<@NotNull ARewardType> rewardItems = reward.getReward();
+            if (rewardItems != null) {
+                for (final @NotNull ARewardType item : rewardItems) {
+                    item.giveReward(player);
+                }
             }
         }
     }
 
     @Override
-    public void awardPlayerOnLoss(final @NotNull MinigamePlayer player, final StoredGameStats data, final Minigame minigame) {
+    public void awardPlayerOnLoss(final @NotNull MinigamePlayer player, final @NotNull StoredGameStats data, final Minigame minigame) {
         if (enableRewardsOnLoss.getFlag())
             awardPlayer(player, data, minigame, lossUsesSecondary.getFlag());
     }
@@ -204,7 +207,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
         Lesser
     }
 
-    private class MenuItemRewardPair extends MenuItem implements StringConsumer {
+    private class MenuItemRewardPair extends AMenuItem implements StringConsumer {
         private static final String DESCRIPTION_TOKEN = "RewardPair_description";
         private final @NotNull Rewards reward;
         private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
@@ -325,7 +328,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> extends ARe
         }
     }
 
-    public class MenuItemAddReward extends MenuItem implements StringConsumer {
+    public class MenuItemAddReward extends AMenuItem implements StringConsumer {
         private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
 
         public MenuItemAddReward(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,

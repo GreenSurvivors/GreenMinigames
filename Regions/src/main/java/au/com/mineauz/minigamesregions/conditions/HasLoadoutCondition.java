@@ -21,9 +21,9 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class HasLoadoutCondition extends ACondition {
-    private final StringFlag loadOutName = new StringFlag("loadout", "default");
+    private final @NotNull StringFlag loadOutName = new StringFlag("loadout", "default");
 
-    protected HasLoadoutCondition(@NotNull String name) {
+    protected HasLoadoutCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -48,7 +48,7 @@ public class HasLoadoutCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         if (mgPlayer != null && mgPlayer.isInMinigame()) {
             LoadoutModule lmod = LoadoutModule.getMinigameModule(mgPlayer.getMinigame());
             if (lmod != null && lmod.hasLoadout(loadOutName.getFlag())) {
@@ -60,7 +60,7 @@ public class HasLoadoutCondition extends ACondition {
 
 
     @Override
-    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
         if (mgPlayer != null && mgPlayer.isInMinigame()) {
             LoadoutModule lmod = LoadoutModule.getMinigameModule(mgPlayer.getMinigame());
             if (lmod != null && lmod.hasLoadout(loadOutName.getFlag())) {
@@ -71,14 +71,14 @@ public class HasLoadoutCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         loadOutName.saveValue(config);
         saveInvertedStatus(config);
 
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         loadOutName.loadValue(config);
         loadInvert(config);
     }
@@ -86,7 +86,7 @@ public class HasLoadoutCondition extends ACondition {
     @Override
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         menu.addItem(new MenuItemString(ItemType.DIAMOND_SWORD, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASLOADOUT_LOADOUT_NAME), new Callback<>() { //todo this to list and use loadouts of minigame
 
             @Override

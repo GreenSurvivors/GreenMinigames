@@ -18,12 +18,8 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 6/11/2017.
- */
 public class SetLivesAction extends AAction { //todo unused!
-    private final IntegerFlag amount = new IntegerFlag("amount", 1);
+    private final @NotNull IntegerFlag amount = new IntegerFlag("amount", 1);
 
     protected SetLivesAction(final @NotNull NamespacedKey key) {
         super(key);
@@ -55,7 +51,7 @@ public class SetLivesAction extends AAction { //todo unused!
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         if (mgPlayer != null && mgPlayer.getMinigame() != null) {
             int lives = mgPlayer.getMinigame().getLives();
@@ -65,7 +61,7 @@ public class SetLivesAction extends AAction { //todo unused!
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         if (mgPlayer.getMinigame() != null) {
             int lives = mgPlayer.getMinigame().getLives();
@@ -75,19 +71,19 @@ public class SetLivesAction extends AAction { //todo unused!
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         amount.saveValue(config);
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         amount.loadValue(config);
     }
 
     @Override
     public boolean displayMenu(final @NotNull Menu previous) { // todo description that a player can't have more lives than the minigame (minigame#getLives()) can support
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(amount.getMenuItem(ItemType.TOTEM_OF_UNDYING, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETLIVES_NAME), 0, null));
         menu.displayMenu();
 

@@ -27,7 +27,7 @@ public class MinigameTimeRangeCondition extends ACondition {
     private final TimeFlag minTime = new TimeFlag("minTime", 5L);
     private final TimeFlag maxTime = new TimeFlag("maxTime", 10L);
 
-    protected MinigameTimeRangeCondition(@NotNull String name) {
+    protected MinigameTimeRangeCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -60,12 +60,12 @@ public class MinigameTimeRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         return check(region.getMinigame());
     }
 
     @Override
-    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
         return check(node.getMinigame());
     }
 
@@ -84,14 +84,14 @@ public class MinigameTimeRangeCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         minTime.saveValue(config);
         maxTime.saveValue(config);
         saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         minTime.loadValue(config);
         maxTime.loadValue(config);
         loadInvert(config);
@@ -104,7 +104,7 @@ public class MinigameTimeRangeCondition extends ACondition {
         menu.addItem(minTime.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0L, null));
         menu.addItem(maxTime.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 0L, null));
 
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
         menu.displayMenu();
         return true;

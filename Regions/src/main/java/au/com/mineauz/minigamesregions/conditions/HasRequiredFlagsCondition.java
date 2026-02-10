@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class HasRequiredFlagsCondition extends ACondition { // the whole singleplayer flag system is unused.
 
-    protected HasRequiredFlagsCondition(@NotNull String name) {
+    protected HasRequiredFlagsCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -47,24 +47,24 @@ public class HasRequiredFlagsCondition extends ACondition { // the whole singlep
     }
 
     @Override
-    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
         return true;//Minigames.getPlugin().getPlayerManager().checkRequiredFlags(mgPlayer, mgPlayer.getMinigame()).isEmpty();
     }
 
     @Override
-    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
         return true; //Minigames.getPlugin().getPlayerManager().checkRequiredFlags(mgPlayer, mgPlayer.getMinigame()).isEmpty();
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         loadInvert(config);
     }
 
@@ -72,7 +72,7 @@ public class HasRequiredFlagsCondition extends ACondition { // the whole singlep
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
         addInvertMenuItem(menu);
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         menu.displayMenu();
         return true;
     }

@@ -20,10 +20,10 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class PlayerScoreRangeCondition extends ACondition {
-    private final IntegerFlag min = new IntegerFlag("min", 5);
-    private final IntegerFlag max = new IntegerFlag("max", 10);
+    private final @NotNull IntegerFlag min = new IntegerFlag("min", 5);
+    private final @NotNull IntegerFlag max = new IntegerFlag("max", 10);
 
-    protected PlayerScoreRangeCondition(@NotNull String name) {
+    protected PlayerScoreRangeCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -56,26 +56,26 @@ public class PlayerScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
         return mgPlayer.getScore() >= min.getFlag() && mgPlayer.getScore() <= max.getFlag();
     }
 
     @Override
-    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
         return mgPlayer.getScore() >= min.getFlag() && mgPlayer.getScore() <= max.getFlag();
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         min.saveValue(config);
         max.saveValue(config);
         saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         min.loadValue(config);
         max.loadValue(config);
         loadInvert(config);
@@ -86,7 +86,7 @@ public class PlayerScoreRangeCondition extends ACondition {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
         menu.addItem(min.getMenuItem(ItemType.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0, null));
         menu.addItem(max.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 0, null));
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
         menu.displayMenu();
         return true;

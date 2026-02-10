@@ -30,8 +30,8 @@ import java.time.Duration;
 import java.util.Map;
 
 public class PulseRedstoneAction extends AAction {
-    private final TimeFlag time = new TimeFlag("time", 1L); // in seconds
-    private final BooleanFlag torch = new BooleanFlag("torch", false);
+    private final @NotNull TimeFlag time = new TimeFlag("time", 1L); // in seconds
+    private final @NotNull BooleanFlag torch = new BooleanFlag("torch", false);
 
     protected PulseRedstoneAction(final @NotNull Key key) {
         super(key);
@@ -66,12 +66,12 @@ public class PulseRedstoneAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
 
         if (node.getSafeLocation().getWorld() == null) {
@@ -109,11 +109,10 @@ public class PulseRedstoneAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(time.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TIME_NAME), 0L, null));
         menu.addItem(torch.getMenuItem(ItemType.REDSTONE_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TORCH_NAME)));
         menu.displayMenu();
         return true;
     }
-
 }

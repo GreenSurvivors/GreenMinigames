@@ -28,22 +28,24 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-public class MenuItemStatusEffectAdd extends MenuItem implements StringConsumer {
+public class MenuItemStatusEffectAdd extends AMenuItem implements StringConsumer {
     private static final @NotNull Pattern POSITIV_INT_PATTERN = Pattern.compile("[+]?[0-9]+");
     private final @NotNull PlayerLoadout loadout;
 
-    public MenuItemStatusEffectAdd(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull PlayerLoadout loadout) {
+    public MenuItemStatusEffectAdd(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                                   final @NotNull PlayerLoadout loadout) {
         super(displayType, langKey);
         this.loadout = loadout;
     }
 
-    public MenuItemStatusEffectAdd(@Nullable ItemType displayType, @Nullable Component name, @NotNull PlayerLoadout loadout) {
-        super(displayType, name);
-        this.loadout = loadout;
+    public MenuItemStatusEffectAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                                   final @NotNull PlayerLoadout loadout) {
+        this(displayType, name, null, loadout);
     }
 
-    public MenuItemStatusEffectAdd(@Nullable ItemType displayType, @Nullable Component name,
-                                   @Nullable List<@NotNull Component> description, @NotNull PlayerLoadout loadout) {
+    public MenuItemStatusEffectAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                                   final @Nullable List<@NotNull Component> description,
+                                   final @NotNull PlayerLoadout loadout) {
         super(displayType, name, description);
         this.loadout = loadout;
     }
@@ -63,15 +65,15 @@ public class MenuItemStatusEffectAdd extends MenuItem implements StringConsumer 
 
     @Override
     public void acceptString(final @NotNull String entry) {
-        final @NotNull String[] split = entry.split(", ");
+        final @NotNull String @NotNull [] split = entry.split(", ");
         if (split.length == 3) {
-            String effect = split[0].toLowerCase(Locale.ROOT);
+            final @NotNull String effect = split[0].toLowerCase(Locale.ROOT);
             final @Nullable PotionEffectType potionEffectType = Registry.EFFECT.get(NamespacedKey.fromString(effect));
             if (potionEffectType != null) {
                 if (POSITIV_INT_PATTERN.matcher(split[1]).matches() && Integer.parseInt(split[1]) != 0) {
                     int level = Integer.parseInt(split[1]) - 1;
 
-                    Long dur = split[2].equalsIgnoreCase("inf") ? Long.valueOf(-1L) : MinigameUtils.parsePeriod(split[2]);
+                    @Nullable Long dur = split[2].equalsIgnoreCase("inf") ? Long.valueOf(-1L) : MinigameUtils.parsePeriod(split[2]);
                     if (dur != null) {
                         dur = Math.max(-1, Math.min(dur, 100000)); // stay in range
                         dur = TimeUnit.MILLISECONDS.toSeconds(dur) * 20; // millis to ticks
@@ -81,7 +83,7 @@ public class MenuItemStatusEffectAdd extends MenuItem implements StringConsumer 
 
                         final @NotNull PotionEffect potionEffect = new PotionEffect(potionEffectType, dur.intValue(), level);
                         for (final int slot : getMenu().getUsedSlots()) {
-                            if (getMenu().getMenuItem(slot) instanceof MenuItemStatusEffect pot) {
+                            if (getMenu().getMenuItem(slot) instanceof final @NotNull MenuItemStatusEffect pot) {
                                 if (pot.getEffect().getType() == potionEffect.getType()) {
                                     pot.onShiftRightClick();
                                     break;
@@ -90,7 +92,7 @@ public class MenuItemStatusEffectAdd extends MenuItem implements StringConsumer 
                         }
                         for (int i = 0; i < 36; i++) {
                             if (!getMenu().hasMenuItem(i)) {
-                                getMenu().addItem(new MenuItemStatusEffect(ItemType.POTION, Component.translatable(potionEffectType.translationKey()), description, potionEffect, loadout), i);
+                                getMenu().setItem(new MenuItemStatusEffect(ItemType.POTION, Component.translatable(potionEffectType.translationKey()), description, potionEffect, loadout), i);
                                 loadout.addPotionEffect(potionEffect);
                                 break;
                             }

@@ -41,9 +41,9 @@ import java.util.Map;
  * @author <a href="https://github.com/Turidus/Minigames">Turidus</a>
  */
 public class TimedTriggerAction extends AAction implements Listener {
-    private final StringFlag toTrigger = new StringFlag("toTrigger", "None");
-    private final BooleanFlag isRegion = new BooleanFlag("isRegion", false);
-    private final TimeFlag delay = new TimeFlag("delay", 20L);
+    private final @NotNull StringFlag toTrigger = new StringFlag("toTrigger", "None");
+    private final @NotNull BooleanFlag isRegion = new BooleanFlag("isRegion", false);
+    private final @NotNull TimeFlag delay = new TimeFlag("delay", 20L);
     /*
      * The AAction Object is created once per minigame,
      * but at the time of creation we don't know which minigame we belong to yet.
@@ -89,31 +89,31 @@ public class TimedTriggerAction extends AAction implements Listener {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         execute(mgPlayer, region);
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         execute(mgPlayer, node);
     }
 
-    private void execute(@Nullable MinigamePlayer player, @NotNull ScriptObject obj) {
+    private void execute(final @Nullable MinigamePlayer player, final @NotNull ScriptObject obj) {
         debug(player, obj);
         if (player == null || !player.isInMinigame()) {
             return;
         }
-        Minigame mg = player.getMinigame();
+        final @Nullable Minigame mg = player.getMinigame();
         if (mg == null) {
             return;
         }
-        RegionModule rMod = RegionModule.getMinigameModule(mg);
+        final RegionModule rMod = RegionModule.getMinigameModule(mg);
         if ((isRegion.getFlag() && !rMod.hasRegion(toTrigger.getFlag())
                 || (!isRegion.getFlag() && !rMod.hasNode(toTrigger.getFlag())))) {
             return;
         }
-        final ExecutableScriptObject toExecute = isRegion.getFlag() ? rMod.getRegion(toTrigger.getFlag()) : rMod.getNode(toTrigger.getFlag());
-        final TaskHolder taskHolder = new TaskHolder();
+        final @NotNull ExecutableScriptObject toExecute = isRegion.getFlag() ? rMod.getRegion(toTrigger.getFlag()) : rMod.getNode(toTrigger.getFlag());
+        final @NotNull TaskHolder taskHolder = new TaskHolder();
 
         taskHolder.task = Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> {
                 toExecute.execute(MgRegTrigger.REMOTE_TIMED, player);
@@ -141,7 +141,7 @@ public class TimedTriggerAction extends AAction implements Listener {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(toTrigger.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME)));
         menu.addItem(isRegion.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME)));
         menu.addItem(delay.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME), 0L, null));

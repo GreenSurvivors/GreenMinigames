@@ -31,6 +31,7 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,9 +42,9 @@ import java.util.Map;
  * It allows to have template regions that can be copied into game or two switch two regions.
  */
 public class RegionSwapAction extends AAction {
-    private final StringFlag fromRegion = new StringFlag("fromRegion", "");
-    private final StringFlag toRegion = new StringFlag("toRegion", "");
-    private final BooleanFlag swapRegion = new BooleanFlag("swapRegion", true);
+    private final @NotNull StringFlag fromRegion = new StringFlag("fromRegion", "");
+    private final @NotNull StringFlag toRegion = new StringFlag("toRegion", "");
+    private final @NotNull BooleanFlag swapRegion = new BooleanFlag("swapRegion", true);
 
     protected RegionSwapAction(final @NotNull Key key) {
         super(key);
@@ -78,7 +79,7 @@ public class RegionSwapAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
 
     }
@@ -89,93 +90,98 @@ public class RegionSwapAction extends AAction {
      * block with the From (start) regions block.
      */
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
-
-        Region startRegion = null;
-        Region targetRegion = null;
-        ArrayList<BlockState> startRegionBlocks = new ArrayList<>();
-        ArrayList<BlockState> targetRegionBlocks = new ArrayList<>();
 
         if (!mgPlayer.isInMinigame()) {
             return;
         }
-        Minigame mgm = mgPlayer.getMinigame();
+        final Minigame mgm = mgPlayer.getMinigame();
+        final RegionModule rmod = RegionModule.getMinigameModule(mgm);
 
-        if (mgm != null) {
-            RegionModule rmod = RegionModule.getMinigameModule(mgm);
+        if (rmod != null) {
+            final @Nullable Region startRegion;
+            final @Nullable Region targetRegion;
 
-            if (rmod != null) {
-                if (rmod.hasRegion(fromRegion.getFlag())) {
-                    startRegion = rmod.getRegion(fromRegion.getFlag());
-                } else {
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                            RegionLangKey.ACTION_ERROR_NOREGION,
-                            Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), fromRegion.getFlag()));
-                }
-
-                if (rmod.hasRegion(toRegion.getFlag())) {
-                    targetRegion = rmod.getRegion(toRegion.getFlag());
-                } else {
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                            RegionLangKey.ACTION_ERROR_NOREGION,
-                            Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), toRegion.getFlag()));
-                }
-            } else {
-                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
-                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), RegionModule.getFactory().getKey().value()),
-                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()));
-            }
-        }
-
-        if (startRegion != null && targetRegion != null) {
-
-            fillRegionBlockList(startRegion, startRegionBlocks);
-
-            fillRegionBlockList(targetRegion, targetRegionBlocks);
-
-            if (startRegionBlocks.size() == targetRegionBlocks.size() && swapRegion.getFlag()) {
-                for (int i = 0; i < targetRegionBlocks.size(); i++) {
-                    RecorderData data = mgPlayer.getMinigame().getRecorderData();
-                    data.addBlock(targetRegionBlocks.get(i).getBlock(), null);
-                    data.addBlock(startRegionBlocks.get(i).getBlock(), null);
-
-                    Material tempType = targetRegionBlocks.get(i).getType();
-                    BlockData tempData = targetRegionBlocks.get(i).getBlockData();
-
-                    targetRegionBlocks.get(i).setType(startRegionBlocks.get(i).getType());
-                    targetRegionBlocks.get(i).setBlockData(startRegionBlocks.get(i).getBlockData());
-                    targetRegionBlocks.get(i).update(true, false);
-
-                    startRegionBlocks.get(i).setType(tempType);
-                    startRegionBlocks.get(i).setBlockData(tempData);
-                    startRegionBlocks.get(i).update(true, false);
-                }
-
-            } else if (startRegionBlocks.size() == targetRegionBlocks.size()) {
-                for (int i = 0; i < targetRegionBlocks.size(); i++) {
-                    RecorderData data = mgPlayer.getMinigame().getRecorderData();
-                    data.addBlock(targetRegionBlocks.get(i).getBlock(), null);
-                    targetRegionBlocks.get(i).setType(startRegionBlocks.get(i).getType());
-                    targetRegionBlocks.get(i).setBlockData(startRegionBlocks.get(i).getBlockData());
-                    targetRegionBlocks.get(i).update(true, false);
-                }
+            if (rmod.hasRegion(fromRegion.getFlag())) {
+                startRegion = rmod.getRegion(fromRegion.getFlag());
             } else {
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                        RegionLangKey.ACTION_REGIONSWAP_ERROR_SIZE);
+                        RegionLangKey.ACTION_ERROR_NOREGION,
+                        Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), fromRegion.getFlag()));
+                return;
             }
-        }
 
+            if (rmod.hasRegion(toRegion.getFlag())) {
+                targetRegion = rmod.getRegion(toRegion.getFlag());
+            } else {
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.ACTION_ERROR_NOREGION,
+                        Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), toRegion.getFlag()));
+                return;
+            }
+
+            if (startRegion != null && targetRegion != null) {
+                final @NotNull List<@NotNull BlockState> startRegionBlocks = fillRegionBlockList(startRegion);
+                final @NotNull List<@NotNull BlockState> targetRegionBlocks = fillRegionBlockList(targetRegion);
+
+                final @NotNull RecorderData data = mgPlayer.getMinigame().getRecorderData();
+
+                if (startRegionBlocks.size() == targetRegionBlocks.size()) {
+                    if (swapRegion.getFlag()) {
+                        for (int i = 0; i < targetRegionBlocks.size(); i++) {
+                            final @NotNull BlockState startBlockState = startRegionBlocks.get(i);
+                            final @NotNull BlockState targetBlockState = targetRegionBlocks.get(i);
+
+                            data.addBlock(targetBlockState, null);
+                            data.addBlock(startBlockState, null);
+
+                            Material tempType = targetBlockState.getType();
+                            BlockData tempData = targetBlockState.getBlockData();
+
+                            targetBlockState.setType(startBlockState.getType());
+                            targetBlockState.setBlockData(startBlockState.getBlockData());
+                            targetBlockState.update(true, false);
+
+                            startBlockState.setType(tempType);
+                            startBlockState.setBlockData(tempData);
+                            startBlockState.update(true, false);
+                        }
+                    } else {
+                        for (int i = 0; i < targetRegionBlocks.size(); i++) {
+                            final @NotNull BlockState targetBlockState = targetRegionBlocks.get(i);
+                            final @NotNull BlockState startBlockState = startRegionBlocks.get(i);
+
+                            data.addBlock(targetBlockState, null);
+                            targetBlockState.setType(startBlockState.getType());
+                            targetBlockState.setBlockData(startBlockState.getBlockData());
+                            targetBlockState.update(true, false);
+                        }
+                    }
+                } else {
+                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.ACTION_REGIONSWAP_ERROR_SIZE);
+                }
+            }
+        } else {
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), RegionModule.getFactory().getKey().value()),
+                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()));
+        }
     }
 
-    private void fillRegionBlockList(@NotNull Region targetRegion, @NotNull ArrayList<BlockState> targetRegionBlocks) {
+    private @NotNull List<@NotNull BlockState> fillRegionBlockList(final @NotNull Region targetRegion) {
+        final @NotNull List<@NotNull BlockState> result = new ArrayList<>();
+
         for (int y = targetRegion.getFirstPoint().blockY(); y <= targetRegion.getSecondPoint().blockY(); y++) {
             for (int x = targetRegion.getFirstPoint().blockX(); x <= targetRegion.getSecondPoint().blockX(); x++) {
                 for (int z = targetRegion.getFirstPoint().blockZ(); z <= targetRegion.getSecondPoint().blockZ(); z++) {
-                    targetRegionBlocks.add(targetRegion.getFirstPoint().getWorld().getBlockAt(x, y, z).getState());
+                    result.add(targetRegion.getFirstPoint().getWorld().getBlockAt(x, y, z).getState(false));
                 }
             }
         }
+
+        return result;
     }
 
     @Override
@@ -196,7 +202,7 @@ public class RegionSwapAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(fromRegion.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_FROM_NAME)));
         menu.addItem(swapRegion.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_SWAP_NAME)));
 

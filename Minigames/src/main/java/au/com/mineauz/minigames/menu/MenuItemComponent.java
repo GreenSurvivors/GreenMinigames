@@ -19,28 +19,28 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.List;
 
-public class MenuItemComponent extends MenuItem implements StringConsumer {
+public class MenuItemComponent extends AMenuItem implements StringConsumer {
     private static final String DESCRIPTION_VALUE_TOKEN = "COMPONENT_VALUE_DESCRIPTION";
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
-    private final @NotNull Callback<Component> component;
+    private final @NotNull Callback<@Nullable Component> callback;
     private boolean allowNull = false;
 
-    public MenuItemComponent(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<Component> component) {
+    public MenuItemComponent(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                             final @NotNull Callback<@NotNull Component> callback) {
         super(displayType, langKey);
-        this.component = component;
+        this.callback = callback;
         updateDescription();
     }
 
-    public MenuItemComponent(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<Component> component) {
-        super(displayType, name);
-        this.component = component;
-        updateDescription();
+    public MenuItemComponent(final @Nullable ItemType displayType, final @Nullable Component name,
+                             final @NotNull Callback<@NotNull Component> callback) {
+        this(displayType, name, null, callback);
     }
 
     public MenuItemComponent(@Nullable ItemType displayType, @Nullable Component name,
-                             @Nullable List<@NotNull Component> description, @NotNull Callback<Component> component) {
+                             @Nullable List<@NotNull Component> description, @NotNull Callback<Component> callback) {
         super(displayType, name, description);
-        this.component = component;
+        this.callback = callback;
         updateDescription();
     }
 
@@ -49,7 +49,7 @@ public class MenuItemComponent extends MenuItem implements StringConsumer {
     }
 
     public void updateDescription() {
-        Component settingComp = component.getValue();
+        @Nullable Component settingComp = callback.getValue();
         if (settingComp == null) {
             settingComp = MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET);
         }
@@ -62,7 +62,7 @@ public class MenuItemComponent extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onDoubleClick() {
-        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
+        final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(20);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
@@ -80,9 +80,9 @@ public class MenuItemComponent extends MenuItem implements StringConsumer {
     @Override
     public void acceptString(final @NotNull String string) {
         if (string.equals("null") && allowNull) {
-            component.setValue(null);
+            callback.setValue(null);
         } else {
-            component.setValue(miniMessage.deserialize(string));
+            callback.setValue(miniMessage.deserialize(string));
         }
 
         updateDescription();

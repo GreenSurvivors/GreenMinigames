@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -75,8 +75,8 @@ public class BlockTypeListFlag extends AFlag<List<@NotNull BlockType>> { // todo
     }
 
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
-                                         @Nullable List<@NotNull Component> description) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name,
+                                          final @Nullable List<@NotNull Component> description) {
         return null; // todo
     }
 }

@@ -12,15 +12,17 @@ import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MenuItemStatisticsSettings extends MenuItem {
+public class MenuItemStatisticsSettings extends AMenuItem {
     private final @NotNull Minigame minigame;
 
-    public MenuItemStatisticsSettings(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Minigame minigame) {
+    public MenuItemStatisticsSettings(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                                      final @NotNull Minigame minigame) {
         super(displayType, langKey);
         this.minigame = minigame;
     }
 
-    public MenuItemStatisticsSettings(@Nullable ItemType displayType, @Nullable Component name, @NotNull Minigame minigame) {
+    public MenuItemStatisticsSettings(final @Nullable ItemType displayType, final @Nullable Component name,
+                                      final @NotNull Minigame minigame) {
         super(displayType, name);
         this.minigame = minigame;
     }
@@ -34,7 +36,7 @@ public class MenuItemStatisticsSettings extends MenuItem {
             subMenu.addItem(new MenuItemModifyStatSetting(ItemType.WRITABLE_BOOK, minigame, stat));
         }
 
-        subMenu.addItem(new MenuItemBack(getMenu()), subMenu.getSize() - 9);
+        subMenu.setItem(new MenuItemBack(getMenu()), subMenu.getSize() - 9);
         subMenu.displayMenu();
 
         return super.onClick();

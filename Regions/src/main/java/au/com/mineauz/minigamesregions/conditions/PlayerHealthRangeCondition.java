@@ -21,10 +21,10 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class PlayerHealthRangeCondition extends ACondition {
-    private final IntegerFlag minHealth = new IntegerFlag("min", 20);
-    private final IntegerFlag maxHealth = new IntegerFlag("max", 20);
+    private final @NotNull IntegerFlag minHealth = new IntegerFlag("min", 20);
+    private final @NotNull IntegerFlag maxHealth = new IntegerFlag("max", 20);
 
-    protected PlayerHealthRangeCondition(@NotNull String name) {
+    protected PlayerHealthRangeCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -74,14 +74,14 @@ public class PlayerHealthRangeCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         minHealth.saveValue(config);
         maxHealth.saveValue(config);
         saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         minHealth.loadValue(config);
         maxHealth.loadValue(config);
         loadInvert(config);
@@ -92,7 +92,7 @@ public class PlayerHealthRangeCondition extends ACondition {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
         menu.addItem(minHealth.getMenuItem(ItemType.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0, 20));
         menu.addItem(maxHealth.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 0, 20));
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
         menu.displayMenu();
         return true;

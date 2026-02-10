@@ -19,17 +19,17 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 public class WeatherTimeModule extends AMinigameModule {
-    private final TimeFlag time = new TimeFlag("customTime.value", 0L);
-    private final BooleanFlag useCustomTime = new BooleanFlag("customTime.enabled", false);
-    private final BooleanFlag useCustomWeather = new BooleanFlag("customWeather.enabled", false);
-    private final EnumFlag<WeatherType> weather = new EnumFlag<>("customWeather.type", WeatherType.CLEAR);
+    private final @NotNull TimeFlag time = new TimeFlag("customTime.value", 0L);
+    private final @NotNull BooleanFlag useCustomTime = new BooleanFlag("customTime.enabled", false);
+    private final @NotNull BooleanFlag useCustomWeather = new BooleanFlag("customWeather.enabled", false);
+    private final @NotNull EnumFlag<WeatherType> weather = new EnumFlag<>("customWeather.type", WeatherType.CLEAR);
     private int task = -1;
 
     public WeatherTimeModule(final @NotNull Minigame mgm, final @NotNull Key key) {
         super(mgm, key);
     }
 
-    public static WeatherTimeModule getMinigameModule(@NotNull Minigame minigame) {
+    public static WeatherTimeModule getMinigameModule(final @NotNull Minigame minigame) {
         return (WeatherTimeModule) minigame.getModule(MgDefaultModules.WEATHER_TIME.getKey());
     }
 
@@ -63,7 +63,7 @@ public class WeatherTimeModule extends AMinigameModule {
         menu.addItem(time.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_NAME, 0L, 24000L));
         menu.addItem(useCustomWeather.getMenuItem(ItemType.WIND_CHARGE, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_USE_NAME));
         menu.addItem(weather.getMenuItem(ItemType.WATER_BUCKET, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_NAME));
-        menu.addItem(new MenuItemBack(previosMenu), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previosMenu), menu.getSize() - 9);
 
         previosMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TIMEWEATHER_NAME, menu));
     }
@@ -72,7 +72,7 @@ public class WeatherTimeModule extends AMinigameModule {
         return time.getFlag();
     }
 
-    public void setTime(long time) {
+    public void setTime(final long time) {
         this.time.setFlag(time);
     }
 
@@ -94,7 +94,7 @@ public class WeatherTimeModule extends AMinigameModule {
         return useCustomWeather.getFlag();
     }
 
-    public void setUsingCustomWeather(boolean bool) {
+    public void setUsingCustomWeather(final boolean bool) {
         useCustomWeather.setFlag(bool);
     }
 
@@ -102,7 +102,7 @@ public class WeatherTimeModule extends AMinigameModule {
         return weather.getFlag();
     }
 
-    public void setCustomWeather(WeatherType type) {
+    public void setCustomWeather(final WeatherType type) {
         weather.setFlag(type);
     }
 
@@ -116,7 +116,7 @@ public class WeatherTimeModule extends AMinigameModule {
         final @NotNull Minigame minigame = getMinigame();
         if (task == -1 && isUsingCustomTime()) {
             task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
-                for (MinigamePlayer player : minigame.getPlayers()) {
+                for (final @NotNull MinigamePlayer player : minigame.getPlayers()) {
                     player.getPlayer().setPlayerTime(time.getFlag(), false);
                 }
             }, 20 * 5, 20 * 5);

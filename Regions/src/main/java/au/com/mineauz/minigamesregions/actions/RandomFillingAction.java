@@ -71,7 +71,7 @@ public class RandomFillingAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         if (mgPlayer == null || mgPlayer.getMinigame() == null || region.getWorld() == null) {
             return;
@@ -103,8 +103,7 @@ public class RandomFillingAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
     }
 
@@ -135,7 +134,7 @@ public class RandomFillingAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(4, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         //The menu entry for the block that will be placed
         toData.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME));

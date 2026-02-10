@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class LightningAction extends AAction {
-    private final BooleanFlag effect = new BooleanFlag("effect", false);
+    private final @NotNull BooleanFlag effect = new BooleanFlag("effect", false);
 
     protected LightningAction(final @NotNull Key key) {
         super(key);
@@ -53,7 +53,7 @@ public class LightningAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
 
         if (region.getWorld() == null) {
@@ -75,7 +75,7 @@ public class LightningAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         if (node.getSafeLocation().getWorld() == null) {
             return;
@@ -100,10 +100,10 @@ public class LightningAction extends AAction {
 
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
-        Menu m = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-        m.addItem(effect.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LIGHTNING_EFFECT_NAME)));
-        m.displayMenu();
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.addItem(effect.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LIGHTNING_EFFECT_NAME)));
+        menu.displayMenu();
         return true;
     }
 }

@@ -1,9 +1,14 @@
 package au.com.mineauz.minigames.objects;
 
+import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.objects.safelocation.ASafeLocation;
 import au.com.mineauz.minigames.objects.safelocation.SafeFineLocation;
 import io.papermc.paper.math.FinePosition;
 import io.papermc.paper.math.Position;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -232,5 +237,19 @@ public class MgRegion {
 
     public @NotNull FinePosition getMax() {
         return Position.fine(getMaxX(), getMaxY(), getMaxZ());
+    }
+
+    public @NotNull Component describe() {
+        return MinigameMessageManager.getMgMessage(MgMiscLangKey.REGION_DESCRIBE,
+            Placeholder.component(MinigamePlaceHolderKey.POSITION_1.getKey(),
+                MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(getMinX())),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(getMinY())),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(getMinZ())))),
+            Placeholder.component(MinigamePlaceHolderKey.POSITION_2.getKey(),
+                MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(getMaxX())),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(getMaxY())),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(getMaxZ())))));
     }
 }

@@ -86,14 +86,13 @@ public class SetBlockAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         if (node.getSafeLocation().getBlockAt() == null) {
             return;
         }
 
-        BlockState bs = node.getSafeLocation().getBlockAt().getState();
+        final @NotNull BlockState bs = node.getSafeLocation().getBlockAt().getState(false);
         if (useBlockData.getFlag()) {
             bs.setBlockData(blockDataFlag.getFlag());
         } else {
@@ -117,7 +116,7 @@ public class SetBlockAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(blockDataFlag.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME)));
         menu.addItem(useBlockData.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME)));
         menu.displayMenu();

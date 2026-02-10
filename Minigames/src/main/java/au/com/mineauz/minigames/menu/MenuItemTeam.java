@@ -15,20 +15,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class MenuItemTeam extends MenuItem {
+public class MenuItemTeam extends AMenuItem {
+    protected static final @NotNull String DELETE_DESCRIPTION_PART = "team_delete";
     private final @NotNull Team team;
 
-    public MenuItemTeam(@Nullable Component name, @NotNull Team team) {
-        super(ItemType.LEATHER_CHESTPLATE, name, MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
-
-        this.team = team;
-        setTeamIcon();
+    public MenuItemTeam(final @Nullable Component name,
+                        final @NotNull Team team) {
+        this(name, null, team);
     }
 
-    public MenuItemTeam(@Nullable Component name, @NotNull List<@NotNull Component> description, @NotNull Team team) {
+    public MenuItemTeam(final @Nullable Component name,
+                        final @Nullable List<@NotNull Component> description,
+                        final @NotNull Team team) {
         super(ItemType.LEATHER_CHESTPLATE, name, description);
 
-        getDescription().addFirst(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
+        setDescriptionPart(DELETE_DESCRIPTION_PART, List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK)));
         this.team = team;
         setTeamIcon();
     }
@@ -102,7 +103,7 @@ public class MenuItemTeam extends MenuItem {
             Arrays.stream(org.bukkit.scoreboard.Team.OptionStatus.values()).map(Enum::name).toList()));
         menu.addItem(new MenuItemBoolean(ItemType.PAPER, MgMenuLangKey.MENU_TEAM_AUTOBALANCE, team.getAutoBalanceCallBack()));
 
-        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
         menu.displayMenu();
         return ItemStack.empty();
     }

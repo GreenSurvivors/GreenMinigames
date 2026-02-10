@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.menu;
 
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.ActionExecutorHolder;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
@@ -17,7 +17,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
-public class MenuItemActionExecutorAdd extends MenuItem {
+public class MenuItemActionExecutorAdd extends AMenuItem {
     private final @NotNull ActionExecutorHolder actionExecutorHolder;
 
     public MenuItemActionExecutorAdd(final @Nullable ItemType displayType, final @Nullable RegionLangKey langKey,
@@ -49,7 +49,7 @@ public class MenuItemActionExecutorAdd extends MenuItem {
             menu.addItem(new MenuItemTrigger(trig, actionExecutorHolder, getMenu()));
         }
 
-        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
         menu.displayMenu();
 
         return ItemStack.empty();

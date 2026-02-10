@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class MenuItemCondition extends MenuItem {
+public class MenuItemCondition extends AMenuItem {
     private final @NotNull ACondition con;
     private final @NotNull ActionExecutor executor;
 
-    public MenuItemCondition(@Nullable ItemType displayType, @Nullable Component name,
-                             @NotNull ActionExecutor exec, @NotNull ACondition con) {
+    public MenuItemCondition(final @Nullable ItemType displayType, final @Nullable Component name,
+                             final @NotNull ActionExecutor exec, final @NotNull ACondition con) {
         super(displayType, name);
         this.executor = exec;
         this.con = con;
@@ -42,7 +42,7 @@ public class MenuItemCondition extends MenuItem {
     }
 
     private void updateDescription() {
-        @NotNull Map<@NotNull Component, @Nullable Component> out = con.describe();
+        final @NotNull Map<@NotNull Component, @Nullable Component> out = con.describe();
 
         if (out.isEmpty()) {
             return;

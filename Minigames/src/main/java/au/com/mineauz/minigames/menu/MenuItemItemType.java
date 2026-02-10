@@ -12,37 +12,31 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * Used when the menu item holds a ItemType.
- * <p>
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 15/11/2018.
- */
-public class MenuItemItemType extends MenuItem {
+public class MenuItemItemType extends AMenuItem {
     private static final String DESCRIPTION_TOKEN = "ItemType_description";
-    private final @NotNull Callback<@NotNull ItemType> ItemTypeCallback;
+    private final @NotNull Callback<@NotNull ItemType> itemTypeCallback;
 
-    public MenuItemItemType(@Nullable Component name, @NotNull Callback<@NotNull ItemType> c) {
-        super(c.getValue(), name);
-        ItemTypeCallback = c;
+    public MenuItemItemType(final @Nullable Component name, final @NotNull Callback<@NotNull ItemType> callback) {
+        this(name, null, callback);
     }
 
-    public MenuItemItemType(@Nullable Component name,
-                            @Nullable List<@NotNull Component> description, @NotNull Callback<@NotNull ItemType> c) {
-        super(c.getValue(), name, description);
-        ItemTypeCallback = c;
+    public MenuItemItemType(final @Nullable Component name,
+                            final @Nullable List<@NotNull Component> description,
+                            final @NotNull Callback<@NotNull ItemType> callback) {
+        super(callback.getValue(), name, description);
+        itemTypeCallback = callback;
     }
 
     @Override
     public @NotNull ItemStack onClickWithItem(final @NotNull ItemStack item) {
-        ItemTypeCallback.setValue(item.getType().asItemType());
+        itemTypeCallback.setValue(item.getType().asItemType());
         updateDescription();
         return super.onClickWithItem(item);
     }
 
     @Override
     public @NotNull ItemStack onShiftRightClick() {
-        ItemTypeCallback.setValue(ItemType.WOODEN_HOE);
+        itemTypeCallback.setValue(ItemType.WOODEN_HOE);
         return super.onShiftRightClick();
     }
 
@@ -50,8 +44,8 @@ public class MenuItemItemType extends MenuItem {
         setDescriptionPart(DESCRIPTION_TOKEN, List.of(
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ITEMTYPE_DESCRIPTION,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(),
-                    Component.translatable(ItemTypeCallback.getValue().translationKey())))));
+                    Component.translatable(itemTypeCallback.getValue().translationKey())))));
 
-        setDisplayItem(ItemTypeCallback.getValue().createItemStack());
+        setDisplayItem(itemTypeCallback.getValue().createItemStack());
     }
 }

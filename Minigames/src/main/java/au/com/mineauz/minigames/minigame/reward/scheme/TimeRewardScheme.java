@@ -11,23 +11,24 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
+public class TimeRewardScheme extends HierarchyRewardScheme<@NotNull Integer> {
 
-    protected TimeRewardScheme(@NotNull String name) {
+    protected TimeRewardScheme(final @NotNull String name) {
         super(name);
     }
 
     @Override
-    protected @NotNull Integer decrement(Integer value) {
+    protected @NotNull Integer decrement(final @NotNull Integer value) {
         return value - 1;
     }
 
     @Override
-    protected @NotNull Integer increment(Integer value) {
+    protected @NotNull Integer increment(final @NotNull Integer value) {
         return value + 1;
     }
 
@@ -51,7 +52,7 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
      * in seconds
      */
     @Override
-    protected @NotNull Component getMenuItemDescName(@NotNull Integer value) {
+    protected @NotNull Component getMenuItemDescName(final @NotNull Integer value) {
         return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_TIME_DESCRIPTION,
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(value), true)));
     }
@@ -60,7 +61,9 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
      * in seconds
      */
     @Override
-    protected @NotNull Integer getValue(MinigamePlayer player, @NotNull StoredGameStats data, Minigame minigame) {
+    protected @NotNull Integer getValue(final @Nullable MinigamePlayer player,
+                                        final @NotNull StoredGameStats data,
+                                        final @NotNull Minigame minigame) {
         return (int) TimeUnit.MILLISECONDS.toSeconds(data.getStat(MinigameStatistics.CompletionTime));
     }
 
@@ -68,7 +71,7 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
      * in seconds
      */
     @Override
-    protected @NotNull Component getMenuItemName(@NotNull Integer value) {
+    protected @NotNull Component getMenuItemName(final @NotNull Integer value) {
         return MinigameUtils.convertTime(Duration.ofSeconds(value), true);
     }
 }

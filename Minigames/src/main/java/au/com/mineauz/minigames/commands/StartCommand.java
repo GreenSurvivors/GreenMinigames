@@ -47,10 +47,10 @@ public class StartCommand extends ACommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull String @NotNull [] args) {
+    public boolean onCommand(final @NotNull CommandSender sender,
+                             final @NotNull String @NotNull [] args) {
         if (args.length > 0) {
-            Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
+            final @Nullable Minigame mgm = PLUGIN.getMinigameManager().getMinigame(args[0]);
 
             if (mgm != null) {
                 if (mgm.getType() == MinigameType.GLOBAL) {
@@ -66,13 +66,13 @@ public class StartCommand extends ACommand {
                         PLUGIN.getMinigameManager().startGlobalMinigame(mgm, caller);
                     }
                 } else if (mgm.getType() == MinigameType.MULTIPLAYER && mgm.hasPlayers()) {
-                    if (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0) {
-                        if (mgm.getMpTimer() == null) {
-                            mgm.setMpTimer(new MultiplayerTimer(mgm));
+                    if (mgm.getMultiplayerTimer() == null || mgm.getMultiplayerTimer().getPlayerWaitTimeLeft() != 0) {
+                        if (mgm.getMultiplayerTimer() == null) {
+                            mgm.setMultiplayerTimer(new MultiplayerTimer(mgm));
                         }
 
-                        mgm.getMpTimer().setCurrentLobbyWaitTime(0);
-                        mgm.getMpTimer().startTimer();
+                        mgm.getMultiplayerTimer().setCurrentLobbyWaitTime(0);
+                        mgm.getMultiplayerTimer().startTimer();
                     } else {
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_STARTED);
                     }
@@ -87,10 +87,10 @@ public class StartCommand extends ACommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
-                                                         @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(final @NotNull CommandSender sender,
+                                                         final @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
+            final @NotNull List<@NotNull String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
             return CommandDispatcher.tabCompleteMatch(mgs, args[0]);
         }
 

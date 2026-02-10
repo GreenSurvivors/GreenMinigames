@@ -24,7 +24,7 @@ public class TeamPlayerCountRangeCondition extends ACondition {
     private final IntegerFlag min = new IntegerFlag("min", 1);
     private final IntegerFlag max = new IntegerFlag("max", 5);
 
-    protected TeamPlayerCountRangeCondition(@NotNull String name) {
+    protected TeamPlayerCountRangeCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -57,12 +57,12 @@ public class TeamPlayerCountRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(@NotNull MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @NotNull MinigamePlayer mgPlayer, final @NotNull Region region) {
         if (mgPlayer.getTeam() != null) {
             int count = 0;
-            Team t = mgPlayer.getTeam();
-            for (MinigamePlayer user : region.getPlayers()) {
-                if (user.getTeam().equals(t)) {
+            final Team team = mgPlayer.getTeam();
+            for (final @NotNull MinigamePlayer user : region.getPlayers()) {
+                if (user.getTeam().equals(team)) {
                     count++;
                 }
             }
@@ -73,19 +73,19 @@ public class TeamPlayerCountRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final MinigamePlayer mgPlayer, final @NotNull Node node) {
         return false;
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         min.saveValue(config);
         max.saveValue(config);
         saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         min.loadValue(config);
         max.saveValue(config);
         loadInvert(config);
@@ -94,7 +94,7 @@ public class TeamPlayerCountRangeCondition extends ACondition {
     @Override
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         menu.addItem(min.getMenuItem(ItemType.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 1, null));
         menu.addItem(max.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 1, null));
         addInvertMenuItem(menu);

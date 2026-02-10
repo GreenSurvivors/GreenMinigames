@@ -134,7 +134,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
         menuItem.setAllowNull(true);
         menu.addItem(menuItem);
 
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
         menu.displayMenu();
         return true;

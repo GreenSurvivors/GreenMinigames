@@ -1,8 +1,8 @@
 package au.com.mineauz.minigamesregions.menu;
 
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
+import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
-import au.com.mineauz.minigamesregions.RegionModule;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
@@ -12,23 +12,21 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
-public class MenuItemRegenRegion extends MenuItem {
+public class MenuItemRegenRegion extends AMenuItem {
     private final @NotNull MgRegion region;
-    private final @NotNull RegionModule rmod;
+    private final @NotNull Minigame minigame;
 
-    public MenuItemRegenRegion(@Nullable ItemType displayType, @Nullable Component name, @NotNull MgRegion region,
-                               @NotNull RegionModule rmod) {
-        super(displayType, name);
-        this.region = region;
-        this.rmod = rmod;
+    public MenuItemRegenRegion(final @Nullable ItemType displayType, final @Nullable Component name,
+                               final @NotNull MgRegion region, final @NotNull Minigame minigame) {
+        this(displayType, name, null, region, minigame);
     }
 
-    public MenuItemRegenRegion(@Nullable ItemType displayType, @Nullable Component name,
-                               @Nullable List<@NotNull Component> description, @NotNull MgRegion region,
-                               @NotNull RegionModule rmod) {
+    public MenuItemRegenRegion(final @Nullable ItemType displayType, final @Nullable Component name,
+                               final @Nullable List<@NotNull Component> description,
+                               final @NotNull MgRegion region, final @NotNull Minigame minigame) {
         super(displayType, name, description);
         this.region = region;
-        this.rmod = rmod;
+        this.minigame = minigame;
     }
 
     //there is nothing in need of configuration
@@ -39,7 +37,7 @@ public class MenuItemRegenRegion extends MenuItem {
 
     @Override
     public @NonNull ItemStack onRightClick() {
-        rmod.getMinigame().removeRegenRegion(region.getName());
+        minigame.removeRegenRegion(region.getName());
         getMenu().removeItem(getSlot());
         return ItemStack.empty();
     }

@@ -4,11 +4,11 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class MenuItemBack extends MenuItem {
+public class MenuItemBack extends AMenuItem {
     private final @NotNull Menu prev;
 
-    public MenuItemBack(@NotNull Menu prev) {
-        super(MenuUtility.pageBackType(), MgMenuLangKey.MENU_PAGE_BACK);
+    public MenuItemBack(final @NotNull Menu prev) {
+        super(MenuDisplayTypes.pageBackType(), MgMenuLangKey.MENU_PAGE_BACK);
         this.prev = prev;
     }
 

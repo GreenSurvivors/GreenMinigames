@@ -14,49 +14,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MenuItem {
+public abstract class AMenuItem {
     private static final String BASE_DESCRIPTION_TOKEN = "Base_description";
     private final @NotNull List<@NotNull IdComponent> descriptionRegistry = new ArrayList<>();
     private @NotNull ItemStack displayItem;
     private @MonotonicNonNull Menu containingMenu = null;
     private int slot = 0;
 
-    public MenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {
-        this(displayType, name, null);
-    }
-
-    public MenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey) {
-        this(displayType, MinigameMessageManager.getMgMessage(langKey), null);
-    }
-
-    public MenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey, final @Nullable List<Component> description) {
-        this(displayType, MinigameMessageManager.getMgMessage(langKey), description);
-    }
-
-    public MenuItem(@Nullable ItemType displayType, final @Nullable Component name, final @Nullable List<@NotNull Component> description) {
-        if (displayType == null) {
-            if (description == null) {
-                displayType = MenuUtility.slotFillerType();
-            } else {
-                displayType = MenuUtility.unknownType();
-            }
-        }
-        this.displayItem = displayType.createItemStack();
-        final @NotNull ItemMeta meta = this.displayItem.getItemMeta();
-        meta.displayName(name);
-
-        if (description == null) {
-            this.displayItem.setItemMeta(meta);
-        } else {
-            // clear automatically generated lore in case there was one
-            meta.lore(List.of());
-            this.displayItem.setItemMeta(meta);
-
-            setDescriptionPart(BASE_DESCRIPTION_TOKEN, description);
-        }
-    }
-
-    public MenuItem(final @NotNull ItemStack displayItem, final @Nullable Component name) {
+    ///  note: does not overwrite the items lore, and instead sets the lore as base description
+    protected AMenuItem(final @NotNull ItemStack displayItem, final @Nullable Component name) {
         ItemMeta meta = displayItem.getItemMeta();
         if (name != null) {
             meta.displayName(name);
@@ -69,6 +35,41 @@ public class MenuItem {
 
         displayItem.setItemMeta(meta);
         this.displayItem = displayItem;
+    }
+
+    public AMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey) {
+        this(displayType, MinigameMessageManager.getMgMessage(langKey), null);
+    }
+
+    public AMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                     final @Nullable List<Component> description) {
+        this(displayType, MinigameMessageManager.getMgMessage(langKey), description);
+    }
+
+    public AMenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {
+        this(displayType, name, null);
+    }
+
+    public AMenuItem(@Nullable ItemType displayType, final @Nullable Component name,
+                     final @Nullable List<@NotNull Component> description) {
+        if (displayType == null) {
+            if (description == null) {
+                displayType = MenuDisplayTypes.slotFillerType();
+            } else {
+                displayType = MenuDisplayTypes.unknownType();
+            }
+        }
+
+        this.displayItem = displayType.typed().createItemStack(meta -> {
+            meta.customName(name);
+
+            if (description != null) {
+                // clear automatically generated lore in case there was one
+                meta.lore(List.of());
+
+                setDescriptionPart(BASE_DESCRIPTION_TOKEN, description);
+            }
+        });
     }
 
     /**

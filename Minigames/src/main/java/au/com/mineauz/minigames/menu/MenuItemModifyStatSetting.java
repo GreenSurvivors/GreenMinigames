@@ -16,11 +16,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
-public class MenuItemModifyStatSetting extends MenuItem {
+public class MenuItemModifyStatSetting extends AMenuItem {
     private final @NotNull Minigame minigame;
     private final @NotNull MinigameStat stat;
 
-    public MenuItemModifyStatSetting(@Nullable ItemType displayType, @NotNull Minigame minigame, @NotNull MinigameStat stat) {
+    public MenuItemModifyStatSetting(final @Nullable ItemType displayType, final @NotNull Minigame minigame,
+                                     final @NotNull MinigameStat stat) {
         super(displayType, stat.getDisplayName());
 
         this.minigame = minigame;
@@ -59,7 +60,7 @@ public class MenuItemModifyStatSetting extends MenuItem {
             }, Arrays.asList(StatFormat.values())));
         }
 
-        subMenu.addItem(new MenuItemBack(getMenu()), subMenu.getSize() - 9);
+        subMenu.setItem(new MenuItemBack(getMenu()), subMenu.getSize() - 9);
         subMenu.displayMenu();
 
         return super.onClick();

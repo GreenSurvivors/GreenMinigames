@@ -11,33 +11,31 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MenuItemBoolean extends MenuItem {
+public class MenuItemBoolean extends AMenuItem {
     private static final String DESCRIPTION_TOKEN = "Boolean_description";
     private final @NotNull Callback<@NotNull Boolean> toggle;
 
-    public MenuItemBoolean(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
-                           @NotNull Callback<@NotNull Boolean> toggle) {
-        super(displayType, langKey);
-        this.toggle = toggle;
-        update();
+    public MenuItemBoolean(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                           final @NotNull Callback<@NotNull Boolean> toggle) {
+        this(displayType, langKey, null, toggle);
     }
 
-    public MenuItemBoolean(@Nullable ItemType displayType, @Nullable Component name,
-                           @NotNull Callback<@NotNull Boolean> toggle) {
-        super(displayType, name);
-        this.toggle = toggle;
-        update();
-    }
-
-    public MenuItemBoolean(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @Nullable List<@NotNull Component> description,
-                           @NotNull Callback<@NotNull Boolean> toggle) {
+    public MenuItemBoolean(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                           final @Nullable List<@NotNull Component> description,
+                           final @NotNull Callback<@NotNull Boolean> toggle) {
         super(displayType, langKey, description);
         this.toggle = toggle;
         update();
     }
 
-    public MenuItemBoolean(@Nullable ItemType displayType, @Nullable Component name, @Nullable List<@NotNull Component> description,
-                           @NotNull Callback<@NotNull Boolean> toggle) {
+    public MenuItemBoolean(final @Nullable ItemType displayType, final @Nullable Component name,
+                           final @NotNull Callback<@NotNull Boolean> toggle) {
+        this(displayType, name, null, toggle);
+    }
+
+    public MenuItemBoolean(final @Nullable ItemType displayType, final @Nullable Component name,
+                           final @Nullable List<@NotNull Component> description,
+                           final @NotNull Callback<@NotNull Boolean> toggle) {
         super(displayType, name, description);
         this.toggle = toggle;
         update();

@@ -26,9 +26,9 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class VelocityAction extends AAction {
-    private final FloatFlag x = new FloatFlag("xv", 0f);
-    private final FloatFlag y = new FloatFlag("yv", 5f);
-    private final FloatFlag z = new FloatFlag("zv", 0f);
+    private final @NotNull FloatFlag x = new FloatFlag("xv", 0f);
+    private final @NotNull FloatFlag y = new FloatFlag("yv", 5f);
+    private final @NotNull FloatFlag z = new FloatFlag("zv", 0f);
 
     protected VelocityAction(final @NotNull Key key) {
         super(key);
@@ -65,13 +65,13 @@ public class VelocityAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         execute(mgPlayer);
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         execute(mgPlayer);
     }
@@ -98,7 +98,7 @@ public class VelocityAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(x.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_X_NAME), 0.5d, 1d, null, null));
         menu.addItem(y.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Y_NAME), 0.5d, 1d, null, null));
         menu.addItem(z.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Z_NAME), 0.5d, 1d, null, null));

@@ -22,7 +22,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class HealAction extends AAction {
-    private final IntegerFlag heal = new IntegerFlag("amount", 1);
+    private final @NotNull IntegerFlag heal = new IntegerFlag("amount", 1);
 
     protected HealAction(final @NotNull Key key) {
         super(key);
@@ -54,14 +54,13 @@ public class HealAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         execute(mgPlayer);
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         execute(mgPlayer);
     }
@@ -100,7 +99,7 @@ public class HealAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(heal.getMenuItem(ItemType.GOLDEN_APPLE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_HEAL_AMOUNT_NAME), null, null));
         menu.displayMenu();
         return true;

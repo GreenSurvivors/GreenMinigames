@@ -9,8 +9,8 @@ import au.com.mineauz.minigames.managers.DependencyManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.loadout.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.loadout.PlayerLoadout;
@@ -47,6 +47,7 @@ import java.util.*;
 /**
  * wrapper class to keep track of players with additional information.
  * A MinigamePlayer does NOT have to be in a Minigame to be valid!
+ * And - even though we try our best to clean up - may even not be attached to a player on the server anymore!
  */
 public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudience.Single {
     private final @NotNull UUID uuid;
@@ -74,14 +75,14 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudi
     private long storedTime;
     private long completeTime;
     private int reverts;
-    private boolean isLatejoining;
+    private boolean isJoiningLate;
     private boolean isFrozen;
     private boolean canPvP = true;
     private boolean isInvincible;
     private boolean canInteract = true;
     private @Nullable Team team;
     private @Nullable Menu menu;
-    private @Nullable MenuItem menuItemWaitingForManualInput;
+    private @Nullable AMenuItem menuItemWaitingForManualInput;
     private @Nullable SafeFineLocation selection1;
     private @Nullable SafeFineLocation selection2;
     private @Nullable DisplayCuboid selectionDisplay;
@@ -153,13 +154,13 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudi
             return;
         }
 
-        final ItemStack[] storedItems = player.getInventory().getContents();
-        final ItemStack[] storedArmour = player.getInventory().getArmorContents();
+        final @Nullable ItemStack @NotNull [] storedItems = player.getInventory().getContents();
+        final @Nullable ItemStack @NotNull [] storedArmour = player.getInventory().getArmorContents();
         final int food = player.getFoodLevel();
         final double health = player.getHealth();
         final float saturation = player.getSaturation();
         lastScoreboard = player.getScoreboard();
-        final GameMode lastGM = player.getGameMode();
+        final @NotNull GameMode lastGM = player.getGameMode();
         float exp = player.getExp();
         if (exp < 0) {
             plugin.getComponentLogger().warn("Player Experience was less that 0: " + player.getName() + " " + player.getExp());
@@ -171,7 +172,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudi
         player.setFoodLevel(20);
         player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getDefaultValue());
         player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
+        player.getInventory().setArmorContents(new ItemStack[storedArmour.length]);
         player.setLevel(0);
         player.setExp(0);
 
@@ -187,7 +188,6 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudi
         }
 
         player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
 
         player.getInventory().setContents(offlineMinigamePlayer.getStoredItems());
         player.getInventory().setArmorContents(offlineMinigamePlayer.getStoredArmour());
@@ -277,7 +277,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudi
      */
     public @Nullable PlayerLoadout getLoadout() {
         if (minigame != null) {
-            LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
+            final LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
 
             if (loadout != null) {
                 return loadout;
@@ -295,7 +295,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudi
      */
     public @Nullable PlayerLoadout getDefaultLoadout() {
         if (minigame != null) {
-            LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
+            final LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
             if (team != null && loadoutModule.hasLoadout(team.getColor().toString().toLowerCase())) {
                 return loadoutModule.getLoadout(team.getColor().toString().toLowerCase());
             }
@@ -528,7 +528,7 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudi
         setCanPvP(true);
         setInvincible(false);
         setCanInteract(true);
-        setLatejoining(false);
+        setLateJoining(false);
         if (getPlayer().getGameMode() != GameMode.CREATIVE) {
             setCanFly(false);
         }
@@ -541,12 +541,12 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudi
         }
     }
 
-    public boolean isLatejoining() {
-        return isLatejoining;
+    public boolean isJoiningLate() {
+        return isJoiningLate;
     }
 
-    public void setLatejoining(final boolean isLatejoining) {
-        this.isLatejoining = isLatejoining;
+    public void setLateJoining(final boolean isJoiningLate) {
+        this.isJoiningLate = isJoiningLate;
     }
 
     public @Nullable Menu getMenu() {
@@ -565,11 +565,11 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudi
         return menuItemWaitingForManualInput != null;
     }
 
-    public @Nullable MenuItem getMenuItemWaitingForManualInput() {
+    public @Nullable AMenuItem getMenuItemWaitingForManualInput() {
         return menuItemWaitingForManualInput;
     }
 
-    public void setMenuItemWaitingForManualInput(final @Nullable MenuItem item) {
+    public void setMenuItemWaitingForManualInput(final @Nullable AMenuItem item) {
         menuItemWaitingForManualInput = item;
     }
 

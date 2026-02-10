@@ -27,14 +27,14 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class TakeItemAction extends AAction { // todo make material match optional
-    private final ItemFlag itemToSearchFor = new ItemFlag("item", new ItemStack(Material.STONE));
-    private final IntegerFlag count = new IntegerFlag("amount", 1);
+public class TakeItemAction extends AAction { // todo make ItemType match optional
+    private final @NotNull ItemFlag itemToSearchFor = new ItemFlag("item", new ItemStack(Material.STONE));
+    private final @NotNull IntegerFlag count = new IntegerFlag("amount", 1);
 
-    private final BooleanFlag matchName = new BooleanFlag("matchName", false);
-    private final BooleanFlag matchLore = new BooleanFlag("matchLore", false);
-    private final BooleanFlag matchEnchantments = new BooleanFlag("matchEnchantments", false);
-    private final BooleanFlag matchExact = new BooleanFlag("matchExact", false);
+    private final @NotNull BooleanFlag matchName = new BooleanFlag("matchName", false);
+    private final @NotNull BooleanFlag matchLore = new BooleanFlag("matchLore", false);
+    private final @NotNull BooleanFlag matchEnchantments = new BooleanFlag("matchEnchantments", false);
+    private final @NotNull BooleanFlag matchExact = new BooleanFlag("matchExact", false);
 
     protected TakeItemAction(final @NotNull Key key) {
         super(key);
@@ -70,7 +70,7 @@ public class TakeItemAction extends AAction { // todo make material match option
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
 
         if (mgPlayer != null) {
@@ -79,19 +79,19 @@ public class TakeItemAction extends AAction { // todo make material match option
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         execute(mgPlayer);
     }
 
-    private void execute(@NotNull MinigamePlayer mgPlayer) {
-        ItemStack match = itemToSearchFor.getFlag().clone();
+    private void execute(final @NotNull MinigamePlayer mgPlayer) {
+        final ItemStack match = itemToSearchFor.getFlag().clone();
         int stillToRemove = count.getFlag();
 
-        @Nullable ItemStack @NotNull [] contents = mgPlayer.getPlayer().getInventory().getContents();
+        final @Nullable ItemStack @NotNull [] contents = mgPlayer.getPlayer().getInventory().getContents();
         ItemLoop:
         for (int i = 0; i < contents.length; i++) {
-            ItemStack itemToTest = contents[i];
+            final @Nullable ItemStack itemToTest = contents[i];
             if (itemToTest != null && itemToTest.getType() == match.getType()) {
                 if (matchExact.getFlag()) {
                     if (match.hasItemMeta() != itemToTest.hasItemMeta() || (
@@ -124,10 +124,10 @@ public class TakeItemAction extends AAction { // todo make material match option
                     }
 
                     if (matchEnchantments.getFlag()) {
-                        Map<Enchantment, Integer> enchantmentsToSearchFor = new HashMap<>(match.getEnchantments());
-                        Map<Enchantment, Integer> enchantmentsToCheck = new HashMap<>(itemToTest.getEnchantments());
+                        final @NotNull Map<@NotNull Enchantment, @NotNull Integer> enchantmentsToSearchFor = new HashMap<>(match.getEnchantments());
+                        final @NotNull Map<@NotNull Enchantment, @NotNull Integer> enchantmentsToCheck = new HashMap<>(itemToTest.getEnchantments());
 
-                        for (Map.Entry<Enchantment, Integer> enchantmentToSearchFor : enchantmentsToSearchFor.entrySet()) {
+                        for (final @NotNull Map.Entry<@NotNull Enchantment, @NotNull Integer> enchantmentToSearchFor : enchantmentsToSearchFor.entrySet()) {
                             if (Objects.equals(enchantmentsToCheck.get(enchantmentToSearchFor.getKey()), enchantmentToSearchFor.getValue())) {
                                 enchantmentsToCheck.remove(enchantmentToSearchFor.getKey());
                             } else {
@@ -190,13 +190,13 @@ public class TakeItemAction extends AAction { // todo make material match option
     @Override
     public boolean displayMenu(final @NotNull Menu previous) { // todo hide turned of matches
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         // we need a reference for two object we will create soon down the line
-        final CompletableFuture<MenuItemString> futureNameItem = new CompletableFuture<>();
-        final CompletableFuture<MenuItemString> futureLoreItem = new CompletableFuture<>();
+        final @NotNull CompletableFuture<@NotNull MenuItemString> futureNameItem = new CompletableFuture<>();
+        final @NotNull CompletableFuture<@NotNull MenuItemString> futureLoreItem = new CompletableFuture<>();
 
-        final MenuItemItemNbt itemMenuItem = new MenuItemItemNbt(itemToSearchFor.getFlagOrDefault(),
+        final @NotNull MenuItemItemNbt itemMenuItem = new MenuItemItemNbt(itemToSearchFor.getFlagOrDefault(),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_ITEM_NAME), new Callback<>() {
             @Override
             public ItemStack getValue() {
@@ -204,10 +204,10 @@ public class TakeItemAction extends AAction { // todo make material match option
             }
 
             @Override
-            public void setValue(@NotNull ItemStack value) {
+            public void setValue(final @NotNull ItemStack value) {
                 itemToSearchFor.setFlag(value);
 
-                ItemMeta meta = value.getItemMeta();
+                final @NotNull ItemMeta meta = value.getItemMeta();
                 // sync with other menu Items
                 try { // try - catch just to shut the IDE / compiler up. Everything gets already checked beforehand.
                     if (futureNameItem.isDone() && !futureNameItem.isCompletedExceptionally() && meta.displayName() != null) {
@@ -228,7 +228,7 @@ public class TakeItemAction extends AAction { // todo make material match option
         menu.addItem(new MenuItemNewLine());
 
         menu.addItem(matchName.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_NAME_NAME)));
-        final MenuItemString nameMenuItem = new MenuItemString(ItemType.NAME_TAG,
+        final @NotNull MenuItemString nameMenuItem = new MenuItemString(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TAKEITEM_NAME_DESCRIPTION), new Callback<>() {
             private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();
@@ -239,7 +239,7 @@ public class TakeItemAction extends AAction { // todo make material match option
             }
 
             @Override
-            public void setValue(@NotNull String value) {
+            public void setValue(final @NotNull String value) {
                 localCache = value;
                 itemMenuItem.processNewName(MiniMessage.miniMessage().deserialize(value));
             }
@@ -261,12 +261,12 @@ public class TakeItemAction extends AAction { // todo make material match option
             }
 
             @Override
-            public void setValue(@NotNull String value) {
+            public void setValue(final @NotNull String value) {
                 MiniMessage miniMessage = MiniMessage.miniMessage();
 
-                String[] loreArray = value.split(";");
-                List<Component> newLore = new ArrayList<>(loreArray.length);
-                for (String line : loreArray) {
+                final @NotNull String @NotNull[] loreArray = value.split(";");
+                final @NotNull List<@NotNull Component> newLore = new ArrayList<>(loreArray.length);
+                for (final @NotNull String line : loreArray) {
                     newLore.add(miniMessage.deserialize(line));
                 }
                 itemMenuItem.processNewLore(newLore);

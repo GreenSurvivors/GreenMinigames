@@ -6,8 +6,8 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -59,7 +59,7 @@ public class SetLoadoutCommand extends ASetCommand {
         if (sender instanceof final @NotNull Player player) {
             final @NotNull MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
             final @NotNull Menu loadoutMenu = new Menu(6, Component.text(getName()), mgPlayer);
-            final @NotNull List<@NotNull MenuItem> menuItems = new ArrayList<>();
+            final @NotNull List<@NotNull AMenuItem> menuItems = new ArrayList<>();
             final @Nullable LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
 
             if (loadoutModule != null) {
@@ -76,7 +76,7 @@ public class SetLoadoutCommand extends ASetCommand {
                     mil.setAllowDelete(loadout.isDeletable());
                     menuItems.add(mil);
                 }
-                loadoutMenu.addItem(new MenuItemLoadoutAdd(ItemType.ITEM_FRAME, MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+                loadoutMenu.setItem(new MenuItemLoadoutAdd(ItemType.ITEM_FRAME, MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
                         loadoutModule.getLoadoutMap(), minigame), 53);
                 loadoutMenu.addItems(menuItems);
 
@@ -94,8 +94,8 @@ public class SetLoadoutCommand extends ASetCommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(final @NotNull CommandSender sender, final @NotNull Minigame minigame,
+                                                         final @NotNull String @NotNull [] args) {
         return null;
     }
 }

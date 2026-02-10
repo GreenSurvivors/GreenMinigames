@@ -60,26 +60,27 @@ public class SwitchTeamAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         executeAction(mgPlayer);
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         executeAction(mgPlayer);
     }
 
-    private void executeAction(@Nullable MinigamePlayer mgPlayer) {
+    private void executeAction(final @Nullable MinigamePlayer mgPlayer) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
         if (teamFrom.getFlag().equals("NONE")) return;
         if (!teamFrom.getFlag().equals("ALL") || !teamFrom.getFlag().equals(mgPlayer.getTeam().getColor().toString()))
             return;
+        final TeamsModule teamsModule = TeamsModule.getMinigameModule(mgPlayer.getMinigame());
+        final @NotNull List<@NotNull Team> teams = teamsModule.getTeams();
         if (teamTo.getFlag().equals("ALL")) {
-            List<Team> teams = TeamsModule.getMinigameModule(mgPlayer.getMinigame()).getTeams();
             Collections.shuffle(teams);
-            for (Team t : teams) {
-                if (t != mgPlayer.getTeam()) {
-                    mgPlayer.setTeam(t);
+            for (final @NotNull Team team : teams) {
+                if (team != mgPlayer.getTeam()) {
+                    mgPlayer.setTeam(team);
                     return;
                 }
             }
@@ -89,9 +90,9 @@ public class SwitchTeamAction extends AAction {
                 mgPlayer.setTeam(null);
             }
         }
-        for (Team t : TeamsModule.getMinigameModule(mgPlayer.getMinigame()).getTeams()) {
-            if (t.getColor().toString().equals(teamTo.getFlag())) {
-                mgPlayer.setTeam(t);
+        for (final @NotNull Team team : teams) {
+            if (team.getColor().toString().equals(teamTo.getFlag())) {
+                mgPlayer.setTeam(team);
             }
         }
     }
@@ -108,7 +109,7 @@ public class SwitchTeamAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), prev.getIntendedViewer());
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
 
         final @NotNull List<@NotNull String> teams = Arrays.stream(TeamColor.values()).map(TeamColor::getUserFriendlyName).collect(Collectors.toCollection(ArrayList::new));
         teams.add("All"); //todo ?

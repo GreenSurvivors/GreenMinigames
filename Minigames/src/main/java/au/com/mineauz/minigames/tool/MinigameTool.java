@@ -31,44 +31,44 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MinigameTool {
-    private final Map<String, String> customSetting = new HashMap<>();
+    private final @NotNull Map<@NotNull String, @NotNull String> customSetting = new HashMap<>();
     private final @NotNull ItemStack tool;
     private @Nullable Minigame minigame = null;
     private @Nullable ToolMode mode = null;
     private @Nullable TeamColor teamColor = null;
 
-    public MinigameTool(@NotNull ItemStack tool) {
+    public MinigameTool(final @NotNull ItemStack tool) {
         this.tool = tool;
-        ItemMeta meta = tool.getItemMeta();
-        List<Component> lore = meta.lore();
-        PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
+        final @NotNull ItemMeta meta = tool.getItemMeta();
+        @Nullable List<@NotNull Component> lore = meta.lore();
+        final @NotNull PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
 
         if (lore != null && lore.size() >= 3) {
-            Pattern minigamePattern = Pattern.compile(
+            final @NotNull Pattern minigamePattern = Pattern.compile(
                 MinigameMessageManager.getStrippedMgMessage(MgMiscLangKey.TOOL_SELECTED_MINIGAME_DESCRIPTION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), "(.*)")),
                 Pattern.CASE_INSENSITIVE);
-            Matcher mgMatcher = minigamePattern.matcher(plainSerializer.serialize(lore.getFirst()));
+            final @NotNull Matcher mgMatcher = minigamePattern.matcher(plainSerializer.serialize(lore.getFirst()));
 
             if (mgMatcher.matches()) {
                 minigame = Minigames.getPlugin().getMinigameManager().getMinigame(mgMatcher.group(1));
             }
 
-            Pattern modePattern = Pattern.compile(
+            final @NotNull Pattern modePattern = Pattern.compile(
                 MinigameMessageManager.getStrippedMgMessage(MgMiscLangKey.TOOL_SELECTED_MODE_DESCRIPTION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), "(.*)")),
                 Pattern.CASE_INSENSITIVE);
-            Matcher modeMatcher = modePattern.matcher(plainSerializer.serialize(lore.get(1)));
+            final @NotNull Matcher modeMatcher = modePattern.matcher(plainSerializer.serialize(lore.get(1)));
 
             if (modeMatcher.matches()) {
                 mode = ToolModes.getToolMode(modeMatcher.group(1).replace(" ", "_"));
             }
 
-            Pattern teamPattern = Pattern.compile(
+            final @NotNull Pattern teamPattern = Pattern.compile(
                 MinigameMessageManager.getStrippedMgMessage(MgMiscLangKey.TOOL_SELECTED_TEAM_DESCRIPTION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), "(.*)")),
                 Pattern.CASE_INSENSITIVE);
-            Matcher teamMatcher = teamPattern.matcher(plainSerializer.serialize(lore.get(2)));
+            final @NotNull Matcher teamMatcher = teamPattern.matcher(plainSerializer.serialize(lore.get(2)));
 
             if (teamMatcher.matches()) {
                 teamColor = TeamColor.matchColor(teamMatcher.group(1));
@@ -127,7 +127,7 @@ public class MinigameTool {
      * @param player The player to check
      * @return false if the player doesn't have one.
      */
-    public static boolean hasMinigameTool(@NotNull MinigamePlayer player) {
+    public static boolean hasMinigameTool(final @NotNull MinigamePlayer player) {
         for (ItemStack item : player.getPlayer().getInventory().getContents()) {
             if (isMinigameTool(item)) {
                 return true;
@@ -142,7 +142,7 @@ public class MinigameTool {
      * @param item The item to check
      * @return false if the item was not a Minigame tool
      */
-    public static boolean isMinigameTool(@Nullable ItemStack item) {
+    public static boolean isMinigameTool(final @Nullable ItemStack item) {
         return item != null && item.getItemMeta() != null && item.getItemMeta().displayName() != null &&// todo check something else to be sure
             MinigameMessageManager.getMgMessage(MgMiscLangKey.TOOL_NAME).contains(item.getItemMeta().displayName(), Component.EQUALS);
     }
@@ -279,7 +279,7 @@ public class MinigameTool {
             }
             return miselect.getDisplayItem();
         });
-        menu.addItem(miselect, menu.getSize() - 2);
+        menu.setItem(miselect, menu.getSize() - 2);
 
 
         final @NotNull MenuItemCustom mideselect = new MenuItemCustom(ItemType.GLASS, MgMenuLangKey.MENU_TOOL_DESELECT_NAME,
@@ -290,9 +290,9 @@ public class MinigameTool {
             }
             return mideselect.getDisplayItem();
         });
-        menu.addItem(mideselect, menu.getSize() - 1);
+        menu.setItem(mideselect, menu.getSize() - 1);
 
-        menu.addItem(new MenuItemToolTeam(ItemType.PAPER, MgMenuLangKey.MENU_TOOL_SETTEAM_NAME, new Callback<>() { //todo new MenuItemList(ItemType.LEATHER_CHESTPLATE, "Lock to Team", loadout.getTeamColorCallback(), teams)
+        menu.setItem(new MenuItemToolTeam(ItemType.PAPER, MgMenuLangKey.MENU_TOOL_SETTEAM_NAME, new Callback<>() { //todo new MenuItemList(ItemType.LEATHER_CHESTPLATE, "Lock to Team", loadout.getTeamColorCallback(), teams)
 
             @Override
             public TeamColor getValue() {

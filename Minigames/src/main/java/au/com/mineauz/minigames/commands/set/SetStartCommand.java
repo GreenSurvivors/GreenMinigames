@@ -51,11 +51,11 @@ public class SetStartCommand extends ASetCommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, final @NotNull Minigame minigame,
+                             final @NotNull String @Nullable [] args) {
 
         if (args != null && args[0].equalsIgnoreCase("clear")) {
-            TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+            final @Nullable TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
 
             if (teamsModule != null) {
                 if (args.length >= 2) {
@@ -93,7 +93,7 @@ public class SetStartCommand extends ASetCommand {
                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgDefaultModules.TEAMS.getKey().value()));
                 return false;
             }
-        } else if (sender instanceof Player player) {
+        } else if (sender instanceof final @NotNull Player player) {
             int number;
             @Nullable TeamColor teamColor = null;
             final @Nullable TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
@@ -147,7 +147,7 @@ public class SetStartCommand extends ASetCommand {
 
             if (number > 0) {
                 if (teamColor == null) {
-                    minigame.addStartLocation(new SafeFullLocation(player.getLocation()), number);
+                    minigame.setStartLocation(new SafeFullLocation(player.getLocation()), number);
 
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_START_ADD_SINGLE,
                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(number)));
@@ -182,9 +182,9 @@ public class SetStartCommand extends ASetCommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
-        TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+    public @Nullable List<@NotNull String> onTabComplete(final @NotNull CommandSender sender, final @NotNull Minigame minigame,
+                                                         final @NotNull String @NotNull [] args) {
+        final @Nullable TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
 
         if (teamsModule != null) {
             List<String> teams = teamsModule.getTeamColors().stream().

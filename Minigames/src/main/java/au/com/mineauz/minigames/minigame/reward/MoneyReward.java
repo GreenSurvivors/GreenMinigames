@@ -25,16 +25,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MoneyReward extends ARewardType {
-    private static final Minigames PLUGIN = Minigames.getPlugin();
-    private static final String DESCRIPTION_TOKEN = "Reward_description";
+    private static final @NotNull Minigames PLUGIN = Minigames.getPlugin();
+    private static final @NotNull String DESCRIPTION_TOKEN = "Reward_description";
     private double money = 0d;
 
-    public MoneyReward(@NotNull Rewards rewards) {
+    public MoneyReward(final @NotNull Rewards rewards) {
         super(rewards);
     }
 
-    public static @Nullable MoneyReward getMinigameReward(@NotNull Rewards rewards) {
-        return (MoneyReward) RewardTypes.getRewardType(RewardTypes.MgRewardType.MONEY.getName(), rewards);
+    public static @Nullable MoneyReward getMinigameReward(final @NotNull Rewards rewards) {
+        return (MoneyReward) RewardTypes.getRewardType(RewardTypes.MgDefaultRewardType.MONEY.getName(), rewards);
     }
 
     @Override
@@ -44,12 +44,12 @@ public class MoneyReward extends ARewardType {
 
     @Override
     public boolean isUsable() {
-        return Minigames.getPlugin().getEconomy() != null;
+        return PLUGIN.getEconomy() != null;
     }
 
     @Override
-    public void giveReward(@NotNull MinigamePlayer mgPlayer) {
-        Economy economy = PLUGIN.getEconomy();
+    public void giveReward(final @NotNull MinigamePlayer mgPlayer) {
+        final @Nullable Economy economy = PLUGIN.getEconomy();
 
         if (economy != null) {
             economy.depositPlayer(mgPlayer.getPlayer().getPlayer(), money);
@@ -61,17 +61,17 @@ public class MoneyReward extends ARewardType {
     }
 
     @Override
-    public @NotNull MenuItem getMenuItem() {
+    public @NotNull AMenuItem getMenuItem() {
         return new MenuItemReward(this);
     }
 
     @Override
-    public void saveReward(@NotNull CommentedConfigurationNode config) {
+    public void saveReward(final @NotNull CommentedConfigurationNode config) {
         config.raw(money);
     }
 
     @Override
-    public void loadReward(@NotNull CommentedConfigurationNode config) {
+    public void loadReward(final @NotNull CommentedConfigurationNode config) {
         money = config.getDouble();
     }
 
@@ -83,11 +83,11 @@ public class MoneyReward extends ARewardType {
         money = amount;
     }
 
-    private class MenuItemReward extends MenuItem {
+    private class MenuItemReward extends AMenuItem {
         private final @NotNull MoneyReward reward;
         private final @NotNull List<@NotNull RewardRarity> options = new ArrayList<>();
 
-        public MenuItemReward(@NotNull MoneyReward reward) {
+        public MenuItemReward(final @NotNull MoneyReward reward) {
             super(ItemType.PAPER, MinigameUtils.formatMoney(money));
             options.addAll(Arrays.asList(RewardRarity.values()));
             this.reward = reward;
@@ -95,8 +95,7 @@ public class MoneyReward extends ARewardType {
         }
 
         public void updateDescription() {
-            List<Component> description;
-            int pos = options.indexOf(getRarity());
+            final int pos = options.indexOf(getRarity());
             int before = pos - 1;
             int after = pos + 1;
             if (before <= -1) {
@@ -106,7 +105,7 @@ public class MoneyReward extends ARewardType {
                 after = 0;
             }
 
-            description = new ArrayList<>();
+            final @NotNull List<@NotNull Component> description = new ArrayList<>();
             description.add(options.get(before).getDisplayName().color(NamedTextColor.GRAY));
             description.add(getRarity().getDisplayName().color(NamedTextColor.GREEN));
             description.add(options.get(after).getDisplayName().color(NamedTextColor.GRAY));
@@ -120,8 +119,9 @@ public class MoneyReward extends ARewardType {
         public @NotNull ItemStack onClick() {
             int ind = options.lastIndexOf(getRarity());
             ind++;
-            if (ind == options.size())
+            if (ind == options.size()) {
                 ind = 0;
+            }
 
             setRarity(options.get(ind));
             updateDescription();
@@ -133,8 +133,9 @@ public class MoneyReward extends ARewardType {
         public @NotNull ItemStack onRightClick() {
             int ind = options.lastIndexOf(getRarity());
             ind--;
-            if (ind == -1)
+            if (ind == -1) {
                 ind = options.size() - 1;
+            }
 
             setRarity(options.get(ind));
             updateDescription();
@@ -145,7 +146,7 @@ public class MoneyReward extends ARewardType {
         @Override
         public @NotNull ItemStack onShiftClick() {
             final @NotNull Menu menu = new Menu(3, MgMenuLangKey.MENU_MONEYREWARD_MENU_NAME, getMenu().getIntendedViewer());
-            MenuItemDecimal dec = new MenuItemDecimal(ItemType.PAPER,
+            final @NotNull MenuItemDecimal dec = new MenuItemDecimal(ItemType.PAPER,
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MONEYREWARD_ITEM_NAME),
                 new Callback<>() {
                     @Override
@@ -169,7 +170,7 @@ public class MoneyReward extends ARewardType {
                     }
                 }, 50d, 100d, 1d, null);
             menu.addItem(dec);
-            menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+            menu.setItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
             menu.displayMenu();
             return ItemStack.empty();
         }

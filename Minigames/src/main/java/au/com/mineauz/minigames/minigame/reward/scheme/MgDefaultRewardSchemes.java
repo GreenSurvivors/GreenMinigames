@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public enum MgRewardSchemes implements RewardSchemeFactory {
+public enum MgDefaultRewardSchemes implements RewardSchemeFactory {
     STANDARD("standard", StandardRewardScheme::new),
     SCORE("score", ScoreRewardScheme::new),
     TIME("time", TimeRewardScheme::new),
@@ -16,7 +16,7 @@ public enum MgRewardSchemes implements RewardSchemeFactory {
     final @NotNull Function<@NotNull String, @NotNull ARewardScheme> constructor;
 
 
-    MgRewardSchemes(@NotNull String name, @NotNull Function<@NotNull String, @NotNull ARewardScheme> constructor) {
+    MgDefaultRewardSchemes(final @NotNull String name, final @NotNull Function<@NotNull String, @NotNull ARewardScheme> constructor) {
         this.name = name;
         this.constructor = constructor;
     }

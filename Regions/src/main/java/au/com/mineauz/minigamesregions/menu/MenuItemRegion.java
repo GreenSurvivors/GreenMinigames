@@ -1,10 +1,10 @@
 package au.com.mineauz.minigamesregions.menu;
 
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuDisplayTypes;
 import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.Region;
@@ -23,20 +23,18 @@ import org.jspecify.annotations.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemRegion extends MenuItem {
+public class MenuItemRegion extends AMenuItem {
     private final @NotNull Region region;
     private final @NotNull RegionModule rmod;
 
-    public MenuItemRegion(@Nullable ItemType displayType, @Nullable Component name, @NotNull Region region,
-                          @NotNull RegionModule rmod) {
-        super(displayType, name);
-        this.region = region;
-        this.rmod = rmod;
+    public MenuItemRegion(final @Nullable ItemType displayType, final @Nullable Component name,
+                          final @NotNull Region region, final @NotNull RegionModule rmod) {
+        this(displayType, name, null, region, rmod);
     }
 
-    public MenuItemRegion(@Nullable ItemType displayType, @NotNull Component name,
-                          @Nullable List<@NotNull Component> description, @NotNull Region region,
-                          @NotNull RegionModule rmod) {
+    public MenuItemRegion(final @Nullable ItemType displayType, @NotNull Component name,
+                          final @Nullable List<@NotNull Component> description,
+                          final @NotNull Region region, final @NotNull RegionModule rmod) {
         super(displayType, name, description);
         this.region = region;
         this.rmod = rmod;
@@ -51,19 +49,20 @@ public class MenuItemRegion extends MenuItem {
         return createMenu(previousPage.getIntendedViewer(), previousPage, region);
     }
 
-    @ApiStatus.Obsolete
-    protected static @NotNull Menu createMenu(@NotNull MinigamePlayer viewer, @Nullable Menu previousPage, @NotNull Region region) {
-        Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_REGION_NAME,
+    @ApiStatus.Obsolete // use one of the ones above, since you only need one - a page or a viewer
+    protected static @NotNull Menu createMenu(final @NotNull MinigamePlayer viewer,
+                                              final @Nullable Menu previousPage, final @NotNull Region region) {
+        final @NotNull Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_REGION_NAME,
                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), region.getName())), viewer);
         menu.setPreviousPage(previousPage);
-        List<MenuItem> items = new ArrayList<>();
-        for (ActionExecutor ex : region.getExecutors()) {
+        final @NotNull List<@NotNull AMenuItem> items = new ArrayList<>();
+        for (final @NotNull ActionExecutor ex : region.getExecutors()) {
             items.add(new MenuItemActionExecutor(region, ex));
         }
         if (previousPage != null) {
-            menu.addItem(new MenuItemBack(previousPage), menu.getSize() - 9);
+            menu.setItem(new MenuItemBack(previousPage), menu.getSize() - 9);
         }
-        menu.addItem(new MenuItemActionExecutorAdd(MenuUtility.createType(),
+        menu.setItem(new MenuItemActionExecutorAdd(MenuDisplayTypes.createType(),
                 RegionLangKey.MENU_EXECUTOR_ADD_NAME, region), menu.getSize() - 1);
         menu.addItems(items);
 

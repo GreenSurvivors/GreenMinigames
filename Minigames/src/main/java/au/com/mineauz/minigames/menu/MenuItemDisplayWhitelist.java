@@ -11,21 +11,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemDisplayWhitelist extends MenuItem {
+public class MenuItemDisplayWhitelist extends AMenuItem {
     private final @NotNull List<@NotNull BlockType> whitelist;
     private final @NotNull Callback<Boolean> whitelistMode;
     private final @NotNull List<@NotNull Component> modeDescription;
 
-    public MenuItemDisplayWhitelist(@Nullable ItemType displayType, @Nullable Component name,
-                                    @NotNull List<@NotNull BlockType> whitelist, @NotNull Callback<Boolean> whitelistMode,
-                                    @NotNull List<@NotNull Component> modeDescription) {
+    public MenuItemDisplayWhitelist(final @Nullable ItemType displayType, final @Nullable Component name,
+                                    final @NotNull List<@NotNull BlockType> whitelist, final @NotNull Callback<Boolean> whitelistMode,
+                                    final @NotNull List<@NotNull Component> modeDescription) {
         this(displayType, name, null, whitelist, whitelistMode, modeDescription);
     }
 
-    public MenuItemDisplayWhitelist(@Nullable ItemType displayType, @Nullable Component name,
-                                    @Nullable List<@NotNull Component> mainDescription,
-                                    @NotNull List<@NotNull BlockType> whitelist, @NotNull Callback<Boolean> whitelistMode,
-                                    @NotNull List<@NotNull Component> modeDescription) {
+    public MenuItemDisplayWhitelist(final @Nullable ItemType displayType, final @Nullable Component name,
+                                    final @Nullable List<@NotNull Component> mainDescription,
+                                    final @NotNull List<@NotNull BlockType> whitelist, final @NotNull Callback<Boolean> whitelistMode,
+                                    final @NotNull List<@NotNull Component> modeDescription) {
         super(displayType, name, mainDescription);
         this.whitelist = whitelist;
         this.whitelistMode = whitelistMode;
@@ -35,7 +35,7 @@ public class MenuItemDisplayWhitelist extends MenuItem {
     @Override
     public @NotNull ItemStack onClick() {
         final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_WHITELIST_BLOCK_NAME, getMenu().getIntendedViewer());
-        final @NotNull List<@NotNull MenuItem> items = new ArrayList<>();
+        final @NotNull List<@NotNull AMenuItem> items = new ArrayList<>();
         for (final @NotNull BlockType blockType : whitelist) {
             if (blockType.hasItemType()) {
                 items.add(new MenuItemWhitelistBlock(blockType.getItemType(), whitelist));
@@ -43,9 +43,9 @@ public class MenuItemDisplayWhitelist extends MenuItem {
                 // todo create a placeholder item
             }
         }
-        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
-        menu.addItem(new MenuItemAddWhitelistBlock(MgMenuLangKey.MENU_WHITELIST_ADDBLOCKTYPE_NAME, whitelist), menu.getSize() - 1);
-        menu.addItem(new MenuItemBoolean(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_WHITELIST_MODE, modeDescription,
+        menu.setItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+        menu.setItem(new MenuItemAddWhitelistBlock(MgMenuLangKey.MENU_WHITELIST_ADDBLOCKTYPE_NAME, whitelist), menu.getSize() - 1);
+        menu.setItem(new MenuItemBoolean(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_WHITELIST_MODE, modeDescription,
             whitelistMode), menu.getSize() - 2);
         menu.addItems(items);
         menu.displayMenu();

@@ -10,21 +10,23 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MenuItemDisplayRewards extends MenuItem {
+public class MenuItemDisplayRewards extends AMenuItem {
     private final @NotNull Rewards rewards;
 
-    public MenuItemDisplayRewards(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Rewards rewards) {
+    public MenuItemDisplayRewards(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                                  final @NotNull Rewards rewards) {
         super(displayType, langKey);
         this.rewards = rewards;
     }
 
-    public MenuItemDisplayRewards(@Nullable ItemType displayType, @Nullable Component name, @NotNull Rewards rewards) {
-        super(displayType, name);
-        this.rewards = rewards;
+    public MenuItemDisplayRewards(final @Nullable ItemType displayType, final @Nullable Component name,
+                                  final @NotNull Rewards rewards) {
+        this(displayType, name, null, rewards);
     }
 
-    public MenuItemDisplayRewards(@Nullable ItemType displayType, @Nullable Component name,
-                                  @Nullable List<@NotNull Component> description, @NotNull Rewards rewards) {
+    public MenuItemDisplayRewards(final @Nullable ItemType displayType, final @Nullable Component name,
+                                  final @Nullable List<@NotNull Component> description,
+                                  final @NotNull Rewards rewards) {
         super(displayType, name, description);
         this.rewards = rewards;
     }

@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class MessageAction extends AAction {
-    private final StringFlag msg = new StringFlag("message", "Hello World");
-    private final EnumFlag<MinigameMessageType> messageType = new EnumFlag<>("messageType", MinigameMessageType.INFO);
+    private final @NotNull StringFlag msg = new StringFlag("message", "Hello World");
+    private final @NotNull EnumFlag<@NotNull MinigameMessageType> messageType = new EnumFlag<>("messageType", MinigameMessageType.INFO);
 
     protected MessageAction(final @NotNull Key key) {
         super(key);
@@ -119,7 +119,7 @@ public class MessageAction extends AAction {
             }
 
             @Override
-            public @Nullable ScriptReference resolveReference(@NotNull String name) {
+            public @Nullable ScriptReference resolveReference(final @NotNull String name) {
                 if (name.equalsIgnoreCase("player")) {
                     return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
@@ -137,7 +137,7 @@ public class MessageAction extends AAction {
         execute(mgPlayer, base);
     }
 
-    private void execute(@NotNull MinigamePlayer mgPlayer, @NotNull ScriptObject base) {
+    private void execute(final @NotNull MinigamePlayer mgPlayer, final @NotNull ScriptObject base) {
         String message = msg.getFlag();
 
         message = ExpressionParser.stringResolve(message, base, true, true);
@@ -159,7 +159,7 @@ public class MessageAction extends AAction {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setPreviousPage(previous);
         menu.addItem(msg.getMenuItem(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME)));
-        menu.addItem(new MenuItemBack(menu.getPreviousPage()), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(menu.getPreviousPage()), menu.getSize() - 9);
         menu.displayMenu();
         return true;
     }

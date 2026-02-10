@@ -4,7 +4,7 @@ import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("UnstableApiUsage") // shutup ItemType
-public class MenuUtility {
+public class MenuDisplayTypes {
 
     public static @NotNull ItemType pageBackType() {
         return ItemType.REDSTONE_TORCH;

@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,17 +57,17 @@ public class GlobalLoadoutCommand extends ACommand {
         if (sender instanceof final @NotNull Player player) {
             final @NotNull MinigamePlayer mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
             final @NotNull Menu globalLoadoutMenu = new Menu(6, MgMenuLangKey.MENU_GLOBALLOADOUT_NAME, mgPlayer);
-            final @NotNull List<@NotNull MenuItem> menuItems = new ArrayList<>();
+            final @NotNull List<@NotNull AMenuItem> menuItems = new ArrayList<>();
 
-            for (PlayerLoadout globalLoadout : LoadoutModule.getGlobalLoadouts()) {
-                ItemType displayType = ItemType.WHITE_STAINED_GLASS_PANE;
+            for (final @NotNull PlayerLoadout globalLoadout : LoadoutModule.getGlobalLoadouts()) {
+                @UnknownNullability ItemType displayType = ItemType.WHITE_STAINED_GLASS_PANE;
                 if (!globalLoadout.getItemSlots().isEmpty()) {
                     displayType = globalLoadout.getItem((Integer) globalLoadout.getItemSlots().toArray()[0]).getType().asItemType();
                 }
                 menuItems.add(new MenuItemDisplayLoadout(displayType, globalLoadout.getDisplayName(),
                     MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), globalLoadout));
             }
-            globalLoadoutMenu.addItem(new MenuItemLoadoutAdd(MenuUtility.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+            globalLoadoutMenu.setItem(new MenuItemLoadoutAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
                 LoadoutModule.getGlobalLoadoutMap()), 53);
             globalLoadoutMenu.addItems(menuItems);
 

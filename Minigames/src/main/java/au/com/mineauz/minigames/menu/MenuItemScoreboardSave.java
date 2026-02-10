@@ -10,29 +10,31 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MenuItemScoreboardSave extends MenuItem {
-    private final @NotNull ScoreboardDisplay disp;
+public class MenuItemScoreboardSave extends AMenuItem {
+    private final @NotNull ScoreboardDisplay display;
 
-    public MenuItemScoreboardSave(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull ScoreboardDisplay disp) {
+    public MenuItemScoreboardSave(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                                  final @NotNull ScoreboardDisplay display) {
         super(displayType, langKey);
-        this.disp = disp;
+        this.display = display;
     }
 
-    public MenuItemScoreboardSave(@Nullable ItemType displayType, @Nullable Component name, @NotNull ScoreboardDisplay disp) {
-        super(displayType, name);
-        this.disp = disp;
+    public MenuItemScoreboardSave(final @Nullable ItemType displayType, final @Nullable Component name,
+                                  final @NotNull ScoreboardDisplay display) {
+        this(displayType, name, null, display);
     }
 
-    public MenuItemScoreboardSave(@Nullable ItemType displayType, @Nullable Component name,
-                                  @Nullable List<@NotNull Component> description, @NotNull ScoreboardDisplay disp) {
+    public MenuItemScoreboardSave(final @Nullable ItemType displayType, final @Nullable Component name,
+                                  final @Nullable List<@NotNull Component> description,
+                                  final @NotNull ScoreboardDisplay display) {
         super(displayType, name, description);
-        this.disp = disp;
+        this.display = display;
     }
 
     @Override
     public @NotNull ItemStack onClick() {
-        disp.placeRootSign();
-        disp.reload();
+        display.placeRootSign();
+        display.reload();
 
         getMenu().getIntendedViewer().getPlayer().closeInventory();
         return ItemStack.empty();

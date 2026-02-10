@@ -55,16 +55,16 @@ public class SetRegionCommand extends ASetCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame, @NotNull String @Nullable [] args) {
         if (args != null) {
-            if (sender instanceof Player player) {
-                MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
-                RegionModule rmod = RegionModule.getMinigameModule(minigame);
+            if (sender instanceof final @NotNull Player player) {
+                final @NotNull MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
+                final @Nullable RegionModule rmod = RegionModule.getMinigameModule(minigame);
 
                 if (rmod != null) {
                     if (args.length == 2) {
                         if (args[0].equalsIgnoreCase("create")) {
                             if (mgPlayer.hasSelection()) {
-                                String name = args[1];
-                                rmod.addRegion(name, new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
+                                final @NotNull String name = args[1];
+                                rmod.addRegion(new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
                                 mgPlayer.clearSelection();
 
                                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.SUCCESS, RegionMessageManager.getBundleKey(),
@@ -111,16 +111,16 @@ public class SetRegionCommand extends ASetCommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(final @NotNull CommandSender sender, final @NotNull Minigame minigame,
+                                                         final @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            List<String> tab = List.of("create", "modify", "remove");
+            final @NotNull List<@NotNull String> tab = List.of("create", "modify", "remove");
             return CommandDispatcher.tabCompleteMatch(tab, args[0]);
         } else if (args.length == 2) {
-            List<String> tab = new ArrayList<>();
+            final @NotNull List<@NotNull String> tab = new ArrayList<>();
             if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("remove")) {
-                RegionModule rmod = RegionModule.getMinigameModule(minigame);
-                for (Region reg : rmod.getRegions()) {
+                final RegionModule rmod = RegionModule.getMinigameModule(minigame);
+                for (final @NotNull Region reg : rmod.getRegions()) {
                     tab.add(reg.getName());
                 }
             }

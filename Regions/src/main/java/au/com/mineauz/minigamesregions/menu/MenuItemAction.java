@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.actions.IAction;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class MenuItemAction extends MenuItem {
-    private static final String DESCRIPTION_TOKEN = "Action_description";
+public class MenuItemAction extends AMenuItem {
+    private static final @NotNull String DESCRIPTION_TOKEN = "Action_description";
     private final @NotNull ActionExecutor exec;
     private final @NotNull IAction act;
 
-    public MenuItemAction(@Nullable ItemType displayType, @Nullable Component name,
-                          @NotNull ActionExecutor exec, @NotNull IAction act) {
+    public MenuItemAction(final @Nullable ItemType displayType, final @Nullable Component name,
+                          final @NotNull ActionExecutor exec, final @NotNull IAction act) {
         super(displayType, name);
         this.exec = exec;
         this.act = act;

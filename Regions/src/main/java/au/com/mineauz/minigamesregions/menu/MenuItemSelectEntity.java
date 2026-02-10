@@ -4,8 +4,8 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.consumer.EntityConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Main;
@@ -27,24 +27,25 @@ import org.jspecify.annotations.NonNull;
 import java.time.Duration;
 import java.util.List;
 
-public class MenuItemSelectEntity extends MenuItem implements EntityConsumer {
+public class MenuItemSelectEntity extends AMenuItem implements EntityConsumer {
     private static final String DESCRIPTION_TOKEN = "Entity_description";
     private final @NotNull Callback<EntitySnapshot> entitySnapshotCallback;
 
-    public MenuItemSelectEntity(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<EntitySnapshot> c) {
-        super(displayType, name);
-        entitySnapshotCallback = c;
+    public MenuItemSelectEntity(final @Nullable ItemType displayType, final @Nullable Component name,
+                                final @NotNull Callback<EntitySnapshot> callback) {
+        this(displayType, name, null, callback);
     }
 
-    public MenuItemSelectEntity(@Nullable ItemType displayType, @Nullable Component name,
-                                @Nullable List<@NotNull Component> description, @NotNull Callback<EntitySnapshot> c) {
+    public MenuItemSelectEntity(final @Nullable ItemType displayType, final @Nullable Component name,
+                                final @Nullable List<@NotNull Component> description,
+                                final @NotNull Callback<EntitySnapshot> callback) {
         super(displayType, name, description);
-        entitySnapshotCallback = c;
+        entitySnapshotCallback = callback;
     }
 
     @Override
-    public @NonNull ItemStack onClickWithItem(@NotNull ItemStack item) {
-        if (item.getItemMeta() instanceof SpawnEggMeta spawnEggMeta) {
+    public @NonNull ItemStack onClickWithItem(final @NotNull ItemStack item) {
+        if (item.getItemMeta() instanceof final @NotNull SpawnEggMeta spawnEggMeta) {
             final @Nullable EntitySnapshot snapshot = spawnEggMeta.getSpawnedEntity();
 
             if (snapshot != null) {
@@ -72,7 +73,7 @@ public class MenuItemSelectEntity extends MenuItem implements EntityConsumer {
     @Override
     public @NonNull ItemStack onDoubleClick() {
         final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
-        final Duration reopenTime = Duration.ofSeconds(10);
+        final @NotNull Duration reopenTime = Duration.ofSeconds(10);
 
         MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO,
             RegionMessageManager.getMessage(RegionLangKey.MENU_SELECT_ENTITY_CLICK_ENTITY,
@@ -107,9 +108,9 @@ public class MenuItemSelectEntity extends MenuItem implements EntityConsumer {
             }
         }
 
-        ItemStack newDisplayItem = getDisplayItem().withType(displayType);
+        final @NotNull ItemStack newDisplayItem = getDisplayItem().withType(displayType);
 
-        if (newDisplayItem instanceof SpawnEggMeta spawnEggMeta) {
+        if (newDisplayItem instanceof final @NotNull SpawnEggMeta spawnEggMeta) {
             spawnEggMeta.setSpawnedEntity(entitySnapshotCallback.getValue());
 
             newDisplayItem.setItemMeta(spawnEggMeta);

@@ -74,7 +74,7 @@ public class BasicRecorder implements Listener {
         }
 
         // signs are safe. Now check for block drops
-        if (!mgm.canBlocksdrop()) {
+        if (!mgm.canBlocksDrop()) {
             event.getBlock().setBlockData(BlockType.AIR.createBlockData());
             return true;
         }
@@ -91,7 +91,7 @@ public class BasicRecorder implements Listener {
 
         if (mgPlayer.isInMinigame()) {
             // don't allow players in minigame to break anything before they are in game
-            if (!mgPlayer.getMinigame().hasStarted() || mgPlayer.isLatejoining()) {
+            if (!mgPlayer.getMinigame().hasStarted() || mgPlayer.isJoiningLate()) {
                 event.setCancelled(true);
                 return;
             }
@@ -132,7 +132,7 @@ public class BasicRecorder implements Listener {
 
         if (mgPlayer.isInMinigame()) {
             // don't allow players in minigame to place anything before they are in game
-            if (!mgPlayer.getMinigame().hasStarted() || mgPlayer.isLatejoining()) {
+            if (!mgPlayer.getMinigame().hasStarted() || mgPlayer.isJoiningLate()) {
                 event.setCancelled(true);
                 return;
             }

@@ -16,22 +16,24 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MenuItemRewardAdd extends MenuItem {
     private @Nullable Rewards rewards = null;
     private @Nullable RewardGroup group = null;
+public class MenuItemRewardAdd extends AMenuItem {
 
-    public MenuItemRewardAdd(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Rewards rewards) {
+    public MenuItemRewardAdd(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                             final @NotNull Rewards rewards) {
         super(displayType, langKey);
         this.rewards = rewards;
     }
 
-    public MenuItemRewardAdd(@Nullable ItemType displayType, @Nullable Component name, @NotNull Rewards rewards) {
-        super(displayType, name);
-        this.rewards = rewards;
+    public MenuItemRewardAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                             final @NotNull Rewards rewards) {
+        this(displayType, name, null, rewards);
     }
 
-    public MenuItemRewardAdd(@Nullable ItemType displayType, @Nullable Component name,
-                             @Nullable List<@NotNull Component> description, @NotNull Rewards rewards) {
+    public MenuItemRewardAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                             final @Nullable List<@NotNull Component> description,
+                             final @NotNull Rewards rewards) {
         super(displayType, name, description);
         this.rewards = rewards;
     }
@@ -41,14 +43,21 @@ public class MenuItemRewardAdd extends MenuItem {
         this.group = group;
     }
 
-    public MenuItemRewardAdd(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
-                             @Nullable List<@NotNull Component> description, @NotNull RewardGroup group) {
+    public MenuItemRewardAdd(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                             final @Nullable List<@NotNull Component> description,
+                             final @NotNull RewardGroup group) {
         super(displayType, langKey, description);
         this.group = group;
     }
 
-    public MenuItemRewardAdd(@Nullable ItemType displayType, @Nullable Component name,
-                             @Nullable List<@NotNull Component> description, @NotNull RewardGroup group) {
+    public MenuItemRewardAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                             final @NotNull RewardGroup group) {
+        this(displayType, name, null, group);
+    }
+
+    public MenuItemRewardAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                             final @Nullable List<@NotNull Component> description,
+                             final @NotNull RewardGroup group) {
         super(displayType, name, description);
         this.group = group;
     }

@@ -23,44 +23,38 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
+public class MenuItemDisplayLoadout extends AMenuItem implements StringConsumer {
     private final @NotNull PlayerLoadout loadout;
-    private @Nullable Minigame minigame = null;
+    private @Nullable Minigame minigame;
     private boolean allowDelete = true;
 
-    public MenuItemDisplayLoadout(@Nullable ItemType displayType, @Nullable Component name, @NotNull PlayerLoadout loadout,
-                                  @Nullable Minigame minigame) {
-        super(displayType, name);
-        this.loadout = loadout;
-        this.minigame = minigame;
-        if (!loadout.isDeletable()) {
-            allowDelete = false;
-        }
+    ///  without a minigame the given loadout will be interpreted as a global one
+    public MenuItemDisplayLoadout(final @Nullable ItemType displayType, final @Nullable Component name,
+                                  final @NotNull PlayerLoadout loadout) {
+        this(displayType, name, loadout, null);
     }
 
-    public MenuItemDisplayLoadout(@Nullable ItemType displayType, @Nullable Component name, @NotNull PlayerLoadout loadout) {
-        super(displayType, name);
-        this.loadout = loadout;
-        if (!loadout.isDeletable()) {
-            allowDelete = false;
-        }
+    /// given a valid Minigame, the loadout will be treated as if part of the given minigames {@link LoadoutModule}
+    public MenuItemDisplayLoadout(final @Nullable ItemType displayType, @Nullable Component name,
+                                  final @NotNull PlayerLoadout loadout,
+                                  final @Nullable Minigame minigame) {
+        this(displayType, name, null, loadout, minigame);
     }
 
-    public MenuItemDisplayLoadout(@Nullable ItemType displayType, @Nullable Component name,
-                                  @Nullable List<@NotNull Component> description, @NotNull PlayerLoadout loadout,
-                                  @NotNull Minigame minigame) {
+    ///  without a minigame the given loadout will be interpreted as a global one
+    public MenuItemDisplayLoadout(final @Nullable ItemType displayType, final @Nullable Component name,
+                                  final @Nullable List<@NotNull Component> description,
+                                  final @NotNull PlayerLoadout loadout) {
+        this(displayType, name, description, loadout, null);
+    }
+
+    public MenuItemDisplayLoadout(final @Nullable ItemType displayType, final @Nullable Component name,
+                                  final @Nullable List<@NotNull Component> description,
+                                  final @NotNull PlayerLoadout loadout,
+                                  final @Nullable Minigame minigame) {
         super(displayType, name, description);
         this.loadout = loadout;
         this.minigame = minigame;
-        if (!loadout.isDeletable()) {
-            allowDelete = false;
-        }
-    }
-
-    public MenuItemDisplayLoadout(@Nullable ItemType displayMat, @Nullable Component name,
-                                  @Nullable List<@NotNull Component> description, @NotNull PlayerLoadout loadout) {
-        super(displayMat, name, description);
-        this.loadout = loadout;
         if (!loadout.isDeletable()) {
             allowDelete = false;
         }
@@ -73,7 +67,7 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
         final @NotNull Menu loadoutSettingsMenu = new Menu(6, loadout.getDisplayName(), getMenu().getIntendedViewer());
         loadoutSettingsMenu.setPreviousPage(loadoutMenu);
 
-        final @NotNull List<@NotNull MenuItem> menuItems = new ArrayList<>();
+        final @NotNull List<@NotNull AMenuItem> menuItems = new ArrayList<>();
         if (!loadout.getName().equals("default")) {
             menuItems.add(new MenuItemBoolean(ItemType.GOLD_INGOT,
                 MgMenuLangKey.MENU_DISPLAYLOADOUT_USEPERMISSIONS_NAME,
@@ -109,18 +103,18 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
             loadout.getTeamColorCallback(), List.of(TeamColor.values())));
         loadoutSettingsMenu.addItems(menuItems);
         MenuItemBack menuItemBack = new MenuItemBack(loadoutMenu);
-        loadoutSettingsMenu.addItem(menuItemBack, getMenu().getSize() - 9);
+        loadoutSettingsMenu.setItem(menuItemBack, getMenu().getSize() - 9);
 
         loadout.addAddonMenuItems(loadoutSettingsMenu);
 
         Menu potionMenu = new Menu(5, getMenu().getTitle(), getMenu().getIntendedViewer());
 
         potionMenu.setPreviousPage(loadoutMenu);
-        potionMenu.addItem(new MenuItemStatusEffectAdd(MenuUtility.createType(), MgMenuLangKey.MENU_STATUSEFFECTADD_NAME, loadout), potionMenu.getSize() - 1);
-        potionMenu.addItem(menuItemBack, potionMenu.getSize() - 2);
+        potionMenu.setItem(new MenuItemStatusEffectAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_STATUSEFFECTADD_NAME, loadout), potionMenu.getSize() - 1);
+        potionMenu.setItem(menuItemBack, potionMenu.getSize() - 2);
 
         final @NotNull List<@NotNull Component> description = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
-        final @NotNull List<@NotNull MenuItem> potionMenuItems = new ArrayList<>();
+        final @NotNull List<@NotNull AMenuItem> potionMenuItems = new ArrayList<>();
 
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
             potionMenuItems.add(new MenuItemStatusEffect(ItemType.POTION, Component.translatable(eff.getType().translationKey()), description, eff, loadout));
@@ -130,12 +124,12 @@ public class MenuItemDisplayLoadout extends MenuItem implements StringConsumer {
         loadoutMenu.setAllowModify(true);
         loadoutMenu.setPreviousPage(getMenu());
 
-        loadoutMenu.addItem(new MenuItemSaveLoadoutPage(ItemType.CHEST, MgMenuLangKey.MENU_DISPLAYLOADOUT_SETTINGS_NAME, loadout, loadoutSettingsMenu), 42);
-        loadoutMenu.addItem(new MenuItemSaveLoadoutPage(ItemType.POTION, MgMenuLangKey.MENU_DISPLAYLOADOUT_EFFECTS_NAME, loadout, potionMenu), 43);
-        loadoutMenu.addItem(new MenuItemSaveLoadoutPage(MenuUtility.saveType(), MgMenuLangKey.MENU_DISPLAYLOADOUT_SAVE_NAME, loadout, getMenu()), 44);
-        final int numOfSlots = loadout.allowOffHand() ? 41 : 40;
+        loadoutMenu.setItem(new MenuItemSaveLoadoutPage(ItemType.CHEST, MgMenuLangKey.MENU_DISPLAYLOADOUT_SETTINGS_NAME, loadout, loadoutSettingsMenu), 42);
+        loadoutMenu.setItem(new MenuItemSaveLoadoutPage(ItemType.POTION, MgMenuLangKey.MENU_DISPLAYLOADOUT_EFFECTS_NAME, loadout, potionMenu), 43);
+        loadoutMenu.setItem(new MenuItemSaveLoadoutPage(MenuDisplayTypes.saveType(), MgMenuLangKey.MENU_DISPLAYLOADOUT_SAVE_NAME, loadout, getMenu()), 44);
+        final int numOfSlots = loadout.allowOffHand() ? 41 : 40; // todo don't hardcode
         for (int i = numOfSlots; i < 42; i++) {
-            loadoutMenu.addItem(new MenuItem((ItemType) null, Component.empty()), i);
+            loadoutMenu.setItem(new MenuItemSlotFiller(), i);
         }
         loadoutMenu.displayMenu();
 

@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 public class TriggerRandomAction extends AAction {
-    private final IntegerFlag timesTriggered = new IntegerFlag("timesTriggered", 1);
-    private final BooleanFlag allowSameTrigger = new BooleanFlag("randomPerTrigger", false); // todo datafixerupper rename
+    private final @NotNull IntegerFlag timesTriggered = new IntegerFlag("timesTriggered", 1);
+    private final @NotNull BooleanFlag allowSameTrigger = new BooleanFlag("randomPerTrigger", false); // todo datafixerupper rename
 
     protected TriggerRandomAction(final @NotNull Key key) {
         super(key);
@@ -63,10 +63,10 @@ public class TriggerRandomAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
-        List<ActionExecutor> exs = new ArrayList<>();
-        for (ActionExecutor ex : region.getExecutors()) {
+        final @NotNull List<@NotNull ActionExecutor> exs = new ArrayList<>();
+        for (final @NotNull ActionExecutor ex : region.getExecutors()) {
             if (ex.getTrigger() == MgRegTrigger.RANDOM) {
                 exs.add(ex);
             }
@@ -95,7 +95,7 @@ public class TriggerRandomAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) { //todo regions and nodes need another interface, so this can be one methode.
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) { //todo regions and nodes need another interface, so this can be one methode.
         debug(mgPlayer, node);
         List<ActionExecutor> exs = new ArrayList<>();
         for (ActionExecutor ex : node.getExecutors()) {
@@ -141,7 +141,7 @@ public class TriggerRandomAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(timesTriggered.getMenuItem(ItemType.COMMAND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_TIMES_NAME), 1, null));
         menu.addItem(allowSameTrigger.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_DESCRIPTION)));

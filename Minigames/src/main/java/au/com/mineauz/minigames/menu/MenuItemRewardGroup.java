@@ -23,23 +23,20 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemRewardGroup extends MenuItem implements StringConsumer {
+public class MenuItemRewardGroup extends AMenuItem implements StringConsumer {
     private static final String DESCRIPTION_TOKEN = "RewardGroup_description";
     private static final @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
     private final @NotNull RewardGroup group;
     private final @NotNull Rewards rewards;
 
-    public MenuItemRewardGroup(@Nullable ItemType displayType, @Nullable Component name, @NotNull RewardGroup group,
-                               @NotNull Rewards rewards) {
-        super(displayType, name);
-        this.group = group;
-        this.rewards = rewards;
-        updateDescription();
+    public MenuItemRewardGroup(final @Nullable ItemType displayType, final @Nullable Component name,
+                               final @NotNull RewardGroup group, final @NotNull Rewards rewards) {
+        this(displayType, name, null, group, rewards);
     }
 
-    public MenuItemRewardGroup(@Nullable ItemType displayType, @Nullable Component name,
-                               @Nullable List<@NotNull Component> description, @NotNull RewardGroup group,
-                               @NotNull Rewards rewards) {
+    public MenuItemRewardGroup(final @Nullable ItemType displayType, final @Nullable Component name,
+                               final @Nullable List<@NotNull Component> description,
+                               final @NotNull RewardGroup group, final @NotNull Rewards rewards) {
         super(displayType, name, description);
         this.group = group;
         this.rewards = rewards;
@@ -129,14 +126,14 @@ public class MenuItemRewardGroup extends MenuItem implements StringConsumer {
         final @NotNull Menu rewardMenu = new Menu(5, getName(), getMenu().getIntendedViewer());
         rewardMenu.setPreviousPage(getMenu());
 
-        rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME,
+        rewardMenu.setItem(new MenuItemRewardAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME,
             MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_REWARD_ITEM_ADD_DESCRIPTION), group), 43);
-        rewardMenu.addItem(new MenuItemPage(MenuUtility.saveType(),
+        rewardMenu.setItem(new MenuItemPage(MenuDisplayTypes.saveType(),
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
                 Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), getName())), rewardMenu.getPreviousPage()), 44);
 
-        List<MenuItem> menuItems = new ArrayList<>(group.getItems().size());
-        for (ARewardType item : group.getItems()) {
+        final @NotNull List<@NotNull AMenuItem> menuItems = new ArrayList<>(group.getItems().size());
+        for (final @NotNull ARewardType item : group.getItems()) {
             menuItems.add(item.getMenuItem());
         }
 

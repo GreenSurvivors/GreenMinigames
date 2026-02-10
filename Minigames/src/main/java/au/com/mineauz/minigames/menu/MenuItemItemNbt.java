@@ -18,7 +18,7 @@ import java.util.List;
  *
  * Also now the max stack size depends on the vanilla data component
  */
-public class MenuItemItemNbt extends MenuItem {
+public class MenuItemItemNbt extends AMenuItem {
     private static final String DESCRIPTION_TOKEN = "Nbt_description";
 
     /**
@@ -27,7 +27,7 @@ public class MenuItemItemNbt extends MenuItem {
      * The display item has a  different displayname and a description attached to it,
      * to explain a user what the MenuItem does.
      * Accidentally setting the same instance to both of them may tint your data or break your menu item.
-     * Always use {@link ItemStack#clone} and best practice use the {@link MenuItem#setDisplayItem(ItemStack)}
+     * Always use {@link ItemStack#clone} and best practice use the {@link AMenuItem#setDisplayItem(ItemStack)}
      * to update the display item!
      * take care.
      **/

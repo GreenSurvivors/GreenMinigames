@@ -10,46 +10,52 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class RewardTypes {
-    private static final @NotNull Map<@NotNull String, @NotNull RewardTypeFactory> types = new HashMap<>();
+    private static final @NotNull Map<@NotNull String, @NotNull RewardTypeFactory> REGISTERED_TYPES = new HashMap<>();
 
     static {
-        for (MgRewardType factory : MgRewardType.values()) {
-            addRewardType(factory);
+        for (final @NotNull MgDefaultRewardType factory : MgDefaultRewardType.values()) {
+            registerRewardType(factory);
         }
     }
 
-    public static void addRewardType(@NotNull RewardTypeFactory factory) {
-        if (types.containsKey(factory.getName())) {
+    public static void registerRewardType(final @NotNull RewardTypeFactory factory) {
+        if (REGISTERED_TYPES.containsKey(factory.getName())) {
             throw new InvalidRewardTypeException("A reward type already exists by that name");
         } else {
-            types.put(factory.getName(), factory);
+            REGISTERED_TYPES.put(factory.getName(), factory);
         }
     }
 
-    public static @Nullable ARewardType getRewardType(final @NotNull String name, @NotNull Rewards rewards) {
-        if (types.containsKey(name.toUpperCase())) {
-            return types.get(name.toUpperCase()).makeNewType(rewards);
+    public static @Nullable ARewardType getRewardType(final @NotNull String name, final @NotNull Rewards rewards) {
+        if (REGISTERED_TYPES.containsKey(name.toUpperCase())) {
+            return REGISTERED_TYPES.get(name.toUpperCase()).makeNewType(rewards);
         }
         return null;
     }
 
     public static @NotNull List<@NotNull RewardTypeFactory> getRewardTypeFactories() {
-        return new ArrayList<>(types.values());
+        return new ArrayList<>(REGISTERED_TYPES.values());
     }
 
-    public enum MgRewardType implements RewardTypeFactory {
+    public interface RewardTypeFactory {
+        @NotNull ARewardType makeNewType(@NotNull Rewards rewards);
+
+        @NotNull String getName();
+    }
+
+    public enum MgDefaultRewardType implements RewardTypeFactory {
         COMMAND(CommandReward::new),
         ITEM(ItemReward::new),
         MONEY(MoneyReward::new);
 
         final @NotNull Function<@NotNull Rewards, ? extends @NotNull ARewardType> init;
 
-        MgRewardType(@NotNull Function<@NotNull Rewards, ? extends @NotNull ARewardType> init) {
+        MgDefaultRewardType(@NotNull Function<@NotNull Rewards, ? extends @NotNull ARewardType> init) {
             this.init = init;
         }
 
         @Override
-        public @NotNull ARewardType makeNewType(@NotNull Rewards rewards) {
+        public @NotNull ARewardType makeNewType(final @NotNull Rewards rewards) {
             return init.apply(rewards);
         }
 
@@ -57,11 +63,5 @@ public class RewardTypes {
         public @NotNull String getName() {
             return toString();
         }
-    }
-
-    public interface RewardTypeFactory {
-        @NotNull ARewardType makeNewType(@NotNull Rewards rewards);
-
-        @NotNull String getName();
     }
 }

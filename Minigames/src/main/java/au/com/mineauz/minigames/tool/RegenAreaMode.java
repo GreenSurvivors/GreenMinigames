@@ -22,14 +22,11 @@ import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class RegenAreaMode implements ToolMode {
-    private static final String SETTING_KEY = "Region";
-    private final HashMap<UUID, IDisplayObject> displayedRegions = new HashMap<>();
+    private static final @NotNull String SETTING_KEY = "Region";
+    private final @NotNull Map<@NotNull UUID, @NotNull IDisplayObject> displayedRegions = new HashMap<>();
 
     @Override
     public @NotNull String getName() {
@@ -57,7 +54,7 @@ public class RegenAreaMode implements ToolMode {
         final @NotNull Menu menu = new Menu(2, MgMenuLangKey.MENU_TOOL_REGENAREA_SELECT_NAME, mgPlayer);
 
         if (mgPlayer.isInMenu()) {
-            menu.addItem(new MenuItemBack(mgPlayer.getMenu()), menu.getSize() - 9);
+            menu.setItem(new MenuItemBack(mgPlayer.getMenu()), menu.getSize() - 9);
         }
 
         menu.addItem(new MenuItemString(ItemType.PAPER, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONNAME_NAME, new Callback<>() {
@@ -75,7 +72,7 @@ public class RegenAreaMode implements ToolMode {
 
         if (tool.getMinigame() != null) {
             Menu regionMenu = new Menu(6, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONS_NAME, mgPlayer);
-            List<MenuItem> menuItems = new ArrayList<>();
+            final @NotNull List<@NotNull AMenuItem> menuItems = new ArrayList<>();
 
             for (final MgRegion region : tool.getMinigame().getRegenRegions()) {
                 MenuItemCustom customMenuItem = new MenuItemCustom(ItemType.CHEST, Component.text(region.getName()));
@@ -93,7 +90,7 @@ public class RegenAreaMode implements ToolMode {
             }
 
             regionMenu.addItems(menuItems);
-            regionMenu.addItem(new MenuItemBack(menu), regionMenu.getSize() - 9);
+            regionMenu.setItem(new MenuItemBack(menu), regionMenu.getSize() - 9);
 
             menu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONEDIT_NAME, regionMenu));
         }
@@ -101,18 +98,18 @@ public class RegenAreaMode implements ToolMode {
     }
 
     @Override
-    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool) {
+    public void onUnsetMode(final @NotNull MinigamePlayer mgPlayer, final @NotNull MinigameTool tool) {
         tool.removeSetting(SETTING_KEY);
     }
 
     @Override
-    public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
-                            @Nullable Team team, @NotNull PlayerInteractEvent event) {
+    public void onLeftClick(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame,
+                            final @Nullable Team team, final @NotNull PlayerInteractEvent event) {
         if (mgPlayer.hasSelection()) {
-            String name = MinigameTool.getMinigameTool(mgPlayer).getSetting(SETTING_KEY); //todo expose Settings
-            MgRegion region = minigame.getRegenRegion(name);
+            final @NotNull String name = MinigameTool.getMinigameTool(mgPlayer).getSetting(SETTING_KEY); //todo expose Settings
+            final @Nullable MgRegion region = minigame.getRegenRegion(name);
 
-            RegenRegionChangeResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
+            final @NotNull RegenRegionChangeResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
 
             if (result.success()) {
                 if (region == null) {
@@ -141,8 +138,8 @@ public class RegenAreaMode implements ToolMode {
     }
 
     @Override
-    public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
-                             @Nullable Team team, @NotNull PlayerInteractEvent event) {
+    public void onRightClick(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame,
+                             final @Nullable Team team, final @NotNull PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             mgPlayer.addSelectionPoint(event.getClickedBlock().getLocation());
             if (mgPlayer.hasSelection()) {
@@ -152,8 +149,8 @@ public class RegenAreaMode implements ToolMode {
     }
 
     @Override
-    public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
-        String name = MinigameTool.getMinigameTool(mgPlayer).getSetting(SETTING_KEY);
+    public void select(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @Nullable Team team) {
+        final @NotNull String name = MinigameTool.getMinigameTool(mgPlayer).getSetting(SETTING_KEY);
         if (minigame.getRegenRegion(name) != null) {
             displayedRegions.put(mgPlayer.getUUID(),
                 Minigames.getPlugin().getDisplayManager().displayCuboid(mgPlayer.getPlayer(), minigame.getRegenRegion(name)));
@@ -167,7 +164,7 @@ public class RegenAreaMode implements ToolMode {
     }
 
     @Override
-    public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+    public void deselect(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @Nullable Team team) {
         String name = MinigameTool.getMinigameTool(mgPlayer).getSetting(SETTING_KEY);
         if (minigame.getRegenRegion(name) != null) {
 

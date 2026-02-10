@@ -8,7 +8,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.consumer.BlockDataConsumer;
 import au.com.mineauz.minigames.menu.consumer.EntityConsumer;
 import au.com.mineauz.minigames.menu.consumer.StringConsumer;
@@ -597,7 +597,7 @@ public class Events implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    private void playerRightClickEntity(@NotNull PlayerInteractEntityEvent event) {
+    private void playerRightClickEntity(final @NotNull PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
         ItemStack item = player.getEquipment().getItemInMainHand();
@@ -614,6 +614,7 @@ public class Events implements Listener {
         }
     }
 
+    @SuppressWarnings("UnstableApiUsage") // shutup itemtype
     @EventHandler(ignoreCancelled = true)
     private void playerShoot(@NotNull ProjectileLaunchEvent event) {
         if (event.getEntityType() == EntityType.SNOWBALL) {
@@ -661,11 +662,11 @@ public class Events implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void playerHurt(@NotNull EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
+        if (event.getEntity() instanceof final @NotNull Player player) {
+           final @NotNull MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
 
             if (mgPlayer.isInMinigame()) {
-                Minigame mgm = mgPlayer.getMinigame();
+                final @NotNull Minigame mgm = mgPlayer.getMinigame();
                 if (mgm.isSpectator(mgPlayer)) {
                     event.setCancelled(true);
                 } else if ((!mgPlayer.getMinigame().hasStarted() && mgPlayer.getMinigame().getState() != MinigameState.ENDED) ||
@@ -684,7 +685,7 @@ public class Events implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    private void spectatorAttack(@NotNull EntityDamageByEntityEvent event) {
+    private void spectatorAttack(final @NotNull EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player player) {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
             if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isSpectator(mgPlayer)) {
@@ -694,17 +695,17 @@ public class Events implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    private void clickMenu(@NotNull InventoryClickEvent event) {
-        MinigamePlayer mgPlayer = playerManager.getMinigamePlayer((Player) event.getWhoClicked());
+    private void clickMenu(final @NotNull InventoryClickEvent event) {
+        final @NotNull MinigamePlayer mgPlayer = playerManager.getMinigamePlayer((Player) event.getWhoClicked());
         if (mgPlayer.isInMenu()) {
             if (event.getRawSlot() < mgPlayer.getMenu().getSize()) {
                 if (!mgPlayer.getMenu().getAllowModify() || mgPlayer.getMenu().hasMenuItem(event.getRawSlot())) {
                     event.setCancelled(true);
                 }
 
-                MenuItem item = mgPlayer.getMenu().getMenuItem(event.getRawSlot());
+                final @NotNull AMenuItem item = mgPlayer.getMenu().getMenuItem(event.getRawSlot());
                 if (item != null) {
-                    ItemStack disItem = ItemStack.empty();
+                    @NotNull ItemStack disItem = ItemStack.empty();
                     switch (event.getClick()) {
                         case LEFT -> {
                             if (event.getCursor().getType().isAir()) {
@@ -726,7 +727,7 @@ public class Events implements Listener {
                  *  but the event modifies it anyway
                  */
             } else if (!mgPlayer.getMenu().getAllowModify()) {
-                Inventory topInv = event.getView().getTopInventory();
+                final @NotNull Inventory topInv = event.getView().getTopInventory();
                 switch (event.getAction()) {
                     case NOTHING, DROP_ALL_CURSOR, DROP_ONE_CURSOR, CLONE_STACK, UNKNOWN -> {
                     } // nothing

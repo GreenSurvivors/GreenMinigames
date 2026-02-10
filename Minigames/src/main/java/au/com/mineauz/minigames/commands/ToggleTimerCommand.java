@@ -43,25 +43,24 @@ public class ToggleTimerCommand extends ACommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender,
-                             @NotNull String @NotNull [] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, final @NotNull String @NotNull [] args) {
         if (args.length > 0) {
-            Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
+            final @Nullable Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
             if (minigame != null) {
-                if (minigame.getMpTimer() != null) {
-                    if (minigame.getMpTimer().isPaused()) {
-                        minigame.getMpTimer().resumeTimer();
+                if (minigame.getMultiplayerTimer() != null) {
+                    if (minigame.getMultiplayerTimer().isPaused()) {
+                        minigame.getMultiplayerTimer().resumeTimer();
 
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TOGGLETIMER_RESUME_SUCCESS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     } else {
                         // message to players of Minigame
-                        minigame.getMpTimer().pauseTimer(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_TOGGLETIMER_PAUSE_MSG,
+                        minigame.getMultiplayerTimer().pauseTimer(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_TOGGLETIMER_PAUSE_MSG,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), sender.getName())));
                         // message to sender
                         MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TOGGLETIMER_PAUSE_SUCCESS,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                                Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minigame.getMpTimer().getPlayerWaitTimeLeft())));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minigame.getMultiplayerTimer().getPlayerWaitTimeLeft())));
                     }
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_TOGGLETIMER_ERROR_NOTIMER,
@@ -77,8 +76,7 @@ public class ToggleTimerCommand extends ACommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender,
-                                                         @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(final @NotNull CommandSender sender, final @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> mgs = new ArrayList<>(PLUGIN.getMinigameManager().getAllMinigames().keySet());
             return CommandDispatcher.tabCompleteMatch(mgs, args[0]);

@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import io.leangen.geantyref.TypeFactory;
 import io.leangen.geantyref.TypeToken;
@@ -20,19 +20,18 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public class ItemReward extends ARewardType {
     private @NotNull ItemStack item = ItemType.DIAMOND.createItemStack();
 
-    public ItemReward(@NotNull Rewards rewards) {
+    public ItemReward(final @NotNull Rewards rewards) {
         super(rewards);
     }
 
-    public static ItemReward getMinigameReward(@NotNull Rewards rewards) {
-        return (ItemReward) RewardTypes.getRewardType(RewardTypes.MgRewardType.ITEM.getName(), rewards);
+    public static ItemReward getMinigameReward(final @NotNull Rewards rewards) {
+        return (ItemReward) RewardTypes.getRewardType(RewardTypes.MgDefaultRewardType.ITEM.getName(), rewards);
     }
 
     @Override
@@ -46,14 +45,11 @@ public class ItemReward extends ARewardType {
     }
 
     @Override
-    public void giveReward(@NotNull MinigamePlayer mgPlayer) {
+    public void giveReward(final @NotNull MinigamePlayer mgPlayer) {
         if (mgPlayer.isInMinigame()) {
             mgPlayer.addRewardItem(item);
         } else {
-            Collection<ItemStack> notAddedStacks = mgPlayer.getPlayer().getInventory().addItem(item).values();
-            for (ItemStack notAdded : notAddedStacks) { // drop items that didn't fit into inventory
-                mgPlayer.getLocation().getWorld().dropItemNaturally(mgPlayer.getLocation(), notAdded);
-            }
+            mgPlayer.getPlayer().give(item);
 
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WIN, MgMiscLangKey.REWARD_ITEM,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(item.getAmount())),
@@ -62,22 +58,22 @@ public class ItemReward extends ARewardType {
     }
 
     @Override
-    public @NotNull MenuItem getMenuItem() {
+    public @NotNull AMenuItem getMenuItem() {
         return new MenuItemReward(this);
     }
 
     @Override
-    public void saveReward(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveReward(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         config.set(item.serializeAsBytes());
     }
 
     @Override
-    public void loadReward(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void loadReward(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         if (config.isMap()) {
             // datafixerupper
             item = ItemStack.deserialize((Map<String, Object>) config.get(TypeFactory.parameterizedClass(Map.class, String.class, Object.class)));
         } else {
-            item =ItemStack.deserializeBytes(config.get(TypeToken.get(byte[].class)));
+            item = ItemStack.deserializeBytes(config.get(TypeToken.get(byte[].class)));
         }
     }
 
@@ -89,12 +85,12 @@ public class ItemReward extends ARewardType {
         this.item = item;
     }
 
-    private class MenuItemReward extends MenuItem {
-        private static final String DESCRIPTION_REWARD_TOKEN = "Reward_description";
+    private class MenuItemReward extends AMenuItem {
+        private static final @NotNull String DESCRIPTION_REWARD_TOKEN = "Reward_description";
         private final @NotNull ItemReward reward;
         private final @NotNull List<RewardRarity> rarities;
 
-        public MenuItemReward(@NotNull ItemReward reward) {
+        public MenuItemReward(final @NotNull ItemReward reward) {
             super(reward.item.clone(), reward.item.getItemMeta().displayName());
 
             rarities = List.of(RewardRarity.values());
@@ -104,7 +100,7 @@ public class ItemReward extends ARewardType {
         }
 
         @Override
-        public @NotNull ItemStack onClickWithItem(@NotNull ItemStack item) {
+        public @NotNull ItemStack onClickWithItem(final @NotNull ItemStack item) {
             setRewardItem(item.clone());
             setDisplayItem(item);
 
@@ -120,8 +116,7 @@ public class ItemReward extends ARewardType {
         }
 
         public void updateDescriptionRarity() {
-            List<Component> description;
-            int pos = rarities.indexOf(getRarity());
+            final int pos = rarities.indexOf(getRarity());
             int before = pos - 1;
             int after = pos + 1;
             if (before == -1) {
@@ -131,7 +126,7 @@ public class ItemReward extends ARewardType {
                 after = 0;
             }
 
-            description = new ArrayList<>();
+            final @NotNull List<@NotNull Component> description = new ArrayList<>();
             description.add(rarities.get(before).getDisplayName().color(NamedTextColor.GRAY));
             description.add(getRarity().getDisplayName().color(NamedTextColor.GREEN));
             description.add(rarities.get(after).getDisplayName().color(NamedTextColor.GRAY));

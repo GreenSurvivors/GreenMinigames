@@ -81,14 +81,14 @@ public class LoadoutModule extends AMinigameModule {
      * @param loadoutAddonKey The addon to unregister
      */
     public static boolean unregisterAddon(final @NotNull Key loadoutAddonKey) {
-        final ILoadoutAddonFactory removed = registeredAddons.remove(loadoutAddonKey);
+        final @Nullable ILoadoutAddonFactory removed = registeredAddons.remove(loadoutAddonKey);
         globalLoadouts.values().forEach( gl -> gl.unregisterAddon(loadoutAddonKey));
 
         for (final @NotNull Minigame minigame : Minigames.getPlugin().getMinigameManager().getAllMinigames().values()) {
             final @Nullable LoadoutModule module = getMinigameModule(minigame);
 
             if (module != null) {
-                for (final @NotNull PlayerLoadout loadout : getMinigameModule(minigame).loadouts.values()) {
+                for (final @NotNull PlayerLoadout loadout : module.loadouts.values()) {
                     loadout.unregisterAddon(loadoutAddonKey);
                 }
             }
@@ -206,7 +206,7 @@ public class LoadoutModule extends AMinigameModule {
         final @NotNull MinigameSave globalLoadouts = MinigameSave.forGlobalData(Path.of("globalLoadouts"));
         final @NotNull ConfigurationNode rootNode = globalLoadouts.getConfigRoot();
         if (LoadoutModule.hasGlobalLoadouts()) {
-            for (final PlayerLoadout loadout : LoadoutModule.getGlobalLoadouts()) {
+            for (final @NotNull PlayerLoadout loadout : LoadoutModule.getGlobalLoadouts()) {
                 final @NotNull ConfigurationNode loadoutNode = rootNode.node(loadout.getName());
 
                 for (final int slot : loadout.getItemSlots()) {
@@ -215,7 +215,7 @@ public class LoadoutModule extends AMinigameModule {
 
                 loadoutNode.removeChild("potions");
 
-                for (final PotionEffect eff : loadout.getAllPotionEffects()) {
+                for (final @NotNull PotionEffect eff : loadout.getAllPotionEffects()) {
                     final @NotNull ConfigurationNode effectNode = loadoutNode.node("potions", eff.getType().getKey().getKey());
                     effectNode.node("amp").set(eff.getAmplifier());
                     effectNode.node("dur").set(eff.getDuration());
@@ -352,7 +352,7 @@ public class LoadoutModule extends AMinigameModule {
     @Override
     public void addEditMenuOptions(final @NotNull Menu superMenu) {
         final @NotNull Menu loadoutMenu = new Menu(6, getMinigame().getDisplayName(), superMenu.getIntendedViewer());
-        final @NotNull List<@NotNull MenuItem> loadoutMenuItems = new ArrayList<>();
+        final @NotNull List<@NotNull AMenuItem> loadoutMenuItems = new ArrayList<>();
 
         for (final @NotNull PlayerLoadout playerLoadout : getLoadouts()) {
             @NotNull ItemType itemType = ItemType.GLASS_PANE;
@@ -368,9 +368,9 @@ public class LoadoutModule extends AMinigameModule {
             }
         }
 
-        loadoutMenu.addItem(new MenuItemLoadoutAdd(MenuUtility.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+        loadoutMenu.setItem(new MenuItemLoadoutAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
             getLoadoutMap(), getMinigame()), 53);
-        loadoutMenu.addItem(new MenuItemBack(superMenu), loadoutMenu.getSize() - 9);
+        loadoutMenu.setItem(new MenuItemBack(superMenu), loadoutMenu.getSize() - 9);
         loadoutMenu.addItems(loadoutMenuItems);
 
         superMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_MINIGAME_LOADOUTS_NAME, loadoutMenu));

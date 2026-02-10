@@ -32,7 +32,7 @@ public class TeamsModule extends AMinigameModule {
         super(mgm, key);
     }
 
-    public static @Nullable TeamsModule getMinigameModule(@NotNull Minigame mgm) {
+    public static @Nullable TeamsModule getMinigameModule(final @NotNull Minigame mgm) {
         return ((TeamsModule) mgm.getModule(MgDefaultModules.TEAMS.getKey()));
     }
 
@@ -89,7 +89,8 @@ public class TeamsModule extends AMinigameModule {
     }
 
     public @NotNull List<@NotNull Team> getTeams() {
-        return teams.values().stream().map(TeamFlag::getFlag).collect(Collectors.toCollection(ArrayList::new));
+        return teams.values().stream().map(TeamFlag::getFlag)
+            .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public @NotNull List<@NotNull TeamColor> getTeamColors() {
@@ -115,7 +116,7 @@ public class TeamsModule extends AMinigameModule {
      * @param color {@link TeamColor}
      * @return {@link Team}
      */
-    public @NotNull Team addTeam(@NotNull TeamColor color) {
+    public @NotNull Team addTeam(final @NotNull TeamColor color) {
         return addTeam(color, (String) null);
     }
 
@@ -127,9 +128,9 @@ public class TeamsModule extends AMinigameModule {
      * @param name  Team name
      * @return Team
      */
-    public @NotNull Team addTeam(@NotNull TeamColor color, @Nullable String name) {
+    public @NotNull Team addTeam(final @NotNull TeamColor color, final @Nullable String name) {
         if (!hasTeam(color)) {
-            final TeamFlag teamFlag = new TeamFlag(color, new Team(color, getMinigame()), getMinigame());
+            final @NotNull TeamFlag teamFlag = new TeamFlag(color, new Team(color, getMinigame()), getMinigame());
             teams.put(color, teamFlag);
             String teamNameString = color.getUserFriendlyName().toLowerCase();
             @NotNull org.bukkit.scoreboard.Team bukkitTeam = getMinigame().getScoreboard().registerNewTeam(teamNameString);
@@ -151,10 +152,10 @@ public class TeamsModule extends AMinigameModule {
      * @param color {@link TeamColor}  the TeamColor to set
      * @param team  The new Team
      */
-    public void addTeam(@NotNull TeamColor color, @NotNull Team team) {
+    public void addTeam(final @NotNull TeamColor color, final @NotNull Team team) {
         teams.put(color, new TeamFlag(color, team, getMinigame()));
-        String sbTeam = color.getUserFriendlyName().toLowerCase();
-        Scoreboard scoreboard = getMinigame().getScoreboard();
+        final @NotNull String sbTeam = color.getUserFriendlyName().toLowerCase();
+        final @NotNull Scoreboard scoreboard = getMinigame().getScoreboard();
         org.bukkit.scoreboard.Team bukkitTeam = scoreboard.getTeam(sbTeam);
         if (bukkitTeam != null) {
             bukkitTeam.unregister();
@@ -172,7 +173,7 @@ public class TeamsModule extends AMinigameModule {
      * @param color {@link TeamColor}
      * @return boolean
      */
-    public boolean hasTeam(@NotNull TeamColor color) {
+    public boolean hasTeam(final @NotNull TeamColor color) {
         return teams.containsKey(color);
     }
 
@@ -181,10 +182,10 @@ public class TeamsModule extends AMinigameModule {
      *
      * @param color {@link TeamColor}
      */
-    public void removeTeam(@NotNull TeamColor color) {
+    public void removeTeam(final @NotNull TeamColor color) {
         if (hasTeam(color)) {
             teams.remove(color);
-            org.bukkit.scoreboard.Team bukkitTeam =
+            final @Nullable org.bukkit.scoreboard.Team bukkitTeam =
                     getMinigame().getScoreboard().getTeam(color.getUserFriendlyName().toLowerCase());
             if (bukkitTeam != null) {
                 bukkitTeam.unregister();
@@ -193,7 +194,7 @@ public class TeamsModule extends AMinigameModule {
     }
 
     public boolean hasTeamStartLocations() {
-        for (TeamFlag teamFlag : teams.values()) {
+        for (final @NotNull TeamFlag teamFlag : teams.values()) {
             if (!teamFlag.getFlag().hasStartLocations()) {
                 return false;
             }
@@ -201,7 +202,7 @@ public class TeamsModule extends AMinigameModule {
         return true;
     }
 
-    public @NotNull Callback<TeamColor> getDefaultWinnerCallback() {
+    public @NotNull Callback<@NotNull TeamColor> getDefaultWinnerCallback() {
         return new Callback<>() {
 
             @Override
@@ -214,7 +215,7 @@ public class TeamsModule extends AMinigameModule {
             }
 
             @Override
-            public void setValue(@NotNull TeamColor value) {
+            public void setValue(final @NotNull TeamColor value) {
                 defaultWinner.setFlag(value);
             }
         };
@@ -232,7 +233,7 @@ public class TeamsModule extends AMinigameModule {
         return null;
     }
 
-    public void setDefaultWinner(@NotNull TeamColor defaultWinner) {
+    public void setDefaultWinner(final @NotNull TeamColor defaultWinner) {
         this.defaultWinner.setFlag(defaultWinner);
     }
 
@@ -245,7 +246,7 @@ public class TeamsModule extends AMinigameModule {
     public void addEditMenuOptions(final @NotNull Menu previousMenu) {
         final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_TEAM_NAME, previousMenu.getIntendedViewer());
         menu.setPreviousPage(previousMenu);
-        final @NotNull List<@NotNull MenuItem> menuItems = new ArrayList<>();
+        final @NotNull List<@NotNull AMenuItem> menuItems = new ArrayList<>();
 
         final @NotNull List<@NotNull TeamColor> teamColors = new ArrayList<>(teams.keySet());
         teamColors.add(TeamColor.NONE);
@@ -254,15 +255,15 @@ public class TeamsModule extends AMinigameModule {
 
         menuItems.add(new MenuItemNewLine());
 
-        for (TeamFlag teamFlag : this.teams.values()) {
+        for (final @NotNull TeamFlag teamFlag : teams.values()) {
             menuItems.add(new MenuItemTeam(teamFlag.getFlag().getColoredDisplayName(), teamFlag.getFlag()));
         }
 
-        menu.addItem(new MenuItemAddTeam(MgMenuLangKey.MENU_TEAMADD_NAME, this), menu.getSize() - 1);
+        menu.setItem(new MenuItemAddTeam(MgMenuLangKey.MENU_TEAMADD_NAME, this), menu.getSize() - 1);
 
         menu.addItems(menuItems);
 
-        menu.addItem(new MenuItemBack(previousMenu), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previousMenu), menu.getSize() - 9);
 
         final @NotNull MenuItemPage teamOptionsMenuPage = new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TEAM_OPTIONS_NAME, menu);
         previousMenu.addItem(teamOptionsMenuPage);

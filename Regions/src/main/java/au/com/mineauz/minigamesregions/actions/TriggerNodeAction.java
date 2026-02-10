@@ -22,7 +22,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class TriggerNodeAction extends AAction { // todo merge with TriggerRegion
-    private final StringFlag node = new StringFlag("node", "None");
+    private final @NotNull StringFlag node = new StringFlag("node", "None");
 
     protected TriggerNodeAction(final @NotNull Key key) {
         super(key);
@@ -54,8 +54,7 @@ public class TriggerNodeAction extends AAction { // todo merge with TriggerRegio
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
-                                    @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
         Minigame mg = mgPlayer.getMinigame();
@@ -67,7 +66,7 @@ public class TriggerNodeAction extends AAction { // todo merge with TriggerRegio
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         if (!mgPlayer.isInMinigame()) return;
         Minigame mg = mgPlayer.getMinigame();
@@ -91,7 +90,7 @@ public class TriggerNodeAction extends AAction { // todo merge with TriggerRegio
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(node.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME)));
         menu.displayMenu();
         return true;

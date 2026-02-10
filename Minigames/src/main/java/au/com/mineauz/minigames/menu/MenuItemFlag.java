@@ -13,18 +13,20 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MenuItemFlag extends MenuItem {
+public class MenuItemFlag extends AMenuItem {
     private final @NotNull String flag;
     private final @NotNull List<@NotNull String> flags;
 
-    public MenuItemFlag(@Nullable ItemType displayType, @NotNull String flag, @NotNull List<@NotNull String> flags) {
+    public MenuItemFlag(final @Nullable ItemType displayType,
+                        final @NotNull String flag, final @NotNull List<@NotNull String> flags) {
         super(displayType, Component.text(flag));
         this.flag = flag;
         this.flags = flags;
     }
 
-    public MenuItemFlag(@Nullable ItemType displayType, @Nullable List<@NotNull Component> description, @NotNull String flag,
-                        @NotNull List<@NotNull String> flags) {
+    public MenuItemFlag(final @Nullable ItemType displayType,
+                        final @Nullable List<@NotNull Component> description,
+                        final @NotNull String flag, final @NotNull List<@NotNull String> flags) {
         super(displayType, Component.text(flag), description);
         this.flag = flag;
         this.flags = flags;

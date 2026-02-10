@@ -7,6 +7,8 @@ import au.com.mineauz.minigames.minigame.modules.team.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import io.leangen.geantyref.TypeFactory;
 import io.leangen.geantyref.TypeToken;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -33,7 +35,7 @@ public class PlayerLoadout {
     private static final @NotNull Pattern NUMBER = Pattern.compile("[+-]?[0-9]+");
 
     private final @NotNull Map<@NotNull Key, @NotNull ALoadoutAddon> addons = new HashMap<>();
-    private final @NotNull Map<@NotNull Integer, @NotNull ItemStack> itemSlots = new HashMap<>();
+    private final @NotNull Int2ObjectMap<@NotNull ItemStack> itemSlots = new Int2ObjectOpenHashMap<>();
     private final @NotNull List<@NotNull PotionEffect> effects = new ArrayList<>();
     private final @NotNull String loadoutName;
     private boolean usePermission = false;
@@ -48,21 +50,21 @@ public class PlayerLoadout {
     private @Nullable TeamColor team;
     private boolean displayInMenu = true;
 
-    public PlayerLoadout(@NotNull String name) {
+    public PlayerLoadout(final @NotNull String name) {
         loadoutName = name;
         team = TeamColor.matchColor(name);
     }
 
-    public @NotNull Callback<Component> getDisplayNameCallback() {
+    public @NotNull Callback<@Nullable Component> getDisplayNameCallback() {
         return new Callback<>() {
 
             @Override
-            public Component getValue() {
-                return displayname;
+            public @NotNull Component getValue() {
+                return getDisplayName();
             }
 
             @Override
-            public void setValue(Component value) {
+            public void setValue(final @Nullable Component value) {
                 displayname = value;
             }
         };
@@ -72,7 +74,7 @@ public class PlayerLoadout {
         return Objects.requireNonNullElseGet(displayname, () -> Component.text(loadoutName));
     }
 
-    public void setDisplayName(@NotNull Component name) {
+    public void setDisplayName(final @NotNull Component name) {
         displayname = name;
     }
 
@@ -80,11 +82,11 @@ public class PlayerLoadout {
         return usePermission;
     }
 
-    public void setUsePermissions(boolean bool) {
+    public void setUsePermissions(final boolean bool) {
         usePermission = bool;
     }
 
-    public @NotNull Callback<Boolean> getUsePermissionsCallback() {
+    public @NotNull Callback<@NotNull Boolean> getUsePermissionsCallback() {
         return new Callback<>() {
 
             @Override
@@ -93,7 +95,7 @@ public class PlayerLoadout {
             }
 
             @Override
-            public void setValue(@NotNull Boolean value) {
+            public void setValue(final @NotNull Boolean value) {
                 usePermission = value;
             }
         };
@@ -103,11 +105,11 @@ public class PlayerLoadout {
         return loadoutName;
     }
 
-    public void addItem(@NotNull ItemStack item, int slot) {
+    public void addItem(final @NotNull ItemStack item, final int slot) {
         itemSlots.put(slot, item);
     }
 
-    public void addPotionEffect(@NotNull PotionEffect effect) {
+    public void addPotionEffect(final @NotNull PotionEffect effect) {
         for (PotionEffect pot : effects) {
             if (effect.getType().getKey().equals(pot.getType().getKey())) {
                 effects.remove(pot);
@@ -117,7 +119,7 @@ public class PlayerLoadout {
         effects.add(effect);
     }
 
-    public void removePotionEffect(@NotNull PotionEffect effect) {
+    public void removePotionEffect(final @NotNull PotionEffect effect) {
         if (effects.contains(effect)) {
             effects.remove(effect);
         } else {
@@ -150,11 +152,11 @@ public class PlayerLoadout {
             player.removePotionEffect(potion.getType());
         }
         if (!itemSlots.isEmpty()) {
-            for (Map.Entry<Integer, ItemStack> slotItem : itemSlots.entrySet()) {
-                if (slotItem.getKey() >= 0 && slotItem.getKey() < 100) {
-                    inventory.setItem(slotItem.getKey(), slotItem.getValue());
+            for (final @NotNull Int2ObjectMap.Entry<@NotNull ItemStack> slotItem : itemSlots.int2ObjectEntrySet()) {
+                if (slotItem.getIntKey() >= 0 && slotItem.getIntKey() < 100) {
+                    inventory.setItem(slotItem.getIntKey(), slotItem.getValue());
                 } else {
-                    switch (slotItem.getKey()) {
+                    switch (slotItem.getIntKey()) {
                         case 100 -> inventory.setBoots(slotItem.getValue());
                         case 101 -> inventory.setLeggings(slotItem.getValue());
                         case 102 -> inventory.setChestplate(slotItem.getValue());
@@ -177,7 +179,7 @@ public class PlayerLoadout {
         }
     }
 
-    public void removeLoadout(@NotNull MinigamePlayer player) {
+    public void removeLoadout(final @NotNull MinigamePlayer player) {
         for (final @NotNull ALoadoutAddon addon : addons.values()) {
             addon.clearLoadout(player);
         }
@@ -187,7 +189,7 @@ public class PlayerLoadout {
         return itemSlots.keySet();
     }
 
-    public ItemStack getItem(int slot) {
+    public ItemStack getItem(final int slot) {
         return itemSlots.get(slot);
     }
 
@@ -199,7 +201,7 @@ public class PlayerLoadout {
         return fallDamage;
     }
 
-    public void setHasFallDamage(boolean bool) {
+    public void setHasFallDamage(final boolean bool) {
         fallDamage = bool;
     }
 
@@ -212,7 +214,7 @@ public class PlayerLoadout {
             }
 
             @Override
-            public void setValue(@NotNull Boolean value) {
+            public void setValue(final @NotNull Boolean value) {
                 fallDamage = value;
             }
         };
@@ -235,7 +237,7 @@ public class PlayerLoadout {
             }
 
             @Override
-            public void setValue(@NotNull Boolean value) {
+            public void setValue(final @NotNull Boolean value) {
                 hunger = value;
             }
         };
@@ -245,7 +247,7 @@ public class PlayerLoadout {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(final int level) {
         this.level = level;
     }
 
@@ -258,7 +260,7 @@ public class PlayerLoadout {
             }
 
             @Override
-            public void setValue(@NotNull @Range(from = 0, to = Integer.MAX_VALUE) Integer value) {
+            public void setValue(final @NotNull @Range(from = 0, to = Integer.MAX_VALUE) Integer value) {
                 if (level >= -1) {
                     level = value;
                 }
@@ -270,7 +272,7 @@ public class PlayerLoadout {
         return deletable;
     }
 
-    public void setDeletable(boolean value) {
+    public void setDeletable(final boolean value) {
         deletable = value;
     }
 
@@ -278,7 +280,7 @@ public class PlayerLoadout {
         return lockInventory;
     }
 
-    public void setInventoryLocked(boolean locked) {
+    public void setInventoryLocked(final boolean locked) {
         lockInventory = locked;
     }
 
@@ -291,7 +293,7 @@ public class PlayerLoadout {
             }
 
             @Override
-            public void setValue(@NotNull Boolean value) {
+            public void setValue(final @NotNull Boolean value) {
                 setInventoryLocked(value);
             }
         };
@@ -301,7 +303,7 @@ public class PlayerLoadout {
         return lockArmour;
     }
 
-    public void setArmourLocked(boolean locked) {
+    public void setArmourLocked(final boolean locked) {
         lockArmour = locked;
     }
 
@@ -314,7 +316,7 @@ public class PlayerLoadout {
             }
 
             @Override
-            public void setValue(@NotNull Boolean value) {
+            public void setValue(final @NotNull Boolean value) {
                 setArmourLocked(value);
             }
         };
@@ -338,7 +340,7 @@ public class PlayerLoadout {
         };
     }
 
-    public void setAllowOffHand(boolean allow) {
+    public void setAllowOffHand(final boolean allow) {
         allowOffHand = allow;
     }
 
@@ -346,7 +348,7 @@ public class PlayerLoadout {
         return team;
     }
 
-    public void setTeamColor(@Nullable TeamColor color) {
+    public void setTeamColor(final @Nullable TeamColor color) {
         team = color;
     }
 
@@ -354,7 +356,7 @@ public class PlayerLoadout {
         return new Callback<>() {
 
             @Override
-            public TeamColor getValue() {
+            public @NotNull TeamColor getValue() {
                 if (getTeamColor() == null) {
                     return TeamColor.NONE;
                 }
@@ -362,7 +364,7 @@ public class PlayerLoadout {
             }
 
             @Override
-            public void setValue(TeamColor value) {
+            public void setValue(final TeamColor value) {
                 setTeamColor(value);
             }
         };
@@ -387,7 +389,7 @@ public class PlayerLoadout {
         };
     }
 
-    public void setDisplayInMenu(boolean bool) {
+    public void setDisplayInMenu(final boolean bool) {
         displayInMenu = bool;
     }
 
@@ -395,7 +397,7 @@ public class PlayerLoadout {
      * registers an addon in this loadout
      * @param addonFactory The addonFactory
      */
-    public void registerAddon(@NotNull ILoadoutAddonFactory addonFactory) {
+    public void registerAddon(final @NotNull ILoadoutAddonFactory addonFactory) {
         addons.put(addonFactory.getKey(), addonFactory.makeNewLoadoutAddon(this));
     }
 
@@ -403,11 +405,11 @@ public class PlayerLoadout {
      * unregisters an addon in this loadout
      * @param key The addons key
      */
-    public void unregisterAddon(@NotNull Key key) {
+    public void unregisterAddon(final @NotNull Key key) {
         addons.remove(key);
     }
 
-    public void addAddonMenuItems(@NotNull Menu menu) {
+    public void addAddonMenuItems(final @NotNull Menu menu) {
         for (final @NotNull ALoadoutAddon addon : addons.values()) {
             addon.addMenuOptions(menu);
         }

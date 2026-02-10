@@ -39,11 +39,11 @@ public class GameOverModule extends AMinigameModule {
     private final @NotNull List<@NotNull MinigamePlayer> losers = new ArrayList<>();
     private int task = -1;
 
-    public GameOverModule(@NotNull Minigame mgm, @NotNull Key key) {
+    public GameOverModule(final @NotNull Minigame mgm, final @NotNull Key key) {
         super(mgm, key);
     }
 
-    public static @Nullable GameOverModule getMinigameModule(@NotNull Minigame mgm) {
+    public static @Nullable GameOverModule getMinigameModule(final @NotNull Minigame mgm) {
         return ((GameOverModule) mgm.getModule(MgDefaultModules.GAME_OVER.getKey()));
     }
 
@@ -76,7 +76,7 @@ public class GameOverModule extends AMinigameModule {
             MgMenuLangKey.MENU_GAMEOVER_HUMILIATION_DESCRIPTION));
         menu.addItem(interact.getMenuItem(ItemType.STONE_PRESSURE_PLATE, MgMenuLangKey.MENU_GAMEOVER_INTERACT_NAME));
 
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         previous.addItem(new MenuItemPage(ItemType.OAK_DOOR, MgMenuLangKey.MENU_GAMEOVER_NAME, menu));
     }
@@ -147,7 +147,7 @@ public class GameOverModule extends AMinigameModule {
         return winners;
     }
 
-    public void setWinners(@NotNull List<MinigamePlayer> winners) {
+    public void setWinners(final @NotNull List<@NotNull MinigamePlayer> winners) {
         this.winners.addAll(winners);
     }
 
@@ -159,7 +159,7 @@ public class GameOverModule extends AMinigameModule {
         return losers;
     }
 
-    public void setLosers(@NotNull List<@NotNull MinigamePlayer> losers) {
+    public void setLosers(final @NotNull List<@NotNull MinigamePlayer> losers) {
         this.losers.addAll(losers);
     }
 
@@ -175,7 +175,7 @@ public class GameOverModule extends AMinigameModule {
         return invincible.getFlag();
     }
 
-    public void setInvincible(boolean bool) {
+    public void setInvincible(final boolean bool) {
         invincible.setFlag(bool);
     }
 
@@ -183,7 +183,7 @@ public class GameOverModule extends AMinigameModule {
         return humiliation.getFlag();
     }
 
-    public void setHumiliationMode(boolean bool) {
+    public void setHumiliationMode(final boolean bool) {
         humiliation.setFlag(bool);
     }
 
@@ -191,7 +191,7 @@ public class GameOverModule extends AMinigameModule {
         return interact.getFlag();
     }
 
-    public void setInteractAllowed(boolean bool) {
+    public void setInteractAllowed(final boolean bool) {
         interact.setFlag(bool);
     }
 }

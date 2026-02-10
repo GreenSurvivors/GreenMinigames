@@ -22,7 +22,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class SetEnabledAction extends AAction {
-    private final BooleanFlag state = new BooleanFlag("state", false);
+    private final @NotNull BooleanFlag state = new BooleanFlag("state", false);
 
     protected SetEnabledAction(final @NotNull Key key) {
         super(key);
@@ -55,14 +55,14 @@ public class SetEnabledAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
 
         debug(mgPlayer, region);
         region.setEnabled(state.getFlag());
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         node.setEnabled(state.getFlag());
     }
@@ -80,7 +80,7 @@ public class SetEnabledAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(state.getMenuItem(ItemType.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_ENABLED_NAME)));
         menu.displayMenu();
         return true;

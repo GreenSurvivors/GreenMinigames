@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 public class MatchTeamCondition extends ACondition {
-    private final EnumFlag<TeamColor> teamColor = new EnumFlag<>("team", TeamColor.RED);
+    private final @NotNull EnumFlag<@NotNull TeamColor> teamColor = new EnumFlag<>("team", TeamColor.RED);
 
-    protected MatchTeamCondition(@NotNull String name) {
+    protected MatchTeamCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -56,24 +56,24 @@ public class MatchTeamCondition extends ACondition {
     }
 
     @Override
-    public boolean checkNodeCondition(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         return mgPlayer.getTeam() != null && mgPlayer.getTeam().getColor() == teamColor.getFlag();
     }
 
     @Override
-    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return false;
         return mgPlayer.getTeam() != null && mgPlayer.getTeam().getColor() == teamColor.getFlag();
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         teamColor.saveValue(config);
         saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         teamColor.loadValue(config);
         loadInvert(config);
     }
@@ -81,11 +81,11 @@ public class MatchTeamCondition extends ACondition {
     @Override
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
 
         final @NotNull List<@NotNull TeamColor> teams = new ArrayList<>(TeamColor.validColors());
 
-        menu.addItem(new MenuItemList<>(getTeamMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<TeamColor>() { // don't know why but for some reason the compiler doesn't like when I remove the redundant Teamcolor from the callback. Please let it in there for now!
+        menu.addItem(new MenuItemList<>(getTeamDisplayItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<TeamColor>() { // don't know why but for some reason the compiler doesn't like when I remove the redundant Teamcolor from the callback. Please let it in there for now!
             @Override
             public TeamColor getValue() {
                 return teamColor.getFlag();
@@ -99,7 +99,7 @@ public class MatchTeamCondition extends ACondition {
             @Override
             public @NotNull ItemStack getDisplayItem() {
                 ItemStack stack = super.getDisplayItem();
-                return stack.withType(getTeamMaterial().asMaterial());
+                return stack.withType(getTeamDisplayItemType().asMaterial());
             }
         });
 
@@ -108,7 +108,7 @@ public class MatchTeamCondition extends ACondition {
         return true;
     }
 
-    private @NotNull ItemType getTeamMaterial() {
+    private @NotNull ItemType getTeamDisplayItemType() {
         return teamColor.getFlagOrDefault().getDisplayType();
     }
 

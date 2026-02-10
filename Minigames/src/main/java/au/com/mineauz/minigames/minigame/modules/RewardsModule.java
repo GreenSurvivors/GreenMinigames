@@ -8,7 +8,7 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.scheme.ARewardScheme;
-import au.com.mineauz.minigames.minigame.reward.scheme.MgRewardSchemes;
+import au.com.mineauz.minigames.minigame.reward.scheme.MgDefaultRewardSchemes;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardSchemeRegistry;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
@@ -27,10 +27,10 @@ public class RewardsModule extends AMinigameModule {
         super(mgm, key);
 
         // Default scheme
-        scheme = MgRewardSchemes.STANDARD.makeScheme();
+        scheme = MgDefaultRewardSchemes.STANDARD.makeScheme();
     }
 
-    public static @Nullable RewardsModule getModule(@NotNull Minigame minigame) {
+    public static @Nullable RewardsModule getModule(final @NotNull Minigame minigame) {
         return (RewardsModule) minigame.getModule(MgDefaultModules.REWARDS.getKey());
     }
 
@@ -40,15 +40,18 @@ public class RewardsModule extends AMinigameModule {
     }
 
     @SuppressWarnings("unused")
-    public void setRewardScheme(@NotNull ARewardScheme scheme) {
+    public void setRewardScheme(final @NotNull ARewardScheme scheme) {
         this.scheme = scheme;
     }
 
-    public void awardPlayer(@NotNull MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
+    public void awardPlayer(final @NotNull MinigamePlayer player,
+                            final @NotNull StoredGameStats data, final Minigame minigame,
+                            final boolean firstCompletion) {
         scheme.awardPlayer(player, data, minigame, firstCompletion);
     }
 
-    public void awardPlayerOnLoss(final @NotNull MinigamePlayer player, final @NotNull StoredGameStats data, final @NotNull Minigame minigame) {
+    public void awardPlayerOnLoss(final @NotNull MinigamePlayer player,
+                                  final @NotNull StoredGameStats data, final Minigame minigame) {
         scheme.awardPlayerOnLoss(player, data, minigame);
     }
 
@@ -65,11 +68,11 @@ public class RewardsModule extends AMinigameModule {
 
     @Override
     public void load(final @NotNull CommentedConfigurationNode config) throws SerializationException {
-        final @NotNull String name = config.node("reward-scheme").getString(MgRewardSchemes.STANDARD.getSchemeName());
+        final @NotNull String name = config.node("reward-scheme").getString(MgDefaultRewardSchemes.STANDARD.getSchemeName());
 
-        scheme = RewardSchemeRegistry.createScheme(name);
+        scheme = RewardSchemeRegistry.makeScheme(name);
         if (scheme == null) {
-            scheme = MgRewardSchemes.STANDARD.makeScheme();
+            scheme = MgDefaultRewardSchemes.STANDARD.makeScheme();
         }
 
         scheme.load(config.node("rewards"));
@@ -93,7 +96,7 @@ public class RewardsModule extends AMinigameModule {
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME), parent.getIntendedViewer());
         scheme.addMenuItems(submenu);
 
-        submenu.addItem(RewardSchemeRegistry.newMenuItem(ItemType.PAPER,
+        submenu.setItem(RewardSchemeRegistry.newMenuItem(ItemType.PAPER,
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SCHEME_NAME), new Callback<>() {
                 @Override
                 public @NotNull String getValue() {
@@ -102,14 +105,14 @@ public class RewardsModule extends AMinigameModule {
 
                 @Override
                 public void setValue(@NotNull String value) {
-                    scheme = RewardSchemeRegistry.createScheme(value);
+                    scheme = RewardSchemeRegistry.makeScheme(value);
                     // Update the menu
                     final @NotNull Menu menu = createSubMenu(parent);
                     menu.displayMenu();
                 }
             }), submenu.getSize() - 1);
 
-        submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 9);
+        submenu.setItem(new MenuItemBack(parent), submenu.getSize() - 9);
         return submenu;
     }
 }

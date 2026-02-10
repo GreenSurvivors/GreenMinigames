@@ -22,11 +22,11 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class PlayerXPRangeCondition extends ACondition {
-    private final FloatFlag min = new FloatFlag("min", 1.0f);
-    private final FloatFlag max = new FloatFlag("max", 1.0f);
-    private final EnumFlag<XPCheckType> checkType = new EnumFlag<>("checkLevel", XPCheckType.LEVEL);
+    private final @NotNull FloatFlag min = new FloatFlag("min", 1.0f);
+    private final @NotNull FloatFlag max = new FloatFlag("max", 1.0f);
+    private final @NotNull EnumFlag<@NotNull XPCheckType> checkType = new EnumFlag<>("checkLevel", XPCheckType.LEVEL);
 
-    protected PlayerXPRangeCondition(@NotNull String name) {
+    protected PlayerXPRangeCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -59,12 +59,12 @@ public class PlayerXPRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
         return checkCondition(mgPlayer);
     }
 
     @Override
-    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         return checkCondition(mgPlayer);
     }
 
@@ -89,7 +89,7 @@ public class PlayerXPRangeCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         min.saveValue(config);
         max.saveValue(config);
         checkType.saveValue(config);
@@ -97,7 +97,7 @@ public class PlayerXPRangeCondition extends ACondition {
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         min.loadValue(config);
         max.loadValue(config);
         checkType.loadValue(config);
@@ -112,7 +112,7 @@ public class PlayerXPRangeCondition extends ACondition {
         menu.addItem(max.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME),
             0.5, 1, 0.0, null));
         menu.addItem(checkType.getMenuItem(ItemType.EXPERIENCE_BOTTLE, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERXPRANGE_CHECK_LEVEL)));
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
         menu.displayMenu();
         return true;

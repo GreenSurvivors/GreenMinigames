@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
@@ -28,12 +28,12 @@ public class CommandReward extends ARewardType {
     private static final String DESCRIPTION_TOKEN = "CommandReward_description";
     private String command = "say Hello World!";
 
-    public CommandReward(@NotNull Rewards rewards) {
+    public CommandReward(final @NotNull Rewards rewards) {
         super(rewards);
     }
 
-    public static @Nullable CommandReward getMinigameReward(@NotNull Rewards rewards) {
-        return (CommandReward) RewardTypes.getRewardType(RewardTypes.MgRewardType.COMMAND.getName(), rewards);
+    public static @Nullable CommandReward getMinigameReward(final @NotNull Rewards rewards) {
+        return (CommandReward) RewardTypes.getRewardType(RewardTypes.MgDefaultRewardType.COMMAND.getName(), rewards);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class CommandReward extends ARewardType {
     }
 
     @Override
-    public @NotNull MenuItem getMenuItem() {
+    public @NotNull AMenuItem getMenuItem() {
         return new CommandRewardItem(this);
     }
 
@@ -67,7 +67,7 @@ public class CommandReward extends ARewardType {
         command = config.getString();
     }
 
-    private class CommandRewardItem extends MenuItem implements StringConsumer {
+    private class CommandRewardItem extends AMenuItem implements StringConsumer {
         private static final @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
         private final @NotNull CommandReward reward;
 

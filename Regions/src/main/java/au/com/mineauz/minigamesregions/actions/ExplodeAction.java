@@ -61,8 +61,7 @@ public class ExplodeAction extends AAction {
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
-                                    @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
 
         if (region.getWorld() == null) {
@@ -107,7 +106,7 @@ public class ExplodeAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(power.getMenuItem(ItemType.TNT, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_POWER_NAME)));
         menu.addItem(fire.getMenuItem(ItemType.FLINT_AND_STEEL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_FIRE_NAME)));
         menu.displayMenu();

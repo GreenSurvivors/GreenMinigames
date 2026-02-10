@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.objects.safelocation.ASafeLocation;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
@@ -16,7 +16,7 @@ import java.util.List;
 public class LocationFlag<T extends ASafeLocation> extends AFlag<T> {
     protected final @NotNull TypeToken<T> typeToken;
 
-    public LocationFlag(@NotNull String name, T defaultVal, @NotNull Class<T> clazz) {
+    public LocationFlag(final @NotNull String name, final T defaultVal, @NotNull Class<T> clazz) {
         super(name, defaultVal);
 
         typeToken = TypeToken.get(clazz);
@@ -67,14 +67,14 @@ public class LocationFlag<T extends ASafeLocation> extends AFlag<T> {
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {
         return getMenuItem(displayType, name, null);
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
-                                         @Nullable List<@Nullable Component> description) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name,
+                                          final @Nullable List<@Nullable Component> description) {
         return null; // todo
     }
 }

@@ -23,7 +23,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, StringConsumer {
+public class MenuItemBlockData extends AMenuItem implements BlockDataConsumer, StringConsumer {
     private static final @NotNull String DESCRIPTION_TOKEN = "BlockData_description";
     private final @NotNull Callback<BlockData> dataCallback;
 
@@ -42,7 +42,7 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
     /**
      * minecraft:chest[facing=north,type=single,waterlogged=false]{Items:[{Slot:0b,id:"minecraft:grass_block",Count:1b}],Lock:""}
      */
-    private @NotNull List<@NotNull Component> createDescription(@NotNull BlockData data) {
+    private @NotNull List<@NotNull Component> createDescription(final @NotNull BlockData data) {
         List<Component> result = new ArrayList<>();
         result.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_BLOCKTYPE_DESCRIPTION,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(data.getMaterial().translationKey()))));
@@ -76,7 +76,7 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
     }
 
     @Override
-    public @NotNull ItemStack onClickWithItem(@NotNull ItemStack item) {
+    public @NotNull ItemStack onClickWithItem(final @NotNull ItemStack item) {
         if (item.getType().isBlock()) {
             this.dataCallback.setValue(item.getType().createBlockData());
 
@@ -92,7 +92,7 @@ public class MenuItemBlockData extends MenuItem implements BlockDataConsumer, St
 
     @Override
     public @NotNull ItemStack onDoubleClick() {
-        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
+        final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_BLOCKDATA_CLICKBLOCK,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),

@@ -171,7 +171,7 @@ public class MinigamePlayerManager {
         if (minigame.getState() == MinigameState.STARTING && minigame.canLateJoin()) {
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_LATEJOINWAIT,
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(),
-                    MinigameUtils.convertTime(Duration.ofSeconds(minigame.getMpTimer().getStartWaitTimeLeft()))));
+                    MinigameUtils.convertTime(Duration.ofSeconds(minigame.getMultiplayerTimer().getStartWaitTimeLeft()))));
         }
     }
 
@@ -184,11 +184,11 @@ public class MinigamePlayerManager {
     private boolean handleMoneyBet(final @NotNull Minigame minigame, final @NotNull MinigamePlayer mgPlayer, final double betAmount) {
         final Player player = mgPlayer.getPlayer();
         final @NotNull ItemStack itemInMainHand = player.getInventory().getItemInMainHand().clone();
-        if (minigame.getMpBets() == null && (itemInMainHand.isEmpty() || betAmount != 0)) {
-            minigame.setMpBets(new MultiplayerBets());
+        if (minigame.getMultiplayerBets() == null && (itemInMainHand.isEmpty() || betAmount != 0)) {
+            minigame.setMultiplayerBets(new MultiplayerBets());
         }
 
-        final @NotNull MultiplayerBets mpBets = minigame.getMpBets();
+        final @NotNull MultiplayerBets mpBets = minigame.getMultiplayerBets();
 
         if (mpBets != null) {
             if (!mpBets.hasAlreadyBet(mgPlayer)) {
@@ -206,7 +206,7 @@ public class MinigamePlayerManager {
                             //not enough money
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_BET_NOTENOUGHMONEY);
                             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_BET_NOTENOUGHMONEYINFO,
-                                Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), plugin.getEconomy().format(minigame.getMpBets().getHighestMoneyBet())));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), plugin.getEconomy().format(minigame.getMultiplayerBets().getHighestMoneyBet())));
                         }
                     }
 
@@ -673,14 +673,14 @@ public class MinigamePlayerManager {
                         minigame.getRecorderData().setCreatedRegenBlocks(false);
                     }
 
-                    if (minigame.getMpTimer() != null) {
-                        minigame.getMpTimer().pauseTimer();
-                        minigame.getMpTimer().removeTimer();
-                        minigame.setMpTimer(null);
+                    if (minigame.getMultiplayerTimer() != null) {
+                        minigame.getMultiplayerTimer().pauseTimer();
+                        minigame.getMultiplayerTimer().removeTimer();
+                        minigame.setMultiplayerTimer(null);
                     }
 
-                    if (minigame.getMpBets() != null) {
-                        minigame.setMpBets(null);
+                    if (minigame.getMultiplayerBets() != null) {
+                        minigame.setMultiplayerBets(null);
                     }
 
                     plugin.getMinigameManager().clearClaimedScore(minigame);
@@ -757,21 +757,21 @@ public class MinigamePlayerManager {
             //Prepare split bet rewards
             double bets = 0;
             Set<ItemStack> betItems = new HashSet<>();
-            if (minigame.getMpBets() != null && !winners.isEmpty()) {
-                if (minigame.getMpBets().hasMoneyBets()) {
-                    bets = Math.round(minigame.getMpBets().claimMoneyBets() / (double) winners.size());
+            if (minigame.getMultiplayerBets() != null && !winners.isEmpty()) {
+                if (minigame.getMultiplayerBets().hasMoneyBets()) {
+                    bets = Math.round(minigame.getMultiplayerBets().claimMoneyBets() / (double) winners.size());
                 }
 
                 //todo this  multiplies items, if the rest is over 0.5 and deletes items, if the rest is under it, but not 0
                 // for items that are in the division rest me might want to give them to random winners.
-                if (minigame.getMpBets().hasItemBets()) {
-                    betItems = minigame.getMpBets().claimItemBets();
+                if (minigame.getMultiplayerBets().hasItemBets()) {
+                    betItems = minigame.getMultiplayerBets().claimItemBets();
 
                     final List<MinigamePlayer> finalWinners = winners;
                     betItems.forEach(item -> item.setAmount((int) Math.round(item.getAmount() / (double) finalWinners.size())));
                 }
 
-                minigame.setMpBets(null);
+                minigame.setMultiplayerBets(null);
             }
 
             //Broadcast Message
@@ -845,8 +845,8 @@ public class MinigamePlayerManager {
                 }
 
                 //Item Bets (for non groups)
-                if (player != null && minigame.getMpBets() != null) {
-                    if (minigame.getMpBets().hasItemBets()) {
+                if (player != null && minigame.getMultiplayerBets() != null) {
+                    if (minigame.getMultiplayerBets().hasItemBets()) {
                         if (mgWinner.isInMinigame()) {
                             for (ItemStack i : betItems) {
                                 mgWinner.addTempRewardItem(i);
@@ -854,7 +854,7 @@ public class MinigamePlayerManager {
                         } else {
                             player.give(betItems);
                         }
-                        minigame.setMpBets(null);
+                        minigame.setMultiplayerBets(null);
                     }
                 }
 

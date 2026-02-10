@@ -67,15 +67,14 @@ public class SpawnEntityAction extends AAction {
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        Map<Component, Component> out = new LinkedHashMap<>(2);
+        final @NotNull Map<@NotNull Component, @NotNull Component> out = new LinkedHashMap<>(2);
         out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME), Component.translatable(entitySnapshotFlag.getFlagOrDefault().getEntityType().translationKey()));
 
         if (entitySnapshotFlag.getFlagOrDefault().getEntityType().isAlive()) {
             String customName = ((CraftEntitySnapshot) entitySnapshotFlag.getFlagOrDefault()).getData().getString("CustomName").get();
 
-
-            net.minecraft.network.chat.Component ccc;
-            Tag tag = ((CraftEntitySnapshot) entitySnapshotFlag.getFlagOrDefault()).getData().get("CustomName");
+            final @Nullable net.minecraft.network.chat.Component ccc;
+            final @Nullable Tag tag = ((CraftEntitySnapshot) entitySnapshotFlag.getFlagOrDefault()).getData().get("CustomName");
             if (tag == null) {
                 ccc = null;
             } else {
@@ -110,13 +109,12 @@ public class SpawnEntityAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
-                                    @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         if (!mgPlayer.isInMinigame()) {
             return;
         }
@@ -126,7 +124,7 @@ public class SpawnEntityAction extends AAction {
             return;
         }
 
-        Entity entity = entitySnapshotFlag.getFlagOrDefault().createEntity(node.getSafeLocation().toLocation());
+        final @NotNull Entity entity = entitySnapshotFlag.getFlagOrDefault().createEntity(node.getSafeLocation().toLocation());
         entity.getPersistentDataContainer().set(MINIGAME_ENTITY_KEY, PersistentDataType.STRING, node.getMinigame().getName()); //todo use in recorder to despawn + add parameter for specific Minigame
 
         mgPlayer.getMinigame().getRecorderData().addEntity(entity, mgPlayer, EntityData.ChangeType.CREATED);
@@ -145,14 +143,14 @@ public class SpawnEntityAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        final MenuItem entitySelector = entitySnapshotFlag.getMenuItem(ItemType.SPAWNER, RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_SELECT_NAME));
+        final AMenuItem entitySelector = entitySnapshotFlag.getMenuItem(ItemType.SPAWNER, RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_SELECT_NAME));
         entitySelector.update();
 
-        final EntityType[] entityTypes = EntityType.values();
-        List<EntityType> options = new ArrayList<>(entityTypes.length);
-        for (EntityType type : entityTypes) {
+        final @NotNull EntityType @NotNull [] entityTypes = EntityType.values();
+        final @NotNull List<EntityType> options = new ArrayList<>(entityTypes.length);
+        for (final @NotNull EntityType type : entityTypes) {
             if (type.isSpawnable()) {
                 options.add(type);
             }
@@ -164,7 +162,7 @@ public class SpawnEntityAction extends AAction {
             }
 
             @Override
-            public void setValue(EntityType value) {
+            public void setValue(final EntityType value) {
                 final @NotNull CompoundTag nbt = ((CraftEntitySnapshot) entitySnapshotFlag.getFlagOrDefault()).getData();
 
                 net.minecraft.world.entity.EntityType<?> entitytypes = CraftEntityType.bukkitToMinecraft(value);

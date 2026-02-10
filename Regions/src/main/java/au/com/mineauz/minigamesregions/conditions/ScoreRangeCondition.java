@@ -28,13 +28,13 @@ import java.util.List;
 import java.util.Map;
 
 public class ScoreRangeCondition extends ACondition {
-    private final IntegerFlag min = new IntegerFlag("min", 5);
-    private final IntegerFlag max = new IntegerFlag("max", 10);
-    private final EnumFlag<TeamColor> teamColor = new EnumFlag<>("team", TeamColor.RED);
-    // note: autodetect team being default here is part of migrating old behavior aka data fixer upper
-    private  final EnumFlag<ScoreHolderType> scoreHolder = new EnumFlag<>("scoreHolder", ScoreHolderType.AUTODETECT_TEAM);
+    private final @NotNull IntegerFlag min = new IntegerFlag("min", 5);
+    private final @NotNull IntegerFlag max = new IntegerFlag("max", 10);
+    private final @NotNull EnumFlag<TeamColor> teamColor = new EnumFlag<>("team", TeamColor.RED);
+    // note: autodetect team being default here is part of migrating old behaviour aka dataFixerUpper
+    private  final @NotNull EnumFlag<@NotNull ScoreHolderType> scoreHolder = new EnumFlag<>("scoreHolder", ScoreHolderType.AUTODETECT_TEAM);
 
-    protected ScoreRangeCondition(@NotNull String name) {
+    protected ScoreRangeCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -69,12 +69,12 @@ public class ScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         return checkCondition(mgPlayer);
     }
 
     @Override
-    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
         return checkCondition(mgPlayer);
     }
 
@@ -109,7 +109,7 @@ public class ScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         min.saveValue(config);
         max.saveValue(config);
         scoreHolder.saveValue(config);
@@ -118,7 +118,7 @@ public class ScoreRangeCondition extends ACondition {
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         min.loadValue(config);
         max.loadValue(config);
         scoreHolder.loadValue(config);
@@ -150,7 +150,7 @@ public class ScoreRangeCondition extends ACondition {
         List<TeamColor> teams = new ArrayList<>(TeamColor.validColors());
 
         // todo cycle through color material
-        menu.addItem(new MenuItemList<>(getTeamMaterial(), RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<>() {
+        menu.addItem(new MenuItemList<>(getTeamDisplayItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<>() {
             @Override
             public TeamColor getValue() {
                 return teamColor.getFlag();
@@ -162,14 +162,14 @@ public class ScoreRangeCondition extends ACondition {
             }
         }, teams));
 
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
 
         menu.displayMenu();
         return true;
     }
 
-    private @NotNull ItemType getTeamMaterial() {
+    private @NotNull ItemType getTeamDisplayItemType() {
         return teamColor.getFlag().getDisplayType();
     }
 

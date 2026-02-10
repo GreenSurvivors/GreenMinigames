@@ -22,9 +22,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class MenuItemDecimal extends MenuItem implements StringConsumer {
-    private static final String DESCRIPTION_TOKEN = "Decimal_description";
-    private static final Pattern DOUBLE_PATTERN = Pattern.compile("[+-]?[0-9]+(.[0-9]+)?");
+public class MenuItemDecimal extends AMenuItem implements StringConsumer {
+    private static final @NotNull String DESCRIPTION_TOKEN = "Decimal_description";
+    private static final @NotNull Pattern DOUBLE_PATTERN = Pattern.compile("[+-]?[0-9]+(.[0-9]+)?");
 
     private final @NotNull Callback<Double> value;
     private final double lowerInc;
@@ -33,8 +33,10 @@ public class MenuItemDecimal extends MenuItem implements StringConsumer {
     private final @Nullable Double max;
     private @NotNull DecimalFormat form = new DecimalFormat("#.##");
 
-    public MenuItemDecimal(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<Double> value,
-                           double lowerInc, double upperInc, @Nullable Double min, @Nullable Double max) {
+    public MenuItemDecimal(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                           final @NotNull Callback<Double> value,
+                           final double lowerInc, final double upperInc,
+                           final @Nullable Double min, final @Nullable Double max) {
         super(displayType, langKey);
         this.value = value;
         this.lowerInc = lowerInc;
@@ -44,20 +46,18 @@ public class MenuItemDecimal extends MenuItem implements StringConsumer {
         updateDescription();
     }
 
-    public MenuItemDecimal(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<Double> value,
-                           double lowerInc, double upperInc, @Nullable Double min, @Nullable Double max) {
-        super(displayType, name);
-        this.value = value;
-        this.lowerInc = lowerInc;
-        this.upperInc = upperInc;
-        this.min = min;
-        this.max = max;
-        updateDescription();
+    public MenuItemDecimal(final @Nullable ItemType displayType, final @Nullable Component name,
+                           final @NotNull Callback<Double> value,
+                           final double lowerInc, final double upperInc,
+                           final @Nullable Double min, final @Nullable Double max) {
+        this(displayType, name, null, value, lowerInc, upperInc, min, max);
     }
 
-    public MenuItemDecimal(@Nullable ItemType displayType, @Nullable Component name,
-                           @Nullable List<@NotNull Component> description, @NotNull Callback<Double> value,
-                           double lowerInc, double upperInc, @Nullable Double min, @Nullable Double max) {
+    public MenuItemDecimal(final @Nullable ItemType displayType, final @Nullable Component name,
+                           final @Nullable List<@NotNull Component> description,
+                           final @NotNull Callback<Double> value,
+                           final double lowerInc, final double upperInc,
+                           final @Nullable Double min, final @Nullable Double max) {
         super(displayType, name, description);
         this.value = value;
         this.lowerInc = lowerInc;
@@ -67,7 +67,7 @@ public class MenuItemDecimal extends MenuItem implements StringConsumer {
         updateDescription();
     }
 
-    public void setFormat(@NotNull DecimalFormat format) {
+    public void setFormat(final @NotNull DecimalFormat format) {
         form = format;
     }
 
@@ -128,7 +128,7 @@ public class MenuItemDecimal extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onDoubleClick() {
-        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
+        final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(15);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,

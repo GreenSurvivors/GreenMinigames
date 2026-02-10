@@ -14,16 +14,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MenuItemSaveMinigame extends MenuItem {
+public class MenuItemSaveMinigame extends AMenuItem {
     private final @NotNull Minigame mgm;
 
-    public MenuItemSaveMinigame(@Nullable ItemType displayType, @Nullable Component name, @NotNull Minigame minigame) {
-        super(displayType, name);
-        mgm = minigame;
+    public MenuItemSaveMinigame(final @Nullable ItemType displayType, final @Nullable Component name,
+                                final @NotNull Minigame minigame) {
+        this(displayType, name, null, minigame);
     }
 
-    public MenuItemSaveMinigame(@Nullable ItemType displayType, @Nullable Component name,
-                                @Nullable List<@NotNull Component> description, @NotNull Minigame minigame) {
+    public MenuItemSaveMinigame(final @Nullable ItemType displayType, final @Nullable Component name,
+                                final @Nullable List<@NotNull Component> description,
+                                final @NotNull Minigame minigame) {
         super(displayType, name, description);
         mgm = minigame;
     }

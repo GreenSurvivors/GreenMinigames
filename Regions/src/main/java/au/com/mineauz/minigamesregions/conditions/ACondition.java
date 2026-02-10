@@ -28,14 +28,14 @@ public abstract class ACondition {
     }
 
     protected void addInvertMenuItem(final @NotNull Menu menu) {
-        menu.addItem(isInverted.getMenuItem(ItemType.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_INVERT_NAME)), menu.getSize() - 1);
+        menu.setItem(isInverted.getMenuItem(ItemType.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_INVERT_NAME)), menu.getSize() - 1);
     }
 
-    protected void saveInvertedStatus(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    protected void saveInvertedStatus(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         isInverted.saveValue(config);
     }
 
-    protected void loadInvert(@NotNull CommentedConfigurationNode config) {
+    protected void loadInvert(final @NotNull CommentedConfigurationNode config) {
         isInverted.loadValue(config);
     }
 
@@ -55,13 +55,13 @@ public abstract class ACondition {
 
     public abstract boolean useInNodes();
 
-    public abstract boolean checkRegionCondition(MinigamePlayer mgPlayer, @NotNull Region region);
+    public abstract boolean checkRegionCondition(final MinigamePlayer mgPlayer, final @NotNull Region region);
 
-    public abstract boolean checkNodeCondition(MinigamePlayer mgPlayer, @NotNull Node node);
+    public abstract boolean checkNodeCondition(final MinigamePlayer mgPlayer, final @NotNull Node node);
 
-    public abstract void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException;
+    public abstract void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException;
 
-    public abstract void loadArguments(@NotNull CommentedConfigurationNode config) throws SerializationException;
+    public abstract void loadArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException;
 
     public abstract boolean displayMenu(final @NotNull Menu prev);
 
@@ -72,7 +72,7 @@ public abstract class ACondition {
 
     public abstract @NotNull Map<@NotNull Component, @Nullable Component> describe();
 
-    public void debug(@NotNull Minigame mg) {
+    public void debug(final @NotNull Minigame mg) {
         if (Minigames.getPlugin().isDebugging()) {
             Main.getPlugin().getComponentLogger().info("Cat " + getCategory() + " : " + getName() +
                     " Check:" + mg.getName() + " mech: " + mg.getMechanic().key() + ", Condition:                     " + this);

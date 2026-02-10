@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class MenuItemList<T> extends MenuItem implements StringConsumer {
+public class MenuItemList<T> extends AMenuItem implements StringConsumer {
     private static final @NotNull String DESCRIPTION_TOKEN = "List_description";
     protected final @NotNull Callback<T> callback;
     protected final @NotNull List<T> options;

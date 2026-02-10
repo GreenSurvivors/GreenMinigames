@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -32,7 +32,7 @@ public abstract class ARewardType {
 
     public abstract void giveReward(@NotNull MinigamePlayer mgPlayer);
 
-    public abstract @NotNull MenuItem getMenuItem();
+    public abstract @NotNull AMenuItem getMenuItem();
 
     public abstract void saveReward(final @NotNull CommentedConfigurationNode config) throws SerializationException;
 

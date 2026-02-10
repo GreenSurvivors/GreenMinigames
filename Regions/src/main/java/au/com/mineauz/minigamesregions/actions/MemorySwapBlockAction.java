@@ -199,10 +199,10 @@ public class MemorySwapBlockAction extends AAction {
         //todo config for this, also move this standard list into a ressource file
     }
 
-    private final BlockTypeFlag matchType = new BlockTypeFlag("matchtype", BlockType.COBBLESTONE);
-    private final BlockTypeListFlag wbList = new BlockTypeListFlag("config.blacklist", new ArrayList<>());
+    private final @NotNull BlockTypeFlag matchType = new BlockTypeFlag("matchtype", BlockType.COBBLESTONE);
+    private final @NotNull BlockTypeListFlag wbList = new BlockTypeListFlag("config.blacklist", new ArrayList<>());
     // is it a white or a blacklist?
-    private final BooleanFlag whitelistMode = new BooleanFlag("whitelistmode", false);
+    private final @NotNull BooleanFlag whitelistMode = new BooleanFlag("whitelistmode", false);
 
     protected MemorySwapBlockAction(final @NotNull Key key) {
         super(key);
@@ -272,7 +272,7 @@ public class MemorySwapBlockAction extends AAction {
      * skipped and the player will be warned.
      */
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         final SequencedSet<@NotNull BlockType> localBockTypePool = cleanBlockPool();
         final List<@NotNull Block> blocksToSwap = new ArrayList<>();
@@ -339,8 +339,7 @@ public class MemorySwapBlockAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
     }
 
@@ -363,7 +362,7 @@ public class MemorySwapBlockAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         //The menu entry for the from-block, aka the block that will be replaced
         menu.addItem(matchType.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MATCHBLOCK_NAME)));

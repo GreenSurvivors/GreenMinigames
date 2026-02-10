@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.objects.safelocation.ASafeLocation;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
@@ -16,7 +16,7 @@ import java.util.List;
 public class LocationListFlag<T extends @NotNull ASafeLocation> extends AFlag<List<T>> {// todo replace with GENERIC<T> list flag AFlag<List<AFlag<T>>>
     protected final @NotNull TypeToken<T> typeToken;
 
-    public LocationListFlag(@NotNull String name, List<T> value, @NotNull Class<T> clazz) {
+    public LocationListFlag(final @NotNull String name, final List<T> value, final @NotNull Class<T> clazz) {
         super(name, new ArrayList<>(), value); // default flag - saving tests if the flag is equal to their default
         typeToken = TypeToken.get(clazz);
     }
@@ -37,14 +37,14 @@ public class LocationListFlag<T extends @NotNull ASafeLocation> extends AFlag<Li
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {
         return getMenuItem(displayType, name, null);
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
-                                         @Nullable List<@NotNull Component> description) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name,
+                                          final @Nullable List<@NotNull Component> description) {
         return null; // todo
     }
 }

@@ -2,8 +2,8 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -19,13 +19,13 @@ public abstract class AFlag<T> {
     private @NotNull String name;
     private T defaultVal;
 
-    protected AFlag(@NotNull String name, T defaultVal) {
+    protected AFlag(final @NotNull String name, final T defaultVal) {
         this.name = name;
         this.value = defaultVal;
         this.defaultVal = defaultVal;
     }
 
-    protected AFlag(@NotNull String name, T defaultVal, T value) {
+    protected AFlag(final @NotNull String name, final T defaultVal, final T value) {
         this.name = name;
         this.defaultVal = defaultVal;
         this.value = value;
@@ -35,7 +35,7 @@ public abstract class AFlag<T> {
         return value;
     }
 
-    public void setFlag(T value) {
+    public void setFlag(final T value) {
         this.value = value;
     }
 
@@ -43,7 +43,7 @@ public abstract class AFlag<T> {
         return name;
     }
 
-    protected void setName(@NotNull String name) {
+    protected void setName(final @NotNull String name) {
         this.name = name;
     }
 
@@ -51,7 +51,7 @@ public abstract class AFlag<T> {
         return defaultVal;
     }
 
-    protected void setDefaultFlag(T value) {
+    protected void setDefaultFlag(final T value) {
         defaultVal = value;
     }
 
@@ -72,7 +72,7 @@ public abstract class AFlag<T> {
             }
 
             @Override
-            public void setValue(T value) {
+            public void setValue(final T value) {
                 setFlag(value);
             }
         };
@@ -82,20 +82,20 @@ public abstract class AFlag<T> {
 
     public abstract void loadValue(final @NotNull CommentedConfigurationNode config) throws ConfigurateException;
 
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey) {
         return getMenuItem(displayType, MinigameMessageManager.getMgMessage(langKey));
     }
 
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {
         return getMenuItem(displayType, name, null);
     }
 
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey nameLangKey,
-                                         @NotNull MinigameLangKey descriptionLangKey) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey nameLangKey,
+                                          final @NotNull MinigameLangKey descriptionLangKey) {
         return getMenuItem(displayType, MinigameMessageManager.getMgMessage(nameLangKey),
             MinigameMessageManager.getMgMessageList(descriptionLangKey));
     }
 
-    public abstract @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
-                                                  @Nullable List<@NotNull Component> description);
+    public abstract @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name,
+                                                   final @Nullable List<@NotNull Component> description);
 }

@@ -36,9 +36,9 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class InfectionMechanic extends AGameMechanic {
-    private final IntegerFlag infectedPercent = new IntegerFlag("infectedPercent", 18);
-    private final EnumFlag<TeamColor> infectedTeam = new EnumFlag<>("infectedTeam", TeamColor.RED);
-    private final EnumFlag<TeamColor> survivorTeam = new EnumFlag<>("survivorTeam", TeamColor.BLUE);
+    private final @NotNull IntegerFlag infectedPercent = new IntegerFlag("infectedPercent", 18);
+    private final @NotNull EnumFlag<TeamColor> infectedTeam = new EnumFlag<>("infectedTeam", TeamColor.RED);
+    private final @NotNull EnumFlag<TeamColor> survivorTeam = new EnumFlag<>("survivorTeam", TeamColor.BLUE);
 
     //Unsaved Data
     private final List<MinigamePlayer> infected = new ArrayList<>();
@@ -121,7 +121,7 @@ public class InfectionMechanic extends AGameMechanic {
     @Override
     public @NotNull MenuItemPage displayMechanicSettings(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_INFECTED_NAME, previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         menu.addItem(infectedPercent.getMenuItem(ItemType.ZOMBIE_HEAD, MgMenuLangKey.MENU_INFECTED_PERCENT_NAME,
             MgMenuLangKey.MENU_INFECTED_PERCENT_DESCRIPTION, 1, 99));
@@ -151,7 +151,7 @@ public class InfectionMechanic extends AGameMechanic {
     }
 
     @Override
-    public void onJoinMinigame(@NotNull MinigamePlayer player) {
+    public void onJoinMinigame(final @NotNull MinigamePlayer player) {
     }
 
     @Override
@@ -274,8 +274,7 @@ public class InfectionMechanic extends AGameMechanic {
         };
     }
 
-    @NotNull
-    protected Callback<TeamColor> getSurvivorTeamCallback() {
+    protected @NotNull Callback<TeamColor> getSurvivorTeamCallback() {
         return new Callback<>() {
             @Override
             public TeamColor getValue() {
@@ -295,7 +294,7 @@ public class InfectionMechanic extends AGameMechanic {
             }
 
             @Override
-            public void setValue(TeamColor value) {
+            public void setValue(final TeamColor value) {
                 if (value == TeamColor.NONE) {
                     survivorTeam.setFlag(TeamColor.NONE);
                 } else if (value == infectedTeam.getDefaultFlag() || value == survivorTeam.getDefaultFlag() ||
@@ -313,7 +312,7 @@ public class InfectionMechanic extends AGameMechanic {
         return infectedPercent.getFlag();
     }
 
-    public void setInfectedPercent(int amount) {
+    public void setInfectedPercent(final int amount) {
         infectedPercent.setFlag(amount);
     }
 
@@ -332,7 +331,7 @@ public class InfectionMechanic extends AGameMechanic {
         }
     }
 
-    public void setInfectedTeam(@NotNull TeamColor teamColor) {
+    public void setInfectedTeam(final @NotNull TeamColor teamColor) {
         if (teamColor == infectedTeam.getDefaultFlag() || teamColor == survivorTeam.getDefaultFlag() ||
             TeamsModule.getMinigameModule(minigame).getTeamColors().contains(teamColor)) {
 
@@ -358,8 +357,8 @@ public class InfectionMechanic extends AGameMechanic {
             return null;
     }
 
-    public boolean setSurvivorTeam(@NotNull TeamColor survivorTeamColor) {
-        TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+    public boolean setSurvivorTeam(final @NotNull TeamColor survivorTeamColor) {
+        final @NotNull TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
 
         if (survivorTeamColor == TeamColor.NONE ||
             survivorTeamColor == infectedTeam.getDefaultFlag() || survivorTeamColor == survivorTeam.getDefaultFlag() ||
@@ -378,15 +377,15 @@ public class InfectionMechanic extends AGameMechanic {
         return survivorTeam.getDefaultFlag();
     }
 
-    public void addInfectedPlayer(@NotNull MinigamePlayer mgPlayer) {
+    public void addInfectedPlayer(final @NotNull MinigamePlayer mgPlayer) {
         infected.add(mgPlayer);
     }
 
-    public void removeInfectedPlayer(@NotNull MinigamePlayer mgPlayer) {
+    public void removeInfectedPlayer(final @NotNull MinigamePlayer mgPlayer) {
         infected.remove(mgPlayer);
     }
 
-    public boolean isInfectedPlayer(@Nullable MinigamePlayer mgPlayer) {
+    public boolean isInfectedPlayer(final @Nullable MinigamePlayer mgPlayer) {
         return infected.contains(mgPlayer);
     }
 

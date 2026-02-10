@@ -9,27 +9,29 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MenuItemPage extends MenuItem {
+public class MenuItemPage extends AMenuItem {
     private final @NotNull Menu menu;
 
-    public MenuItemPage(@Nullable ItemType displayType, @Nullable Component name, @NotNull Menu menu) {
-        super(displayType, name);
-        this.menu = menu;
+    public MenuItemPage(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                        final @NotNull Menu menu) {
+        this(displayType, langKey, null, menu);
     }
 
-    public MenuItemPage(@Nullable ItemType displayType, @NotNull MinigameLangKey name, @NotNull Menu menu) {
-        super(displayType, name);
-        this.menu = menu;
-    }
-
-    public MenuItemPage(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
-                        @Nullable List<@NotNull Component> description, @NotNull Menu menu) {
+    public MenuItemPage(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                        final @Nullable List<@NotNull Component> description,
+                        final @NotNull Menu menu) {
         super(displayType, langKey, description);
         this.menu = menu;
     }
 
-    public MenuItemPage(@Nullable ItemType displayType, @Nullable Component name,
-                        @Nullable List<@NotNull Component> description, @NotNull Menu menu) {
+    public MenuItemPage(final @Nullable ItemType displayType, final @Nullable Component name,
+                        final @NotNull Menu menu) {
+        this(displayType, name, null, menu);
+    }
+
+    public MenuItemPage(final @Nullable ItemType displayType, final @Nullable Component name,
+                        final @Nullable List<@NotNull Component> description,
+                        final @NotNull Menu menu) {
         super(displayType, name, description);
         this.menu = menu;
     }

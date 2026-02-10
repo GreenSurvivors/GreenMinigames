@@ -69,7 +69,7 @@ public class PlaySoundAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         if (mgPlayer != null) {
             execute(mgPlayer, mgPlayer.getLocation());
@@ -77,7 +77,7 @@ public class PlaySoundAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         if (node.getSafeLocation().getWorld() == null) {
             return;
@@ -132,7 +132,7 @@ public class PlaySoundAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, MgMenuLangKey.MENU_PLAYSOUND_MENU_NAME, previous.getIntendedViewer());
 
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         List<Sound> sounds = Registry.SOUNDS.stream().toList();
         menu.addItem(new MenuItemList<>(ItemType.NOTE_BLOCK, MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME, new Callback<>() {
 
@@ -147,7 +147,7 @@ public class PlaySoundAction extends AAction {
             }
 
             @Override
-            public void setValue(@NotNull Sound value) {
+            public void setValue(final @NotNull Sound value) {
                 soundKey.setFlag(Registry.SOUNDS.getKey(value).asString());
             }
         }, sounds));
@@ -161,7 +161,7 @@ public class PlaySoundAction extends AAction {
             }
 
             @Override
-            public void setValue(@NotNull Double value) {
+            public void setValue(final @NotNull Double value) {
                 volume.setFlag(value.floatValue());
             }
         }, 0.1, 1d, 0.5, null));

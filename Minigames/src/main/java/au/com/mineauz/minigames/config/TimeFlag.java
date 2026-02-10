@@ -2,8 +2,8 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class TimeFlag extends AFlag<Long> {
 
-    public TimeFlag(@NotNull String name, Long defaultVal) {
+    public TimeFlag(final @NotNull String name, final Long defaultVal) {
         super(name, defaultVal);
     }
 
@@ -36,34 +36,34 @@ public class TimeFlag extends AFlag<Long> {
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {
         return getMenuItem(displayType, name, null);
     }
 
-    public @NotNull MenuItemTime getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
-                                             @Nullable Long min, @Nullable Long max) {
+    public @NotNull MenuItemTime getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name,
+                                             final @Nullable Long min, final @Nullable Long max) {
         return getMenuItem(displayType, name, null, min, max);
     }
 
-    public MenuItemTime getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
-                                    @Nullable Long min, @Nullable Long max) {
+    public MenuItemTime getMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                                    final @Nullable Long min, final @Nullable Long max) {
         return getMenuItem(displayType, langKey, null, min, max);
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItemTime getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
-                                             @Nullable List<@NotNull Component> description) {
+    public @NotNull MenuItemTime getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name,
+                                             final @Nullable List<@NotNull Component> description) {
         return getMenuItem(displayType, name, description, 0L, null);
     }
 
-    public @NotNull MenuItemTime getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
-                                             @Nullable List<@NotNull Component> description, @Nullable Long min, @Nullable Long max) {
+    public @NotNull MenuItemTime getMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                                             final @Nullable List<@NotNull Component> description, final @Nullable Long min, final @Nullable Long max) {
         return getMenuItem(displayType, MinigameMessageManager.getMgMessage(langKey), description, min, max);
     }
 
-    public @NotNull MenuItemTime getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
-                                             @Nullable List<@NotNull Component> description, @Nullable Long min, @Nullable Long max) {
+    public @NotNull MenuItemTime getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name,
+                                             final @Nullable List<@NotNull Component> description, final @Nullable Long min, final @Nullable Long max) {
         return new MenuItemTime(displayType, name, description, new Callback<>() {
 
             @Override
@@ -72,7 +72,7 @@ public class TimeFlag extends AFlag<Long> {
             }
 
             @Override
-            public void setValue(Long value) {
+            public void setValue(final Long value) {
                 setFlag(value);
             }
 

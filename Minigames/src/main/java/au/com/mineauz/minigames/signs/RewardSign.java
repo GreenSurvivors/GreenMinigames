@@ -34,8 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RewardSign extends AMinigameSign {
-    private static final Minigames plugin = Minigames.getPlugin();
-    private final MinigameManager mdata = plugin.getMinigameManager();
+    private static final @NotNull Minigames plugin = Minigames.getPlugin();
 
     @Override
     public @NotNull Component getName() {
@@ -53,7 +52,7 @@ public class RewardSign extends AMinigameSign {
     }
 
     @Override
-    public boolean signCreate(@NotNull SignChangeEvent event) {
+    public boolean signCreate(final @NotNull SignChangeEvent event) {
         if (event.line(2) != null && !PlainTextComponentSerializer.plainText().serialize(event.line(2)).isEmpty()) {
             event.line(1, getName());
             return true;
@@ -66,14 +65,15 @@ public class RewardSign extends AMinigameSign {
     public boolean signUse(final @NotNull Sign sign, final @NotNull MinigamePlayer mgPlayer) {
         final @NotNull Location loc = sign.getLocation();
         final Player player = mgPlayer.getPlayer();
+        final MinigameManager mdata = plugin.getMinigameManager();
         if (!MinigameTool.isMinigameTool(player.getInventory().getItemInMainHand())) {
             final @NotNull String label = LegacyComponentSerializer.legacySection().serialize(sign.getSide(Side.FRONT).line(2)).toLowerCase(); // note: legacy serialize to stay backwards compatible with already paid rewards
             if (mgPlayer.isInMinigame()) {
                 if (!mgPlayer.hasTempClaimedReward(label)) {
                     if (mdata.hasRewardSign(loc)) {
-                        Rewards rew = mdata.getRewardsRewardSign(loc);
-                        for (ARewardType r : rew.getReward()) {
-                            r.giveReward(mgPlayer);
+                        final Rewards rew = mdata.getRewardsRewardSign(loc);
+                        for (final @NotNull ARewardType rewardType : rew.getReward()) {
+                            rewardType.giveReward(mgPlayer);
                         }
                     }
                     mgPlayer.addTempClaimedReward(label);
@@ -92,7 +92,7 @@ public class RewardSign extends AMinigameSign {
                 }
             }
         } else if (player.hasPermission("minigame.tool")) {
-            Rewards rew;
+            final Rewards rew;
             if (!mdata.hasRewardSign(loc)) {
                 mdata.addRewardSign(loc);
             }
@@ -100,30 +100,29 @@ public class RewardSign extends AMinigameSign {
 
             final @NotNull Menu rewardMenu = new Menu(5, getName(), mgPlayer);
 
-            rewardMenu.addItem(new MenuItemRewardGroupAdd(MenuUtility.createType(),
+            rewardMenu.setItem(new MenuItemRewardGroupAdd(MenuDisplayTypes.createType(),
                 MgMenuLangKey.MENU_REWARD_GROUP_ADD_NAME, rew), 42);
-            rewardMenu.addItem(new MenuItemRewardAdd(MenuUtility.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, rew), 43);
-            final @NotNull MenuItemCustom mic = new MenuItemCustom(MenuUtility.saveType(), MgMenuLangKey.MENU_REWARD_SAVE_ALL_NAME);
-            final Location floc = loc;
+            rewardMenu.setItem(new MenuItemRewardAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, rew), 43);
+            final @NotNull MenuItemCustom mic = new MenuItemCustom(MenuDisplayTypes.saveType(), MgMenuLangKey.MENU_REWARD_SAVE_ALL_NAME);
             mic.setClick(() -> {
                 try {
-                    mdata.saveRewardSign(MinigameUtils.createBlockLocationID(floc), true);
+                    mdata.saveRewardSign(MinigameUtils.createBlockLocationID(loc), true);
                 } catch (final @NotNull IOException e) {
-                    plugin.getComponentLogger().error("Couldn't save reward sign at " + floc, e);
+                    plugin.getComponentLogger().error("Couldn't save reward sign at " + loc, e);
                 }
                 MinigameMessageManager.sendMgMessage(mic.getMenu().getIntendedViewer(), MinigameMessageType.INFO, MgMiscLangKey.SIGN_REWARD_SAVED);
                 mic.getMenu().getIntendedViewer().getPlayer().closeInventory();
                 return ItemStack.empty();
             });
-            rewardMenu.addItem(mic, 44);
+            rewardMenu.setItem(mic, 44);
 
-            final @NotNull List<@NotNull MenuItem> menuItems = new ArrayList<>();
+            final @NotNull List<@NotNull AMenuItem> menuItems = new ArrayList<>();
             for (final @NotNull ARewardType item : rew.getRewards()) {
                 menuItems.add(item.getMenuItem());
             }
 
             final @NotNull List<@NotNull Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_SHIFTLEFT);
-            for (RewardGroup group : rew.getGroups()) {
+            for (final @NotNull RewardGroup group : rew.getGroups()) {
                 MenuItemRewardGroup rwg = new MenuItemRewardGroup(ItemType.CHEST,
                     MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), group.getName())),
@@ -137,11 +136,11 @@ public class RewardSign extends AMinigameSign {
     }
 
     @Override
-    public void signBreak(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
+    public void signBreak(final @NotNull Sign sign, final @NotNull MinigamePlayer mgPlayer) {
         if (plugin.getMinigameManager().hasRewardSign(sign.getLocation())) {
             try {
                 plugin.getMinigameManager().removeRewardSign(sign.getLocation());
-            } catch (final IOException e) {
+            } catch (final @NotNull IOException e) {
                 plugin.getComponentLogger().error("Couldn't remove reward sign at " + sign.getLocation(), e);
             }
         }

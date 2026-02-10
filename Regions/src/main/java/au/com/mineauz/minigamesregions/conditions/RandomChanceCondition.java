@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.Random;
 
 public class RandomChanceCondition extends ACondition {
-    private final IntegerFlag chance = new IntegerFlag("chance", 50);
+    private final @NotNull IntegerFlag chance = new IntegerFlag("chance", 50);
 
-    protected RandomChanceCondition(@NotNull String name) {
+    protected RandomChanceCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -55,12 +55,12 @@ public class RandomChanceCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @Nullable Region region) {
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @Nullable Region region) {
         return check();
     }
 
     @Override
-    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @Nullable Node node) {
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @Nullable Node node) {
         return check();
     }
 
@@ -71,13 +71,13 @@ public class RandomChanceCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         chance.saveValue(config);
         saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         chance.loadValue(config);
         loadInvert(config);
     }
@@ -85,7 +85,7 @@ public class RandomChanceCondition extends ACondition {
     @Override
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         menu.addItem(chance.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_RNDCHANCE_SETPERCENT_NAME), 1, 99));
         addInvertMenuItem(menu);
         menu.displayMenu();

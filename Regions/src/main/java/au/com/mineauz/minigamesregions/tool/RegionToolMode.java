@@ -55,7 +55,7 @@ public class RegionToolMode implements ToolMode {
         tool.setSetting("Region", "None");
         final @NotNull Menu menu = new Menu(2, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_SELECT_NAME), player);
         if (player.isInMenu()) {
-            menu.addItem(new MenuItemBack(player.getMenu()), menu.getSize() - 9);
+            menu.setItem(new MenuItemBack(player.getMenu()), menu.getSize() - 9);
         }
         final MinigameTool ftool = tool;
         menu.addItem(new MenuItemString(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_NAME_NAME), new Callback<>() {
@@ -76,9 +76,9 @@ public class RegionToolMode implements ToolMode {
             RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
 
             final @NotNull Menu regionMenu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_LIST_NAME), player);
-            final @NotNull List<@NotNull MenuItem> items = new ArrayList<>();
+            final @NotNull List<@NotNull AMenuItem> items = new ArrayList<>();
 
-            for (final Region region : module.getRegions()) {
+            for (final @NotNull Region region : module.getRegions()) {
                 MenuItemCustom item = new MenuItemCustom(ItemType.CHEST, Component.text(region.getName()));
 
                 // Set the node and go back to the main menu
@@ -94,7 +94,7 @@ public class RegionToolMode implements ToolMode {
             }
 
             regionMenu.addItems(items);
-            regionMenu.addItem(new MenuItemBack(menu), regionMenu.getSize() - 9);
+            regionMenu.setItem(new MenuItemBack(menu), regionMenu.getSize() - 9);
 
             menu.addItem(new MenuItemPage(ItemType.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_EDIT_NAME), regionMenu));
         }
@@ -102,20 +102,20 @@ public class RegionToolMode implements ToolMode {
     }
 
     @Override
-    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool) {
+    public void onUnsetMode(final @NotNull MinigamePlayer mgPlayer, final @NotNull MinigameTool tool) {
         tool.removeSetting("Region");
     }
 
     @Override
-    public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
-                            @Nullable Team team, @NotNull PlayerInteractEvent event) {
+    public void onLeftClick(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame,
+                            final @Nullable Team team, final @NotNull PlayerInteractEvent event) {
         if (mgPlayer.hasSelection()) {
-            String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Region");
-            RegionModule module = RegionModule.getMinigameModule(minigame);
-            Region region = module.getRegion(name);
+            final @NotNull String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Region");
+            final RegionModule module = RegionModule.getMinigameModule(minigame);
+            final @Nullable Region region = module.getRegion(name);
 
             if (region == null) {
-                module.addRegion(name, new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
+                module.addRegion(new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                         RegionLangKey.REGION_CREATED,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
@@ -136,8 +136,8 @@ public class RegionToolMode implements ToolMode {
     }
 
     @Override
-    public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
-                             @Nullable Team team, @NotNull PlayerInteractEvent event) {
+    public void onRightClick(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame,
+                             final @Nullable Team team, final @NotNull PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             mgPlayer.addSelectionPoint(event.getClickedBlock().getLocation());
             if (mgPlayer.hasSelection()) {
@@ -147,9 +147,9 @@ public class RegionToolMode implements ToolMode {
     }
 
     @Override
-    public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
-        RegionModule mod = RegionModule.getMinigameModule(minigame);
-        String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Region");
+    public void select(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @Nullable Team team) {
+        final RegionModule mod = RegionModule.getMinigameModule(minigame);
+        final @NotNull String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Region");
         if (mod.hasRegion(name)) {
             Main.getPlugin().getDisplayManager().show(mod.getRegion(name), mgPlayer);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
@@ -165,9 +165,9 @@ public class RegionToolMode implements ToolMode {
     }
 
     @Override
-    public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
-        RegionModule mod = RegionModule.getMinigameModule(minigame);
-        String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Region");
+    public void deselect(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @Nullable Team team) {
+        final RegionModule mod = RegionModule.getMinigameModule(minigame);
+        final @NotNull String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Region");
         if (mod.hasRegion(name)) {
             Main.getPlugin().getDisplayManager().hide(mod.getRegion(name), mgPlayer);
             mgPlayer.clearSelection();

@@ -3,8 +3,8 @@ package au.com.mineauz.minigamesregions.conditions;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
@@ -24,8 +24,8 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class MatchBlockCondition extends ACondition {
-    private final BlockDataFlag blockData = new BlockDataFlag("type", Material.STONE.createBlockData()); //todo datafixerupper rename the name
-    private final BooleanFlag useFullBlockData = new BooleanFlag("usedur", false); //todo datafixerupper rename the name
+    private final @NotNull BlockDataFlag blockData = new BlockDataFlag("type", Material.STONE.createBlockData()); //todo datafixerupper rename the name
+    private final @NotNull BooleanFlag useFullBlockData = new BooleanFlag("usedur", false); //todo datafixerupper rename the name
 
     protected MatchBlockCondition(@NotNull String name) {
         super(name);
@@ -63,30 +63,30 @@ public class MatchBlockCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         return false;
     }
 
     @Override
-    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
         return check(node.getSafeLocation());
     }
 
-    private boolean check(@NotNull SafeFullLocation location) {
+    private boolean check(final @NotNull SafeFullLocation location) {
         final @Nullable Block block = location.getBlockAt();
         return block != null && block.getType() == blockData.getFlag().getMaterial() &&
                 (!useFullBlockData.getFlag() || block.getBlockData().matches(blockData.getFlag()));
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         blockData.saveValue(config);
         useFullBlockData.saveValue(config);
         saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         blockData.loadValue(config);
         useFullBlockData.loadValue(config);
         loadInvert(config);
@@ -95,11 +95,11 @@ public class MatchBlockCondition extends ACondition {
     @Override
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
 
-        final MenuItem menuItemBData = blockData.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME));
+        final @NotNull AMenuItem menuItemBData = blockData.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME));
         menu.addItem(menuItemBData);
-        final MenuItem menuItemUseData = useFullBlockData.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME));
+        final @NotNull AMenuItem menuItemUseData = useFullBlockData.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME));
         menu.addItem(menuItemUseData);
 
         addInvertMenuItem(menu);

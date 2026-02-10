@@ -82,10 +82,10 @@ public class ScoreboardDisplay {
             return null;
         }
 
-        ScoreboardDisplay display = new ScoreboardDisplay(minigame, width, height, location, facing);
+        final @NotNull ScoreboardDisplay display = new ScoreboardDisplay(minigame, width, height, location, facing);
         display.setOrder(node.node("order").get(TypeToken.get(ScoreboardOrder.class)));
-        MinigameStat stat = MinigameStatistics.getStat(node.node("stat").getString("wins"));
-        StatisticValueField field = node.node("field").get(TypeToken.get(StatisticValueField.class), StatisticValueField.Total);
+        final MinigameStat stat = MinigameStatistics.getStat(node.node("stat").getString("wins"));
+        final @NotNull StatisticValueField field = node.node("field").get(TypeToken.get(StatisticValueField.class), StatisticValueField.Total);
         display.setStat(stat, field);
 
         final @Nullable Block block = location.getBlockAt(); // should never be null, since we are checking the existence of the world right above
@@ -114,7 +114,7 @@ public class ScoreboardDisplay {
         return field;
     }
 
-    public void setStat(@NotNull MinigameStat stat, @NotNull StatisticValueField field) {
+    public void setStat(final @NotNull MinigameStat stat, final @NotNull StatisticValueField field) {
         this.stat = stat;
         this.field = field;
     }
@@ -123,7 +123,7 @@ public class ScoreboardDisplay {
         return order;
     }
 
-    public void setOrder(@NotNull ScoreboardOrder order) {
+    public void setOrder(final @NotNull ScoreboardOrder order) {
         this.order = order;
         stats.clear();
         needsLoad = true;
@@ -149,7 +149,7 @@ public class ScoreboardDisplay {
         return needsLoad;
     }
 
-    private @NotNull List<@NotNull Block> getSignBlocks(boolean onlySigns) {
+    private @NotNull List<@NotNull Block> getSignBlocks(final boolean onlySigns) {
         // Find the horizontal direction (going across the signs, left to right)
         BlockFace horizontal = switch (facing) {
             case NORTH -> BlockFace.WEST;
@@ -165,10 +165,10 @@ public class ScoreboardDisplay {
         SafeBlockLocation min = rootBlock.offset(NumberConversions.floor(-horizontal.getModX() * ((double) width / 2.0D)), -1, NumberConversions.floor(-horizontal.getModZ() * ((double) width / 2.0D)));
 
         // Grab each sign of the scoreboards in order
-        Block block = min.getBlockAt();
+        @Nullable Block block = min.getBlockAt();
 
         for (int y = 0; y < height; ++y) {
-            Block start = block;
+            final @Nullable Block start = block;
             for (int x = 0; x < width; ++x) {
                 // Only add signs
                 if (Tag.WALL_SIGNS.isTagged(block.getType()) || !onlySigns && block.getType().isAir()) {
@@ -191,10 +191,10 @@ public class ScoreboardDisplay {
 
         placeRootSign();
 
-        List<Block> signs = getSignBlocks(true);
+        final @NotNull List<@NotNull Block> signs = getSignBlocks(true);
 
         int nextIndex = 0;
-        for (Block sign : signs) {
+        for (final @NotNull Block sign : signs) {
             if (nextIndex <= stats.size() - 2) {
                 updateSign(sign, nextIndex + 1, stats.get(nextIndex++), stats.get(nextIndex++));
             } else if (nextIndex <= stats.size() - 1) {
@@ -205,7 +205,7 @@ public class ScoreboardDisplay {
         }
     }
 
-    private void updateSign(@NotNull Block block, int place, @NotNull StoredStat @NotNull ... stats) {
+    private void updateSign(final @NotNull Block block, int place, final @NotNull StoredStat @NotNull ... stats) {
         Preconditions.checkArgument(stats.length >= 1 && stats.length <= 2);
 
         Sign sign = (Sign) block.getState();
@@ -227,11 +227,11 @@ public class ScoreboardDisplay {
     public void displayMenu(final @NotNull MinigamePlayer player) {
         final @NotNull Menu setupMenu = new Menu(3, MgMenuLangKey.MENU_SCOREBOARD_SETUP_NAME, player);
 
-        StatSettings settings = minigame.getSettings(stat);
-        final MenuItemCustom statisticChoice = new MenuItemCustom(ItemType.WRITABLE_BOOK, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_NAME,
+        final @NotNull StatSettings settings = minigame.getSettings(stat);
+        final @NotNull MenuItemCustom statisticChoice = new MenuItemCustom(ItemType.WRITABLE_BOOK, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_NAME,
             List.of(settings.getDisplayName().color(NamedTextColor.GREEN)));
 
-        final MenuItemCustom fieldChoice = new MenuItemCustom(ItemType.PAPER, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_FIELD_NAME,
+        final @NotNull MenuItemCustom fieldChoice = new MenuItemCustom(ItemType.PAPER, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_FIELD_NAME,
             List.of(field.getTitle().color(NamedTextColor.GREEN)));
 
         statisticChoice.setClick(() -> {
@@ -242,7 +242,7 @@ public class ScoreboardDisplay {
                 }
 
                 @Override
-                public void setValue(@NotNull MinigameStat value) {
+                public void setValue(final @NotNull MinigameStat value) {
                     stat = value;
                     StatSettings settings12 = minigame.getSettings(stat);
                     statisticChoice.setBaseDescriptionPart(List.of(settings12.getDisplayName().color(NamedTextColor.GREEN)));
@@ -308,13 +308,13 @@ public class ScoreboardDisplay {
             }
         }, ScoreboardOrder.class));
 
-        setupMenu.addItem(new MenuItemScoreboardSave(MenuUtility.createType(), MgMenuLangKey.MENU_SCOREBOARD_CREATE_NAME, this),
+        setupMenu.setItem(new MenuItemScoreboardSave(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_SCOREBOARD_CREATE_NAME, this),
             setupMenu.getSize() - 1);
         setupMenu.displayMenu();
     }
 
-    private void clearSign(@NotNull Block block) {
-        Sign sign = (Sign) block.getState();
+    private void clearSign(final @NotNull Block block) {
+        final @NotNull Sign sign = (Sign) block.getState(false);
         sign.getSide(Side.FRONT).line(0, Component.empty());
         sign.getSide(Side.FRONT).line(1, Component.empty());
         sign.getSide(Side.FRONT).line(2, Component.empty());
@@ -323,21 +323,21 @@ public class ScoreboardDisplay {
     }
 
     public void deleteSigns() {
-        List<Block> blocks = getSignBlocks(true);
+        final List<@NotNull Block> blocks = getSignBlocks(true);
 
-        for (Block block : blocks) {
+        for (final @NotNull Block block : blocks) {
             block.setBlockData(BlockType.AIR.createBlockData());
         }
     }
 
-    public void placeSigns(@NotNull Material material) throws IllegalArgumentException {
+    public void placeSigns(final @NotNull Material material) throws IllegalArgumentException {
         if (!Tag.WALL_SIGNS.isTagged(material)) {
             throw new IllegalArgumentException("Wrong material for ScoreboardDisplay! (expected some kind of (wall) sign, got: " + material);
         }
 
-        List<Block> blocks = getSignBlocks(false);
+        final @NotNull List<@NotNull Block> blocks = getSignBlocks(false);
 
-        for (Block block : blocks) {
+        for (final @NotNull Block block : blocks) {
             block.setType(material);
             Directional directional = (Directional) block.getBlockData();
             directional.setFacing(facing);
@@ -361,10 +361,10 @@ public class ScoreboardDisplay {
             settings = minigame.getSettings(stat);
         }
 
-        Block root = rootBlock.getBlockAt();
+        final @Nullable Block root = rootBlock.getBlockAt();
         if (root != null) {
             if (Tag.ALL_SIGNS.isTagged(root.getType())) {
-                BlockState state = root.getState(false);
+                final @NotNull BlockState state = root.getState(false);
                 if (state instanceof Sign sign) {
                     sign.getSide(Side.FRONT).line(0, minigame.getDisplayName().color(NamedTextColor.BLUE));
                     sign.getSide(Side.FRONT).line(1, settings.getDisplayName().color(NamedTextColor.GREEN));

@@ -22,7 +22,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class TriggerRegionAction extends AAction {
-    private final StringFlag region = new StringFlag("region", "None");
+    private final @NotNull StringFlag region = new StringFlag("region", "None");
 
     protected TriggerRegionAction(final @NotNull Key key) {
         super(key);
@@ -54,20 +54,19 @@ public class TriggerRegionAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
-                                    @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
-        Minigame mg = mgPlayer.getMinigame();
+        final Minigame mg = mgPlayer.getMinigame();
         if (mg != null) {
-            RegionModule rmod = RegionModule.getMinigameModule(mg);
+            final RegionModule rmod = RegionModule.getMinigameModule(mg);
             if (rmod.hasRegion(this.region.getFlag()))
                 rmod.getRegion(this.region.getFlag()).execute(MgRegTrigger.REMOTE, mgPlayer);
         }
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         if (!mgPlayer.isInMinigame()) return;
         Minigame mg = mgPlayer.getMinigame();
@@ -92,7 +91,7 @@ public class TriggerRegionAction extends AAction {
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(region.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERREGION_REGION_NAME)));
         menu.displayMenu();
         return true;

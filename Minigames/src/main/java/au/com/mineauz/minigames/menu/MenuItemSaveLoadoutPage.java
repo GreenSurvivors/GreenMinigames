@@ -18,28 +18,28 @@ import java.util.List;
 public class MenuItemSaveLoadoutPage extends MenuItemPage {
     private final @NotNull PlayerLoadout loadout;
 
-    public MenuItemSaveLoadoutPage(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
-                                   @NotNull PlayerLoadout loadout, @NotNull Menu menu) {
+    public MenuItemSaveLoadoutPage(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                                   final @NotNull PlayerLoadout loadout, final @NotNull Menu menu) {
         super(displayType, langKey, menu);
         this.loadout = loadout;
     }
 
-    public MenuItemSaveLoadoutPage(@Nullable ItemType displayType, @Nullable Component name,
-                                   @NotNull PlayerLoadout loadout, @NotNull Menu menu) {
-        super(displayType, name, menu);
-        this.loadout = loadout;
+    public MenuItemSaveLoadoutPage(final @Nullable ItemType displayType, final @Nullable Component name,
+                                   final @NotNull PlayerLoadout loadout,
+                                   final @NotNull Menu menu) {
+        this(displayType, name, null, loadout, menu);
     }
 
-    public MenuItemSaveLoadoutPage(@Nullable ItemType displayType, @Nullable Component name,
-                                   @Nullable List<@NotNull Component> description,
-                                   @NotNull PlayerLoadout loadout, @NotNull Menu menu) {
+    public MenuItemSaveLoadoutPage(final @Nullable ItemType displayType, final @Nullable Component name,
+                                   final @Nullable List<@NotNull Component> description,
+                                   final @NotNull PlayerLoadout loadout, final @NotNull Menu menu) {
         super(displayType, name, description, menu);
         this.loadout = loadout;
     }
 
     @Override
     public @NotNull ItemStack onClick() {
-        final @NotNull ItemStack @NotNull[] items = getMenu().getInventory();
+        final @NotNull ItemStack @NotNull [] items = getMenu().getInventory();
         loadout.clearLoadout();
 
         for (int i = 0; i < 36; i++) {
@@ -48,7 +48,7 @@ public class MenuItemSaveLoadoutPage extends MenuItemPage {
             }
         }
 
-        int numOfSpecialSlots = loadout.allowOffHand() ? 41 : 40;
+        final int numOfSpecialSlots = loadout.allowOffHand() ? 41 : 40; // todo don't hardcode
         for (int i = 36; i < numOfSpecialSlots; i++) {
             if (items[i].isEmpty()) {
                 switch (i) {

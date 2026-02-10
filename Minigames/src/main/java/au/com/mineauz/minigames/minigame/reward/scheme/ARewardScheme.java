@@ -38,7 +38,7 @@ public abstract class ARewardScheme {
      * @param minigame        The minigame they were playing
      * @param firstCompletion True if this is the first time they are completing the minigame
      */
-    public abstract void awardPlayer(final @NotNull MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion);
+    public abstract void awardPlayer(final @NotNull MinigamePlayer player, final @NotNull StoredGameStats data, final Minigame minigame, final boolean firstCompletion);
 
     /**
      * Awards the player with the rewards specified in this scheme.
@@ -48,7 +48,7 @@ public abstract class ARewardScheme {
      * @param data     The SQLData for the minigame.
      * @param minigame The minigame they were playing
      */
-    public abstract void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame);
+    public abstract void awardPlayerOnLoss(final @NotNull MinigamePlayer player, final @NotNull StoredGameStats data, final Minigame minigame);
 
     /**
      * Saves any extra info for this scheme. Flags will be saved elsewhere

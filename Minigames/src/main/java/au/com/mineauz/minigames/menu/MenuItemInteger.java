@@ -22,33 +22,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class MenuItemInteger extends MenuItem implements StringConsumer {
-    private static final String DESCRIPTION_TOKEN = "Integer_description";
+/// Does Not roll over, i.e.
+/// may set the value to {@link Integer#MAX_VALUE} / {@link Integer#MIN_VALUE} if it would overflow / underflow
+public class MenuItemInteger extends AMenuItem implements StringConsumer {
+    private static final @NotNull String DESCRIPTION_TOKEN = "Integer_description";
     protected static final @NotNull Pattern INT_PATTERN = Pattern.compile("-?[0-9]+");
-    private final @NotNull Callback<Integer> value;
+    private final @NotNull Callback<@NotNull Integer> value;
     private final @Nullable Integer min; // inclusive
     private final @Nullable Integer max; // inclusive
 
-    public MenuItemInteger(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<Integer> value,
-                           @Nullable Integer min, @Nullable Integer max) {
-        super(displayType, langKey);
-        this.value = value;
-        this.min = min;
-        this.max = max;
-        updateDescription();
+    public MenuItemInteger(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                           final @NotNull Callback<@NotNull Integer> value,
+                           final @Nullable Integer min, final @Nullable Integer max) {
+        this(displayType, langKey, null, value, min, max);
     }
 
-    public MenuItemInteger(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<Integer> value,
-                           @Nullable Integer min, @Nullable Integer max) {
-        super(displayType, name);
-        this.value = value;
-        this.min = min;
-        this.max = max;
-        updateDescription();
-    }
-
-    public MenuItemInteger(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @Nullable List<Component> description,
-                           @NotNull Callback<Integer> value, @Nullable Integer min, @Nullable Integer max) {
+    public MenuItemInteger(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                           final @Nullable List<Component> description,
+                           final @NotNull Callback<@NotNull Integer> value,
+                           final @Nullable Integer min, final @Nullable Integer max) {
         super(displayType, langKey, description);
         this.value = value;
         this.min = min;
@@ -56,8 +48,16 @@ public class MenuItemInteger extends MenuItem implements StringConsumer {
         updateDescription();
     }
 
-    public MenuItemInteger(@Nullable ItemType displayType, @Nullable Component name, @Nullable List<Component> description,
-                           @NotNull Callback<Integer> value, @Nullable Integer min, @Nullable Integer max) {
+    public MenuItemInteger(final @Nullable ItemType displayType, final @Nullable Component name,
+                           final @NotNull Callback<@NotNull Integer> value,
+                           final @Nullable Integer min, final @Nullable Integer max) {
+        this(displayType, name, null, value, min, max);
+    }
+
+    public MenuItemInteger(final @Nullable ItemType displayType, final @Nullable Component name,
+                           final @Nullable List<Component> description,
+                           final @NotNull Callback<@NotNull Integer> value,
+                           final @Nullable Integer min, final @Nullable Integer max) {
         super(displayType, name, description);
         this.value = value;
         this.min = min;
@@ -91,8 +91,8 @@ public class MenuItemInteger extends MenuItem implements StringConsumer {
             if (min != null && value.getValue() < min) {
                 value.setValue(min);
             }
-        } catch (ArithmeticException ignored) {
-            value.setValue(Objects.requireNonNullElse(min, Integer.MAX_VALUE));
+        } catch (final @NotNull ArithmeticException ignored) {
+            value.setValue(Objects.requireNonNullElse(min, Integer.MIN_VALUE));
         }
 
         updateDescription();
@@ -106,7 +106,7 @@ public class MenuItemInteger extends MenuItem implements StringConsumer {
             if (max != null && value.getValue() < max) {
                 value.setValue(max);
             }
-        } catch (ArithmeticException ignored) {
+        } catch (final @NotNull ArithmeticException ignored) {
             value.setValue(Objects.requireNonNullElse(max, Integer.MAX_VALUE));
         }
 
@@ -131,7 +131,7 @@ public class MenuItemInteger extends MenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onDoubleClick() {
-        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
+        final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,

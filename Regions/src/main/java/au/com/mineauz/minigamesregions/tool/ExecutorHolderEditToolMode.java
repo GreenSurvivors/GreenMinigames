@@ -5,8 +5,8 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuDisplayTypes;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
-import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.team.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -68,11 +68,15 @@ public class ExecutorHolderEditToolMode implements ToolMode {
     }
 
     @Override
-    public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event) {
+    public void onLeftClick(final @NotNull MinigamePlayer mgPlayer,
+                            final @NotNull Minigame minigame, final @Nullable Team team,
+                            final @NotNull PlayerInteractEvent event) {
     }
 
     @Override
-    public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event) {
+    public void onRightClick(final @NotNull MinigamePlayer mgPlayer,
+                             final @NotNull Minigame minigame, final @Nullable Team team,
+                             final @NotNull PlayerInteractEvent event) {
         Vector origin = event.getPlayer().getEyeLocation().toVector();
         Vector direction = event.getPlayer().getEyeLocation().getDirection().normalize();
 
@@ -134,7 +138,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
             throw new UnsupportedOperationException("Unknown ExecutableScriptObject  type!");
         }
 
-        menu.addItem(new MenuItemSaveMinigame(MenuUtility.saveType(),
+        menu.setItem(new MenuItemSaveMinigame(MenuDisplayTypes.saveType(),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName())), minigame), menu.getSize() - 9);
 
@@ -162,7 +166,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
             }
         }
 
-        menu.addItem(new MenuItemSaveMinigame(MenuUtility.saveType(),
+        menu.setItem(new MenuItemSaveMinigame(MenuDisplayTypes.saveType(),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), module.getMinigame().getDisplayName())),
                 module.getMinigame()), menu.getSize() - 9);

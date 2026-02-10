@@ -20,10 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MenuItemActionAdd extends MenuItem {
+public class MenuItemActionAdd extends AMenuItem {
     private final @NotNull ActionExecutor exec;
 
-    public MenuItemActionAdd(@Nullable ItemType displayType, @Nullable Component name, @NotNull ActionExecutor exec) {
+    public MenuItemActionAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                             final @NotNull ActionExecutor exec) {
         super(displayType, name);
         this.exec = exec;
     }
@@ -43,7 +44,7 @@ public class MenuItemActionAdd extends MenuItem {
                     menuCat = new Menu(6, category.getDisplayName(), getMenu().getIntendedViewer());
                     cats.put(category, menuCat);
                     menu.addItem(new MenuItemPage(ItemType.CHEST, category.getDisplayName(), menuCat));
-                    menuCat.addItem(new MenuItemBack(menu), menuCat.getSize() - 9);
+                    menuCat.setItem(new MenuItemBack(menu), menuCat.getSize() - 9);
                 } else {
                     menuCat = cats.get(category);
                 }
@@ -59,7 +60,7 @@ public class MenuItemActionAdd extends MenuItem {
                 menuCat.addItem(addActionToCatMenuItem);
             }
         }
-        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
         menu.displayMenu();
         return ItemStack.empty();
     }

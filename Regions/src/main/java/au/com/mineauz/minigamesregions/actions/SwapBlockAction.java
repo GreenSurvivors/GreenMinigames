@@ -28,9 +28,9 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class SwapBlockAction extends AAction { // todo once paper no longer relocates Craftbukkit, merge Blockdata via nms state, so everything that can remain of old data will, if the keep setting is on
-    private final BlockDataFlag matchType = new BlockDataFlag("matchtype", BlockType.STONE.createBlockData());
-    private final BlockDataFlag toData = new BlockDataFlag("totype", BlockType.COBBLESTONE.createBlockData());
-    private final BooleanFlag keepAttachment = new BooleanFlag("keepattachment", false);
+    private final @NotNull BlockDataFlag matchType = new BlockDataFlag("matchtype", BlockType.STONE.createBlockData());
+    private final @NotNull BlockDataFlag toData = new BlockDataFlag("totype", BlockType.COBBLESTONE.createBlockData());
+    private final @NotNull BooleanFlag keepAttachment = new BooleanFlag("keepattachment", false);
 
     protected SwapBlockAction(final @NotNull Key key) {
         super(key);
@@ -68,31 +68,30 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         for (int y = region.getFirstPoint().blockY(); y <= region.getSecondPoint().blockY(); y++) {
             for (int x = region.getFirstPoint().blockX(); x <= region.getSecondPoint().blockX(); x++) {
                 for (int z = region.getFirstPoint().blockZ(); z <= region.getSecondPoint().blockZ(); z++) {
-                    Block block = region.getFirstPoint().getWorld().getBlockAt(x, y, z);
+                    final @NotNull Block block = region.getFirstPoint().getWorld().getBlockAt(x, y, z);
 
                     if (block.getBlockData().getMaterial() == matchType.getFlag().getMaterial()) {
 
                         // Block matches, now replace it
-                        BlockData newBlockData = toData.getFlag().clone();
-                        BlockFace facing = null;
+                        final @NotNull BlockData newBlockData = toData.getFlag().clone();
+                        @Nullable BlockFace facing = null;
 
                         if (keepAttachment.getFlag()) {
                             // Keep attachments if possible
-                            BlockData data = block.getBlockData();
-                            if (data instanceof Directional) {
-                                facing = ((Directional) data).getFacing();
+                            if (block.getBlockData() instanceof final @NotNull Directional directional) {
+                                facing = directional.getFacing();
                             }
                         }
                         if (newBlockData instanceof Directional && facing != null) {
                             ((Directional) newBlockData).setFacingDirection(facing);
                         }
 
-                        RecorderData data = region.getMinigame().getRecorderData();
+                        final @NotNull RecorderData data = region.getMinigame().getRecorderData();
                         data.addBlock(block, null);
 
                         // Update block type
@@ -104,8 +103,7 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
     }
 
@@ -126,7 +124,7 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(new MenuItemBlockData(matchType.getFlag().getPlacementMaterial().asItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), new Callback<>() {
 
             @Override
@@ -135,7 +133,7 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
             }
 
             @Override
-            public void setValue(BlockData value) {
+            public void setValue(final BlockData value) {
                 matchType.setFlag(value);
             }
 

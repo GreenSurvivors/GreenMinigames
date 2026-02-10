@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.time.Duration;
 import java.util.*;
@@ -20,7 +21,7 @@ public class Menu {
     private final int rows;
     protected final @NotNull Minigames plugin = Minigames.getPlugin();
     private final @Nullable ItemStack @NotNull [] pageView;
-    private final @NotNull TreeMap<@NotNull Integer, @NotNull MenuItem> pageMap = new TreeMap<>(); // sorts by index
+    private final @NotNull TreeMap<@NotNull Integer, @NotNull AMenuItem> pageMap = new TreeMap<>(); // sorts by index
     private final @NotNull Component title;
     private final @NotNull MinigamePlayer intendedViewer;
     private boolean allowModify = false;
@@ -33,8 +34,8 @@ public class Menu {
         this(rows, MinigameMessageManager.getMgMessage(langKey), intendedViewer);
     }
 
-    public Menu(final int rows, final @NotNull Component title, final @NotNull MinigamePlayer intendedViewer) {
-        this.rows = Math.clamp(rows, 2, 6);
+    public Menu(final @Range(from = 1, to = 6) int rows, final @NotNull Component title, final @NotNull MinigamePlayer intendedViewer) {
+        this.rows = Math.clamp(rows, 1, 6);
         this.title = title;
         pageView = new ItemStack[rows * 9];
         this.intendedViewer = intendedViewer;
@@ -44,7 +45,7 @@ public class Menu {
         return title;
     }
 
-    public boolean addItem(@NotNull MenuItem item, int slot) { // todo overflow into the next page
+    public boolean setItem(final @NotNull AMenuItem item, final int slot) { // todo overflow into the next page
         if (!pageMap.containsKey(slot) && slot < pageView.length) {
             item.setContainingMenu(this);
             item.setSlot(slot);
@@ -57,12 +58,12 @@ public class Menu {
         return false;
     }
 
-    private boolean isNewLine(@NotNull MenuItem menuItem) {
+    private boolean isNewLine(final @NotNull AMenuItem menuItem) {
         return menuItem instanceof MenuItemNewLine;
     }
 
     /// overflows into next page if necessary
-    public void addItem(@NotNull MenuItem item) {
+    public void addItem(final @NotNull AMenuItem item) {
         int inc = 0;
         @NotNull Menu menu = this;
         int maxItems = 9 * (rows - 1);
@@ -78,7 +79,7 @@ public class Menu {
             }
 
             if (menu.getMenuItem(inc) == null) {
-                menu.addItem(item, inc);
+                menu.setItem(item, inc);
                 break;
             } else if (isNewLine(menu.getMenuItem(inc))) {
                 // jump to next line, aka where inc % 9 == 0
@@ -92,16 +93,16 @@ public class Menu {
     /**
      * Danger! if this Menu already contains items some of the new ones might not get added! <-- todo solve this!
      */
-    public void addItems(@NotNull List<@NotNull MenuItem> items) {
+    public void addItems(final @NotNull List<@NotNull AMenuItem> items) {
         Menu curPage = this;
         int inc = 0;
-        for (MenuItem it : items) {
+        for (AMenuItem it : items) {
             if (isNewLine(it)) {
-                curPage.addItem(it, inc);
+                curPage.setItem(it, inc);
                 // jump to next line, aka where inc % 9 == 0
                 inc += 9 - inc % 9;
             } else {
-                curPage.addItem(it, inc);
+                curPage.setItem(it, inc);
                 inc++;
             }
             if (inc >= (9 * (rows - 1))) {
@@ -116,13 +117,13 @@ public class Menu {
 
     protected void addPage() {
         final @NotNull Menu nextPage = new Menu(rows, title, intendedViewer);
-        addItem(new MenuItemPage(MenuUtility.pageNextType(), MgMenuLangKey.MENU_PAGE_NEXT, nextPage), 9 * (rows - 1) + 5);
+        setItem(new MenuItemPage(MenuDisplayTypes.pageNextType(), MgMenuLangKey.MENU_PAGE_NEXT, nextPage), 9 * (rows - 1) + 5);
         setNextPage(nextPage);
         nextPage.setPreviousPage(this);
-        nextPage.addItem(new MenuItemPage(MenuUtility.pageBackType(), MgMenuLangKey.MENU_PAGE_PREVIOUS, this), 9 * (rows - 1) + 3);
+        nextPage.setItem(new MenuItemPage(MenuDisplayTypes.pageBackType(), MgMenuLangKey.MENU_PAGE_PREVIOUS, this), 9 * (rows - 1) + 3);
         for (int j = 9 * (rows - 1) + 6; j < 9 * rows; j++) {
             if (getMenuItem(j) != null)
-                nextPage.addItem(getMenuItem(j), j);
+                nextPage.setItem(getMenuItem(j), j);
         }
     }
 
@@ -143,7 +144,7 @@ public class Menu {
         }
     }
 
-    public void addItemStack(ItemStack item, int slot) {
+    public void addItemStack(final @NotNull ItemStack item, final int slot) {
         inv.setItem(slot, item);
     }
 
@@ -155,7 +156,7 @@ public class Menu {
     }
 
     private void updateAll() {
-        for (MenuItem item : pageMap.values()) {
+        for (final @NotNull AMenuItem item : pageMap.values()) {
             item.update();
         }
     }
@@ -180,11 +181,11 @@ public class Menu {
         allowModify = canModify;
     }
 
-    public @Nullable MenuItem getMenuItem(final int slot) {
+    public @Nullable AMenuItem getMenuItem(final int slot) {
         return pageMap.get(slot);
     }
 
-    public boolean hasMenuItem(int slot) {
+    public boolean hasMenuItem(final int slot) {
         return pageMap.containsKey(slot);
     }
 
@@ -208,7 +209,7 @@ public class Menu {
         return previousPage;
     }
 
-    public void setPreviousPage(@Nullable Menu page) {
+    public void setPreviousPage(final @Nullable Menu page) {
         previousPage = page;
     }
 
@@ -224,7 +225,7 @@ public class Menu {
         return intendedViewer;
     }
 
-    public void closeAndWaitForInput(final @NotNull Duration reopenIn, final @NotNull MenuItem itemWaitingForInput) {
+    public void closeAndWaitForInput(final @NotNull Duration reopenIn, final @NotNull AMenuItem itemWaitingForInput) {
         intendedViewer.getPlayer().closeInventory();
         intendedViewer.setMenuItemWaitingForManualInput(itemWaitingForInput);
         reopenTimerTaskID = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
@@ -264,6 +265,6 @@ public class Menu {
         return pageMap.keySet();
     }
 
-    public record AddMenuItemResult (@NotNull Menu menuPage, int slot) { // todo once addItem with slot parameter can overflow into a new page return this for both methods
+    public record AddMenuItemResult (@NotNull Menu menuPage, int slot) { // todo once setItem with slot parameter can overflow into a new page return this for both methods
     }
 }

@@ -10,20 +10,21 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class KillsRewardScheme extends HierarchyRewardScheme<Integer> {
+public class KillsRewardScheme extends HierarchyRewardScheme<@NotNull Integer> {
 
-    protected KillsRewardScheme(@NotNull String name) {
+    protected KillsRewardScheme(final @NotNull String name) {
         super(name);
     }
 
     @Override
-    protected @NotNull Integer decrement(Integer value) {
+    protected @NotNull Integer decrement(final @NotNull Integer value) {
         return value - 1;
     }
 
     @Override
-    protected @NotNull Integer increment(Integer value) {
+    protected @NotNull Integer increment(final @NotNull Integer value) {
         return value + 1;
     }
 
@@ -37,18 +38,20 @@ public class KillsRewardScheme extends HierarchyRewardScheme<Integer> {
     }
 
     @Override
-    protected @NotNull Component getMenuItemDescName(Integer value) {
+    protected @NotNull Component getMenuItemDescName(final @NotNull Integer value) {
         return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_KILLS_DESCRIPTION,
             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(value)));
     }
 
     @Override
-    protected @NotNull Integer getValue(MinigamePlayer player, @NotNull StoredGameStats data, Minigame minigame) {
+    protected @NotNull Integer getValue(final @Nullable MinigamePlayer player,
+                                        final @NotNull StoredGameStats data,
+                                        final @Nullable Minigame minigame) {
         return (int) data.getStat(MinigameStatistics.Kills);
     }
 
     @Override
-    protected @NotNull Component getMenuItemName(@NotNull Integer value) {
+    protected @NotNull Component getMenuItemName(final @NotNull Integer value) {
         return Component.text(value.toString());
     }
 }

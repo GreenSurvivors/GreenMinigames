@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GiveItemAction extends AAction {
-    private final ItemFlag item = new ItemFlag("item", ItemType.STONE.createItemStack());
-    private final IntegerFlag count = new IntegerFlag("count", 1);
+    private final @NotNull ItemFlag item = new ItemFlag("item", ItemType.STONE.createItemStack());
+    private final @NotNull IntegerFlag count = new IntegerFlag("count", 1);
 
     protected GiveItemAction(final @NotNull Key key) {
         super(key);
@@ -82,7 +82,7 @@ public class GiveItemAction extends AAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         if (mgPlayer != null) {
             execute(mgPlayer);
@@ -90,7 +90,7 @@ public class GiveItemAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
         execute(mgPlayer);
     }
@@ -144,9 +144,9 @@ public class GiveItemAction extends AAction {
 
     @Override
     public boolean displayMenu(final @NotNull Menu previous) {
-        Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
+        final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
 
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.addItem(item.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME)));
 
         menu.addItem(count.getMenuItem(ItemType.STONE_SLAB,

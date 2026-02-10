@@ -9,28 +9,29 @@ import au.com.mineauz.minigames.menu.MenuItemCustom;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * This class allows you to register stats that are usable in scoreboards
  */
 public final class MinigameStatistics {
-    public static final MinigameStat Wins = new BasicMinigameStat("wins", MgMiscLangKey.STATISTIC_WINS_NAME, StatFormat.Total);
-    public static final MinigameStat Losses = new BasicMinigameStat("losses", MgMiscLangKey.STATISTIC_LOSSES_NAME, StatFormat.Total); // Fake stat
-    public static final MinigameStat Attempts = new BasicMinigameStat("attempts", MgMiscLangKey.STATISTIC_ATTEMPTS_NAME, StatFormat.Total);
+    public static final @NotNull MinigameStat Wins = new BasicMinigameStat("wins", MgMiscLangKey.STATISTIC_WINS_NAME, StatFormat.Total);
+    public static final @NotNull MinigameStat Losses = new BasicMinigameStat("losses", MgMiscLangKey.STATISTIC_LOSSES_NAME, StatFormat.Total); // Fake stat
+    public static final @NotNull MinigameStat Attempts = new BasicMinigameStat("attempts", MgMiscLangKey.STATISTIC_ATTEMPTS_NAME, StatFormat.Total);
     // in milliseconds
-    public static final MinigameStat CompletionTime = new BasicMinigameStat("time", MgMiscLangKey.STATISTIC_TIME_NAME, StatFormat.MinMaxAndTotal);
+    public static final @NotNull MinigameStat CompletionTime = new BasicMinigameStat("time", MgMiscLangKey.STATISTIC_TIME_NAME, StatFormat.MinMaxAndTotal);
 
-    public static final MinigameStat Kills = new BasicMinigameStat("kills", MgMiscLangKey.STATISTIC_KILLS_NAME, StatFormat.MaxAndTotal);
-    public static final MinigameStat Deaths = new BasicMinigameStat("deaths", MgMiscLangKey.STATISTIC_DEATHS_NAME, StatFormat.MinAndTotal);
-    public static final MinigameStat Score = new BasicMinigameStat("score", MgMiscLangKey.STATISTIC_SCORE_NAME, StatFormat.MaxAndTotal);
-    public static final MinigameStat Reverts = new BasicMinigameStat("reverts", MgMiscLangKey.STATISTIC_REVERTS_NAME, StatFormat.MinAndTotal);
+    public static final @NotNull MinigameStat Kills = new BasicMinigameStat("kills", MgMiscLangKey.STATISTIC_KILLS_NAME, StatFormat.MaxAndTotal);
+    public static final @NotNull MinigameStat Deaths = new BasicMinigameStat("deaths", MgMiscLangKey.STATISTIC_DEATHS_NAME, StatFormat.MinAndTotal);
+    public static final @NotNull MinigameStat Score = new BasicMinigameStat("score", MgMiscLangKey.STATISTIC_SCORE_NAME, StatFormat.MaxAndTotal);
+    public static final @NotNull MinigameStat Reverts = new BasicMinigameStat("reverts", MgMiscLangKey.STATISTIC_REVERTS_NAME, StatFormat.MinAndTotal);
 
-    private static final Map<String, MinigameStat> stats = new HashMap<>();
+    private static final @NotNull Map<@NotNull String, @NotNull MinigameStat> stats = new HashMap<>();
 
     static {
         registerStatIntern(Wins);
@@ -52,12 +53,12 @@ public final class MinigameStatistics {
      * @param stat The stat to add. The name of the stat must be unique and must only contain only letters and numbers
      * @throws IllegalArgumentException Thrown if the stat name is not unique or contains invalid characters
      */
-    public static void registerStat(@NotNull DynamicMinigameStat stat) throws IllegalArgumentException {
+    public static void registerStat(final @NotNull DynamicMinigameStat stat) throws IllegalArgumentException {
         registerStatIntern(stat);
     }
 
-    private static void registerStatIntern(@NotNull MinigameStat stat) throws IllegalArgumentException {
-        String name = stat.getName().toLowerCase();
+    private static void registerStatIntern(final @NotNull MinigameStat stat) throws IllegalArgumentException {
+        final @NotNull String name = stat.getName().toLowerCase();
 
         // Validity tests
         if (!isNameValid(name)) {
@@ -72,8 +73,8 @@ public final class MinigameStatistics {
         stats.put(name, stat);
     }
 
-    private static boolean isNameValid(@NotNull String name) {
-        for (char c : name.toCharArray()) {
+    private static boolean isNameValid(final @NotNull String name) {
+        for (final char c : name.toCharArray()) {
             if (!Character.isDigit(c) && !Character.isLetter(c)) {
                 return false;
             }
@@ -88,7 +89,7 @@ public final class MinigameStatistics {
      * @param name The name of the stat case-insensitive
      * @return The found stat or null
      */
-    public static MinigameStat getStat(@NotNull String name) {
+    public static @Nullable MinigameStat getStat(final @NotNull String name) {
         return stats.get(name.toLowerCase());
     }
 
@@ -98,7 +99,7 @@ public final class MinigameStatistics {
      * @param name The name of the stat case-insensitive
      * @return True if it exists
      */
-    public static boolean hasStat(@NotNull String name) {
+    public static boolean hasStat(final @NotNull String name) {
         return stats.containsKey(name.toLowerCase());
     }
 
@@ -109,7 +110,7 @@ public final class MinigameStatistics {
      * @param name The name of the stat case-insensitive
      * @return True if a stat was removed
      */
-    public static boolean removeStat(@NotNull String name) {
+    public static boolean removeStat(final @NotNull String name) {
         MinigameStat stat = stats.get(name.toLowerCase());
 
         if (stat instanceof DynamicMinigameStat) {
@@ -122,20 +123,18 @@ public final class MinigameStatistics {
     /**
      * @return Returns an unmodifiable map of all registered stats
      */
-    @NotNull
-    public static Map<String, MinigameStat> getAllStats() {
+    public static @NotNull @Unmodifiable Map<@NotNull String, @NotNull MinigameStat> getAllStats() {
         return Collections.unmodifiableMap(stats);
     }
 
     /**
      * @return Returns all dynamic stats
      */
-    @NotNull
-    public static Iterable<DynamicMinigameStat> getDynamicStats() {
+    public static @NotNull @Unmodifiable Iterable<@NotNull DynamicMinigameStat> getDynamicStats() {
         return stats.values().stream()
             .filter(DynamicMinigameStat.class::isInstance)
             .map(DynamicMinigameStat.class::cast)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**
@@ -145,8 +144,7 @@ public final class MinigameStatistics {
      * @param statCallback The callback to be invoked when the statistic is chosen. Note: only the setValue() method will be called.
      * @return The menu to display
      */
-    @NotNull
-    public static Menu createStatSelectMenu(final @NotNull Menu parent, final @NotNull Callback<MinigameStat> statCallback) {
+    public static @NotNull Menu createStatSelectMenu(final @NotNull Menu parent, final @NotNull Callback<MinigameStat> statCallback) {
         final @NotNull Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_NAME, parent.getIntendedViewer());
 
         for (final @NotNull MinigameStat stat : getAllStats().values()) {
@@ -160,7 +158,7 @@ public final class MinigameStatistics {
             submenu.addItem(item);
         }
 
-        submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 9);
+        submenu.setItem(new MenuItemBack(parent), submenu.getSize() - 9);
         return submenu;
     }
 
@@ -173,7 +171,7 @@ public final class MinigameStatistics {
      * @return The menu to display
      */
     @NotNull
-    public static Menu createStatFieldSelectMenu(final @NotNull Menu parent, @NotNull StatFormat format, final @NotNull Callback<StatisticValueField> callback) {
+    public static Menu createStatFieldSelectMenu(final @NotNull Menu parent, final @NotNull StatFormat format, final @NotNull Callback<StatisticValueField> callback) {
         final @NotNull Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_FIELD_NAME, parent.getIntendedViewer());
 
         for (final @NotNull StatisticValueField field : format.getFields()) {
@@ -187,7 +185,7 @@ public final class MinigameStatistics {
             submenu.addItem(item);
         }
 
-        submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 9);
+        submenu.setItem(new MenuItemBack(parent), submenu.getSize() - 9);
         return submenu;
     }
 }

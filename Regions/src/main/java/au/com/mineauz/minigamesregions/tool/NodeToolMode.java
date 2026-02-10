@@ -54,7 +54,7 @@ public class NodeToolMode implements ToolMode {
         tool.setSetting("Node", "None");
         final @NotNull Menu menu = new Menu(2, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_SELECT_NAME), player);
         if (player.isInMenu()) {
-            menu.addItem(new MenuItemBack(player.getMenu()), menu.getSize() - 9);
+            menu.setItem(new MenuItemBack(player.getMenu()), menu.getSize() - 9);
         }
 
         menu.addItem(new MenuItemString(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME), new Callback<>() {
@@ -64,20 +64,20 @@ public class NodeToolMode implements ToolMode {
             }
 
             @Override
-            public void setValue(@NotNull String value) {
+            public void setValue(final @NotNull String value) {
                 tool.setSetting("Node", value);
             }
         }));
 
         if (tool.getMinigame() != null) {
             // Node selection menu
-            RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
+            final RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
 
             Menu nodeMenu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_LIST_NAME), player);
-            List<MenuItem> items = new ArrayList<>();
+            final @NotNull List<@NotNull AMenuItem> items = new ArrayList<>();
 
-            for (final Node node : module.getNodes()) {
-                MenuItemCustom item = new MenuItemCustom(ItemType.STONE_BUTTON, Component.text(node.getName()));
+            for (final @NotNull Node node : module.getNodes()) {
+                final @NotNull MenuItemCustom item = new MenuItemCustom(ItemType.STONE_BUTTON, Component.text(node.getName()));
 
                 // Set the node and go back to the main menu
                 item.setClick(() -> {
@@ -91,7 +91,7 @@ public class NodeToolMode implements ToolMode {
             }
 
             nodeMenu.addItems(items);
-            nodeMenu.addItem(new MenuItemBack(menu), nodeMenu.getSize() - 9);
+            nodeMenu.setItem(new MenuItemBack(menu), nodeMenu.getSize() - 9);
 
             menu.addItem(new MenuItemPage(ItemType.STONE_BUTTON, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_EDIT_NAME), nodeMenu));
         }
@@ -99,15 +99,15 @@ public class NodeToolMode implements ToolMode {
     }
 
     @Override
-    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool) {
+    public void onUnsetMode(final @NotNull MinigamePlayer mgPlayer, final @NotNull MinigameTool tool) {
         tool.removeSetting("Node");
     }
 
     @Override
-    public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event) {
+    public void onLeftClick(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event) {
         if (event.getClickedBlock() != null) {
-            RegionModule mod = RegionModule.getMinigameModule(minigame);
-            String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Node");
+            final RegionModule mod = RegionModule.getMinigameModule(minigame);
+            final String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Node");
 
             final @NotNull SafeFullLocation loc = new SafeFullLocation(event.getClickedBlock().getLocation().add(0.5, 0.5, 0.5));
             @Nullable Node node = mod.getNode(name);

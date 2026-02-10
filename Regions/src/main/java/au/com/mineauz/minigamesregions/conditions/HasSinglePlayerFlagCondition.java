@@ -18,9 +18,9 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class HasSinglePlayerFlagCondition extends ACondition { // the whole singleplayer flag system is unused.
-    private final StringFlag flagName = new StringFlag("flag", "flag");
+    private final @NotNull StringFlag flagName = new StringFlag("flag", "flag");
 
-    protected HasSinglePlayerFlagCondition(@NotNull String name) {
+    protected HasSinglePlayerFlagCondition(final @NotNull String name) {
         super(name);
     }
 
@@ -50,16 +50,16 @@ public class HasSinglePlayerFlagCondition extends ACondition { // the whole sing
     }
 
     @Override
-    public boolean checkRegionCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         return checkCondition(mgPlayer);
     }
 
     @Override
-    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
         return checkCondition(mgPlayer);
     }
 
-    private boolean checkCondition(@Nullable MinigamePlayer player) {
+    private boolean checkCondition(final @Nullable MinigamePlayer player) {
         if (player == null) {
             return false;
         }
@@ -67,13 +67,13 @@ public class HasSinglePlayerFlagCondition extends ACondition { // the whole sing
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         flagName.saveValue(config);
         saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         flagName.loadValue(config);
         loadInvert(config);
     }
@@ -81,7 +81,7 @@ public class HasSinglePlayerFlagCondition extends ACondition { // the whole sing
     @Override
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
-        menu.addItem(new MenuItemBack(prev), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         menu.addItem(flagName.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME)));
         addInvertMenuItem(menu);
         menu.displayMenu();

@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.team.Team;
 import au.com.mineauz.minigames.minigame.modules.team.TeamColor;
@@ -56,14 +56,14 @@ public class TeamFlag extends AFlag<Team> {
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {
         return getMenuItem(displayType, name, null);
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
-                                         @Nullable List<@NotNull Component> description) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name,
+                                          final @Nullable List<@NotNull Component> description) {
         return null; //TODO: Menu Item
     }
 }

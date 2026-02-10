@@ -1,8 +1,5 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
-import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.AMinigameModule;
@@ -26,7 +23,6 @@ import au.com.mineauz.minigamesregions.triggers.TriggerRegistry;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
@@ -43,10 +39,10 @@ public class RegionModule extends AMinigameModule {
     private final @NotNull Map<@NotNull String, @NotNull Region> regions = new HashMap<>();
     private final @NotNull Map<@NotNull String, @NotNull Node> nodes = new HashMap<>();
     private static final @NotNull ModuleFactory moduleFactory = new ModuleFactory() {
-        private final Key key = new NamespacedKey(Main.getPlugin(), "regions");
+        private final @NotNull Key key = new NamespacedKey(Main.getPlugin(), "regions");
 
         @Override
-        public @NotNull AMinigameModule makeNewModule(@NotNull Minigame minigame) {
+        public @NotNull RegionModule makeNewModule(final @NotNull Minigame minigame) {
             return new RegionModule(minigame, key);
         }
 
@@ -60,7 +56,7 @@ public class RegionModule extends AMinigameModule {
         super(mgm, key);
     }
 
-    public static @Nullable RegionModule getMinigameModule(@NotNull Minigame minigame) {
+    public static @Nullable RegionModule getMinigameModule(final @NotNull Minigame minigame) {
         return (RegionModule) minigame.getModule(moduleFactory.getKey());
     }
 
@@ -104,7 +100,7 @@ public class RegionModule extends AMinigameModule {
             executorsNode.node("trigger").set(ex.getTrigger().getName());
 
             int actionNumber = 0;
-            for (IAction act : ex.getActions()) {
+            for (final @NotNull IAction act : ex.getActions()) {
                 final @NotNull CommentedConfigurationNode actionNode = executorsNode.node("actions", actionNumber++);
 
                 actionNode.node("type").set(act.key());
@@ -112,7 +108,7 @@ public class RegionModule extends AMinigameModule {
             }
 
             int conditionNumber = 0;
-            for (ACondition con : ex.getConditions()) {
+            for (final @NotNull ACondition con : ex.getConditions()) {
                 final @NotNull CommentedConfigurationNode conditionNode = executorsNode.node("conditions", conditionNumber++);
 
                 conditionNode.node("type").set(con.getName());
@@ -229,10 +225,10 @@ public class RegionModule extends AMinigameModule {
         }
     }
 
-    public boolean hasRegion(@NotNull String name) {
+    public boolean hasRegion(final @NotNull String name) {
         if (!regions.containsKey(name)) {
-            for (String n : regions.keySet()) {
-                if (n.equalsIgnoreCase(name))
+            for (final @NotNull String regionName : regions.keySet()) {
+                if (regionName.equalsIgnoreCase(name))
                     return true;
             }
             return false;
@@ -240,38 +236,46 @@ public class RegionModule extends AMinigameModule {
         return true;
     }
 
-    public void addRegion(@NotNull String name, Region region) {
-        if (!hasRegion(name))
-            regions.put(name, region);
+    public void addRegion(final @NotNull Region region) {
+        if (!hasRegion(region.getName()))
+            regions.put(region.getName(), region);
     }
 
-    public @Nullable Region getRegion(@NotNull String name) {
-        if (!hasRegion(name)) {
-            for (String n : regions.keySet()) {
-                if (n.equalsIgnoreCase(name))
-                    return regions.get(n);
+    public @Nullable Region getRegion(final @NotNull String name) {
+        Region region = regions.get(name);
+
+        if (region == null) {
+            for (final @NotNull String rgName : regions.keySet()) {
+                if (rgName.equalsIgnoreCase(name))
+                    return regions.get(rgName);
             }
             return null;
         }
-        return regions.get(name);
+
+        return region;
     }
 
     public @NotNull List<@NotNull Region> getRegions() {
         return new ArrayList<>(regions.values());
     }
 
-    public void removeRegion(@NotNull String name) {
-        if (hasRegion(name)) {
-            regions.get(name).removeConfiguredTask();
-            regions.get(name).removeGameTickTask();
-            regions.remove(name);
+    public void removeRegion(final @NotNull String name) {
+        @Nullable Region region = regions.remove(name);
+
+
+        if (region != null) {
+            region.removeConfiguredTask();
+            region.removeGameTickTask();
         } else {
-            for (String n : regions.keySet()) {
-                if (n.equalsIgnoreCase(name)) {
-                    regions.get(n).removeConfiguredTask();
-                    regions.get(n).removeGameTickTask();
-                    regions.remove(n);
-                    break;
+            final @NotNull Iterator<Map.@NotNull Entry<@NotNull String, @NotNull Region>> regionsIterator = regions.entrySet().iterator();
+
+            while (regionsIterator.hasNext()) {
+                final @NotNull Map.Entry<@NotNull String, @NotNull Region> entry = regionsIterator.next();
+
+                if (entry.getKey().equalsIgnoreCase(name)) {
+                    entry.getValue().removeConfiguredTask();
+                    entry.getValue().removeGameTickTask();
+                    regionsIterator.remove();
                 }
             }
         }
@@ -294,7 +298,7 @@ public class RegionModule extends AMinigameModule {
         }
     }
 
-    public @Nullable Node getNode(@NotNull String name) {
+    public @Nullable Node getNode(final @NotNull String name) {
         if (!hasNode(name)) {
             for (String n : nodes.keySet()) {
                 if (n.equalsIgnoreCase(name))
@@ -333,40 +337,28 @@ public class RegionModule extends AMinigameModule {
     @ApiStatus.Obsolete
     protected void displayMenu(final @NotNull MinigamePlayer viewer, final @Nullable Menu previous) {
         final @NotNull Menu regionsAndNodesMenu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME), viewer);
-        final @NotNull List<MenuItem> items = new ArrayList<>(regions.size());
-        for (Region region : regions.values()) {
-            MenuItemRegion mir = new MenuItemRegion(ItemType.ENDER_CHEST, Component.text(region.getName()), region, this);
+        final @NotNull List<AMenuItem> items = new ArrayList<>(regions.size());
+        for (final @NotNull Region region : regions.values()) {
+            final @NotNull MenuItemRegion mir = new MenuItemRegion(ItemType.ENDER_CHEST, Component.text(region.getName()), region, this);
             items.add(mir);
         }
         items.add(new MenuItemNewLine());
-        for (Node node : nodes.values()) {
-            MenuItemNode min = new MenuItemNode(ItemType.CHEST, Component.text(node.getName()), node, this);
+        for (final @NotNull Node node : nodes.values()) {
+            final @NotNull MenuItemNode min = new MenuItemNode(ItemType.CHEST, Component.text(node.getName()), node, this);
             items.add(min);
         }
 
         //display for regen regions
         items.add(new MenuItemNewLine());
-        for (MgRegion region : getMinigame().getRegenRegions()) {
-            MenuItem min = new MenuItemRegenRegion(ItemType.CHEST_MINECART, Component.text(region.getName()), List.of(
-                    Component.text(region.getName()),
-                    MinigameMessageManager.getMgMessage(MgMiscLangKey.REGION_DESCRIBE,
-                            Placeholder.component(MinigamePlaceHolderKey.POSITION_1.getKey(),
-                                    MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMinX())),
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMinY())),
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMinZ())))),
-                            Placeholder.component(MinigamePlaceHolderKey.POSITION_2.getKey(),
-                                    MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMaxX())),
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMaxY())),
-                                            Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMaxZ())))))),
-                    region, this);
+        for (final @NotNull MgRegion region : getMinigame().getRegenRegions()) {
+            AMenuItem min = new MenuItemRegenRegion(ItemType.CHEST_MINECART, Component.text(region.getName()),
+                List.of(Component.text(region.getName()), region.describe()), region, getMinigame());
             items.add(min);
         }
         regionsAndNodesMenu.addItems(items);
 
         if (previous != null) {
-            regionsAndNodesMenu.addItem(new MenuItemBack(previous), regionsAndNodesMenu.getSize() - 9);
+            regionsAndNodesMenu.setItem(new MenuItemBack(previous), regionsAndNodesMenu.getSize() - 9);
         }
         regionsAndNodesMenu.displayMenu();
     }

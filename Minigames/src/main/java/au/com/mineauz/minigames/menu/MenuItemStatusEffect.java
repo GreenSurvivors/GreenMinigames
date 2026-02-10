@@ -15,21 +15,19 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemStatusEffect extends MenuItem {
+public class MenuItemStatusEffect extends AMenuItem {
     private static final String DESCRIPTION_TOKEN = "Potion_description";
     private final @NotNull PotionEffect eff;
     private final @NotNull PlayerLoadout loadout;
 
-    public MenuItemStatusEffect(@Nullable ItemType displayType, @Nullable Component name, @NotNull PotionEffect eff,
-                                @NotNull PlayerLoadout loadout) {
-        super(displayType, name);
-        this.eff = eff;
-        this.loadout = loadout;
-        updateDescription();
+    public MenuItemStatusEffect(final @Nullable ItemType displayType, final @Nullable Component name,
+                                final @NotNull PotionEffect eff, final @NotNull PlayerLoadout loadout) {
+        this(displayType, name, null, eff, loadout);
     }
 
-    public MenuItemStatusEffect(@Nullable ItemType displayType, @Nullable Component name, @Nullable List<@NotNull Component> description,
-                                @NotNull PotionEffect eff, @NotNull PlayerLoadout loadout) {
+    public MenuItemStatusEffect(final @Nullable ItemType displayType, final @Nullable Component name,
+                                final @Nullable List<@NotNull Component> description,
+                                final @NotNull PotionEffect eff, final @NotNull PlayerLoadout loadout) {
         super(displayType, name, description);
         this.eff = eff;
         this.loadout = loadout;
@@ -37,7 +35,7 @@ public class MenuItemStatusEffect extends MenuItem {
     }
 
     public void updateDescription() {
-        List<Component> description = new ArrayList<>();
+        final @NotNull List<@NotNull Component> description = new ArrayList<>();
         description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STATUSEFFECT_LEVEL,
             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(eff.getAmplifier() + 1))));
 

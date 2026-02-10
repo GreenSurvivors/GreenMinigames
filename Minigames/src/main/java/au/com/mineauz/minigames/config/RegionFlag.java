@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.safelocation.SafeFineLocation;
 import io.leangen.geantyref.TypeToken;
@@ -80,20 +80,20 @@ public class RegionFlag extends AFlag<MgRegion> {
 
     /// the name of the region HAS TO match the name of the node!
     @Override
-    public void setFlag (MgRegion region) {
+    public void setFlag(final MgRegion region) {
         super.setFlag(region);
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {
         return getMenuItem(displayType, name, null);
     }
 
     @Deprecated
     @Override
-    public @NotNull MenuItem getMenuItem(@Nullable ItemType displayType, @Nullable Component name,
-                                         @Nullable List<@NotNull Component> description) {
+    public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name,
+                                          final @Nullable List<@NotNull Component> description) {
         return null; // todo
     }
 }

@@ -21,38 +21,34 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class MenuItemLong extends MenuItem implements StringConsumer {
+public class MenuItemLong extends AMenuItem implements StringConsumer {
     protected static final @NotNull Pattern LONG_PATTERN = Pattern.compile("-?[0-9]+");
     private static final String DESCRIPTION_TOKEN = "Long_description";
     protected final @NotNull Callback<Long> value;
     protected final @Nullable Long min;
     protected final @Nullable Long max;
 
-    public MenuItemLong(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<Long> value,
-                        @Nullable Long min, @Nullable Long max) {
-        super(displayType, langKey);
-        this.value = value;
-        this.min = min;
-        this.max = max;
-        updateDescription();
+    public MenuItemLong(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                        final @NotNull Callback<Long> value,
+                        final @Nullable Long min, final @Nullable Long max) {
+        this(displayType, langKey, null, value, min, max);
     }
 
-    public MenuItemLong(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<Long> value,
-                        @Nullable Long min, @Nullable Long max) {
-        super(displayType, name);
-        this.value = value;
-        this.min = min;
-        this.max = max;
-        updateDescription();
-    }
-
-    public MenuItemLong(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @Nullable List<Component> description,
-                        @NotNull Callback<Long> value, @Nullable Long min, @Nullable Long max) {
+    public MenuItemLong(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                        final @Nullable List<Component> description,
+                        final @NotNull Callback<Long> value,
+                        final @Nullable Long min, final @Nullable Long max) {
         super(displayType, langKey, description);
         this.value = value;
         this.min = min;
         this.max = max;
         updateDescription();
+    }
+
+    public MenuItemLong(final @Nullable ItemType displayType, final @Nullable Component name,
+                        final @NotNull Callback<Long> value,
+                        final @Nullable Long min, final @Nullable Long max) {
+        this(displayType, name, null, value, min, max);
     }
 
     public MenuItemLong(@Nullable ItemType displayType, @Nullable Component name, @Nullable List<Component> description,
@@ -144,7 +140,7 @@ public class MenuItemLong extends MenuItem implements StringConsumer {
     @Override
     public void acceptString(final @NotNull String string) {
         if (LONG_PATTERN.matcher(string).matches()) {
-            long entryValue = Long.parseLong(string);
+            final long entryValue = Long.parseLong(string);
             if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {
                 value.setValue(entryValue);
                 updateDescription();

@@ -14,7 +14,6 @@ import au.com.mineauz.minigames.objects.RegenRegionChangeResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
@@ -60,9 +59,9 @@ public class SetRegenAreaCommand extends ASetCommand {
      * @param page     the given page
      * @return returns a component containing max 5 regen regions with their coordinates and volume
      */
-    private @NotNull Component makeList(@NotNull Minigame minigame, int page) {
+    private @NotNull Component makeList(final @NotNull Minigame minigame, final int page) {
         //get all currently active regions
-        List<MgRegion> regions = new ArrayList<>(minigame.getRegenRegions());
+        final @NotNull List<@NotNull MgRegion> regions = new ArrayList<>(minigame.getRegenRegions());
         //how many regions are known. Needed to calculate how many pages there are and
         //how many there should be on the given page (if the page is not full)
         final int NUM_OF_REGIONS = regions.size();
@@ -84,17 +83,7 @@ public class SetRegenAreaCommand extends ASetCommand {
             MgRegion region = regions.get(id);
             listBuilder.appendNewline();
 
-            listBuilder.append(MinigameMessageManager.getMgMessage(MgMiscLangKey.REGION_DESCRIBE,
-                    Placeholder.component(MinigamePlaceHolderKey.POSITION_1.getKey(),
-                            MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMinX())),
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMinY())),
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMinZ())))),
-                    Placeholder.component(MinigamePlaceHolderKey.POSITION_2.getKey(),
-                            MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(region.getMaxX())),
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(region.getMaxY())),
-                                    Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(region.getMaxZ()))))));
+            listBuilder.append(region.describe());
         }
 
         //todo footer in messages and not legacy formatting
@@ -126,11 +115,11 @@ public class SetRegenAreaCommand extends ASetCommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                             @NotNull String @Nullable [] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, final @NotNull Minigame minigame,
+                             final @NotNull String @Nullable [] args) {
         if (args != null) {
-            if (sender instanceof Player player) {
-                MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
+            if (sender instanceof final @NotNull Player player) {
+                final @NotNull MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
 
                 if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
                     MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, makeList(minigame, 1));
@@ -139,10 +128,10 @@ public class SetRegenAreaCommand extends ASetCommand {
                     switch (args[0].toLowerCase()) {
                         case "create" -> {
                             if (mgPlayer.hasSelection()) {
-                                String name = args[1];
-                                MgRegion region = minigame.getRegenRegion(name);
+                                final @NotNull String name = args[1];
+                                final @Nullable MgRegion region = minigame.getRegenRegion(name);
 
-                                RegenRegionChangeResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
+                                final @NotNull RegenRegionChangeResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
 
                                 if (result.success()) {
                                     if (region == null) {
@@ -172,8 +161,6 @@ public class SetRegenAreaCommand extends ASetCommand {
                             return true;
                         }
                         case "list" -> {
-                            Tag.selfClosingInserting(Component.text());
-
                             if (args[1].matches("\\d+")) {
                                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.NONE, makeList(minigame, Integer.parseInt(args[1])));
                             } else {
@@ -182,7 +169,7 @@ public class SetRegenAreaCommand extends ASetCommand {
                             }
                         }
                         case "remove" -> {
-                            RegenRegionChangeResult result = minigame.removeRegenRegion(args[1]);
+                            final @NotNull RegenRegionChangeResult result = minigame.removeRegenRegion(args[1]);
 
                             if (result.success()) {
                                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WARNING, MgMiscLangKey.REGION_REGENREGION_REMOVED,
@@ -209,19 +196,19 @@ public class SetRegenAreaCommand extends ASetCommand {
     }
 
     @Override
-    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                                         @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(final @NotNull CommandSender sender, final @NotNull Minigame minigame,
+                                                         final @NotNull String @NotNull [] args) {
 
         if (args.length == 1) {
-            List<String> tab = new ArrayList<>();
+            final @NotNull List<@NotNull String> tab = new ArrayList<>();
             tab.add("create");
             tab.add("list");
             tab.add("remove");
             return CommandDispatcher.tabCompleteMatch(tab, args[0]);
         } else if (args.length == 2) {
-            List<String> tab = new ArrayList<>();
+            final @NotNull List<@NotNull String> tab = new ArrayList<>();
             if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("remove")) {
-                for (MgRegion region : minigame.getRegenRegions()) {
+                for (final @NotNull MgRegion region : minigame.getRegenRegions()) {
                     tab.add(region.getName());
                 }
             } else if (args[0].equalsIgnoreCase("list")) {

@@ -19,38 +19,38 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.List;
 
-public class MenuItemString extends MenuItem implements StringConsumer {
+public class MenuItemString extends AMenuItem implements StringConsumer {
     private static final String DESCRIPTION_TOKEN = "String_description";
     private final @NotNull Callback<String> stringCallback;
     private boolean allowNull = false;
 
-    public MenuItemString(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey, @NotNull Callback<String> stringCallback) {
-        super(displayType, langKey);
-        this.stringCallback = stringCallback;
-        updateDescription();
+    public MenuItemString(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                          final @NotNull Callback<String> stringCallback) {
+        this(displayType, langKey, null, stringCallback);
     }
 
-    public MenuItemString(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<String> stringCallback) {
-        super(displayType, name);
-        this.stringCallback = stringCallback;
-        updateDescription();
-    }
-
-    public MenuItemString(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
-                          @Nullable List<@NotNull Component> description, @NotNull Callback<String> str) {
+    public MenuItemString(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                          final @Nullable List<@NotNull Component> description,
+                          final @NotNull Callback<String> stringCallback) {
         super(displayType, langKey, description);
-        this.stringCallback = str;
+        this.stringCallback = stringCallback;
         updateDescription();
     }
 
-    public MenuItemString(@Nullable ItemType displayType, @Nullable Component name,
-                          @Nullable List<@NotNull Component> description, @NotNull Callback<String> stringCallback) {
+    public MenuItemString(final @Nullable ItemType displayType, final @Nullable Component name,
+                          final @NotNull Callback<String> stringCallback) {
+        this(displayType, name, null, stringCallback);
+    }
+
+    public MenuItemString(final @Nullable ItemType displayType, final @Nullable Component name,
+                          final @Nullable List<@NotNull Component> description,
+                          final @NotNull Callback<String> stringCallback) {
         super(displayType, name, description);
         this.stringCallback = stringCallback;
         updateDescription();
     }
 
-    public void setAllowNull(boolean allow) {
+    public void setAllowNull(final boolean allow) {
         allowNull = allow;
     }
 
@@ -82,7 +82,7 @@ public class MenuItemString extends MenuItem implements StringConsumer {
     }
 
     @Override
-    public void acceptString(@NotNull String string) {
+    public void acceptString(final @NotNull String string) {
         if (string.equals("null") && allowNull) {
             stringCallback.setValue(null);
         } else {

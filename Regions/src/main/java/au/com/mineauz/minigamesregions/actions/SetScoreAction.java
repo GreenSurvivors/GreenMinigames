@@ -21,7 +21,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class SetScoreAction extends AScoreAction {
-    private final IntegerFlag amount = new IntegerFlag("amount", 1);
+    private final @NotNull IntegerFlag amount = new IntegerFlag("amount", 1);
 
     protected SetScoreAction(final @NotNull Key key) {
         super(key);
@@ -53,7 +53,7 @@ public class SetScoreAction extends AScoreAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer, @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         if (!mgPlayer.isInMinigame()) return;
         mgPlayer.setScore(amount.getFlag());
         mgPlayer.getMinigame().setScore(mgPlayer, mgPlayer.getScore());
@@ -61,7 +61,7 @@ public class SetScoreAction extends AScoreAction {
     }
 
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
         mgPlayer.setScore(amount.getFlag());
         mgPlayer.getMinigame().setScore(mgPlayer, mgPlayer.getScore());
@@ -84,7 +84,7 @@ public class SetScoreAction extends AScoreAction {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.addItem(amount.getMenuItem(ItemType.ENDER_PEARL,
                 MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), null, null));
-        menu.addItem(new MenuItemBack(previous), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.displayMenu();
         return true;
     }

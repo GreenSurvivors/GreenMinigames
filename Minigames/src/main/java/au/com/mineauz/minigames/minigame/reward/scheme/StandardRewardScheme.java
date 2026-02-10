@@ -24,10 +24,10 @@ import java.util.List;
  * reward. The primary reward is acquired on the first completion only.
  */
 public class StandardRewardScheme extends ARewardScheme {
-    private final RewardsFlag primaryRewardFlag = new RewardsFlag("reward", new Rewards());
-    private final RewardsFlag secondaryRewardFlag = new RewardsFlag("reward2", new Rewards());
+    private final @NotNull RewardsFlag primaryRewardFlag = new RewardsFlag("reward", new Rewards());
+    private final @NotNull RewardsFlag secondaryRewardFlag = new RewardsFlag("reward2", new Rewards());
 
-    protected StandardRewardScheme(@NotNull String name) {
+    protected StandardRewardScheme(final @NotNull String name) {
         super(name);
     }
 
@@ -40,8 +40,8 @@ public class StandardRewardScheme extends ARewardScheme {
     }
 
     @Override
-    public void awardPlayer(@NotNull MinigamePlayer player, @Nullable StoredGameStats data, @Nullable Minigame minigame, boolean firstCompletion) {
-        List<ARewardType> rewards = primaryRewardFlag.getFlag().getReward();
+    public void awardPlayer(final @NotNull MinigamePlayer player, final @Nullable StoredGameStats data, final @Nullable Minigame minigame, boolean firstCompletion) {
+        @Nullable List<@NotNull ARewardType> rewards = primaryRewardFlag.getFlag().getReward();
 
         if (firstCompletion && rewards != null) {
             MinigameMessageManager.debugMessage("Issue Primary Reward for " + player.getName());
@@ -62,7 +62,7 @@ public class StandardRewardScheme extends ARewardScheme {
         // No lose awards
     }
 
-    private void giveRewards(@NotNull List<@Nullable ARewardType> rewards, @NotNull MinigamePlayer player) {
+    private void giveRewards(final @NotNull List<@Nullable ARewardType> rewards, final @NotNull MinigamePlayer player) {
         for (ARewardType reward : rewards) {
             if (reward != null) {
                 MinigameMessageManager.debugMessage("Giving " + player.getName() + " " + reward.getName() + " reward type.");
@@ -84,7 +84,7 @@ public class StandardRewardScheme extends ARewardScheme {
     }
 
     @Override
-    public void addMenuItems(@NotNull Menu menu) {
+    public void addMenuItems(final @NotNull Menu menu) {
         menu.addItem(new MenuItemDisplayRewards(ItemType.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME, primaryRewardFlag.getFlag()));
         menu.addItem(new MenuItemDisplayRewards(ItemType.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME, secondaryRewardFlag.getFlag()));
     }

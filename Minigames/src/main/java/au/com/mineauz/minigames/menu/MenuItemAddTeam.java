@@ -23,22 +23,22 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemAddTeam extends MenuItem implements StringConsumer {
+public class MenuItemAddTeam extends AMenuItem implements StringConsumer {
     private final @NotNull TeamsModule teamsModule;
 
-    public MenuItemAddTeam(@NotNull Component name, @NotNull TeamsModule teamsModule) {
-        super(MenuUtility.createType(), name);
+    public MenuItemAddTeam(final @NotNull MinigameLangKey name, final @NotNull TeamsModule teamsModule) {
+        super(MenuDisplayTypes.createType(), name);
         this.teamsModule = teamsModule;
     }
 
-    public MenuItemAddTeam(@NotNull MinigameLangKey name, @NotNull TeamsModule teamsModule) {
-        super(MenuUtility.createType(), name);
+    public MenuItemAddTeam(final @NotNull Component name, final @NotNull TeamsModule teamsModule) {
+        super(MenuDisplayTypes.createType(), name);
         this.teamsModule = teamsModule;
     }
 
     @Override
     public @NotNull ItemStack onClick() {
-        MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
+        final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(30);
 
@@ -70,7 +70,7 @@ public class MenuItemAddTeam extends MenuItem implements StringConsumer {
             }
             teams.add(TeamColor.NONE);
             getMenu().removeItem(0);
-            getMenu().addItem(new MenuItemList<>(ItemType.PAPER, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DEFAULTWINNINGTEAM_NAME), teamsModule.getDefaultWinnerCallback(), teams), 0);
+            getMenu().setItem(new MenuItemList<>(ItemType.PAPER, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DEFAULTWINNINGTEAM_NAME), teamsModule.getDefaultWinnerCallback(), teams), 0);
 
             getMenu().cancelWaitForInput();
             getMenu().displayMenu();

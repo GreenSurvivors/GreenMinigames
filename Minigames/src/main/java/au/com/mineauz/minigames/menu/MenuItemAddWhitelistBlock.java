@@ -25,7 +25,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 
-public class MenuItemAddWhitelistBlock extends MenuItem implements StringConsumer, BlockDataConsumer, BlockTypeConsumer {
+public class MenuItemAddWhitelistBlock extends AMenuItem implements StringConsumer, BlockDataConsumer, BlockTypeConsumer {
     protected final @NotNull List<@NotNull BlockType> whitelist;
 
     public MenuItemAddWhitelistBlock(final @NotNull MinigameLangKey langKey, final @NotNull List<@NotNull BlockType> whitelist) {
@@ -33,7 +33,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem implements StringConsume
     }
 
     public MenuItemAddWhitelistBlock(final @NotNull Component name, final @NotNull List<@NotNull BlockType> whitelist) {
-        super(MenuUtility.createType(), name,
+        super(MenuDisplayTypes.createType(), name,
             MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_WHITELIST_INTERACT));
         this.whitelist = whitelist;
     }

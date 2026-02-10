@@ -47,7 +47,7 @@ public class ResourcePackModule extends AMinigameModule { //todo rework to work 
         return forced.getFlag();
     }
 
-    public void setResourcePackname(Component name) {
+    public void setResourcePackname(final  @NotNull Component name) {
         resourcePackDisplayName.setFlag(name);
     }
 
@@ -102,7 +102,7 @@ public class ResourcePackModule extends AMinigameModule { //todo rework to work 
                     super.acceptString(string);
                     return;
                 }
-                ResourcePack pack = Minigames.getPlugin().getResourcePackManager().getResourcePack(string);
+                final @Nullable ResourcePack pack = Minigames.getPlugin().getResourcePackManager().getResourcePack(string);
                 if (pack == null) {
                     getMenu().cancelWaitForInput();
                     getMenu().displayMenu();
@@ -117,7 +117,7 @@ public class ResourcePackModule extends AMinigameModule { //todo rework to work 
         menu.addItem(item);
         menu.addItem(forced.getMenuItem(ItemType.SKELETON_SKULL, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_FORCE_NAME));
         MenuItemPage previousMenuItem = new MenuItemPage(ItemType.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_NAME, menu);
-        menu.addItem(new MenuItemBack(previousMenu), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(previousMenu), menu.getSize() - 9);
         previousMenu.addItem(previousMenuItem);
     }
 }

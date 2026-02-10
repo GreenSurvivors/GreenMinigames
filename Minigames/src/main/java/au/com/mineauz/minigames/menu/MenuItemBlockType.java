@@ -13,23 +13,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * Used when the menu item holds a BlockType.
- * <p>
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 15/11/2018.
- */
-public class MenuItemBlockType extends MenuItem {
+public class MenuItemBlockType extends AMenuItem {
     private static final String DESCRIPTION_TOKEN = "BlockType_description";
     private final @NotNull Callback<BlockType> blockTypeCallback;
 
-    public MenuItemBlockType(@Nullable ItemType displayType, @Nullable Component name, @NotNull Callback<BlockType> c) {
+    public MenuItemBlockType(final @Nullable ItemType displayType, final @Nullable Component name,
+                             final @NotNull Callback<BlockType> c) {
         super(displayType, name);
         blockTypeCallback = c;
     }
 
-    public MenuItemBlockType(@Nullable ItemType displayType, @Nullable Component name,
-                             @Nullable List<@NotNull Component> description, @NotNull Callback<BlockType> c) {
+    public MenuItemBlockType(final @Nullable ItemType displayType, final @Nullable Component name,
+                             final @Nullable List<@NotNull Component> description,
+                             final @NotNull Callback<BlockType> c) {
         super(displayType, name, description);
         blockTypeCallback = c;
     }
