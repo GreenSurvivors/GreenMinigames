@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.consumer.StringConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -28,17 +29,12 @@ public class CommandReward extends ARewardType {
     private static final String DESCRIPTION_TOKEN = "CommandReward_description";
     private String command = "say Hello World!";
 
-    public CommandReward(final @NotNull Rewards rewards) {
-        super(rewards);
+    public CommandReward(final @NotNull Key key, final @NotNull Rewards rewards) {
+        super(key, rewards);
     }
 
     public static @Nullable CommandReward getMinigameReward(final @NotNull Rewards rewards) {
-        return (CommandReward) RewardTypes.getRewardType(RewardTypes.MgDefaultRewardType.COMMAND.getName(), rewards);
-    }
-
-    @Override
-    public @NotNull String getName() {
-        return "COMMAND";
+        return (CommandReward) RewardTypes.getRewardType(RewardTypes.MgDefaultRewardType.COMMAND.key(), rewards);
     }
 
     @Override

@@ -87,7 +87,7 @@ public class MenuItemRewardAdd extends AMenuItem {
                 menu.addItem(custom);
             }
         }
-        menu.addItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
+        menu.setItem(new MenuItemBack(getMenu()), menu.getSize() - 9);
         menu.displayMenu();
         return ItemStack.empty();
     }

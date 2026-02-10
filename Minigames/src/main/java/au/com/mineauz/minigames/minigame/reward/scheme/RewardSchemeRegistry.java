@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.minigame.reward.scheme;
 import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemList;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class RewardSchemeRegistry {
-    private static final Map<@NotNull String, @NotNull RewardSchemeFactory> REGISTERED_SCHEMES = new HashMap<>();
+    private static final @NotNull Map<@NotNull Key, @NotNull RewardSchemeFactory> REGISTERED_SCHEMES = new HashMap<>();
 
     static {
         for (final @NotNull RewardSchemeFactory factory : MgDefaultRewardSchemes.values()) {
@@ -21,12 +22,12 @@ public final class RewardSchemeRegistry {
         }
     }
 
-    public static void registerRewardScheme(@NotNull RewardSchemeFactory factory) {
-        REGISTERED_SCHEMES.put(factory.getSchemeName().toLowerCase(), factory);
+    public static void registerRewardScheme(final @NotNull RewardSchemeFactory factory) {
+        REGISTERED_SCHEMES.put(factory.key(), factory);
     }
 
-    public static @Nullable ARewardScheme makeScheme(final @NotNull String name) {
-        final @Nullable RewardSchemeFactory factory = REGISTERED_SCHEMES.get(name);
+    public static @Nullable ARewardScheme makeScheme(final @NotNull Key key) {
+        final @Nullable RewardSchemeFactory factory = REGISTERED_SCHEMES.get(key);
 
         if (factory != null) {
             return factory.makeScheme();
@@ -35,7 +36,7 @@ public final class RewardSchemeRegistry {
         }
     }
 
-    public static @NotNull AMenuItem newMenuItem(@Nullable ItemType displayItem, @Nullable Component name, @NotNull Callback<String> callback) {
+    public static @NotNull AMenuItem newMenuItem(final @Nullable ItemType displayItem, final @Nullable Component name, final @NotNull Callback<Key> callback) {
         return new MenuItemList<>(displayItem, name, callback, new ArrayList<>(REGISTERED_SCHEMES.keySet()));
     }
 }

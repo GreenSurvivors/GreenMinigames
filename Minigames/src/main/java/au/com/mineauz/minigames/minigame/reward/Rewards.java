@@ -5,6 +5,8 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.objects.MinigamesKey;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemType;
@@ -155,7 +157,7 @@ public class Rewards {
         for (final @NotNull ARewardType item : items) {
             final @NotNull CommentedConfigurationNode indexedNode = config.node(index++);
 
-            indexedNode.node("type").raw(item.getName());
+            indexedNode.node("type").raw(item.key().asMinimalString());
             indexedNode.node("rarity").raw(item.getRarity().name());
             item.saveReward(indexedNode.node("data"));
         }
@@ -173,8 +175,17 @@ public class Rewards {
         for (final @NotNull CommentedConfigurationNode rewardEntryNode : config.childrenList()) {
             // Load reward item
             if (rewardEntryNode.hasChild("type")) {
-                final @NotNull String rawRewardType = rewardEntryNode.node("type").getString("");
-                final @Nullable ARewardType rewardType = RewardTypes.getRewardType(rawRewardType, this);
+                final @Nullable String rawRewardType = rewardEntryNode.node("type").getString();
+
+                @Nullable ARewardType rewardType = null;
+                if (rawRewardType != null) {
+                    final @Nullable Key rewardTypeKey = MinigamesKey.fromString(rawRewardType);
+
+                    if (rewardTypeKey != null) {
+                        rewardType = RewardTypes.getRewardType(rewardTypeKey, this);
+                    }
+                }
+
                 if (rewardType != null) {
                     rewardType.loadReward(rewardEntryNode.node("data"));
                     rewardType.setRarity(RewardRarity.valueOf(rewardEntryNode.node("rarity").getString()));

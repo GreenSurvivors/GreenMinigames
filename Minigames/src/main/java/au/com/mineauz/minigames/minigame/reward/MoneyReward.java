@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -28,17 +29,12 @@ public class MoneyReward extends ARewardType {
     private static final @NotNull Minigames PLUGIN = Minigames.getPlugin();
     private double money = 0d;
 
-    public MoneyReward(final @NotNull Rewards rewards) {
-        super(rewards);
+    public MoneyReward(final @NotNull Key key, final @NotNull Rewards rewards) {
+        super(key, rewards);
     }
 
     public static @Nullable MoneyReward getMinigameReward(final @NotNull Rewards rewards) {
-        return (MoneyReward) RewardTypes.getRewardType(RewardTypes.MgDefaultRewardType.MONEY.getName(), rewards);
-    }
-
-    @Override
-    public @NotNull String getName() {
-        return "MONEY";
+        return (MoneyReward) RewardTypes.getRewardType(RewardTypes.MgDefaultRewardType.MONEY.key(), rewards);
     }
 
     @Override

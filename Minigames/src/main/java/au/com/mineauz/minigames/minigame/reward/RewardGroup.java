@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward;
 
+import au.com.mineauz.minigames.objects.MinigamesKey;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -29,9 +31,21 @@ public class RewardGroup {
                     continue;
                 }
 
-                final @NotNull ARewardType type = RewardTypes.getRewardType(rewardEntry.node("type").getString(), container);
-                type.loadReward(rewardEntry.node("data"));
-                group.addItem(type);
+                final @Nullable String typeStr = rewardEntry.node("type").getString();
+
+                if (typeStr != null) {
+                    final @Nullable Key key = MinigamesKey.fromString(typeStr.toLowerCase());
+
+                    if (key != null) {
+                    final @NotNull ARewardType type = RewardTypes.getRewardType(key, container);
+                        type.loadReward(rewardEntry.node("data"));
+                        group.addItem(type);
+                    } else {
+                        throw new SerializationException("type " + typeStr + " is not a valid reward type Key!");
+                    }
+                } else {
+                    throw new SerializationException("type no valid reward key!");
+                }
             }
 
             return group;
@@ -73,7 +87,7 @@ public class RewardGroup {
         for (final @NotNull ARewardType item : items) {
             final @NotNull CommentedConfigurationNode indexedNode = config.node(index++);
 
-            indexedNode.node("type").raw(item.getName());
+            indexedNode.node("type").raw(item.key().asMinimalString());
             item.saveReward(indexedNode.node("data"));
         }
 

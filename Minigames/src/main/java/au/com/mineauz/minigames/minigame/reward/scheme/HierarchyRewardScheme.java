@@ -16,6 +16,7 @@ import au.com.mineauz.minigames.minigame.reward.ARewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -41,8 +42,8 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
     private final @NotNull TreeMap<T, @NotNull Rewards> primaryRewards = new TreeMap<>();
     private final @NotNull TreeMap<T, @NotNull Rewards> secondaryRewards = new TreeMap<>();
 
-    public HierarchyRewardScheme(@NotNull String name) {
-        super(name);
+    public HierarchyRewardScheme(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

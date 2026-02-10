@@ -2,16 +2,24 @@ package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-public abstract class ARewardType {
+public abstract class ARewardType implements Keyed {
+    private final @NotNull Key key;
     private final @NotNull Rewards rewards;
     private @NotNull RewardRarity rarity = RewardRarity.NORMAL;
 
-    public ARewardType(@NotNull Rewards rewards) {
+    public ARewardType(final @NotNull Key key, final @NotNull Rewards rewards) {
+        this.key = key;
         this.rewards = rewards;
+    }
+
+    public @NotNull Key key() {
+        return key;
     }
 
     public @NotNull RewardRarity getRarity() {
@@ -25,8 +33,6 @@ public abstract class ARewardType {
     public @NotNull Rewards getRewards() {
         return rewards;
     }
-
-    public abstract @NotNull String getName();
 
     public abstract boolean isUsable();
 

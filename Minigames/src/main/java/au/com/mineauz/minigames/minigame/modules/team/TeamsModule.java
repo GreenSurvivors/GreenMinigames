@@ -64,7 +64,7 @@ public class TeamsModule extends AMinigameModule {
 
             for (final @NotNull CommentedConfigurationNode teamNode : teamsNode.childrenList()) {
                 try {
-                    TeamFlag tf = new TeamFlag(teamNode.key().toString(), null, getMinigame());
+                    final @NotNull TeamFlag tf = new TeamFlag(teamNode.key().toString(), null, getMinigame());
                     tf.loadValue(teamNode);
 
                     teams.put(tf.getFlag().getColor(), tf);

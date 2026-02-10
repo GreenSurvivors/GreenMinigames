@@ -4,23 +4,25 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 /**
  * RewardSchemes allow more flexibility for reward handling.
- * The previous simple Primary/Secondary reward system is under {@link StandardRewardScheme}
+ * A simple Primary/Secondary reward system is under {@link StandardRewardScheme}
  */
-public abstract class ARewardScheme {
-    protected final @NotNull String name;
+public abstract class ARewardScheme implements Keyed {
+    protected final @NotNull Key key;
 
-    public ARewardScheme(@NotNull String name) {
-        this.name = name;
+    public ARewardScheme(final @NotNull Key key) {
+        this.key = key;
     }
 
-    public @NotNull String getName() {
-        return name;
+    public @NotNull Key key() {
+        return key;
     }
 
     /**

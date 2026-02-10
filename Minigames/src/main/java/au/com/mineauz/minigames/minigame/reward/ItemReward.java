@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import io.leangen.geantyref.TypeFactory;
 import io.leangen.geantyref.TypeToken;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -26,17 +27,12 @@ import java.util.Map;
 public class ItemReward extends ARewardType {
     private @NotNull ItemStack item = ItemType.DIAMOND.createItemStack();
 
-    public ItemReward(final @NotNull Rewards rewards) {
-        super(rewards);
+    public ItemReward(final @NotNull Key key, final @NotNull Rewards rewards) {
+        super(key, rewards);
     }
 
     public static ItemReward getMinigameReward(final @NotNull Rewards rewards) {
-        return (ItemReward) RewardTypes.getRewardType(RewardTypes.MgDefaultRewardType.ITEM.getName(), rewards);
-    }
-
-    @Override
-    public @NotNull String getName() {
-        return "ITEM";
+        return (ItemReward) RewardTypes.getRewardType(RewardTypes.MgDefaultRewardType.ITEM.key(), rewards);
     }
 
     @Override

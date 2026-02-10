@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.minigame.reward.ARewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.key.Key;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,8 +28,8 @@ public class StandardRewardScheme extends ARewardScheme {
     private final @NotNull RewardsFlag primaryRewardFlag = new RewardsFlag("reward", new Rewards());
     private final @NotNull RewardsFlag secondaryRewardFlag = new RewardsFlag("reward2", new Rewards());
 
-    protected StandardRewardScheme(final @NotNull String name) {
-        super(name);
+    protected StandardRewardScheme(final @NotNull Key key) {
+        super(key);
     }
 
     public Rewards getPrimaryReward() {
@@ -65,7 +66,7 @@ public class StandardRewardScheme extends ARewardScheme {
     private void giveRewards(final @NotNull List<@Nullable ARewardType> rewards, final @NotNull MinigamePlayer player) {
         for (ARewardType reward : rewards) {
             if (reward != null) {
-                MinigameMessageManager.debugMessage("Giving " + player.getName() + " " + reward.getName() + " reward type.");
+                MinigameMessageManager.debugMessage("Giving " + player.getName() + " " + reward.key() + " reward type.");
                 reward.giveReward(player);
             }
         }

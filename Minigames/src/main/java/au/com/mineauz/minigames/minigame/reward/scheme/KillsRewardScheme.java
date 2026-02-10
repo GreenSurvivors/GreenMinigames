@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.MinigameStatistics;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.jetbrains.annotations.NotNull;
@@ -14,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class KillsRewardScheme extends HierarchyRewardScheme<@NotNull Integer> {
 
-    protected KillsRewardScheme(final @NotNull String name) {
-        super(name);
+    protected KillsRewardScheme(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
+import au.com.mineauz.minigames.objects.MinigamesKey;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
@@ -12,26 +14,27 @@ public enum MgDefaultRewardSchemes implements RewardSchemeFactory {
     DEATHS("deaths", DeathsRewardScheme::new),
     REVERTS("reverts", RevertsRewardScheme::new);
 
-    final @NotNull String name;
-    final @NotNull Function<@NotNull String, @NotNull ARewardScheme> constructor;
+    final @NotNull Key key;
+    final @NotNull Function<@NotNull Key, @NotNull ARewardScheme> constructor;
 
 
-    MgDefaultRewardSchemes(final @NotNull String name, final @NotNull Function<@NotNull String, @NotNull ARewardScheme> constructor) {
-        this.name = name;
+    MgDefaultRewardSchemes(final @NotNull String name, final @NotNull Function<@NotNull Key, @NotNull ARewardScheme> constructor) {
+        this.key = MinigamesKey.minigames(name);
         this.constructor = constructor;
-    }
-
-    public @NotNull String getSchemeName() {
-        return name;
     }
 
     @Override
     public @NotNull ARewardScheme makeScheme() {
-        return constructor.apply(name);
+        return constructor.apply(key);
     }
 
     @Override
     public @NotNull String toString() {
-        return name;
+        return key.asMinimalString();
+    }
+
+    @Override
+    public @NotNull Key key() {
+        return key;
     }
 }

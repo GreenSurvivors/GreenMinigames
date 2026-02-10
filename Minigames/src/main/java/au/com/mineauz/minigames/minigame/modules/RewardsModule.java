@@ -11,6 +11,7 @@ import au.com.mineauz.minigames.minigame.reward.scheme.ARewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.MgDefaultRewardSchemes;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardSchemeRegistry;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamesKey;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.key.Key;
 import org.bukkit.inventory.ItemStack;
@@ -62,15 +63,20 @@ public class RewardsModule extends AMinigameModule {
 
     @Override
     public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
-        config.node("reward-scheme").set(scheme.getName());
+        config.node("reward-scheme").set(scheme.key().asMinimalString());
         scheme.save(config.node("rewards"));
     }
 
     @Override
     public void load(final @NotNull CommentedConfigurationNode config) throws SerializationException {
-        final @NotNull String name = config.node("reward-scheme").getString(MgDefaultRewardSchemes.STANDARD.getSchemeName());
+        final @NotNull String name = config.node("reward-scheme").getString(MgDefaultRewardSchemes.STANDARD.key().asString());
+        final @Nullable Key key = MinigamesKey.fromString(name.toLowerCase());
 
-        scheme = RewardSchemeRegistry.makeScheme(name);
+        if (key != null){
+            scheme = RewardSchemeRegistry.makeScheme(key);
+        } else {
+            throw new SerializationException("invalid reward scheme");
+        }
         if (scheme == null) {
             scheme = MgDefaultRewardSchemes.STANDARD.makeScheme();
         }
@@ -99,12 +105,13 @@ public class RewardsModule extends AMinigameModule {
         submenu.setItem(RewardSchemeRegistry.newMenuItem(ItemType.PAPER,
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SCHEME_NAME), new Callback<>() {
                 @Override
-                public @NotNull String getValue() {
-                    return scheme.getName();
+                public @NotNull Key getValue() {
+                    return scheme.key();
                 }
 
                 @Override
-                public void setValue(@NotNull String value) {
+                public void setValue(final @NotNull Key value) {
+
                     scheme = RewardSchemeRegistry.makeScheme(value);
                     // Update the menu
                     final @NotNull Menu menu = createSubMenu(parent);
