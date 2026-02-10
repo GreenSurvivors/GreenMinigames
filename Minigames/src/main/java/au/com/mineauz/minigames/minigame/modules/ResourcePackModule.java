@@ -83,7 +83,7 @@ public class ResourcePackModule extends AMinigameModule { //todo rework to work 
         final @NotNull Menu menu = new Menu(3, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_NAME, previousMenu.getIntendedViewer());
         menu.setPreviousPage(previousMenu);
         menu.addItem(enabled.getMenuItem(ItemType.MAP, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_ENABLE_NAME));
-        MenuItemComponent item = new MenuItemComponent(ItemType.PAPER, MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_DISPLAYNAME_NAME,
+        final @NotNull MenuItemComponent item = new MenuItemComponent(MenuDisplayTypes.nameType(), MgMenuLangKey.MENU_RESOURCEPACK_OPTIONS_DISPLAYNAME_NAME,
             new Callback<>() {
                 @Override
                 public @NotNull Component getValue() {

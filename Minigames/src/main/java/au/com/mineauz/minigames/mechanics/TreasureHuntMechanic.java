@@ -14,10 +14,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
-import au.com.mineauz.minigames.menu.AMenuItem;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.RewardsModule;
 import au.com.mineauz.minigames.minigame.reward.ARewardType;
@@ -236,7 +233,7 @@ public class TreasureHuntMechanic extends AGameMechanic {
         final @NotNull Menu treasureHuntMenu = new Menu(6, minigame.getDisplayName(), previous.getIntendedViewer());
 
         final @NotNull List<@NotNull AMenuItem> itemsTreasureHunt = new ArrayList<>(5);
-        itemsTreasureHunt.add(locationName.getMenuItem(ItemType.WHITE_BED, MgMenuLangKey.MENU_TREASUREHUNT_LOCATION_NAME,
+        itemsTreasureHunt.add(locationName.getMenuItem(ItemType.MAP, MgMenuLangKey.MENU_TREASUREHUNT_LOCATION_NAME,
             MgMenuLangKey.MENU_TREASUREHUNT_LOCATION_DESCRIPTION));
         itemsTreasureHunt.add(maxRadius.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_TREASUREHUNT_MAX_RADIUS_NAME, 10, null));
         itemsTreasureHunt.add(maxHeight.getMenuItem(ItemType.BEACON, MgMenuLangKey.MENU_TREASUREHUNT_MAX_HEIGHT_NAME,
@@ -245,12 +242,12 @@ public class TreasureHuntMechanic extends AGameMechanic {
             MgMenuLangKey.MENU_TREASUREHUNT_MIN_ITEMS_DESCRIPTION, 0, 27));
         itemsTreasureHunt.add(maxTreasure.getMenuItem(ItemType.STONE, MgMenuLangKey.MENU_TREASUREHUNT_MAX_ITEMS_NAME,
             MgMenuLangKey.MENU_TREASUREHUNT_MAX_ITEMS_DESCRIPTION, 0, 27));
-        itemsTreasureHunt.add(treasureWaitTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TREASUREHUNT_DELAY_RESTART_NAME, 0L, null));
-        itemsTreasureHunt.add(hintWaitTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TREASUREHUNT_DELAY_HINT_NAME, 0L, null));
+        itemsTreasureHunt.add(treasureWaitTime.getMenuItem(MenuDisplayTypes.timeType(), MgMenuLangKey.MENU_TREASUREHUNT_DELAY_RESTART_NAME, 0L, null));
+        itemsTreasureHunt.add(hintWaitTime.getMenuItem(MenuDisplayTypes.timeType(), MgMenuLangKey.MENU_TREASUREHUNT_DELAY_HINT_NAME, 0L, null));
         treasureHuntMenu.addItems(itemsTreasureHunt);
         treasureHuntMenu.setItem(new MenuItemBack(previous), treasureHuntMenu.getSize() - 9);
 
-        return new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_MINIGAME_MECHANIC_SETTINGS_NAME, treasureHuntMenu);
+        return new MenuItemPage(MenuDisplayTypes.genericSubMenu(), MgMenuLangKey.MENU_MINIGAME_MECHANIC_SETTINGS_NAME, treasureHuntMenu);
     }
 
     @Override

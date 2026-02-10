@@ -157,7 +157,8 @@ public class ExecutorHolderEditToolMode implements ToolMode {
 
             if (object instanceof Region region) {
                 options.append(region.getName());
-                final @NotNull MenuItemRegion item = new MenuItemRegion(ItemType.CHEST, Component.text(region.getName()), region, module);
+                final @NotNull MenuItemRegion item = new MenuItemRegion(MenuDisplayTypes.genericSubMenu(),
+                    Component.text(region.getName()), region, module);
                 menu.addItem(item);
             } else if (object instanceof Node node) {
                 options.append(node.getName());

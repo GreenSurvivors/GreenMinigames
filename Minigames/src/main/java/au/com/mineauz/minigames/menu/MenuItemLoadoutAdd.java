@@ -90,7 +90,7 @@ public class MenuItemLoadoutAdd extends AMenuItem implements StringConsumer {
                 if (!getMenu().hasMenuItem(i)) {
                     final @NotNull PlayerLoadout loadout = new PlayerLoadout(string);
                     loadouts.put(string, loadout);
-                    final List<@NotNull Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
+                    final @NotNull List<@NotNull Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
 
                     getMenu().setItem(new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout, minigame), i);
                     break;

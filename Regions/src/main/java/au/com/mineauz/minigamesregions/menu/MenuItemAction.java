@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+// note: does not extends MenuItemPage, its optional for an action to have a menu.
 public class MenuItemAction extends AMenuItem {
     private static final @NotNull String DESCRIPTION_TOKEN = "Action_description";
     private final @NotNull ActionExecutor exec;
@@ -42,21 +43,21 @@ public class MenuItemAction extends AMenuItem {
     }
 
     private void updateDescription() {
-        Map<Component, Component> out = act.describe();
+        final @NotNull Map<@NotNull Component, @Nullable Component> out = act.describe();
 
         if (out.isEmpty()) {
             return;
         }
 
         // Convert the description
-        List<Component> description = new ArrayList<>();
-        for (Entry<Component, Component> entry : out.entrySet()) {
-            Component value = entry.getValue() == null ?
+        final @NotNull List<@NotNull Component> description = new ArrayList<>();
+        for (final @NotNull Entry<@NotNull Component, @Nullable Component> entry : out.entrySet()) {
+            final @NotNull Component value = entry.getValue() == null ?
                     MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).
                             color(NamedTextColor.YELLOW) :
                     entry.getValue();
 
-            Component line = RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_DESCRIPTION,
+            final @NotNull Component line = RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_DESCRIPTION,
                     Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), entry.getKey()),
                     Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), value));
 

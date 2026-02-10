@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/// also see {@link MenuDisplayTypes#genericSubMenu()}
 public class MenuItemPage extends AMenuItem {
     private final @NotNull Menu menu;
 

@@ -70,7 +70,7 @@ public class MenuItemRewardGroupAdd extends AMenuItem implements StringConsumer 
 
         final @NotNull RewardGroup group = rewards.addGroup(string, RewardRarity.NORMAL);
 
-        final @NotNull MenuItemRewardGroup menuItemRewardGroup = new MenuItemRewardGroup(ItemType.CHEST,
+        final @NotNull MenuItemRewardGroup menuItemRewardGroup = new MenuItemRewardGroup(ItemType.BUNDLE,
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string)), group, rewards);
         getMenu().addItem(menuItemRewardGroup);

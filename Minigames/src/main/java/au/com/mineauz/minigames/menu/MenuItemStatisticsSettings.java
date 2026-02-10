@@ -33,7 +33,7 @@ public class MenuItemStatisticsSettings extends AMenuItem {
             getMenu().getIntendedViewer());
 
         for (final @NotNull MinigameStat stat : MinigameStatistics.getAllStats().values()) {
-            subMenu.addItem(new MenuItemModifyStatSetting(ItemType.WRITABLE_BOOK, minigame, stat));
+            subMenu.addItem(new MenuItemModifyStatSetting(MenuDisplayTypes.statistics(), minigame, stat));
         }
 
         subMenu.setItem(new MenuItemBack(getMenu()), subMenu.getSize() - 9);

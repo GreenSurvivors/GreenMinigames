@@ -83,7 +83,7 @@ public class HasSinglePlayerFlagCondition extends ACondition { // the whole sing
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
         menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
-        menu.addItem(flagName.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME)));
+        menu.addItem(flagName.getMenuItem(ItemType.WRITTEN_BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME)));
         addInvertMenuItem(menu);
         menu.displayMenu();
         return true;

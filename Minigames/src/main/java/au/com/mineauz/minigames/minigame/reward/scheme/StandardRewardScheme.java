@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuDisplayTypes;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.ARewardType;
@@ -11,7 +12,6 @@ import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.key.Key;
-import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -86,7 +86,7 @@ public class StandardRewardScheme extends ARewardScheme {
 
     @Override
     public void addMenuItems(final @NotNull Menu menu) {
-        menu.addItem(new MenuItemDisplayRewards(ItemType.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME, primaryRewardFlag.getFlag()));
-        menu.addItem(new MenuItemDisplayRewards(ItemType.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME, secondaryRewardFlag.getFlag()));
+        menu.addItem(new MenuItemDisplayRewards(MenuDisplayTypes.genericSubMenu(), MgMenuLangKey.MENU_REWARD_PRIMARY_NAME, primaryRewardFlag.getFlag()));
+        menu.addItem(new MenuItemDisplayRewards(MenuDisplayTypes.genericSubMenu(), MgMenuLangKey.MENU_REWARD_SECONDARY_NAME, secondaryRewardFlag.getFlag()));
     }
 }

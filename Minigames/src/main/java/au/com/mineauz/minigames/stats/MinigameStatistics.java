@@ -2,10 +2,7 @@ package au.com.mineauz.minigames.stats;
 
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
+import au.com.mineauz.minigames.menu.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -148,7 +145,7 @@ public final class MinigameStatistics {
         final @NotNull Menu submenu = new Menu(6, MgMenuLangKey.MENU_STAT_SELECT_NAME, parent.getIntendedViewer());
 
         for (final @NotNull MinigameStat stat : getAllStats().values()) {
-            MenuItemCustom item = new MenuItemCustom(ItemType.WRITABLE_BOOK, stat.getDisplayName());
+            final @NotNull MenuItemCustom item = new MenuItemCustom(MenuDisplayTypes.statistics(), stat.getDisplayName());
             item.setClick(() -> {
                 statCallback.setValue(stat);
                 parent.displayMenu();

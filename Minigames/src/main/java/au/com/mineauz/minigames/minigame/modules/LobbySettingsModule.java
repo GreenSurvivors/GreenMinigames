@@ -5,10 +5,7 @@ import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.menu.AMenuItem;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.key.Key;
 import org.bukkit.inventory.ItemType;
@@ -137,7 +134,7 @@ public class LobbySettingsModule extends AMinigameModule {
             itemsLobby.add(teleportOnPlayerWait.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TELEPORT_NAME));
             itemsLobby.add(teleportOnStart.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_NAME,
                 MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_DESCRIPTION));
-            itemsLobby.add(playerWaitTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_NAME,
+            itemsLobby.add(playerWaitTime.getMenuItem(MenuDisplayTypes.timeType(), MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_NAME,
                 MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_DESCRIPTION),
                 0L, Long.MAX_VALUE));
             lobbyMenu.addItems(itemsLobby);

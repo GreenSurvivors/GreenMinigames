@@ -373,6 +373,6 @@ public class LoadoutModule extends AMinigameModule {
         loadoutMenu.setItem(new MenuItemBack(superMenu), loadoutMenu.getSize() - 9);
         loadoutMenu.addItems(loadoutMenuItems);
 
-        superMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_MINIGAME_LOADOUTS_NAME, loadoutMenu));
+        superMenu.addItem(new MenuItemPage(MenuDisplayTypes.genericSubMenu(), MgMenuLangKey.MENU_MINIGAME_LOADOUTS_NAME, loadoutMenu));
     }
 }

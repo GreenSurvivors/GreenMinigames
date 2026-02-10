@@ -370,7 +370,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
         menu.addItem(matchName.getMenuItem(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_DISPLAYNAME_NAME)));
-        final @NotNull MenuItemString nameMenuItem = new MenuItemString(ItemType.NAME_TAG,
+        final @NotNull MenuItemString nameMenuItem = new MenuItemString(MenuDisplayTypes.nameType(),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_DESCRIPTION),
                 new Callback<>() {

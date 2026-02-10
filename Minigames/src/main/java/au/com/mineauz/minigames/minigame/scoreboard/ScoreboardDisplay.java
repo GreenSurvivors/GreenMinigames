@@ -227,10 +227,11 @@ public class ScoreboardDisplay {
     public void displayMenu(final @NotNull MinigamePlayer player) {
         final @NotNull Menu setupMenu = new Menu(3, MgMenuLangKey.MENU_SCOREBOARD_SETUP_NAME, player);
 
-        final @NotNull StatSettings settings = minigame.getSettings(stat);
-        final @NotNull MenuItemCustom statisticChoice = new MenuItemCustom(ItemType.WRITABLE_BOOK, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_NAME,
-            List.of(settings.getDisplayName().color(NamedTextColor.GREEN)));
+        // note: custom because the click does change its lore
+        final @NotNull MenuItemCustom statisticChoice = new MenuItemCustom(MenuDisplayTypes.statistics(), MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_NAME,
+            List.of(minigame.getSettings(stat).getDisplayName().color(NamedTextColor.GREEN)));
 
+        // note: custom because the click does change its lore
         final @NotNull MenuItemCustom fieldChoice = new MenuItemCustom(ItemType.PAPER, MgMenuLangKey.MENU_SCOREBOARD_STATISTIC_FIELD_NAME,
             List.of(field.getTitle().color(NamedTextColor.GREEN)));
 
@@ -274,8 +275,8 @@ public class ScoreboardDisplay {
         });
 
         fieldChoice.setClick(() -> {
-            StatSettings settings1 = minigame.getSettings(stat);
-            Menu childMenu = MinigameStatistics.createStatFieldSelectMenu(setupMenu, settings1.getFormat(), new Callback<>() {
+            final @NotNull StatSettings settings1 = minigame.getSettings(stat);
+            final @NotNull Menu childMenu = MinigameStatistics.createStatFieldSelectMenu(setupMenu, settings1.getFormat(), new Callback<>() {
                 @Override
                 public StatisticValueField getValue() {
                     throw new UnsupportedOperationException();
@@ -295,7 +296,7 @@ public class ScoreboardDisplay {
         setupMenu.addItem(statisticChoice);
         setupMenu.addItem(fieldChoice);
 
-        setupMenu.addItem(new MenuItemEnum<>(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_SCOREBOARD_ORDER_NAME, new Callback<>() {
+        setupMenu.addItem(new MenuItemEnum<>(ItemType.HOPPER, MgMenuLangKey.MENU_SCOREBOARD_ORDER_NAME, new Callback<>() {
 
             @Override
             public @NotNull ScoreboardOrder getValue() {

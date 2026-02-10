@@ -57,20 +57,14 @@ public class MenuItemActionExecutor extends AMenuItem {
         final @NotNull Menu menu = new Menu(3, getName(actionExecutorHolder),
             getMenu().getIntendedViewer());
 
-        final @NotNull MenuItemCustom actionItem = new MenuItemCustom(ItemType.CHEST,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME));
-        actionItem.setClick(() -> {
-            ActionRegistry.displayMenu(actionExecutor, menu);
-            return ItemStack.empty();
-        });
+        final @NotNull MenuItemPage actionItem = new MenuItemPage(MenuDisplayTypes.genericSubMenu(),
+            RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME),
+            ActionRegistry.createMenu(actionExecutor, menu));
         menu.addItem(actionItem);
 
-        final @NotNull MenuItemCustom conditionsMenuItem = new MenuItemCustom(ItemType.CHEST,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME));
-        conditionsMenuItem.setClick(() -> {
-            ConditionRegistry.displayMenu(actionExecutor, menu);
-            return ItemStack.empty();
-        });
+        final @NotNull MenuItemPage conditionsMenuItem = new MenuItemPage(MenuDisplayTypes.genericSubMenu(),
+            RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME),
+            ConditionRegistry.createMenu(actionExecutor, menu));
         menu.addItem(conditionsMenuItem);
 
         menu.addItem(new MenuItemNewLine());

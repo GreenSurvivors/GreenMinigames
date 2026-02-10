@@ -30,7 +30,7 @@ public abstract class ARewardScheme implements Keyed {
      *
      * @param menu The menu to add into.
      */
-    public abstract void addMenuItems(Menu menu);
+    public abstract void addMenuItems(final @NotNull Menu menu);
 
     /**
      * Awards the player with the rewards specified in this scheme.

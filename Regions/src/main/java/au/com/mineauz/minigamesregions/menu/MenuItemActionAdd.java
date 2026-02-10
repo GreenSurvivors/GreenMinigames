@@ -30,7 +30,7 @@ public class MenuItemActionAdd extends AMenuItem {
     }
 
     @Override
-    public @NonNull ItemStack onClick() { // miau
+    public @NonNull ItemStack onClick() {
         final @NotNull Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), getMenu().getIntendedViewer());
         menu.setPreviousPage(getMenu());
         final @NotNull Map<@NotNull IActionCategory, @NotNull Menu> cats = new HashMap<>();
@@ -43,7 +43,7 @@ public class MenuItemActionAdd extends AMenuItem {
                 if (!cats.containsKey(category)) {
                     menuCat = new Menu(6, category.getDisplayName(), getMenu().getIntendedViewer());
                     cats.put(category, menuCat);
-                    menu.addItem(new MenuItemPage(ItemType.CHEST, category.getDisplayName(), menuCat));
+                    menu.addItem(new MenuItemPage(MenuDisplayTypes.genericSubMenu(), category.getDisplayName(), menuCat));
                     menuCat.setItem(new MenuItemBack(menu), menuCat.getSize() - 9);
                 } else {
                     menuCat = cats.get(category);

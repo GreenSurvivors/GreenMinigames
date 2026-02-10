@@ -57,17 +57,16 @@ public class RegionToolMode implements ToolMode {
         if (player.isInMenu()) {
             menu.setItem(new MenuItemBack(player.getMenu()), menu.getSize() - 9);
         }
-        final MinigameTool ftool = tool;
-        menu.addItem(new MenuItemString(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_NAME_NAME), new Callback<>() {
+        menu.addItem(new MenuItemString(MenuDisplayTypes.nameType(), RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_NAME_NAME), new Callback<>() {
 
             @Override
             public @NotNull String getValue() {
-                return ftool.getSetting("Region");
+                return tool.getSetting("Region");
             }
 
             @Override
             public void setValue(@NotNull String value) {
-                ftool.setSetting("Region", value);
+                tool.setSetting("Region", value);
             }
         }));
 
@@ -79,11 +78,11 @@ public class RegionToolMode implements ToolMode {
             final @NotNull List<@NotNull AMenuItem> items = new ArrayList<>();
 
             for (final @NotNull Region region : module.getRegions()) {
-                MenuItemCustom item = new MenuItemCustom(ItemType.CHEST, Component.text(region.getName()));
+                final @NotNull MenuItemCustom item = new MenuItemCustom(MenuDisplayTypes.genericSubMenu(), Component.text(region.getName()));
 
                 // Set the node and go back to the main menu
                 item.setClick(() -> {
-                    ftool.setSetting("Region", region.getName());
+                    tool.setSetting("Region", region.getName());
 
                     menu.displayMenu();
 
@@ -96,7 +95,7 @@ public class RegionToolMode implements ToolMode {
             regionMenu.addItems(items);
             regionMenu.setItem(new MenuItemBack(menu), regionMenu.getSize() - 9);
 
-            menu.addItem(new MenuItemPage(ItemType.CHEST, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_EDIT_NAME), regionMenu));
+            menu.addItem(new MenuItemPage(MenuDisplayTypes.genericSubMenu(), RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_REGION_EDIT_NAME), regionMenu));
         }
         menu.displayMenu();
     }

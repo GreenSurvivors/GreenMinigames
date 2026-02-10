@@ -32,7 +32,7 @@ public class MenuItemRegion extends AMenuItem {
         this(displayType, name, null, region, rmod);
     }
 
-    public MenuItemRegion(final @Nullable ItemType displayType, @NotNull Component name,
+    public MenuItemRegion(final @Nullable ItemType displayType, @Nullable Component name,
                           final @Nullable List<@NotNull Component> description,
                           final @NotNull Region region, final @NotNull RegionModule rmod) {
         super(displayType, name, description);

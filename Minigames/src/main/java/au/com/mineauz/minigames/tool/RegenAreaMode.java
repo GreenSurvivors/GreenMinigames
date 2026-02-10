@@ -57,7 +57,7 @@ public class RegenAreaMode implements ToolMode {
             menu.setItem(new MenuItemBack(mgPlayer.getMenu()), menu.getSize() - 9);
         }
 
-        menu.addItem(new MenuItemString(ItemType.PAPER, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONNAME_NAME, new Callback<>() {
+        menu.addItem(new MenuItemString(MenuDisplayTypes.nameType(), MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONNAME_NAME, new Callback<>() {
 
             @Override
             public @NotNull String getValue() {
@@ -74,8 +74,8 @@ public class RegenAreaMode implements ToolMode {
             Menu regionMenu = new Menu(6, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONS_NAME, mgPlayer);
             final @NotNull List<@NotNull AMenuItem> menuItems = new ArrayList<>();
 
-            for (final MgRegion region : tool.getMinigame().getRegenRegions()) {
-                MenuItemCustom customMenuItem = new MenuItemCustom(ItemType.CHEST, Component.text(region.getName()));
+            for (final @NotNull MgRegion region : tool.getMinigame().getRegenRegions()) {
+                final @NotNull MenuItemCustom customMenuItem = new MenuItemCustom(MenuDisplayTypes.genericSubMenu(), Component.text(region.getName()));
 
                 // Set the region area and go back to the main menu
                 customMenuItem.setClick(() -> {
@@ -92,7 +92,7 @@ public class RegenAreaMode implements ToolMode {
             regionMenu.addItems(menuItems);
             regionMenu.setItem(new MenuItemBack(menu), regionMenu.getSize() - 9);
 
-            menu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONEDIT_NAME, regionMenu));
+            menu.addItem(new MenuItemPage(MenuDisplayTypes.genericSubMenu(), MgMenuLangKey.MENU_TOOL_REGENAREA_REGIONEDIT_NAME, regionMenu));
         }
         menu.displayMenu();
     }

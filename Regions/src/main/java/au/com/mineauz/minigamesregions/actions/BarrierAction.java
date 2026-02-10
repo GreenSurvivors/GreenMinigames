@@ -16,6 +16,24 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.Map;
 
+/**
+ * Everytime this action is executed, the player triggering it will be teleported 0.5 blocks
+ * towards the nearest face of the box a region spans.
+ * The action may overshoot and teleport on the other side of the border.
+ * The action does not care if it's safe to teleport to the given location, you may end up inside a block if you are unlucky.
+ * The action, even if run every tick, will not prevent entering / leaving the region, just "gently" push you towards a border.
+ * (however gently you would call ramming someone forcefully to suffocate inside the floor).
+ * If a player effectively moves faster than 0.5 blocks/execution they may stay on the other side of the barrier as long as they wish to be.
+ * To not effectively "glue" every player to the border, this action needs to get used alongside an appropriate trigger and/or condition,
+ * to only move the players inside or outside. (Where shoving the player inside the box seams way harder than moving them outside.)
+ */
+ /*
+ * Note: Do to its limitations, this actions appears rather useless to me.
+ * However, at this point I don't know what the best path moving forward would be without breaking all past expectations.
+ * A hard teleport? A config to only allow passing from one side but not the other (effectively either allowing player inside / outside)?
+ * Creating a general player moved trigger to appropriately make the boundaries of the region a hard border, but allow existing inside and outside?
+ * Is the slow shove a desired effect or just bad programming?
+ */
 public class BarrierAction extends AAction {
 
     protected BarrierAction(final @NotNull Key key) {
@@ -48,93 +66,53 @@ public class BarrierAction extends AAction {
     }
 
     @Override
-    public void executeNodeAction(@NotNull MinigamePlayer mgPlayer,
-                                  @NotNull Node node) {
+    public void executeNodeAction(final @NotNull MinigamePlayer mgPlayer, final @NotNull Node node) {
         debug(mgPlayer, node);
     }
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         debug(mgPlayer, region);
         if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
-        Location locationPlayerNow = mgPlayer.getLocation();
-        Position[] selection = {region.getFirstPoint(), region.getSecondPoint()};
-        double xdis1 = Math.abs(locationPlayerNow.getX() - selection[0].x());
-        double ydis1 = Math.abs(locationPlayerNow.getY() - selection[0].y());
-        double zdis1 = Math.abs(locationPlayerNow.getZ() - selection[0].z());
-        double xdis2 = Math.abs(locationPlayerNow.getX() - (selection[1].x() + 1));
-        double ydis2 = Math.abs(locationPlayerNow.getY() - (selection[1].y() + 1));
-        double zdis2 = Math.abs(locationPlayerNow.getZ() - (selection[1].z() + 1));
-        boolean isMinX = false;
-        boolean isMinY = false;
-        boolean isMinZ = false;
-        double xval;
-        double yval;
-        double zval;
-        if (xdis1 < xdis2) {
-            isMinX = true;
-            xval = xdis1;
-        } else {
-            xval = xdis2;
+
+        final @NotNull Location playerLoc = mgPlayer.getLocation();
+        final @NotNull Position rgMinPos = region.getMin();
+        final @NotNull Position rgMaxPos = region.getMax();
+
+        final boolean isInside = region.getPlayers().contains(mgPlayer);
+
+        // distance to min face and to (max + 1) face (block-based upper bound)
+        final double xDistanceMin = Math.abs(playerLoc.getX() - rgMinPos.x());
+        final double yDistanceMin = Math.abs(playerLoc.getY() - rgMinPos.y());
+        final double zDistanceMin = Math.abs(playerLoc.getZ() - rgMinPos.z());
+
+        final double xDistanceMax = Math.abs(playerLoc.getX() - (rgMaxPos.x() + 1));
+        final double yDistanceMax = Math.abs(playerLoc.getY() - (rgMaxPos.y() + 1));
+        final double zDistanceMax = Math.abs(playerLoc.getZ() - (rgMaxPos.z() + 1));
+
+        // get the nearest boundary of every axis
+        final boolean isMinXNearest = xDistanceMin < xDistanceMax;
+        final boolean isMinYNearest = yDistanceMin < yDistanceMax;
+        final boolean isMinZNearest = zDistanceMin < zDistanceMax;
+
+        // shortest distance to the region boundary in each axis
+        final double xDistance = isMinXNearest ? xDistanceMin : xDistanceMax;
+        final double yDistance = isMinYNearest ? yDistanceMin : yDistanceMax;
+        final double zDistance = isMinZNearest ? zDistanceMin : zDistanceMax;
+
+        // move 0.5 only to the closest boundary
+        // rare xor operator (^) incoming. (a ^ b) <==> (a != b) for primitiv booleans
+        if (xDistance < yDistance && xDistance < zDistance) {
+            playerLoc.add(isInside ^ isMinXNearest ? 0.5 : -0.5, 0, 0);
+        } else if (yDistance < xDistance && yDistance < zDistance) {
+            playerLoc.add(0, isInside ^ isMinXNearest ? 0.5 : -0.5, 0);
+        } else if (zDistance < xDistance && zDistance < yDistance) {
+            playerLoc.add(0, 0, isInside ^ isMinXNearest ? 0.5 : -0.5);
         }
-        if (!(ydis1 < ydis2)) {
-            yval = ydis2;
-        } else {
-            isMinY = true;
-            yval = ydis1;
-        }
-        if (zdis1 < zdis2) {
-            isMinZ = true;
-            zval = zdis1;
-        } else {
-            zval = zdis2;
-        }
-        if (xval < yval && xval < zval) {
-            if (region.getPlayers().contains(mgPlayer)) {
-                if (isMinX) {
-                    locationPlayerNow.setX(locationPlayerNow.getX() - 0.5);
-                } else {
-                    locationPlayerNow.setX(locationPlayerNow.getX() + 0.5);
-                }
-            } else {
-                if (isMinX) {
-                    locationPlayerNow.setX(locationPlayerNow.getX() + 0.5);
-                } else {
-                    locationPlayerNow.setX(locationPlayerNow.getX() - 0.5);
-                }
-            }
-        } else if (yval < xval && yval < zval) {
-            if (region.getPlayers().contains(mgPlayer)) {
-                if (isMinY) {
-                    locationPlayerNow.setY(locationPlayerNow.getY() - 0.5);
-                } else {
-                    locationPlayerNow.setY(locationPlayerNow.getY() + 0.5);
-                }
-            } else {
-                if (isMinY) {
-                    locationPlayerNow.setY(locationPlayerNow.getY() + 0.5);
-                } else {
-                    locationPlayerNow.setY(locationPlayerNow.getY() - 0.5);
-                }
-            }
-        } else if (zval < xval && zval < yval) {
-            if (region.getPlayers().contains(mgPlayer)) {
-                if (isMinZ) {
-                    locationPlayerNow.setZ(locationPlayerNow.getZ() - 0.5);
-                } else {
-                    locationPlayerNow.setZ(locationPlayerNow.getZ() + 0.5);
-                }
-            } else {
-                if (isMinZ) {
-                    locationPlayerNow.setZ(locationPlayerNow.getZ() + 0.5);
-                } else {
-                    locationPlayerNow.setZ(locationPlayerNow.getZ() - 0.5);
-                }
-            }
-        }
-        mgPlayer.teleport(locationPlayerNow);
-        if (region.getPlayers().contains(mgPlayer)) {
+
+        mgPlayer.teleport(playerLoc);
+        if (isInside) {
             region.removePlayer(mgPlayer);
         } else {
             region.addPlayer(mgPlayer);
@@ -152,7 +130,7 @@ public class BarrierAction extends AAction {
     }
 
     @Override
-    public boolean displayMenu(@NotNull Menu previous) {
+    public boolean displayMenu(final @NotNull Menu previous) {
         return false;
     }
 }

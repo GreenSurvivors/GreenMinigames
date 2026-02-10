@@ -185,7 +185,7 @@ public class BroadcastAction extends AAction {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        menu.addItem(message.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MESSAGE_NAME)));
+        menu.addItem(message.getMenuItem(ItemType.WRITTEN_BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MESSAGE_NAME)));
         menu.addItem(excludeExecutor.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_EXCLUDING_NAME)));
         menu.addItem(messageType.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MSGTYPE_NAME)));
 

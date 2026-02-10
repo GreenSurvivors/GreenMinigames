@@ -29,12 +29,12 @@ public class MenuItemConditionAdd extends AMenuItem {
     }
 
     @Override
-    public @NonNull ItemStack onClick() {
+    public @NonNull ItemStack onClick() { // miau
         final @NotNull Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), getMenu().getIntendedViewer());
         menu.setPreviousPage(getMenu());
-        final @NotNull Map<IConditionCategory, Menu> cats = new HashMap<>();
-        final @NotNull List<ACondition> cons = new ArrayList<>(ConditionRegistry.getAllConditions());
-        for (ACondition condition : cons) {
+        final @NotNull Map<@NotNull IConditionCategory, @NotNull Menu> cats = new HashMap<>();
+        final @NotNull List<@NotNull ACondition> cons = new ArrayList<>(ConditionRegistry.getAllConditions());
+        for (final @NotNull ACondition condition : cons) {
             if (condition.useInNodes() || condition.useInRegions()) {
                 if (!exec.getTrigger().triggerOnPlayerAvailable()) {
                     if (condition.playerNeeded()) {
@@ -47,7 +47,7 @@ public class MenuItemConditionAdd extends AMenuItem {
                 if (!cats.containsKey(category)) {
                     catMenu = new Menu(6, category.getDisplayName(), getMenu().getIntendedViewer());
                     cats.put(category, catMenu);
-                    menu.addItem(new MenuItemPage(ItemType.CHEST, category.getDisplayName(), catMenu));
+                    menu.addItem(new MenuItemPage(MenuDisplayTypes.genericSubMenu(), category.getDisplayName(), catMenu));
                     catMenu.setItem(new MenuItemBack(menu), catMenu.getSize() - 9);
                 } else {
                     catMenu = cats.get(category);

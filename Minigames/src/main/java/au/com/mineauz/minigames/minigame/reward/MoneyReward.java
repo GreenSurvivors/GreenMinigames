@@ -83,7 +83,7 @@ public class MoneyReward extends ARewardType {
         private final @NotNull MoneyReward reward;
 
         public MenuItemReward(final @NotNull MoneyReward reward) {
-            super(ItemType.PAPER, MinigameUtils.formatMoney(money), new Callback<>() {
+            super(ItemType.GOLD_NUGGET, MinigameUtils.formatMoney(money), new Callback<>() {
                 @Override
                 public @NotNull RewardRarity getValue() {
                     return getRarity();

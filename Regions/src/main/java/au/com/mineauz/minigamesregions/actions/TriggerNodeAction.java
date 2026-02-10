@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuDisplayTypes;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -13,7 +14,6 @@ import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -91,7 +91,7 @@ public class TriggerNodeAction extends AAction { // todo merge with TriggerRegio
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(node.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME)));
+        menu.addItem(node.getMenuItem(MenuDisplayTypes.nameType(), RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME)));
         menu.displayMenu();
         return true;
     }

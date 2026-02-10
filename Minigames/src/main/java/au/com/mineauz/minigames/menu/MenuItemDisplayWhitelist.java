@@ -13,18 +13,18 @@ import java.util.List;
 
 public class MenuItemDisplayWhitelist extends AMenuItem {
     private final @NotNull List<@NotNull BlockType> whitelist;
-    private final @NotNull Callback<Boolean> whitelistMode;
+    private final @NotNull Callback<@NotNull Boolean> whitelistMode;
     private final @NotNull List<@NotNull Component> modeDescription;
 
     public MenuItemDisplayWhitelist(final @Nullable ItemType displayType, final @Nullable Component name,
-                                    final @NotNull List<@NotNull BlockType> whitelist, final @NotNull Callback<Boolean> whitelistMode,
+                                    final @NotNull List<@NotNull BlockType> whitelist, final @NotNull Callback<@NotNull Boolean> whitelistMode,
                                     final @NotNull List<@NotNull Component> modeDescription) {
         this(displayType, name, null, whitelist, whitelistMode, modeDescription);
     }
 
     public MenuItemDisplayWhitelist(final @Nullable ItemType displayType, final @Nullable Component name,
                                     final @Nullable List<@NotNull Component> mainDescription,
-                                    final @NotNull List<@NotNull BlockType> whitelist, final @NotNull Callback<Boolean> whitelistMode,
+                                    final @NotNull List<@NotNull BlockType> whitelist, final @NotNull Callback<@NotNull Boolean> whitelistMode,
                                     final @NotNull List<@NotNull Component> modeDescription) {
         super(displayType, name, mainDescription);
         this.whitelist = whitelist;

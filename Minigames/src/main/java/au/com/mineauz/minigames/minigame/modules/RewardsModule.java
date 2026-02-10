@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
+import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.scheme.ARewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.MgDefaultRewardSchemes;
@@ -14,7 +14,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.MinigamesKey;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.key.Key;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -86,13 +85,9 @@ public class RewardsModule extends AMinigameModule {
 
     @Override
     public void addEditMenuOptions(final @NotNull Menu menu) {
-        final @NotNull MenuItemCustom launcher = new MenuItemCustom(ItemType.DIAMOND,
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME));
-        launcher.setClick(() -> {
-            final @NotNull Menu submenu = createSubMenu(menu);
-            submenu.displayMenu();
-            return ItemStack.empty();
-        });
+        final @NotNull MenuItemPage launcher = new MenuItemPage(ItemType.DIAMOND,
+            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME),
+            createSubMenu(menu));
 
         menu.addItem(launcher);
     }
@@ -111,11 +106,9 @@ public class RewardsModule extends AMinigameModule {
 
                 @Override
                 public void setValue(final @NotNull Key value) {
-
                     scheme = RewardSchemeRegistry.makeScheme(value);
                     // Update the menu
-                    final @NotNull Menu menu = createSubMenu(parent);
-                    menu.displayMenu();
+                    createSubMenu(parent).displayMenu();
                 }
             }), submenu.getSize() - 1);
 

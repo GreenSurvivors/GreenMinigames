@@ -29,7 +29,6 @@ public class MenuItemCustom extends AMenuItem {
         super(displayType, langKey, description);
     }
 
-
     public MenuItemCustom(final @Nullable ItemType displayType, final @Nullable Component name) {
         super(displayType, name);
     }

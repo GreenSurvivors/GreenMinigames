@@ -30,10 +30,27 @@ public class MenuDisplayTypes {
         return ItemType.PLAYER_HEAD;
     }
 
+    public static @NotNull ItemType nameType() {
+        return ItemType.NAME_TAG;
+    }
+
+    public static @NotNull ItemType potionEffectType() {
+        return ItemType.POTION;
+    }
+
+    public static @NotNull ItemType genericSubMenu() {
+        return ItemType.CHEST;
+    }
+
+    public static @NotNull ItemType statistics() {
+        return ItemType.WRITABLE_BOOK;
+    }
+
     public static @NotNull ItemType slotFillerType() {
         return ItemType.RED_STAINED_GLASS_PANE;
     }
 
+    /// used, when we don't know what to use to display. Is not supposed whatever we are trying to display is unknown.
     public static @NotNull ItemType unknownType() {
         return ItemType.WHITE_STAINED_GLASS_PANE;
     }

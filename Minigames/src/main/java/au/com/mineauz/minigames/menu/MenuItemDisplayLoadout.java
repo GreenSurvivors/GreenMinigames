@@ -75,18 +75,18 @@ public class MenuItemDisplayLoadout extends AMenuItem implements StringConsumer 
                     Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName().toLowerCase())),
                 loadout.getUsePermissionsCallback()));
         }
-        final @NotNull MenuItemComponent disName = new MenuItemComponent(ItemType.PAPER, MgMenuLangKey.MENU_DISPLAYNAME_NAME, loadout.getDisplayNameCallback());
+        final @NotNull MenuItemComponent disName = new MenuItemComponent(MenuDisplayTypes.nameType(), MgMenuLangKey.MENU_DISPLAYNAME_NAME, loadout.getDisplayNameCallback());
         disName.setAllowNull(true);
         menuItems.add(disName);
         menuItems.add(new MenuItemBoolean(ItemType.LEATHER_BOOTS,
             MgMenuLangKey.MENU_DISPLAYLOADOUT_ALLOWFALLDAMAGE_NAME, loadout.getFallDamageCallback()));
-        menuItems.add(new MenuItemBoolean(ItemType.APPLE,
+        menuItems.add(new MenuItemBoolean(ItemType.BEEF,
             MgMenuLangKey.MENU_DISPLAYLOADOUT_ALLOWHUNGER_NAME, loadout.getHungerCallback()));
         menuItems.add(new MenuItemInteger(ItemType.EXPERIENCE_BOTTLE,
             MgMenuLangKey.MENU_DISPLAYLOADOUT_XPLEVEL_NAME,
             MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DISPLAYLOADOUT_XPLEVEL_DESCRIPTION),
             loadout.getLevelCallback(), -1, null));
-        menuItems.add(new MenuItemBoolean(ItemType.DIAMOND_SWORD,
+        menuItems.add(new MenuItemBoolean(ItemType.HONEY_BLOCK,
             MgMenuLangKey.MENU_DISPLAYLOADOUT_LOCKINVENTORY_NAME,
             loadout.getInventoryLockedCallback()));
         menuItems.add(new MenuItemBoolean(ItemType.DIAMOND_CHESTPLATE,
@@ -117,15 +117,15 @@ public class MenuItemDisplayLoadout extends AMenuItem implements StringConsumer 
         final @NotNull List<@NotNull AMenuItem> potionMenuItems = new ArrayList<>();
 
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
-            potionMenuItems.add(new MenuItemStatusEffect(ItemType.POTION, Component.translatable(eff.getType().translationKey()), description, eff, loadout));
+            potionMenuItems.add(new MenuItemStatusEffect(MenuDisplayTypes.potionEffectType(), Component.translatable(eff.getType().translationKey()), description, eff, loadout));
         }
         potionMenu.addItems(potionMenuItems);
 
         loadoutMenu.setAllowModify(true);
         loadoutMenu.setPreviousPage(getMenu());
 
-        loadoutMenu.setItem(new MenuItemSaveLoadoutPage(ItemType.CHEST, MgMenuLangKey.MENU_DISPLAYLOADOUT_SETTINGS_NAME, loadout, loadoutSettingsMenu), 42);
-        loadoutMenu.setItem(new MenuItemSaveLoadoutPage(ItemType.POTION, MgMenuLangKey.MENU_DISPLAYLOADOUT_EFFECTS_NAME, loadout, potionMenu), 43);
+        loadoutMenu.setItem(new MenuItemSaveLoadoutPage(MenuDisplayTypes.genericSubMenu(), MgMenuLangKey.MENU_DISPLAYLOADOUT_SETTINGS_NAME, loadout, loadoutSettingsMenu), 42);
+        loadoutMenu.setItem(new MenuItemSaveLoadoutPage(MenuDisplayTypes.potionEffectType(), MgMenuLangKey.MENU_DISPLAYLOADOUT_EFFECTS_NAME, loadout, potionMenu), 43);
         loadoutMenu.setItem(new MenuItemSaveLoadoutPage(MenuDisplayTypes.saveType(), MgMenuLangKey.MENU_DISPLAYLOADOUT_SAVE_NAME, loadout, getMenu()), 44);
         final int numOfSlots = loadout.allowOffHand() ? 41 : 40; // todo don't hardcode
         for (int i = numOfSlots; i < 42; i++) {

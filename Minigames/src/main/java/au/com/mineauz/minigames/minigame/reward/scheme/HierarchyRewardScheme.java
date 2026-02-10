@@ -22,7 +22,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -56,26 +55,20 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
             MgMenuLangKey.MENUREWARD_SCHEME_HIERARCHY_LOSS_SECONDARY_DESCRIPTION));
         menu.addItem(new MenuItemNewLine());
 
-        MenuItemCustom primary = new MenuItemCustom(ItemType.CHEST, MgMenuLangKey.MENU_REWARD_PRIMARY_NAME);
-        primary.setClick(() -> {
-            showRewardsMenu(primaryRewards, menu);
-            return ItemStack.empty();
-        });
+        final @NotNull MenuItemPage primary = new MenuItemPage(MenuDisplayTypes.genericSubMenu(), MgMenuLangKey.MENU_REWARD_PRIMARY_NAME,
+            createRewardsMenu(primaryRewards, menu));
 
-        MenuItemCustom secondary = new MenuItemCustom(ItemType.CHEST, MgMenuLangKey.MENU_REWARD_SECONDARY_NAME);
-        secondary.setClick(() -> {
-            showRewardsMenu(secondaryRewards, menu);
-            return ItemStack.empty();
-        });
+        final @NotNull MenuItemPage secondary = new MenuItemPage(MenuDisplayTypes.genericSubMenu(), MgMenuLangKey.MENU_REWARD_SECONDARY_NAME,
+            createRewardsMenu(secondaryRewards, menu));
 
         menu.addItem(primary);
         menu.addItem(secondary);
     }
 
-    private void showRewardsMenu(final @NotNull TreeMap<T, @NotNull Rewards> rewards, final @NotNull Menu parent) {
-        Menu submenu = new Menu(6, MgMenuLangKey.MENU_REWARD_NAME, parent.getIntendedViewer());
+    private @NotNull Menu createRewardsMenu(final @NotNull TreeMap<T, @NotNull Rewards> rewards, final @NotNull Menu parent) {
+        final @NotNull Menu submenu = new Menu(6, MgMenuLangKey.MENU_REWARD_NAME, parent.getIntendedViewer());
 
-        for (T key : rewards.keySet()) {
+        for (final T key : rewards.keySet()) {
             submenu.addItem(new MenuItemRewardPair(ItemType.CHEST, rewards, key));
         }
 
@@ -84,7 +77,7 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
 
         submenu.setPreviousPage(parent);
 
-        submenu.displayMenu();
+        return submenu;
     }
 
     protected abstract T getValue(final @NotNull MinigamePlayer player, final @NotNull StoredGameStats data, final Minigame minigame);
@@ -148,8 +141,8 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
         save(secondaryRewards, config.node("score-secondary"));
     }
 
-    private void save(final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map, final @NotNull CommentedConfigurationNode config) throws SerializationException {
-        for (Entry<T, Rewards> entry : map.entrySet()) {
+    private void save(final @NotNull TreeMap<T, @NotNull Rewards> map, final @NotNull CommentedConfigurationNode config) throws SerializationException {
+        for (final @NotNull Entry<T, @NotNull Rewards> entry : map.entrySet()) {
             entry.getValue().save(config.node(entry.getKey()));
         }
     }
@@ -166,7 +159,8 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
 
     protected abstract T loadKey(final @NotNull Object key);
 
-    private void load(final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map, final @NotNull CommentedConfigurationNode config) throws SerializationException {
+    private void load(final @NotNull TreeMap<T, @NotNull Rewards> map,
+                      final @NotNull CommentedConfigurationNode config) throws SerializationException {
         map.clear();
 
         if (!config.virtual() && !config.isNull()) {
@@ -211,11 +205,11 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
     private class MenuItemRewardPair extends AMenuItem implements StringConsumer {
         private static final String DESCRIPTION_TOKEN = "RewardPair_description";
         private final @NotNull Rewards reward;
-        private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
-        private @NotNull T value;
+        private final @NotNull TreeMap<T, @NotNull Rewards> map;
+        private T value;
 
-        public MenuItemRewardPair(@Nullable ItemType displayType, @NotNull TreeMap<@NotNull T, @NotNull Rewards> map,
-                                  @NotNull T value) {
+        public MenuItemRewardPair(final @Nullable ItemType displayType, final @NotNull TreeMap<T, @NotNull Rewards> map,
+                                  final T value) {
             super(displayType, getMenuItemName(value));
 
             this.map = map;
@@ -226,7 +220,7 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
         }
 
         private void updateDescription() {
-            List<Component> description = List.of(
+            final @NotNull List<@NotNull Component> description = List.of(
                 getMenuItemDescName(value).color(NamedTextColor.GREEN),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARDPAIR_EDIT),
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK)
@@ -235,17 +229,12 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
             setDescriptionPart(DESCRIPTION_TOKEN, description);
 
             // Update name
-            ItemStack item = getDisplayItem();
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
+            getDisplayItem().editMeta(meta -> {
                 meta.displayName(getMenuItemName(value));
-                item.setItemMeta(meta);
-            }
-
-            setDisplayItem(item);
+            });
         }
 
-        private void updateValue(@NotNull T newValue) {
+        private void updateValue(final T newValue) {
             map.remove(value);
             value = newValue;
             map.put(value, reward);
@@ -282,7 +271,7 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
         // Open editor
         @Override
         public @NotNull ItemStack onDoubleClick() {
-            MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
+            final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
             final @NotNull Duration reopenTime = Duration.ofSeconds(10);
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_HIERARCHY_ENTERCHAT,
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
@@ -295,7 +284,7 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
         @Override
         public void acceptString(final @NotNull String entry) {
             try {
-                T value = loadKey(entry);
+                final T value = loadKey(entry);
                 if (map.containsKey(value)) {
                     MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_DUPLICATE);
                 } else {
@@ -330,17 +319,17 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
     }
 
     public class MenuItemAddReward extends AMenuItem implements StringConsumer {
-        private final @NotNull TreeMap<@NotNull T, @NotNull Rewards> map;
+        private final @NotNull TreeMap<T, @NotNull Rewards> map;
 
-        public MenuItemAddReward(@Nullable ItemType displayType, @NotNull MinigameLangKey langKey,
-                                 @NotNull TreeMap<@NotNull T, @NotNull Rewards> map) {
+        public MenuItemAddReward(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                                 final @NotNull TreeMap<T, @NotNull Rewards> map) {
             super(displayType, langKey);
 
             this.map = map;
         }
 
-        public MenuItemAddReward(@Nullable ItemType displayType, @Nullable Component name,
-                                 @NotNull TreeMap<@NotNull T, @NotNull Rewards> map) {
+        public MenuItemAddReward(final @Nullable ItemType displayType, final @Nullable Component name,
+                                 final @NotNull TreeMap<T, @NotNull Rewards> map) {
             super(displayType, name);
 
             this.map = map;
@@ -348,7 +337,7 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
 
         @Override
         public @NotNull ItemStack onClick() {
-            MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
+            final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
             final @NotNull Duration reopenTime = Duration.ofSeconds(10);
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_HIERARCHY_ENTERCHAT,
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
@@ -363,17 +352,17 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
             boolean show = true;
 
             try {
-                T value = loadKey(entry);
-                Rewards reward = new Rewards();
+                final T value = loadKey(entry);
+                final @NotNull Rewards reward = new Rewards();
 
                 if (map.containsKey(value)) {
                     MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_DUPLICATE);
                 } else {
                     map.put(value, reward);
-                    showRewardsMenu(map, getMenu().getPreviousPage());
+                    createRewardsMenu(map, getMenu().getPreviousPage()).displayMenu();
                     show = false;
                 }
-            } catch (IllegalArgumentException e) {
+            } catch (final @NotNull IllegalArgumentException e) {
                 MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_INVALID);
             }
 

@@ -353,19 +353,19 @@ public class RegionModule extends AMinigameModule {
         final @NotNull Menu regionsAndNodesMenu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME), viewer);
         final @NotNull List<AMenuItem> items = new ArrayList<>(regions.size());
         for (final @NotNull Region region : regions.values()) {
-            final @NotNull MenuItemRegion mir = new MenuItemRegion(ItemType.ENDER_CHEST, Component.text(region.getName()), region, this);
+            final @NotNull MenuItemRegion mir = new MenuItemRegion(ItemType.WAXED_COPPER_CHEST, Component.text(region.getName()), region, this);
             items.add(mir);
         }
         items.add(new MenuItemNewLine());
         for (final @NotNull Node node : nodes.values()) {
-            final @NotNull MenuItemNode min = new MenuItemNode(ItemType.CHEST, Component.text(node.getName()), node, this);
+            final @NotNull MenuItemNode min = new MenuItemNode(ItemType.WAXED_EXPOSED_COPPER_CHEST, Component.text(node.getName()), node, this);
             items.add(min);
         }
 
         //display for regen regions
         items.add(new MenuItemNewLine());
         for (final @NotNull MgRegion region : getMinigame().getRegenRegions()) {
-            AMenuItem min = new MenuItemRegenRegion(ItemType.CHEST_MINECART, Component.text(region.getName()),
+            AMenuItem min = new MenuItemRegenRegion(ItemType.WAXED_WEATHERED_COPPER_CHEST, Component.text(region.getName()),
                 List.of(Component.text(region.getName()), region.describe()), region, getMinigame());
             items.add(min);
         }

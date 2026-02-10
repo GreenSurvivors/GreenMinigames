@@ -227,8 +227,8 @@ public class TakeItemAction extends AAction { // todo make ItemType match option
 
         menu.addItem(new MenuItemNewLine());
 
-        menu.addItem(matchName.getMenuItem(ItemType.NAME_TAG, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_NAME_NAME)));
-        final @NotNull MenuItemString nameMenuItem = new MenuItemString(ItemType.NAME_TAG,
+        menu.addItem(matchName.getMenuItem(MenuDisplayTypes.nameType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_NAME_NAME)));
+        final @NotNull MenuItemString nameMenuItem = new MenuItemString(MenuDisplayTypes.nameType(),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TAKEITEM_NAME_DESCRIPTION), new Callback<>() {
             private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();

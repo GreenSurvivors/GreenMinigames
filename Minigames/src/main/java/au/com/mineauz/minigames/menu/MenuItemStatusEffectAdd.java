@@ -92,7 +92,7 @@ public class MenuItemStatusEffectAdd extends AMenuItem implements StringConsumer
                         }
                         for (int i = 0; i < 36; i++) {
                             if (!getMenu().hasMenuItem(i)) {
-                                getMenu().setItem(new MenuItemStatusEffect(ItemType.POTION, Component.translatable(potionEffectType.translationKey()), description, potionEffect, loadout), i);
+                                getMenu().setItem(new MenuItemStatusEffect(MenuDisplayTypes.potionEffectType(), Component.translatable(potionEffectType.translationKey()), description, potionEffect, loadout), i);
                                 loadout.addPotionEffect(potionEffect);
                                 break;
                             }

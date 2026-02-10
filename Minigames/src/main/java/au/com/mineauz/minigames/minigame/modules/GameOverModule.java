@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuDisplayTypes;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -69,7 +70,7 @@ public class GameOverModule extends AMinigameModule {
     @Override
     public void addEditMenuOptions(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_GAMEOVER_NAME, previous.getIntendedViewer());
-        menu.addItem(timer.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_GAMEOVER_TIME_NAME, 0L, null));
+        menu.addItem(timer.getMenuItem(MenuDisplayTypes.timeType(), MgMenuLangKey.MENU_GAMEOVER_TIME_NAME, 0L, null));
 
         menu.addItem(invincible.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_GAMEOVER_INVINCIBILITY_NAME));
         menu.addItem(humiliation.getMenuItem(ItemType.DIAMOND_SWORD, MgMenuLangKey.MENU_GAMEOVER_HUMILIATION_NAME,

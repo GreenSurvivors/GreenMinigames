@@ -1090,7 +1090,7 @@ public class Minigame implements ScriptObject {
         cmpntItem.setAllowNull(true);
         mainMenu.setItem(cmpntItem, ++currentPosMainMenu);
 
-        cmpntItem = (MenuItemComponent) displayName.getMenuItem(ItemType.NAME_TAG, MgMenuLangKey.MENU_DISPLAYNAME_NAME);
+        cmpntItem = (MenuItemComponent) displayName.getMenuItem(MenuDisplayTypes.nameType(), MgMenuLangKey.MENU_DISPLAYNAME_NAME);
         cmpntItem.setAllowNull(true);
         mainMenu.setItem(cmpntItem, ++currentPosMainMenu);
 
@@ -1161,7 +1161,7 @@ public class Minigame implements ScriptObject {
         mainMenu.setItem(randomizeStart.getMenuItem(ItemType.LIGHT_BLUE_GLAZED_TERRACOTTA, MgMenuLangKey.MENU_MINIGAME_STARTPOINT_RANDOMIZE_NAME,
             MgMenuLangKey.MENU_MINIGAME_STARTPOINT_RANDOMIZE_DESCRIPTION), ++currentPosMainMenu);
 
-        mainMenu.setItem(new MenuItemDisplayWhitelist(ItemType.CHEST,
+        mainMenu.setItem(new MenuItemDisplayWhitelist(ItemType.WHITE_BUNDLE,
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME), // Block Whitelist/Blacklist
             MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_DESCRIPTION_MAIN),
             getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback(),
@@ -1215,13 +1215,13 @@ public class Minigame implements ScriptObject {
         mainMenu.addItem(randomizeChests.getMenuItem(ItemType.CHEST, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_NAME,
             MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_DESCRIPTION));
 
-        mainMenu.addItem(minChestRandom.getMenuItem(ItemType.OAK_STAIRS, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MIN_NAME,
+        mainMenu.addItem(minChestRandom.getMenuItem(ItemType.STONE_SLAB, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MIN_NAME,
             MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MIN_DESCRIPTION, 0, null));
 
         mainMenu.addItem(maxChestRandom.getMenuItem(ItemType.STONE, MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MAX_NAME,
             MgMenuLangKey.MENU_MINIGAME_RANDOMCHESTS_MAX_DESCRIPTION, 0, null));
 
-        mainMenu.addItem(new MenuItemStatisticsSettings(ItemType.WRITABLE_BOOK, MgMenuLangKey.MENU_MINIGAME_STATISTIC_NAME, this));
+        mainMenu.addItem(new MenuItemStatisticsSettings(MenuDisplayTypes.statistics(), MgMenuLangKey.MENU_MINIGAME_STATISTIC_NAME, this));
         mainMenu.addItem(playerRecorderActivate.getMenuItem(ItemType.COMMAND_BLOCK, MgMenuLangKey.MENU_PLAYER_BLOCK_RECORDER));
 
         mainMenu.addItem(new MenuItemNewLine());
@@ -1235,11 +1235,12 @@ public class Minigame implements ScriptObject {
         //----------------------//
         //Minigame Player Settings
         //----------------------//
-        List<AMenuItem> itemsPlayer = new ArrayList<>(20);
+        final @NotNull List<@NotNull AMenuItem> itemsPlayer = new ArrayList<>(20);
         itemsPlayer.add(defaultGamemode.getMenuItem(ItemType.CRAFTING_TABLE, MgMenuLangKey.MENU_PLAYERSETTINGS_GAMEMODE_NAME));
         itemsPlayer.add(allowEnderPearls.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_PLAYERSETTINGS_ENDERPERLS_NAME));
         itemsPlayer.add(allowThirdPartyTeleportation.getMenuItem(ItemType.COMMAND_BLOCK, MgMenuLangKey.MENU_PLAYERSETTINGS_THIRDPARTY_TELEPORTATION_NAME));
         itemsPlayer.add(itemDrops.getMenuItem(ItemType.DIAMOND_SWORD, MgMenuLangKey.MENU_PLAYERSETTINGS_DROP_ITEM_NAME));
+        itemsPlayer.add(keepInventory.getMenuItem(ItemType.ZOMBIE_HEAD, MgMenuLangKey.MENU_PLAYERSETTINGS_KEEPINVENTORY_NAME));
         itemsPlayer.add(deathDrops.getMenuItem(ItemType.SKELETON_SKULL, MgMenuLangKey.MENU_PLAYERSETTINGS_DROP_DEATH_NAME));
         itemsPlayer.add(itemPickup.getMenuItem(ItemType.DIAMOND, MgMenuLangKey.MENU_PLAYERSETTINGS_ITEMPICKUP_NAME));
         itemsPlayer.add(blockBreak.getMenuItem(ItemType.DIAMOND_PICKAXE, MgMenuLangKey.MENU_PLAYERSETTINGS_BLOCK_BREAK_NAME));
@@ -1272,12 +1273,9 @@ public class Minigame implements ScriptObject {
             itemsPlayer.add(showCTFBroadcasts.getMenuItem(ItemType.PAPER, MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_CTF_NAME,
                 MgMenuLangKey.MENU_PLAYERSETTINGS_BROADCASTS_CTF_DESCRIPTION));
         }
-        itemsPlayer.add(keepInventory.getMenuItem(ItemType.ZOMBIE_HEAD, MgMenuLangKey.MENU_PLAYERSETTINGS_KEEPINVENTORY_NAME));
         if (getType() == MinigameType.MULTIPLAYER) {
             itemsPlayer.add(friendlyFireSplashPotions.getMenuItem(ItemType.SPLASH_POTION,
                 MgMenuLangKey.MENU_PLAYERSETTINGS_FRIENDLYFIRE_SPLASH_NAME));
-        }
-        if (getType() == MinigameType.SINGLEPLAYER) {
             itemsPlayer.add(friendlyFireLingeringPotions.getMenuItem(ItemType.LINGERING_POTION,
                 MgMenuLangKey.MENU_PLAYERSETTINGS_FRIENDLYFIRE_LINGERING_NAME));
         }
@@ -1287,14 +1285,16 @@ public class Minigame implements ScriptObject {
         //--------------//
         //Minigame Flags//
         //--------------//
-        final @NotNull List<@NotNull AMenuItem> itemsFlags = new ArrayList<>(getSinglePlayerFlags().size());
-        for (final @NotNull String flag : getSinglePlayerFlags()) {
-            itemsFlags.add(new MenuItemFlag(ItemType.OAK_SIGN, flag, this::removeSinglePlayerFlag));
+        if (getType() == MinigameType.SINGLEPLAYER) {
+            final @NotNull List<@NotNull AMenuItem> itemsFlags = new ArrayList<>(getSinglePlayerFlags().size());
+            for (final @NotNull String flag : getSinglePlayerFlags()) {
+                itemsFlags.add(new MenuItemFlag(ItemType.OAK_SIGN, flag, this::removeSinglePlayerFlag));
+            }
+            singlplayerFlagsMenu.setItem(new MenuItemBack(playerMenu), singlplayerFlagsMenu.getSize() - 9);
+            singlplayerFlagsMenu.setItem(new MenuItemAddFlag(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_FLAGADD_NAME,
+                this), singlplayerFlagsMenu.getSize() - 1);
+            singlplayerFlagsMenu.addItems(itemsFlags);
         }
-        singlplayerFlagsMenu.setItem(new MenuItemBack(playerMenu), singlplayerFlagsMenu.getSize() - 9);
-        singlplayerFlagsMenu.setItem(new MenuItemAddFlag(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_FLAGADD_NAME,
-            this), singlplayerFlagsMenu.getSize() - 1);
-        singlplayerFlagsMenu.addItems(itemsFlags);
 
         for (final @NotNull AMinigameModule mod : getModules()) {
            mod.addEditMenuOptions(mainMenu);

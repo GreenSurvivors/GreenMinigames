@@ -6,10 +6,7 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
-import au.com.mineauz.minigames.menu.AMenuItem;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
-import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MgDefaultModules;
 import au.com.mineauz.minigames.minigame.modules.loadout.LoadoutModule;
@@ -65,7 +62,7 @@ public class SetLoadoutCommand extends ASetCommand {
             if (loadoutModule != null) {
                 @NotNull ItemType displayType;
                 for (final @NotNull PlayerLoadout loadout : loadoutModule.getLoadouts()) {
-                    displayType = ItemType.WHITE_STAINED_GLASS_PANE;
+                    displayType = MenuDisplayTypes.unknownType();
                     if (!loadout.getItemSlots().isEmpty()) {
                         displayType = loadout.getItem((Integer) loadout.getItemSlots().toArray()[0]).getType().asItemType();
                     }
@@ -76,7 +73,7 @@ public class SetLoadoutCommand extends ASetCommand {
                     mil.setAllowDelete(loadout.isDeletable());
                     menuItems.add(mil);
                 }
-                loadoutMenu.setItem(new MenuItemLoadoutAdd(ItemType.ITEM_FRAME, MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
+                loadoutMenu.setItem(new MenuItemLoadoutAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
                         loadoutModule.getLoadoutMap(), minigame), 53);
                 loadoutMenu.addItems(menuItems);
 

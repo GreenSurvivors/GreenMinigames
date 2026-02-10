@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuDisplayTypes;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -60,12 +61,12 @@ public class WeatherTimeModule extends AMinigameModule {
         final @NotNull Menu menu = new Menu(6, MgMenuLangKey.MENU_TIMEWEATHER_NAME, previosMenu.getIntendedViewer());
 
         menu.addItem(useCustomTime.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_USE_NAME));
-        menu.addItem(time.getMenuItem(ItemType.CLOCK, MgMenuLangKey.MENU_TIMEWEATHER_TIME_NAME, 0L, 24000L));
+        menu.addItem(time.getMenuItem(MenuDisplayTypes.timeType(), MgMenuLangKey.MENU_TIMEWEATHER_TIME_NAME, 0L, 24000L));
         menu.addItem(useCustomWeather.getMenuItem(ItemType.WIND_CHARGE, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_USE_NAME));
         menu.addItem(weather.getMenuItem(ItemType.WATER_BUCKET, MgMenuLangKey.MENU_TIMEWEATHER_WEATHER_NAME));
         menu.setItem(new MenuItemBack(previosMenu), menu.getSize() - 9);
 
-        previosMenu.addItem(new MenuItemPage(ItemType.CHEST, MgMenuLangKey.MENU_TIMEWEATHER_NAME, menu));
+        previosMenu.addItem(new MenuItemPage(MenuDisplayTypes.genericSubMenu(), MgMenuLangKey.MENU_TIMEWEATHER_NAME, menu));
     }
 
     public long getTime() {

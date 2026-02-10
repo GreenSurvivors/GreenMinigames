@@ -33,7 +33,7 @@ public class MenuItemModifyStatSetting extends AMenuItem {
         final @NotNull Menu subMenu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_EDIT_NAME,
             Placeholder.component(MinigamePlaceHolderKey.STAT.getKey(), stat.getDisplayName())), getMenu().getIntendedViewer());
 
-        subMenu.addItem(new MenuItemComponent(ItemType.NAME_TAG,
+        subMenu.addItem(new MenuItemComponent(MenuDisplayTypes.nameType(),
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DISPLAYNAME_NAME), new Callback<>() {
             @Override
             public Component getValue() {

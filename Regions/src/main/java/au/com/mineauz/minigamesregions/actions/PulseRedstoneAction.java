@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuDisplayTypes;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
@@ -110,7 +111,7 @@ public class PulseRedstoneAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(time.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TIME_NAME), 0L, null));
+        menu.addItem(time.getMenuItem(MenuDisplayTypes.timeType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TIME_NAME), 0L, null));
         menu.addItem(torch.getMenuItem(ItemType.REDSTONE_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TORCH_NAME)));
         menu.displayMenu();
         return true;

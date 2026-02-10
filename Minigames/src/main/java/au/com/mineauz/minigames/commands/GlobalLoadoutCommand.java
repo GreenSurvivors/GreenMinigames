@@ -60,7 +60,7 @@ public class GlobalLoadoutCommand extends ACommand {
             final @NotNull List<@NotNull AMenuItem> menuItems = new ArrayList<>();
 
             for (final @NotNull PlayerLoadout globalLoadout : LoadoutModule.getGlobalLoadouts()) {
-                @UnknownNullability ItemType displayType = ItemType.WHITE_STAINED_GLASS_PANE;
+                @UnknownNullability ItemType displayType = MenuDisplayTypes.unknownType();
                 if (!globalLoadout.getItemSlots().isEmpty()) {
                     displayType = globalLoadout.getItem((Integer) globalLoadout.getItemSlots().toArray()[0]).getType().asItemType();
                 }

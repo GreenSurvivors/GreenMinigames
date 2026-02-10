@@ -196,7 +196,7 @@ public class Region extends MgRegion implements ActionExecutorHolder {
 
     @Override
     public void execute(@NotNull ActionExecutor exec, @NotNull MinigamePlayer player) {
-        for (IAction act : exec.getActions()) {
+        for (final @NotNull IAction act : exec.getActions()) {
             if (!enabled && !act.key().equals(RegionActions.SET_ENABLED.key())) {
                 continue;
             }

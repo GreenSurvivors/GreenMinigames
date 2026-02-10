@@ -3,10 +3,7 @@ package au.com.mineauz.minigamesregions.conditions;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
@@ -20,6 +17,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -60,18 +58,18 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     }
 
     @Override
-    public boolean checkRegionCondition(final MinigamePlayer mgPlayer, final @NotNull Region region) {
-        Collection<Entity> entities = region.getFirstPoint().getWorld().getNearbyEntities(region.getBoundingBox());
+    public boolean checkRegionCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
+        final @NotNull Collection<@NotNull Entity> entities = region.getFirstPoint().getWorld().getNearbyEntities(region.getBoundingBox());
 
-        Pattern namePattern = null;
+        @Nullable Pattern namePattern = null;
         if (matchName.getFlag()) {
             namePattern = createNamePattern();
         }
 
-        for (Entity entity : entities) {
+        for (final @NotNull Entity entity : entities) {
             if (entity.getType() == entityType.getFlag()) {
                 if (matchName.getFlag()) {
-                    Matcher matcher = namePattern.matcher((entity.customName() == null) ? "" : entity.getCustomName());
+                    final @NotNull Matcher matcher = namePattern.matcher((entity.customName() == null) ? "" : entity.getCustomName());
                     if (!matcher.matches()) {
                         continue;
                     }
@@ -85,7 +83,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     }
 
     private @NotNull Pattern createNamePattern() {
-        String name = customName.getFlag();
+        final @NotNull String name = customName.getFlag();
         if (name == null) {
             return Pattern.compile(".*");
         }
@@ -128,7 +126,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
 
         menu.addItem(matchName.getMenuItem(ItemType.NAME_TAG,
                 RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_MATCH_CUSTOMNAME_NAME)));
-        final @NotNull MenuItemString menuItem = customName.getMenuItem(ItemType.NAME_TAG,
+        final @NotNull MenuItemString menuItem = customName.getMenuItem(MenuDisplayTypes.nameType(),
                 RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
                 RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_CUSTOMNAME_DESCRIPTION));
         menuItem.setAllowNull(true);

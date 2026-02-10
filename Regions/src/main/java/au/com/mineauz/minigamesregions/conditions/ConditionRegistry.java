@@ -53,7 +53,7 @@ public class ConditionRegistry {
         return conditions.values().stream().map(ConditionFactory::makeNewCondition).collect(Collectors.toSet());
     }
 
-    public static void displayMenu(final @NotNull ActionExecutor exec, final @NotNull Menu prev) {
+    public static @NotNull Menu createMenu(final @NotNull ActionExecutor exec, final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), prev.getIntendedViewer());
         menu.setPreviousPage(prev);
         for (final @NotNull ACondition con : exec.getConditions()) {
@@ -61,6 +61,6 @@ public class ConditionRegistry {
         }
         menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         menu.setItem(new MenuItemConditionAdd(MenuDisplayTypes.createType(), RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_ADD_NAME), exec), menu.getSize() - 1);
-        menu.displayMenu();
+        return menu;
     }
 }

@@ -141,7 +141,7 @@ public class Rewards {
 
         final @NotNull List<@NotNull Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_SHIFTLEFT);
         for (final @NotNull RewardGroup group : groups) {
-            MenuItemRewardGroup rwg = new MenuItemRewardGroup(ItemType.CHEST,
+            final @NotNull MenuItemRewardGroup rwg = new MenuItemRewardGroup(ItemType.BUNDLE,
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), group.getName())),
                 des, group, this);

@@ -57,7 +57,7 @@ public class NodeToolMode implements ToolMode {
             menu.setItem(new MenuItemBack(player.getMenu()), menu.getSize() - 9);
         }
 
-        menu.addItem(new MenuItemString(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME), new Callback<>() {
+        menu.addItem(new MenuItemString(MenuDisplayTypes.nameType(), RegionMessageManager.getMessage(RegionLangKey.MENU_TOOL_NODE_NAME_NAME), new Callback<>() {
             @Override
             public @NotNull String getValue() {
                 return tool.getSetting("Node");

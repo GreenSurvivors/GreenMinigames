@@ -144,21 +144,22 @@ public class ApplyEffectAction extends AAction {
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
 
-        List<PotionEffectType> pots = Registry.EFFECT.stream().toList();
+        final @NotNull List<@NotNull PotionEffectType> pots = Registry.EFFECT.stream().toList();
 
-        menu.addItem(new MenuItemList<>(ItemType.POTION, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_EFFECT_NAME), new Callback<>() {
-            @Override
-            public @Nullable PotionEffectType getValue() {
-                return type;
-            }
+        menu.addItem(new MenuItemList<>(MenuDisplayTypes.potionEffectType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_EFFECT_NAME),
+            new Callback<>() {
+                @Override
+                public @Nullable PotionEffectType getValue() {
+                    return type;
+                }
 
-            @Override
-            public void setValue(@NotNull PotionEffectType value) {
-                typeNameSpacedKey.setFlag(value.getKey().asString());
-                type = value;
-            }
-        }, pots));
-        menu.addItem(dur.getMenuItem(ItemType.CLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_DURATION_NAME), 0L, 86400L));
+                @Override
+                public void setValue(@NotNull PotionEffectType value) {
+                    typeNameSpacedKey.setFlag(value.getKey().asString());
+                    type = value;
+                }
+            }, pots));
+        menu.addItem(dur.getMenuItem(MenuDisplayTypes.timeType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_DURATION_NAME), 0L, 86400L));
         menu.addItem(new MenuItemInteger(ItemType.EXPERIENCE_BOTTLE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_LEVEL_NAME), new Callback<>() {
 
             @Override
