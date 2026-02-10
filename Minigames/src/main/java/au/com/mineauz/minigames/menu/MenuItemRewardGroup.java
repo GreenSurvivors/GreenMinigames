@@ -12,7 +12,6 @@ import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
@@ -23,9 +22,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemRewardGroup extends AMenuItem implements StringConsumer {
-    private static final String DESCRIPTION_TOKEN = "RewardGroup_description";
-    private static final @NotNull List<@NotNull RewardRarity> options = List.of(RewardRarity.values());
+public class MenuItemRewardGroup extends MenuItemList<@NotNull RewardRarity> implements StringConsumer {
     private final @NotNull RewardGroup group;
     private final @NotNull Rewards rewards;
 
@@ -37,75 +34,19 @@ public class MenuItemRewardGroup extends AMenuItem implements StringConsumer {
     public MenuItemRewardGroup(final @Nullable ItemType displayType, final @Nullable Component name,
                                final @Nullable List<@NotNull Component> description,
                                final @NotNull RewardGroup group, final @NotNull Rewards rewards) {
-        super(displayType, name, description);
+        super(displayType, name, description, new Callback<>() {
+            @Override
+            public @NotNull RewardRarity getValue() {
+                return group.getRarity();
+            }
+
+            @Override
+            public void setValue(final @NotNull RewardRarity value) {
+                group.setRarity(value);
+            }
+        }, List.of(RewardRarity.values()));
         this.group = group;
         this.rewards = rewards;
-        updateDescription();
-    }
-
-    public void updateDescription() {
-        int pos = options.indexOf(group.getRarity());
-        int before = pos - 1;
-        int after = pos + 1;
-        if (before == -1) {
-            before = options.size() - 1;
-        }
-        if (after == options.size()) {
-            after = 0;
-        }
-
-        List<Component> description = new ArrayList<>(3);
-        description.add(Component.text(options.get(before).toString(), NamedTextColor.GRAY));
-        description.add(Component.text(group.getRarity().toString(), NamedTextColor.GREEN));
-        description.add(Component.text(options.get(after).toString(), NamedTextColor.GRAY));
-
-        setDescriptionPart(DESCRIPTION_TOKEN, description);
-    }
-
-
-    @Override
-    public @NotNull ItemStack onClick() {
-        int ind = options.lastIndexOf(group.getRarity());
-        ind++;
-        if (ind == options.size()) {
-            ind = 0;
-        }
-
-        group.setRarity(options.get(ind));
-
-        updateDescription();
-
-        return getDisplayItem();
-    }
-
-    @Override
-    public @NotNull ItemStack onRightClick() {
-        int ind = options.lastIndexOf(group.getRarity());
-        ind--;
-        if (ind == -1) {
-            ind = options.size() - 1;
-        }
-
-        group.setRarity(options.get(ind));
-        updateDescription();
-
-        return getDisplayItem();
-    }
-
-    @Override
-    public void acceptString(final @NotNull String string) {
-        getMenu().cancelWaitForInput();
-
-        if (string.equalsIgnoreCase("yes")) { // todo?
-            rewards.removeGroup(group);
-            getMenu().removeItem(this.getSlot());
-
-            getMenu().displayMenu();
-        } else {
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_REWARD_NOTREMOVED);
-
-            getMenu().displayMenu();
-        }
     }
 
     @Override
@@ -140,5 +81,21 @@ public class MenuItemRewardGroup extends AMenuItem implements StringConsumer {
         rewardMenu.addItems(menuItems);
         rewardMenu.displayMenu();
         return ItemStack.empty();
+    }
+
+    @Override
+    public void acceptString(final @NotNull String string) {
+        getMenu().cancelWaitForInput();
+
+        if (string.equalsIgnoreCase("yes")) { // todo?
+            rewards.removeGroup(group);
+            getMenu().removeItem(this.getSlot());
+
+            getMenu().displayMenu();
+        } else {
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_REWARD_NOTREMOVED);
+
+            getMenu().displayMenu();
+        }
     }
 }

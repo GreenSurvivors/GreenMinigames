@@ -85,6 +85,7 @@ public class ItemReward extends ARewardType {
         this.item = item;
     }
 
+    // note: does not extend MenuItemList by design: This displays a complete ItemStack instead of just an ItemType
     private class MenuItemReward extends AMenuItem {
         private static final @NotNull String DESCRIPTION_REWARD_TOKEN = "Reward_description";
         private final @NotNull ItemReward reward;

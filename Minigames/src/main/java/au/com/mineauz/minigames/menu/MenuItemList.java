@@ -123,9 +123,9 @@ public class MenuItemList<T> extends AMenuItem implements StringConsumer {
     }
 
     @Override
-    public final @NotNull ItemStack onShiftClick() {
-        T oldValue = callback.getValue();
-        T newValue = increaseValue(oldValue, true);
+    public @NotNull ItemStack onShiftClick() {
+        final T oldValue = callback.getValue();
+        final T newValue = increaseValue(oldValue, true);
         callback.setValue(newValue);
 
         updateDescription();
@@ -135,8 +135,8 @@ public class MenuItemList<T> extends AMenuItem implements StringConsumer {
 
     @Override
     public @NotNull ItemStack onRightClick() {
-        T oldValue = callback.getValue();
-        T newValue = decreaseValue(oldValue, false);
+        final T oldValue = callback.getValue();
+        final T newValue = decreaseValue(oldValue, false);
         callback.setValue(newValue);
 
         updateDescription();
@@ -145,9 +145,9 @@ public class MenuItemList<T> extends AMenuItem implements StringConsumer {
     }
 
     @Override
-    public final @NotNull ItemStack onShiftRightClick() {
-        T oldValue = callback.getValue();
-        T newValue = decreaseValue(oldValue, true);
+    public @NotNull ItemStack onShiftRightClick() {
+        final T oldValue = callback.getValue();
+        final T newValue = decreaseValue(oldValue, true);
         callback.setValue(newValue);
 
         updateDescription();

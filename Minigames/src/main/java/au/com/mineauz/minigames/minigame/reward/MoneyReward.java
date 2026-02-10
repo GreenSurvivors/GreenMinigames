@@ -26,7 +26,6 @@ import java.util.List;
 
 public class MoneyReward extends ARewardType {
     private static final @NotNull Minigames PLUGIN = Minigames.getPlugin();
-    private static final @NotNull String DESCRIPTION_TOKEN = "Reward_description";
     private double money = 0d;
 
     public MoneyReward(final @NotNull Rewards rewards) {
@@ -83,64 +82,29 @@ public class MoneyReward extends ARewardType {
         money = amount;
     }
 
-    private class MenuItemReward extends AMenuItem {
+    private class MenuItemReward extends MenuItemList<@NotNull RewardRarity> {
+        private static final @NotNull String DESCRIPTION_TOKEN = "Reward_description";
         private final @NotNull MoneyReward reward;
-        private final @NotNull List<@NotNull RewardRarity> options = new ArrayList<>();
 
         public MenuItemReward(final @NotNull MoneyReward reward) {
-            super(ItemType.PAPER, MinigameUtils.formatMoney(money));
-            options.addAll(Arrays.asList(RewardRarity.values()));
-            this.reward = reward;
-            updateDescription();
-        }
+            super(ItemType.PAPER, MinigameUtils.formatMoney(money), new Callback<>() {
+                @Override
+                public @NotNull RewardRarity getValue() {
+                    return getRarity();
+                }
 
-        public void updateDescription() {
-            final int pos = options.indexOf(getRarity());
-            int before = pos - 1;
-            int after = pos + 1;
-            if (before <= -1) {
-                before = options.size() - 1;
-            }
-            if (after >= options.size()) {
-                after = 0;
-            }
+                @Override
+                public void setValue(final @NotNull RewardRarity value) {
+                    setRarity(value);
+                }
+            }, Arrays.asList(RewardRarity.values()));
+            this.reward = reward;
 
             final @NotNull List<@NotNull Component> description = new ArrayList<>();
-            description.add(options.get(before).getDisplayName().color(NamedTextColor.GRAY));
-            description.add(getRarity().getDisplayName().color(NamedTextColor.GREEN));
-            description.add(options.get(after).getDisplayName().color(NamedTextColor.GRAY));
             description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_CHANGE_SHIFTCLICK).color(NamedTextColor.DARK_PURPLE));
             description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK).color(NamedTextColor.DARK_PURPLE));
 
             setDescriptionPart(DESCRIPTION_TOKEN, description);
-        }
-
-        @Override
-        public @NotNull ItemStack onClick() {
-            int ind = options.lastIndexOf(getRarity());
-            ind++;
-            if (ind == options.size()) {
-                ind = 0;
-            }
-
-            setRarity(options.get(ind));
-            updateDescription();
-
-            return getDisplayItem();
-        }
-
-        @Override
-        public @NotNull ItemStack onRightClick() {
-            int ind = options.lastIndexOf(getRarity());
-            ind--;
-            if (ind == -1) {
-                ind = options.size() - 1;
-            }
-
-            setRarity(options.get(ind));
-            updateDescription();
-
-            return getDisplayItem();
         }
 
         @Override
