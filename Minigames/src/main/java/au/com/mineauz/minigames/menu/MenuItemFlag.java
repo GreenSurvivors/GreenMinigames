@@ -12,31 +12,31 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class MenuItemFlag extends AMenuItem {
     private final @NotNull String flag;
-    private final @NotNull List<@NotNull String> flags;
+    final @NotNull Consumer<@NotNull String> removeConsumer;
 
-    public MenuItemFlag(final @Nullable ItemType displayType,
-                        final @NotNull String flag, final @NotNull List<@NotNull String> flags) {
-        super(displayType, Component.text(flag));
-        this.flag = flag;
-        this.flags = flags;
+    public MenuItemFlag(final @Nullable ItemType displayType, final @NotNull String flag,
+                        final @NotNull Consumer<@NotNull String> removeConsumer) {
+        this(displayType, null, flag, removeConsumer);
     }
 
     public MenuItemFlag(final @Nullable ItemType displayType,
                         final @Nullable List<@NotNull Component> description,
-                        final @NotNull String flag, final @NotNull List<@NotNull String> flags) {
+                        final @NotNull String flag,
+                        final @NotNull Consumer<@NotNull String> removeConsumer) {
         super(displayType, Component.text(flag), description);
         this.flag = flag;
-        this.flags = flags;
+        this.removeConsumer = removeConsumer;
     }
 
     @Override
     public @NotNull ItemStack onShiftRightClick() {
         MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_FLAG_REMOVED,
             Placeholder.unparsed(MinigamePlaceHolderKey.FLAG.getKey(), flag));
-        flags.remove(flag);
+        removeConsumer.accept(flag);
 
         getMenu().removeItem(getSlot());
         return ItemStack.empty();

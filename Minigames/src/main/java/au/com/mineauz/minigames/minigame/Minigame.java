@@ -575,7 +575,7 @@ public class Minigame implements ScriptObject {
         spectators.remove(player);
     }
 
-    public boolean isSpectator(MinigamePlayer player) {
+    public boolean isSpectator(final @NotNull MinigamePlayer player) {
         return spectators.contains(player);
     }
 
@@ -1002,11 +1002,10 @@ public class Minigame implements ScriptObject {
         return statSettings.computeIfAbsent(stat, StatSettings::new);
     }
 
-    @NotNull
-    public Map<MinigameStat, StatSettings> getStatSettings(@NotNull StoredGameStats stats) {
-        Map<MinigameStat, StatSettings> settings = new HashMap<>();
+    public @NotNull Map<@NotNull MinigameStat, @NotNull StatSettings> getStatSettings(final @NotNull StoredGameStats stats) {
+        final @NotNull Map<@NotNull MinigameStat, @NotNull StatSettings> settings = new HashMap<>();
 
-        for (MinigameStat stat : stats.getStats().keySet()) {
+        for (final @NotNull MinigameStat stat : stats.getStats().keySet()) {
             settings.put(stat, getSettings(stat));
         }
 
@@ -1290,7 +1289,7 @@ public class Minigame implements ScriptObject {
         //--------------//
         final @NotNull List<@NotNull AMenuItem> itemsFlags = new ArrayList<>(getSinglePlayerFlags().size());
         for (final @NotNull String flag : getSinglePlayerFlags()) {
-            itemsFlags.add(new MenuItemFlag(ItemType.OAK_SIGN, flag, getSinglePlayerFlags()));
+            itemsFlags.add(new MenuItemFlag(ItemType.OAK_SIGN, flag, this::removeSinglePlayerFlag));
         }
         singlplayerFlagsMenu.setItem(new MenuItemBack(playerMenu), singlplayerFlagsMenu.getSize() - 9);
         singlplayerFlagsMenu.setItem(new MenuItemAddFlag(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_FLAGADD_NAME,

@@ -56,7 +56,7 @@ public class MenuItemAddFlag extends AMenuItem implements StringConsumer {
     @Override
     public void acceptString(final @NotNull String string) {
         minigame.addSinglePlayerFlag(string);
-        getMenu().addItem(new MenuItemFlag(ItemType.OAK_SIGN, string, minigame.getSinglePlayerFlags()));
+        getMenu().addItem(new MenuItemFlag(ItemType.OAK_SIGN, string, minigame::removeSinglePlayerFlag));
 
         getMenu().cancelWaitForInput();
         getMenu().displayMenu();
