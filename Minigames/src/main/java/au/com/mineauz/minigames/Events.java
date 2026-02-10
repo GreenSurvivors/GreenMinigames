@@ -71,6 +71,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Events implements Listener {
@@ -349,7 +350,7 @@ public class Events implements Listener {
                                     Component status;
                                     if (!mgm.hasPlayers()) {
                                         status = MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_INFO_STATUS_EMPTY);
-                                    } else if (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() > 0) {
+                                    } else if (mgm.getMultiplayerTimer() == null || mgm.getMultiplayerTimer().getPlayerWaitTimeLeft() > 0) {
                                         status = MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_INFO_STATUS_WAITINGFORPLAYERS);
                                     } else {
                                         status = MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_INFO_STATUS_STARTED);
@@ -508,7 +509,7 @@ public class Events implements Listener {
         if (event.getMinigamePlayer().isInMinigame() &&
             event.getMinigamePlayer().getMinigame().getType() == MinigameType.MULTIPLAYER &&
             !event.getMinigamePlayer().getMinigame().isAllowedMPCheckpoints() &&
-            !event.getMinigamePlayer().isLatejoining()) {
+            !event.getMinigamePlayer().isJoiningLate()) {
 
             event.setCancelled(true);
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOREVERT,
@@ -616,48 +617,65 @@ public class Events implements Listener {
 
     @SuppressWarnings("UnstableApiUsage") // shutup itemtype
     @EventHandler(ignoreCancelled = true)
-    private void playerShoot(@NotNull ProjectileLaunchEvent event) {
-        if (event.getEntityType() == EntityType.SNOWBALL) {
-            Snowball snowball = (Snowball) event.getEntity();
+    private void playerShoot(final @NotNull ProjectileLaunchEvent event) {
+        if (event.getEntity().getShooter() instanceof final @NotNull Player player) {
+            final @NotNull MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
+            final @Nullable Minigame minigame = mgPlayer.getMinigame();
 
-            if (snowball.getShooter() instanceof final @NotNull Player shooter) {
-                final @NotNull MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(shooter);
-
-                if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().hasUnlimitedAmmo()) {
-                    //wait for the inventory to update
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        ItemStack itemInMainHand = shooter.getInventory().getItemInMainHand();
-
-                        if (itemInMainHand.getType().asItemType() == ItemType.SNOWBALL) {
-                            itemInMainHand.setAmount(16);
-                            shooter.updateInventory();
-                        } else {
-                            shooter.getInventory().addItem(ItemType.SNOWBALL.createItemStack());
-                        }
-                    }, 1L);
+            if (mgPlayer.isInMinigame() && minigame != null && minigame.hasUnlimitedAmmo()) {
+                final @NotNull ItemType usedItem;
+                final @NotNull Supplier<@NotNull ItemStack> itemSupplier;
+                // Even though, we just could call ThrowableProjectile#getItem() for all ThrowableProjectile's,
+                // I rather would not, since the item is just an itemtype to display for the player and might get overwritten to display something ese
+                // by any other plugin or even commandblocks.
+                // However, I can see merit, why anyone would like to use it, since it can keep nbt data.
+                switch (event.getEntityType()) {
+                    case ARROW -> {
+                        // get item from entity for tipped arrows
+                        itemSupplier = () -> ((Arrow)event.getEntity()).getItemStack();
+                        usedItem = ((Arrow)event.getEntity()).getItemStack().getType().asItemType();
+                    }
+                    case SPECTRAL_ARROW -> {
+                        // get item from entity for custom glow duration
+                        itemSupplier = () -> ((Arrow)event.getEntity()).getItemStack();
+                        usedItem = ItemType.SPECTRAL_ARROW;
+                    }
+                    case EGG -> {
+                        // get item from entity for egg varient...
+                        itemSupplier = () -> ((ThrowableProjectile)event.getEntity()).getItem();
+                        usedItem = ((ThrowableProjectile)event.getEntity()).getItem().getType().asItemType();
+                    }
+                    case SNOWBALL -> {
+                        itemSupplier = () -> ((ThrowableProjectile)event.getEntity()).getItem();
+                        usedItem = ItemType.SNOWBALL;
+                    }
+                    case BREEZE_WIND_CHARGE, WIND_CHARGE -> { // weirdly enough not a ThrowableProjectile
+                        usedItem = ItemType.WIND_CHARGE;
+                        itemSupplier = usedItem::createItemStack;
+                    }
+                    // don't allow infinit enderperls, tridents, potions or non-vanilla fireable items to be infinit;
+                    // of course I could easily generalize the code above to the point where the item just gets
+                    // automatically retrieved from the projectile, for most if not all entities.
+                    // but I choose not to, to not break already existing minigames, expectations
+                    // or minigames in future updates when some projectile becomes unlimited, that really shouldn't.
+                    default -> {
+                        return;
+                    }
                 }
+
+                //wait for the inventory to update
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    final @NotNull ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+
+                    if (usedItem.equals(itemInMainHand.getType().asItemType())) {
+                        itemInMainHand.setAmount(itemInMainHand.getMaxStackSize());
+                        player.updateInventory();
+                    } else {
+                        player.getInventory().addItem(itemSupplier.get());
+                    }
+                }, 1L);
             }
-
-        } else if (event.getEntityType() == EntityType.EGG) {
-            Egg egg = (Egg) event.getEntity();
-            if (egg.getShooter() != null && egg.getShooter() instanceof Player player) {
-                final @NotNull MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
-
-                if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().hasUnlimitedAmmo()) {
-                    //wait for the inventory to update
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-
-                        if (itemInMainHand.getType().asItemType() == ItemType.EGG) {
-                            itemInMainHand.setAmount(16);
-                            player.updateInventory();
-                        } else {
-                            player.getInventory().addItem(ItemType.EGG.createItemStack());
-                        }
-                    }, 1L);
-                }
-            }
-        } //todo unlimited arrows
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -670,7 +688,7 @@ public class Events implements Listener {
                 if (mgm.isSpectator(mgPlayer)) {
                     event.setCancelled(true);
                 } else if ((!mgPlayer.getMinigame().hasStarted() && mgPlayer.getMinigame().getState() != MinigameState.ENDED) ||
-                    mgPlayer.isLatejoining()) {
+                    mgPlayer.isJoiningLate()) {
 
                     event.setCancelled(true);
                 } else if (mgPlayer.isInvincible()) {
