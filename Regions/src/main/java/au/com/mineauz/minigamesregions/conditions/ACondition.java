@@ -7,9 +7,11 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionsMain;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -19,12 +21,12 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
-public abstract class ACondition {
+public abstract class ACondition implements Keyed {
     private final @NotNull BooleanFlag isInverted = new BooleanFlag("invert", false);
-    protected final @NotNull String name;
+    protected final @NotNull Key key;
 
-    protected ACondition(@NotNull String name) {
-        this.name = name;
+    protected ACondition(final @NotNull Key key) {
+        this.key = key;
     }
 
     protected void addInvertMenuItem(final @NotNull Menu menu) {
@@ -43,8 +45,8 @@ public abstract class ACondition {
         return isInverted.getFlag();
     }
 
-    public @NotNull String getName() {
-        return name;
+    public @NotNull Key key() {
+        return key;
     }
 
     public abstract @NotNull Component getDisplayName();
@@ -74,7 +76,7 @@ public abstract class ACondition {
 
     public void debug(final @NotNull Minigame mg) {
         if (Minigames.getPlugin().isDebugging()) {
-            Main.getPlugin().getComponentLogger().info("Cat " + getCategory() + " : " + getName() +
+            RegionsMain.getPlugin().getComponentLogger().info("Cat " + getCategory() + " : " + key().asMinimalString() +
                     " Check:" + mg.getName() + " mech: " + mg.getMechanic().key() + ", Condition:                     " + this);
         }
     }

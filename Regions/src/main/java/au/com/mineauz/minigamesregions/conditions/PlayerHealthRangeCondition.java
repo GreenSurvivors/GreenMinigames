@@ -9,6 +9,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
@@ -24,8 +25,8 @@ public class PlayerHealthRangeCondition extends ACondition {
     private final @NotNull IntegerFlag minHealth = new IntegerFlag("min", 20);
     private final @NotNull IntegerFlag maxHealth = new IntegerFlag("max", 20);
 
-    protected PlayerHealthRangeCondition(final @NotNull String name) {
-        super(name);
+    protected PlayerHealthRangeCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

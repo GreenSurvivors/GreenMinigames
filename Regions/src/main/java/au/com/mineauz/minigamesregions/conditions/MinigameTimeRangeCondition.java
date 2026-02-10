@@ -12,6 +12,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemType;
@@ -27,8 +28,8 @@ public class MinigameTimeRangeCondition extends ACondition {
     private final TimeFlag minTime = new TimeFlag("minTime", 5L);
     private final TimeFlag maxTime = new TimeFlag("maxTime", 10L);
 
-    protected MinigameTimeRangeCondition(final @NotNull String name) {
-        super(name);
+    protected MinigameTimeRangeCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override
@@ -69,8 +70,8 @@ public class MinigameTimeRangeCondition extends ACondition {
         return check(node.getMinigame());
     }
 
-    private boolean check(@NotNull Minigame mg) {
-        MinigameTimer timer = mg.getMinigameTimer();
+    private boolean check(final @NotNull Minigame minigame) {
+        final @Nullable MinigameTimer timer = minigame.getMinigameTimer();
 
         if (timer == null) {
             return false;
@@ -78,7 +79,7 @@ public class MinigameTimeRangeCondition extends ACondition {
             long timeLeft = timer.getTimeLeft();
             long min = minTime.getFlag();
             long max = maxTime.getFlag();
-            debug(mg);
+            debug(minigame);
             return timeLeft >= min && timeLeft <= max;
         }
     }

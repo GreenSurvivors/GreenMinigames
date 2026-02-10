@@ -354,7 +354,7 @@ public class Minigame implements ScriptObject {
         return minPlayers.getFlag();
     }
 
-    public void setMinPlayers(int minPlayers) {
+    public void setMinPlayers(final int minPlayers) {
         this.minPlayers.setFlag(minPlayers);
     }
 

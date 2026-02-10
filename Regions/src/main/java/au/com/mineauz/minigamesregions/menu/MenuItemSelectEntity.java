@@ -8,7 +8,7 @@ import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.consumer.EntityConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigamesregions.Main;
+import au.com.mineauz.minigamesregions.RegionsMain;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
@@ -53,7 +53,7 @@ public class MenuItemSelectEntity extends AMenuItem implements EntityConsumer {
                     entitySnapshotCallback.setValue(snapshot);
                     update();
                 } else {
-                    Main.getPlugin().getComponentLogger().warn("MenuItemSelectEntity was clicked with an spawnegg containing a non-spawnable entity: {}", snapshot.getEntityType().getKey());
+                    RegionsMain.getPlugin().getComponentLogger().warn("MenuItemSelectEntity was clicked with an spawnegg containing a non-spawnable entity: {}", snapshot.getEntityType().getKey());
                 }
             } else {
                 final @Nullable EntityType entityType = Registry.ENTITY_TYPE.get(item.getType().getKey());
@@ -62,7 +62,7 @@ public class MenuItemSelectEntity extends AMenuItem implements EntityConsumer {
                     entitySnapshotCallback.setValue(Bukkit.getWorlds().getFirst().createEntity(new Location(Bukkit.getWorlds().getFirst(), 0, 0, 0), entityType.getEntityClass()).createSnapshot());
                     update();
                 } else {
-                    Main.getPlugin().getComponentLogger().warn("MenuItemSelectEntity was clicked with an spawnegg, but I couldn't find any spawnable entity: {}, coming from {}", entityType == null ? null : entityType.getKey().asString(), item.getType().getKey().asString());
+                    RegionsMain.getPlugin().getComponentLogger().warn("MenuItemSelectEntity was clicked with an spawnegg, but I couldn't find any spawnable entity: {}, coming from {}", entityType == null ? null : entityType.getKey().asString(), item.getType().getKey().asString());
                 }
             }
         }

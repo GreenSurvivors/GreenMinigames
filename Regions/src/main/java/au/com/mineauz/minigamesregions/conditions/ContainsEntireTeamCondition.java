@@ -7,6 +7,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,8 +19,8 @@ import java.util.Map;
 
 public class ContainsEntireTeamCondition extends ACondition {
 
-    protected ContainsEntireTeamCondition(@NotNull String name) {
-        super(name);
+    protected ContainsEntireTeamCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override
@@ -48,22 +49,22 @@ public class ContainsEntireTeamCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(@NotNull MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final @NotNull MinigamePlayer mgPlayer, final @NotNull Region region) {
         return new HashSet<>(region.getPlayers()).containsAll(mgPlayer.getTeam().getPlayers());
     }
 
     @Override
-    public boolean checkNodeCondition(@Nullable MinigamePlayer mgPlayer, @Nullable Node node) {
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @Nullable Node node) {
         return false;
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         saveInvertedStatus(config);
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         loadInvert(config);
     }
 

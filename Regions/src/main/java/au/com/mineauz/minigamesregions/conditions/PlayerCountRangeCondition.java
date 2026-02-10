@@ -9,6 +9,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemType;
@@ -23,8 +24,8 @@ public class PlayerCountRangeCondition extends ACondition {
     private final @NotNull IntegerFlag min = new IntegerFlag("min", 1);
     private final @NotNull IntegerFlag max = new IntegerFlag("max", 5);
 
-    protected PlayerCountRangeCondition(final @NotNull String name) {
-        super(name);
+    protected PlayerCountRangeCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

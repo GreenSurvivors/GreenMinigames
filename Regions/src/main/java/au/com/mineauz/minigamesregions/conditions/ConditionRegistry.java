@@ -8,6 +8,7 @@ import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.menu.MenuItemCondition;
 import au.com.mineauz.minigamesregions.menu.MenuItemConditionAdd;
+import net.kyori.adventure.key.Key;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,25 +19,33 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ConditionRegistry {
-    private static final @NotNull Map<@NotNull String, @NotNull ConditionFactory> conditions = new HashMap<>();
+    private static final @NotNull Map<@NotNull Key, @NotNull ConditionFactory> conditions = new HashMap<>();
+    private static final @NotNull Map<@NotNull String, @NotNull ConditionFactory> conditionsByName = new HashMap<>(); // legacy
 
     static {
-        for (ConditionFactory conditionFactory : RegionConditions.values()) {
+        for (ConditionFactory conditionFactory : RegionDefaultConditions.values()) {
             addCondition(conditionFactory);
         }
     }
 
-    public static void addCondition(@NotNull ConditionFactory conditionFactory) {
-        conditions.put(conditionFactory.getName(), conditionFactory);
+    public static void addCondition(final @NotNull ConditionFactory conditionFactory) {
+        conditions.put(conditionFactory.key(), conditionFactory);
+        conditionsByName.put(conditionFactory.getName(), conditionFactory);
 
         // datafixerupper
         if (conditionFactory.getOldName() != null) {
-            conditions.put(conditionFactory.getOldName(), conditionFactory);
+            conditionsByName.put(conditionFactory.getOldName(), conditionFactory);
         }
     }
 
-    public static @Nullable ACondition getConditionByName(@NotNull String name) {
-        ConditionFactory factory = conditions.get(name.toUpperCase());
+    public static @Nullable ACondition getConditionByKey(final @NotNull Key key) {
+        ConditionFactory factory = conditions.get(key);
+        return factory != null ? factory.makeNewCondition() : null;
+    }
+
+    @Deprecated
+    public static @Nullable ACondition getConditionByName(final @NotNull String name) {
+        ConditionFactory factory = conditionsByName.get(name.toUpperCase());
         return factory != null ? factory.makeNewCondition() : null;
     }
 

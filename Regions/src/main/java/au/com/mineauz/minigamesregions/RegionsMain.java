@@ -14,16 +14,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin {
+public class RegionsMain extends JavaPlugin {
     private static Minigames minigames;
-    private static Main plugin;
+    private static RegionsMain plugin;
     private RegionDisplayManager display;
 
     public static Minigames getMinigames() {
         return minigames;
     }
 
-    public static Main getPlugin() {
+    @Deprecated
+    public static RegionsMain getPlugin() {
         return plugin;
     }
 

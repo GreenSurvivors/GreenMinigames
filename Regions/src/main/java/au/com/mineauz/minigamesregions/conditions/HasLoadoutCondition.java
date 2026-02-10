@@ -11,6 +11,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -23,8 +24,8 @@ import java.util.Map;
 public class HasLoadoutCondition extends ACondition {
     private final @NotNull StringFlag loadOutName = new StringFlag("loadout", "default");
 
-    protected HasLoadoutCondition(final @NotNull String name) {
-        super(name);
+    protected HasLoadoutCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

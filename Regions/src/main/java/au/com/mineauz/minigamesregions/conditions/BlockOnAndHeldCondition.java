@@ -7,6 +7,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -25,8 +26,8 @@ import java.util.Map;
  */
 public class BlockOnAndHeldCondition extends ACondition {
 
-    protected BlockOnAndHeldCondition(@NotNull String name) {
-        super(name);
+    protected BlockOnAndHeldCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override
@@ -55,12 +56,12 @@ public class BlockOnAndHeldCondition extends ACondition {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final MinigamePlayer mgPlayer, final @NotNull Region region) {
         return false;
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
         return check(mgPlayer);
     }
 
@@ -100,11 +101,11 @@ public class BlockOnAndHeldCondition extends ACondition {
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
     }
 
     @Override

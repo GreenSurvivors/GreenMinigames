@@ -1,6 +1,6 @@
 package au.com.mineauz.minigamesregions.triggers;
 
-import au.com.mineauz.minigamesregions.Main;
+import au.com.mineauz.minigamesregions.RegionsMain;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +18,7 @@ public class TriggerRegistry {
                 addTrigger(trigger);
             }
         } catch (TriggerAlreadyRegisteredException e) {
-            Main.getPlugin().getComponentLogger().error("", e);
+            RegionsMain.getPlugin().getComponentLogger().error("", e);
         }
     }
 

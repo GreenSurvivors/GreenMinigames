@@ -54,7 +54,7 @@ public class TimedTriggerAction extends AAction implements Listener {
     protected TimedTriggerAction(final @NotNull Key key) {
         super(key);
 
-        Bukkit.getPluginManager().registerEvents(this, Main.getPlugin());
+        Bukkit.getPluginManager().registerEvents(this, RegionsMain.getPlugin());
     }
 
     @Override
@@ -115,7 +115,7 @@ public class TimedTriggerAction extends AAction implements Listener {
         final @NotNull ExecutableScriptObject toExecute = isRegion.getFlag() ? rMod.getRegion(toTrigger.getFlag()) : rMod.getNode(toTrigger.getFlag());
         final @NotNull TaskHolder taskHolder = new TaskHolder();
 
-        taskHolder.task = Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> {
+        taskHolder.task = Bukkit.getScheduler().runTaskLater(RegionsMain.getPlugin(), () -> {
                 toExecute.execute(MgRegTrigger.REMOTE_TIMED, player);
 
                 globalTasks.remove(taskHolder.task);

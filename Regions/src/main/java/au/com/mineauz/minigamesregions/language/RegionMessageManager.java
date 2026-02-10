@@ -3,7 +3,7 @@ package au.com.mineauz.minigamesregions.language;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
-import au.com.mineauz.minigamesregions.Main;
+import au.com.mineauz.minigamesregions.RegionsMain;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
@@ -22,11 +22,11 @@ public class RegionMessageManager {
     private static final String BUNDLE_KEY = "minigames-regions";
 
     public static void register() {
-        CodeSource src = Main.class.getProtectionDomain().getCodeSource();
+        CodeSource src = RegionsMain.class.getProtectionDomain().getCodeSource();
         if (src != null) {
             MinigameMessageManager.initLangFiles(src, BUNDLE_KEY);
         } else {
-            Main.getPlugin().getComponentLogger().warn("Couldn't save lang files: no CodeSource!");
+            RegionsMain.getPlugin().getComponentLogger().warn("Couldn't save lang files: no CodeSource!");
         }
 
         String tag = Minigames.getPlugin().getConfig().getString("lang", Locale.getDefault().toLanguageTag());
@@ -44,19 +44,19 @@ public class RegionMessageManager {
             try (InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
                 langBundleMinigameRegions = new PropertyResourceBundle(inputStreamReader);
             } catch (IOException e) {
-                Main.getPlugin().getComponentLogger().warn("couldn't get Ressource bundle from file " + file.getName(), e);
+                RegionsMain.getPlugin().getComponentLogger().warn("couldn't get Ressource bundle from file " + file.getName(), e);
             }
         } else {
             try {
-                langBundleMinigameRegions = ResourceBundle.getBundle(BUNDLE_KEY, locale, Main.getPlugin().getClass().getClassLoader(), new UTF8ResourceBundleControl());
+                langBundleMinigameRegions = ResourceBundle.getBundle(BUNDLE_KEY, locale, RegionsMain.getPlugin().getClass().getClassLoader(), new UTF8ResourceBundleControl());
             } catch (MissingResourceException e) {
-                Main.getPlugin().getComponentLogger().warn("couldn't get Ressource bundle for lang " + locale.toLanguageTag(), e);
+                RegionsMain.getPlugin().getComponentLogger().warn("couldn't get Ressource bundle for lang " + locale.toLanguageTag(), e);
             }
         }
         if (langBundleMinigameRegions != null) {
             MinigameMessageManager.registerMessageFile(BUNDLE_KEY, langBundleMinigameRegions);
         } else {
-            Main.getPlugin().getComponentLogger().error("No region language Resource Could be loaded...messaging will be broken");
+            RegionsMain.getPlugin().getComponentLogger().error("No region language Resource Could be loaded...messaging will be broken");
         }
     }
 
@@ -74,7 +74,7 @@ public class RegionMessageManager {
 
     public static void debugMessage(@NotNull String message) { //todo
         if (Minigames.getPlugin().isDebugging()) {
-            Main.getPlugin().getComponentLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
+            RegionsMain.getPlugin().getComponentLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
         }
     }
 }

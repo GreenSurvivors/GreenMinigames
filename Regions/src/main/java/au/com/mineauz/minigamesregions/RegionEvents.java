@@ -389,7 +389,7 @@ public class RegionEvents implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void playerDisconnect(@NotNull PlayerQuitEvent event) {
-        Main.getPlugin().getDisplayManager().hideAll(event.getPlayer());
+        RegionsMain.getPlugin().getDisplayManager().hideAll(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

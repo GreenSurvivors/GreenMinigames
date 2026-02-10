@@ -9,6 +9,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemType;
@@ -23,8 +24,8 @@ import java.util.Random;
 public class RandomChanceCondition extends ACondition {
     private final @NotNull IntegerFlag chance = new IntegerFlag("chance", 50);
 
-    protected RandomChanceCondition(final @NotNull String name) {
-        super(name);
+    protected RandomChanceCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

@@ -11,6 +11,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
@@ -26,8 +27,8 @@ import java.util.Map;
 public class MatchTeamCondition extends ACondition {
     private final @NotNull EnumFlag<@NotNull TeamColor> teamColor = new EnumFlag<>("team", TeamColor.RED);
 
-    protected MatchTeamCondition(final @NotNull String name) {
-        super(name);
+    protected MatchTeamCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

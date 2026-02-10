@@ -10,9 +10,9 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
-import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.RegionModule;
+import au.com.mineauz.minigamesregions.RegionsMain;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
@@ -124,7 +124,7 @@ public class NodeToolMode implements ToolMode {
                         RegionLangKey.NODE_EDITED,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
-                Main.getPlugin().getDisplayManager().update(node);
+                RegionsMain.getPlugin().getDisplayManager().update(node);
             }
         }
     }
@@ -148,7 +148,7 @@ public class NodeToolMode implements ToolMode {
                     RegionLangKey.NODE_EDITED,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
-            Main.getPlugin().getDisplayManager().update(node);
+            RegionsMain.getPlugin().getDisplayManager().update(node);
         }
     }
 
@@ -157,7 +157,7 @@ public class NodeToolMode implements ToolMode {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
         String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Node");
         if (mod.hasNode(name)) {
-            Main.getPlugin().getDisplayManager().show(mod.getNode(name), mgPlayer);
+            RegionsMain.getPlugin().getDisplayManager().show(mod.getNode(name), mgPlayer);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.TOOL_NODE_SELECTED,
                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
@@ -173,7 +173,7 @@ public class NodeToolMode implements ToolMode {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
         String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Node");
         if (mod.hasNode(name)) {
-            Main.getPlugin().getDisplayManager().hide(mod.getNode(name), mgPlayer);
+            RegionsMain.getPlugin().getDisplayManager().hide(mod.getNode(name), mgPlayer);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.TOOL_NODE_DESELECTED,
                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));

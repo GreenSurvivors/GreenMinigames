@@ -15,6 +15,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemType;
@@ -34,8 +35,8 @@ public class ScoreRangeCondition extends ACondition {
     // note: autodetect team being default here is part of migrating old behaviour aka dataFixerUpper
     private  final @NotNull EnumFlag<@NotNull ScoreHolderType> scoreHolder = new EnumFlag<>("scoreHolder", ScoreHolderType.AUTODETECT_TEAM);
 
-    protected ScoreRangeCondition(final @NotNull String name) {
-        super(name);
+    protected ScoreRangeCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

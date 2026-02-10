@@ -12,6 +12,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.util.RegionUtils;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -32,18 +33,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlayerHasItemCondition extends ACondition { //todo amount
-    private final ItemFlag itemToSearchFor = new ItemFlag("item", new ItemStack(Material.STONE));
-    private final IntegerFlag count = new IntegerFlag("amount", 1);
-    private final EnumFlag<PositionType> where = new EnumFlag<>("where", PositionType.ANYWHERE);
-    private final IntegerFlag slot = new IntegerFlag("slot", 0);
+    private final @NotNull ItemFlag itemToSearchFor = new ItemFlag("item", new ItemStack(Material.STONE));
+    private final @NotNull IntegerFlag count = new IntegerFlag("amount", 1);
+    private final @NotNull EnumFlag<PositionType> where = new EnumFlag<>("where", PositionType.ANYWHERE);
+    private final @NotNull IntegerFlag slot = new IntegerFlag("slot", 0);
 
-    private final BooleanFlag matchName = new BooleanFlag("matchName", false);
-    private final BooleanFlag matchLore = new BooleanFlag("matchLore", false);
-    private final BooleanFlag matchEnchantments = new BooleanFlag("matchEnchantments", false);
-    private final BooleanFlag matchExact = new BooleanFlag("matchExact", false);
+    private final @NotNull BooleanFlag matchName = new BooleanFlag("matchName", false);
+    private final @NotNull BooleanFlag matchLore = new BooleanFlag("matchLore", false);
+    private final @NotNull BooleanFlag matchEnchantments = new BooleanFlag("matchEnchantments", false);
+    private final @NotNull BooleanFlag matchExact = new BooleanFlag("matchExact", false);
 
-    protected PlayerHasItemCondition(final @NotNull String name) {
-        super(name);
+    protected PlayerHasItemCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

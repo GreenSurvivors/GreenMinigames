@@ -4,9 +4,9 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.recorder.EntityData;
-import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionsMain;
 import au.com.mineauz.minigamesregions.config.EntitySnapshotFlag;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SpawnEntityAction extends AAction {
-    private static final @NotNull NamespacedKey MINIGAME_ENTITY_KEY = new NamespacedKey(Main.getPlugin(), "minigame");
+    private static final @NotNull NamespacedKey MINIGAME_ENTITY_KEY = new NamespacedKey(RegionsMain.getPlugin(), "minigame");
     private final @NotNull EntitySnapshotFlag entitySnapshotFlag = new EntitySnapshotFlag("entity", getDefaultSnapshot());
 
     private static @NotNull EntitySnapshot getDefaultSnapshot() {

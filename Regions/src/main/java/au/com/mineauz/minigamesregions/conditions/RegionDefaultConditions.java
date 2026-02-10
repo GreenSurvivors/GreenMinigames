@@ -1,11 +1,14 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import au.com.mineauz.minigamesregions.RegionsMain;
+import net.kyori.adventure.key.Key;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
-public enum RegionConditions implements ConditionFactory {
+public enum RegionDefaultConditions implements ConditionFactory {
     CONTAINS_ENTIRE_TEAM("CONTAINS_ENTIRE_TEAM", ContainsEntireTeamCondition::new),
     CONTAINS_ONE_TEAM("CONTAINS_ONE_TEAM", ContainsOneTeamCondition::new),
 //    HAS_REQUIRED_FLAGS("HAS_REQUIRED_FLAGS", HasRequiredFlagsCondition::new),
@@ -27,26 +30,32 @@ public enum RegionConditions implements ConditionFactory {
     BLOCK_ON_AND_HELD("BLOCK_ON_AND_HELD", BlockOnAndHeldCondition::new);
 
     private final @NotNull String name;
+    private final @NotNull Key key;
     private final @Deprecated(forRemoval = true) @Nullable String oldName; // data fixer upper
-    private final @NotNull Function<String, ACondition> constructor;
+    private final @NotNull Function<Key, ACondition> constructor;
 
-    RegionConditions(@NotNull String name, @NotNull Function<String, ACondition> constructor) {
-        this.name = name;
-        this.constructor = constructor;
-        this.oldName = null;
+    RegionDefaultConditions(final @NotNull String name, final @NotNull Function<Key, ACondition> constructor) {
+        this(name, null, constructor);
     }
 
-    RegionConditions(@NotNull String name, @NotNull String oldName, @NotNull Function<String, ACondition> constructor) {
+    RegionDefaultConditions(final @NotNull String name, final @Nullable String oldName, final @NotNull Function<Key, ACondition> constructor) {
         this.name = name;
+        this.key = new NamespacedKey(RegionsMain.getPlugin(), name.toLowerCase());
         this.constructor = constructor;
         this.oldName = oldName;
     }
 
     @Override
     public @NotNull ACondition makeNewCondition() {
-        return constructor.apply(name);
+        return constructor.apply(new NamespacedKey(RegionsMain.getPlugin(), name));
     }
 
+    @Override
+    public @NotNull Key key() {
+        return key;
+    }
+
+    @Deprecated
     @Override
     public @NotNull String getName() {
         return name;

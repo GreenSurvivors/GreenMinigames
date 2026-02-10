@@ -12,9 +12,10 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockType;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,11 +25,11 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.Map;
 
 public class MatchBlockCondition extends ACondition {
-    private final @NotNull BlockDataFlag blockData = new BlockDataFlag("type", Material.STONE.createBlockData()); //todo datafixerupper rename the name
+    private final @NotNull BlockDataFlag blockData = new BlockDataFlag("type", BlockType.STONE.createBlockData()); //todo datafixerupper rename the name
     private final @NotNull BooleanFlag useFullBlockData = new BooleanFlag("usedur", false); //todo datafixerupper rename the name
 
-    protected MatchBlockCondition(@NotNull String name) {
-        super(name);
+    protected MatchBlockCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

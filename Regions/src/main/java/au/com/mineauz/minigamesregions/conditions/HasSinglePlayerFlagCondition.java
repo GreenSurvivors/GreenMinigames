@@ -8,6 +8,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -20,8 +21,8 @@ import java.util.Map;
 public class HasSinglePlayerFlagCondition extends ACondition { // the whole singleplayer flag system is unused.
     private final @NotNull StringFlag flagName = new StringFlag("flag", "flag");
 
-    protected HasSinglePlayerFlagCondition(final @NotNull String name) {
-        super(name);
+    protected HasSinglePlayerFlagCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

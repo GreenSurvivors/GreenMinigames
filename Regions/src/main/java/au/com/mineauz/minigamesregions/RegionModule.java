@@ -39,7 +39,7 @@ public class RegionModule extends AMinigameModule {
     private final @NotNull Map<@NotNull String, @NotNull Region> regions = new HashMap<>();
     private final @NotNull Map<@NotNull String, @NotNull Node> nodes = new HashMap<>();
     private static final @NotNull ModuleFactory moduleFactory = new ModuleFactory() {
-        private final @NotNull Key key = new NamespacedKey(Main.getPlugin(), "regions");
+        private final @NotNull Key key = new NamespacedKey(RegionsMain.getPlugin(), "regions");
 
         @Override
         public @NotNull RegionModule makeNewModule(final @NotNull Minigame minigame) {
@@ -111,7 +111,7 @@ public class RegionModule extends AMinigameModule {
             for (final @NotNull ACondition con : ex.getConditions()) {
                 final @NotNull CommentedConfigurationNode conditionNode = executorsNode.node("conditions", conditionNumber++);
 
-                conditionNode.node("type").set(con.getName());
+                conditionNode.node("key").set(con.key().asMinimalString());
                 con.saveArguments(conditionNode.node("arguments"));
             }
 
@@ -203,7 +203,21 @@ public class RegionModule extends AMinigameModule {
                     }
                     if (executorNode.hasChild("conditions")) {
                         for (final @NotNull CommentedConfigurationNode conditionsNode : executorNode.node("conditions").childrenMap().values()) {
-                            final @Nullable ACondition condition = ConditionRegistry.getConditionByName(conditionsNode.node("type").getString());
+                            @Nullable ACondition condition = null;
+                            final @Nullable String keyStr = conditionsNode.node("key").getString();
+
+                            if (keyStr != null) {
+                                final @Nullable Key key = NamespacedKey.fromString(keyStr);
+
+                                if (key != null) {
+                                    condition = ConditionRegistry.getConditionByKey(key);
+                                }
+                            }
+
+                            if (condition == null) {
+                                condition = ConditionRegistry.getConditionByName(conditionsNode.node("type").getString());
+                            }
+
                             if (condition != null) {
                                 condition.loadArguments(conditionsNode.node("arguments"));
                                 executor.addCondition(condition);
@@ -219,7 +233,7 @@ public class RegionModule extends AMinigameModule {
                     }
                     executorHolder.addExecutor(executor);
                 } else {
-                    Main.getPlugin().getComponentLogger().error("Couldn't load trigger in path " + executorNode.path());
+                    RegionsMain.getPlugin().getComponentLogger().error("Couldn't load trigger in path " + executorNode.path());
                 }
             }
         }

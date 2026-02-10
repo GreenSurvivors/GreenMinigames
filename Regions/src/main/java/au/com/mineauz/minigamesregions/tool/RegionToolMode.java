@@ -10,9 +10,9 @@ import au.com.mineauz.minigames.minigame.modules.team.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
-import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
+import au.com.mineauz.minigamesregions.RegionsMain;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
@@ -123,7 +123,7 @@ public class RegionToolMode implements ToolMode {
                 mgPlayer.clearSelection();
             } else {
                 region.updateRegion(mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]);
-                Main.getPlugin().getDisplayManager().update(region);
+                RegionsMain.getPlugin().getDisplayManager().update(region);
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                         RegionLangKey.REGION_EDITED,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
@@ -151,7 +151,7 @@ public class RegionToolMode implements ToolMode {
         final RegionModule mod = RegionModule.getMinigameModule(minigame);
         final @NotNull String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Region");
         if (mod.hasRegion(name)) {
-            Main.getPlugin().getDisplayManager().show(mod.getRegion(name), mgPlayer);
+            RegionsMain.getPlugin().getDisplayManager().show(mod.getRegion(name), mgPlayer);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.TOOL_REGION_SELECTED,
                     Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name),
@@ -169,7 +169,7 @@ public class RegionToolMode implements ToolMode {
         final RegionModule mod = RegionModule.getMinigameModule(minigame);
         final @NotNull String name = MinigameTool.getMinigameTool(mgPlayer).getSetting("Region");
         if (mod.hasRegion(name)) {
-            Main.getPlugin().getDisplayManager().hide(mod.getRegion(name), mgPlayer);
+            RegionsMain.getPlugin().getDisplayManager().hide(mod.getRegion(name), mgPlayer);
             mgPlayer.clearSelection();
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
                     RegionLangKey.TOOL_REGION_DESELECTED);

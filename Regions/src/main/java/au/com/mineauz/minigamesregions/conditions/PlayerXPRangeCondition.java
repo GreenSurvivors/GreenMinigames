@@ -10,6 +10,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
@@ -26,8 +27,8 @@ public class PlayerXPRangeCondition extends ACondition {
     private final @NotNull FloatFlag max = new FloatFlag("max", 1.0f);
     private final @NotNull EnumFlag<@NotNull XPCheckType> checkType = new EnumFlag<>("checkLevel", XPCheckType.LEVEL);
 
-    protected PlayerXPRangeCondition(final @NotNull String name) {
-        super(name);
+    protected PlayerXPRangeCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override

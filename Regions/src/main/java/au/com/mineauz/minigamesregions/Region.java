@@ -113,7 +113,7 @@ public class Region extends MgRegion implements ActionExecutorHolder {
     public void setConfiguredTickDelay(long delay) {
         removeConfiguredTask();
         configuredDelay = delay;
-        gameConfiguredTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), () -> {
+        gameConfiguredTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(RegionsMain.getPlugin(), () -> {
             List<MinigamePlayer> plys = new ArrayList<>(players);
             for (MinigamePlayer player : plys) {
                 execute(MgRegTrigger.TIME_CONFIGURED, player);
@@ -130,7 +130,7 @@ public class Region extends MgRegion implements ActionExecutorHolder {
             removeConfiguredTask();
         }
 
-        gameConfiguredTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), () -> {
+        gameConfiguredTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(RegionsMain.getPlugin(), () -> {
             List<MinigamePlayer> plys = new ArrayList<>(players);
             for (MinigamePlayer player : plys) {
                 execute(MgRegTrigger.TIME_CONFIGURED, player);
@@ -143,7 +143,7 @@ public class Region extends MgRegion implements ActionExecutorHolder {
             removeGameTickTask();
         }
 
-        gameTickTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(),
+        gameTickTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(RegionsMain.getPlugin(),
                 this::executeGameTick,
                 0, GAME_TICK_DELAY);
     }

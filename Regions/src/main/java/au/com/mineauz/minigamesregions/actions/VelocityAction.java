@@ -7,9 +7,9 @@ import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionsMain;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
@@ -78,7 +78,7 @@ public class VelocityAction extends AAction {
 
     private void execute(final @Nullable MinigamePlayer mgPlayer) {
         if (mgPlayer == null) return;
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> mgPlayer.getPlayer().setVelocity(new Vector(x.getFlag(), y.getFlag(), z.getFlag())));
+        Bukkit.getScheduler().scheduleSyncDelayedTask(RegionsMain.getPlugin(), () -> mgPlayer.getPlayer().setVelocity(new Vector(x.getFlag(), y.getFlag(), z.getFlag())));
     }
 
     @Override

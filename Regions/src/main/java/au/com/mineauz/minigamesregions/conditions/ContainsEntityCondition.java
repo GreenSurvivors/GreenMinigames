@@ -13,13 +13,13 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.util.RegionUtils;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -35,8 +35,8 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     private final BooleanFlag matchName = new BooleanFlag("matchName", false);
     private final StringFlag customName = new StringFlag("name", null);
 
-    protected ContainsEntityCondition(@NotNull String name) {
-        super(name);
+    protected ContainsEntityCondition(final @NotNull Key key) {
+        super(key);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer mgPlayer, @NotNull Region region) {
+    public boolean checkRegionCondition(final MinigamePlayer mgPlayer, final @NotNull Region region) {
         Collection<Entity> entities = region.getFirstPoint().getWorld().getNearbyEntities(region.getBoundingBox());
 
         Pattern namePattern = null;
@@ -98,12 +98,12 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     }
 
     @Override
-    public boolean checkNodeCondition(MinigamePlayer mgPlayer, @NotNull Node node) {
+    public boolean checkNodeCondition(final MinigamePlayer mgPlayer, final @NotNull Node node) {
         return false;
     }
 
     @Override
-    public void saveArguments(@NotNull CommentedConfigurationNode config) throws SerializationException {
+    public void saveArguments(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         entityType.saveValue(config);
         matchName.saveValue(config);
         customName.saveValue(config);
@@ -111,7 +111,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     }
 
     @Override
-    public void loadArguments(@NotNull CommentedConfigurationNode config) {
+    public void loadArguments(final @NotNull CommentedConfigurationNode config) {
         entityType.loadValue(config);
         matchName.loadValue(config);
         customName.loadValue(config);
@@ -141,8 +141,8 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     }
 
     @Override
-    public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        HashMap<Component, Component> out = new HashMap<>();
+    public @NotNull Map<@NotNull Component, @NotNull Component> describe() {
+        final @NotNull Map<@NotNull Component, @NotNull Component> out = new HashMap<>();
 
         out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME),
                 Component.translatable(entityType.getFlag().translationKey()));

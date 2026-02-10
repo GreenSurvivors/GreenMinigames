@@ -282,7 +282,7 @@ public class ScoreboardDisplay {
                 }
 
                 @Override
-                public void setValue(@NotNull StatisticValueField value) {
+                public void setValue(final @NotNull StatisticValueField value) {
                     field = value;
                     fieldChoice.setBaseDescriptionPart(List.of(value.getTitle().color(NamedTextColor.GREEN)));
                 }
