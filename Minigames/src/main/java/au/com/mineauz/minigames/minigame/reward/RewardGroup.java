@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RewardGroup {
-    private final String groupName;
+    private final @NotNull String groupName;
     private final @NotNull List<@NotNull ARewardType> items = new ArrayList<>();
-    private RewardRarity rarity;
+    private @NotNull RewardRarity rarity;
 
-    public RewardGroup(String groupName, RewardRarity rarity) {
+    public RewardGroup(final @NotNull String groupName, final @NotNull RewardRarity rarity) {
         this.groupName = groupName;
         this.rarity = rarity;
     }
@@ -70,11 +70,11 @@ public class RewardGroup {
         return items;
     }
 
-    public RewardRarity getRarity() {
+    public @NotNull RewardRarity getRarity() {
         return rarity;
     }
 
-    public void setRarity(RewardRarity rarity) {
+    public void setRarity(final @NotNull RewardRarity rarity) {
         this.rarity = rarity;
     }
 

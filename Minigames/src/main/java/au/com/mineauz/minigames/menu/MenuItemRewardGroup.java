@@ -68,7 +68,7 @@ public class MenuItemRewardGroup extends MenuItemList<@NotNull RewardRarity> imp
         rewardMenu.setPreviousPage(getMenu());
 
         rewardMenu.setItem(new MenuItemRewardAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME,
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_REWARD_ITEM_ADD_DESCRIPTION), group), 43);
+            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_REWARD_ITEM_ADD_DESCRIPTION), rewards, group), 43);
         rewardMenu.setItem(new MenuItemPage(MenuDisplayTypes.saveType(),
             MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
                 Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), getName())), rewardMenu.getPreviousPage()), 44);

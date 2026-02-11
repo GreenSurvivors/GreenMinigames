@@ -15,25 +15,23 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Rewards {
-    private final @NotNull List<@NotNull ARewardType> items = new ArrayList<>();
-    private final @NotNull List<@NotNull RewardGroup> groups = new ArrayList<>();
+    private final @NotNull List<@NotNull ARewardType> rewardTypes = new ArrayList<>();
+    private final @NotNull Map<@NotNull String, @NotNull RewardGroup> groups = new LinkedHashMap<>();
 
     public boolean isEmpty() {
-        return items.isEmpty() && groups.isEmpty();
+        return rewardTypes.isEmpty() && groups.isEmpty();
     }
 
     public @Nullable List<@NotNull ARewardType> getReward() {
         final double rand = ThreadLocalRandom.current().nextDouble();
         @NotNull RewardRarity rarity;
         final @NotNull List<Object> itemsCopyList = new ArrayList<>();
-        itemsCopyList.addAll(items);
-        itemsCopyList.addAll(groups);
+        itemsCopyList.addAll(rewardTypes);
+        itemsCopyList.addAll(groups.values());
         Collections.shuffle(itemsCopyList);
 
         if (rand > RewardRarity.VERY_COMMON.getRarity()) {
@@ -95,29 +93,37 @@ public class Rewards {
     }
 
     public void addReward(final @NotNull ARewardType reward) {
-        items.add(reward);
+        rewardTypes.add(reward);
     }
 
-    public void removeReward(final @NotNull ARewardType item) {
-        items.remove(item);
+    public void removeReward(final @NotNull ARewardType rewardType) {
+        rewardTypes.remove(rewardType);
     }
 
     public @NotNull List<@NotNull ARewardType> getRewards() {
-        return items;
+        return rewardTypes;
     }
 
-    public @NotNull RewardGroup addGroup(String groupName, RewardRarity rarity) {
-        RewardGroup group = new RewardGroup(groupName, rarity);
-        groups.add(group);
+    public @NotNull RewardGroup addNewGroup(final @NotNull String groupName, final @NotNull RewardRarity rarity) {
+        final @NotNull RewardGroup group = new RewardGroup(groupName, rarity);
+        groups.put(groupName, group);
         return group;
     }
 
-    public void removeGroup(final @NotNull RewardGroup group) {
-        groups.remove(group);
+    public boolean removeGroup(final @NotNull RewardGroup group) {
+        return groups.remove(group.getName()) != null;
     }
 
-    public @NotNull List<@NotNull RewardGroup> getGroups() {
-        return groups;
+    public @Nullable RewardGroup removeGroupByName(final @NotNull String groupName) {
+        return groups.remove(groupName);
+    }
+
+    public @Nullable RewardGroup getGroupByName(final @NotNull String groupName) {
+        return groups.get(groupName);
+    }
+
+    public @NotNull Collection<@NotNull RewardGroup> getGroups() {
+        return groups.values();
     }
 
     @NotNull
@@ -134,13 +140,13 @@ public class Rewards {
                 Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), name)),
             parent), 44);
 
-        final @NotNull List<AMenuItem> mi = new ArrayList<>();
-        for (final @NotNull ARewardType item : items) {
+        final @NotNull List<@NotNull AMenuItem> mi = new ArrayList<>();
+        for (final @NotNull ARewardType item : rewardTypes) {
             mi.add(item.getMenuItem());
         }
 
         final @NotNull List<@NotNull Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_SHIFTLEFT);
-        for (final @NotNull RewardGroup group : groups) {
+        for (final @NotNull RewardGroup group : getGroups()) {
             final @NotNull MenuItemRewardGroup rwg = new MenuItemRewardGroup(ItemType.BUNDLE,
                 MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), group.getName())),
@@ -154,7 +160,7 @@ public class Rewards {
 
     public void save(final @NotNull CommentedConfigurationNode config) throws SerializationException {
         int index = 0;
-        for (final @NotNull ARewardType item : items) {
+        for (final @NotNull ARewardType item : rewardTypes) {
             final @NotNull CommentedConfigurationNode indexedNode = config.node(index++);
 
             indexedNode.node("type").raw(item.key().asMinimalString());
@@ -165,7 +171,7 @@ public class Rewards {
         if (!groups.isEmpty()) {
             final @NotNull CommentedConfigurationNode groupNode = config.node("groups");
 
-            for (final @NotNull RewardGroup group : groups) {
+            for (final @NotNull RewardGroup group : getGroups()) {
                 group.save(groupNode.node(group.getName()));
             }
         }
@@ -195,10 +201,12 @@ public class Rewards {
                 }
             } else if (rewardEntryNode.key().equals("groups")) { // Load reward groups
                 for (final @NotNull CommentedConfigurationNode groupEntryNode : config.childrenList()) {
-                    groups.add(RewardGroup.load(groupEntryNode, groupEntryNode.key().toString(), this));
+                    final String groupName = groupEntryNode.key().toString();
+                    groups.put(groupName, RewardGroup.load(groupEntryNode, groupName, this));
                 }
             } else { // datafixerupper
-                groups.add(RewardGroup.load(rewardEntryNode, rewardEntryNode.key().toString(), this));
+                final String groupName = rewardEntryNode.key().toString();
+                groups.put(groupName, RewardGroup.load(rewardEntryNode, groupName, this));
             }
         }
     }

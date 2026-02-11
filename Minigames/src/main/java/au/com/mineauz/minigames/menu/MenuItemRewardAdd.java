@@ -10,20 +10,18 @@ import au.com.mineauz.minigames.minigame.reward.Rewards;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-    private @Nullable Rewards rewards = null;
-    private @Nullable RewardGroup group = null;
 public class MenuItemRewardAdd extends AMenuItem {
+    private final @NotNull Rewards rewards;
+    private final @Nullable RewardGroup group;
 
     public MenuItemRewardAdd(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
                              final @NotNull Rewards rewards) {
-        super(displayType, langKey);
-        this.rewards = rewards;
+        this(displayType, langKey, null, rewards, null);
     }
 
     public MenuItemRewardAdd(final @Nullable ItemType displayType, final @Nullable Component name,
@@ -34,31 +32,27 @@ public class MenuItemRewardAdd extends AMenuItem {
     public MenuItemRewardAdd(final @Nullable ItemType displayType, final @Nullable Component name,
                              final @Nullable List<@NotNull Component> description,
                              final @NotNull Rewards rewards) {
-        super(displayType, name, description);
-        this.rewards = rewards;
+        this(displayType, name, description, rewards, null);
     }
 
-    public MenuItemRewardAdd(@Nullable ItemType displayType, @Nullable Component name, @NotNull RewardGroup group) {
-        super(displayType, name);
-        this.group = group;
+    public MenuItemRewardAdd(final @Nullable ItemType displayType, final @Nullable Component name,
+                             final @NotNull Rewards rewards, final @Nullable RewardGroup group) {
+        this(displayType, name, null, rewards, group);
     }
 
     public MenuItemRewardAdd(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
                              final @Nullable List<@NotNull Component> description,
-                             final @NotNull RewardGroup group) {
+                             final @NotNull Rewards rewards, final @Nullable RewardGroup group) {
         super(displayType, langKey, description);
+        this.rewards = rewards;
         this.group = group;
     }
 
     public MenuItemRewardAdd(final @Nullable ItemType displayType, final @Nullable Component name,
-                             final @NotNull RewardGroup group) {
-        this(displayType, name, null, group);
-    }
-
-    public MenuItemRewardAdd(final @Nullable ItemType displayType, final @Nullable Component name,
                              final @Nullable List<@NotNull Component> description,
-                             final @NotNull RewardGroup group) {
+                             final @NotNull Rewards rewards, final @Nullable RewardGroup group) {
         super(displayType, name, description);
+        this.rewards = rewards;
         this.group = group;
     }
 
@@ -66,19 +60,19 @@ public class MenuItemRewardAdd extends AMenuItem {
     public @NotNull ItemStack onClick() {
         final @NotNull Menu menu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SELECTTYPE_NAME), getMenu().getIntendedViewer());
         for (final @NotNull RewardTypes.RewardTypeFactory factory : RewardTypes.getRewardTypeFactories()) {
-            final MenuItemCustom custom = new MenuItemCustom(ItemType.STONE, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_TYPE_NAME));
-            final ARewardType rewType = factory.makeNewType(rewards);
+            final @NotNull MenuItemCustom custom = new MenuItemCustom(ItemType.STONE, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_TYPE_NAME));
+            final @NotNull ARewardType rewType = factory.makeNewType(rewards);
 
             if (rewType.isUsable()) {
-                ItemMeta meta = custom.getDisplayItem().getItemMeta();
-                meta.displayName(Component.text(factory.getName()));
-                custom.getDisplayItem().setItemMeta(meta);
-                custom.setDisplayItem(rewType.getMenuItem().getDisplayItem());
+                custom.setDisplayItem(rewType.getMenuItem().getDisplayItem().clone());
+                custom.getDisplayItem().editMeta(meta ->
+                    meta.displayName(Component.text(factory.key().asMinimalString())));
+
                 custom.setClick(() -> {
-                    if (rewards != null) {
-                        rewards.addReward(rewType);
-                    } else {
+                    if (group != null) {
                         group.addItem(rewType);
+                    } else {
+                        rewards.addReward(rewType);
                     }
                     getMenu().displayMenu();
                     getMenu().addItem(rewType.getMenuItem());

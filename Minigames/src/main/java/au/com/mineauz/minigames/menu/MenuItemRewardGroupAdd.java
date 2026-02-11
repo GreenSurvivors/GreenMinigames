@@ -54,27 +54,23 @@ public class MenuItemRewardGroupAdd extends AMenuItem implements StringConsumer 
     }
 
     @Override
-    public void acceptString(@NotNull String string) {
-        getMenu().cancelWaitForInput();
+    public void acceptString(final @NotNull String string) {
+        @Nullable RewardGroup group = rewards.getGroupByName(string.replace(" ", "_"));
 
-        string = string.replace(" ", "_");
-        for (RewardGroup group : rewards.getGroups()) {
-            if (group.getName().equals(string)) {
-                MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
-                    MgMenuLangKey.MENU_REWARD_ERROR_GROUPEXISTS,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
-                getMenu().displayMenu();
-                return;
-            }
+        if (group != null) {
+            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
+                MgMenuLangKey.MENU_REWARD_ERROR_GROUPEXISTS,
+                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
+        } else {
+            group = rewards.addNewGroup(string, RewardRarity.NORMAL);
+
+            final @NotNull MenuItemRewardGroup menuItemRewardGroup = new MenuItemRewardGroup(ItemType.BUNDLE,
+                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string)), group, rewards);
+            getMenu().addItem(menuItemRewardGroup);
         }
 
-        final @NotNull RewardGroup group = rewards.addGroup(string, RewardRarity.NORMAL);
-
-        final @NotNull MenuItemRewardGroup menuItemRewardGroup = new MenuItemRewardGroup(ItemType.BUNDLE,
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
-                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string)), group, rewards);
-        getMenu().addItem(menuItemRewardGroup);
-
+        getMenu().cancelWaitForInput();
         getMenu().displayMenu();
     }
 }
