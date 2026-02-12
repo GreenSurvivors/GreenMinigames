@@ -1,12 +1,12 @@
 package au.com.mineauz.minigamesregions.menu;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
 import au.com.mineauz.minigamesregions.conditions.IConditionCategory;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
@@ -30,7 +30,7 @@ public class MenuItemConditionAdd extends AMenuItem {
 
     @Override
     public @NonNull ItemStack onClick() { // miau
-        final @NotNull Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), getMenu().getIntendedViewer());
+        final @NotNull Menu menu = new Menu(6, MessageManager.getMessage(RegionLangKey.MENU_CONDITIONS_NAME), getMenu().getIntendedViewer());
         menu.setPreviousPage(getMenu());
         final @NotNull Map<@NotNull IConditionCategory, @NotNull Menu> cats = new HashMap<>();
         final @NotNull List<@NotNull ACondition> cons = new ArrayList<>(ConditionRegistry.getAllConditions());

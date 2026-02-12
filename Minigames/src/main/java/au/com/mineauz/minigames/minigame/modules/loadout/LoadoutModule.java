@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.minigame.modules.loadout;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -332,10 +332,10 @@ public class LoadoutModule extends AMinigameModule {
                             mgPlayer.setLoadout(loadout);
                             mgPlayer.getPlayer().closeInventory();
                             if (!equip) {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
+                                MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
                                     Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
                             } else {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_EQUIPPED,
+                                MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_EQUIPPED,
                                     Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
                                 loadout.equipLoadout(mgPlayer);
                             }
@@ -362,7 +362,7 @@ public class LoadoutModule extends AMinigameModule {
             }
             if (playerLoadout.isDeletable()) {
                 loadoutMenuItems.add(new MenuItemDisplayLoadout(itemType, playerLoadout.getDisplayName(),
-                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), playerLoadout, getMinigame()));
+                    MessageManager.getMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), playerLoadout, getMinigame()));
             } else {
                 loadoutMenuItems.add(new MenuItemDisplayLoadout(itemType, playerLoadout.getDisplayName(), playerLoadout, getMinigame()));
             }

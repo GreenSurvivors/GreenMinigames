@@ -3,7 +3,7 @@ package au.com.mineauz.minigamesregions.commands;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.commands.set.ASetCommand;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -13,7 +13,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -39,12 +38,12 @@ public class SetRegionCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return RegionMessageManager.getMessage(RegionLangKey.COMMAND_REGION_DESCIPTION);
+        return MessageManager.getMessage(RegionLangKey.COMMAND_REGION_DESCIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return RegionMessageManager.getMessage(RegionLangKey.COMMAND_REGION_USAGE);
+        return MessageManager.getMessage(RegionLangKey.COMMAND_REGION_USAGE);
     }
 
     @Override
@@ -67,25 +66,22 @@ public class SetRegionCommand extends ASetCommand {
                                 rmod.addRegion(new Region(name, minigame, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
                                 mgPlayer.clearSelection();
 
-                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.SUCCESS, RegionMessageManager.getBundleKey(),
-                                        RegionLangKey.REGION_CREATED,
+                                MessageManager.sendMessage(mgPlayer, MinigameMessageType.SUCCESS, RegionLangKey.REGION_CREATED,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                         Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name));
                             } else {
                                 // this is a message already in the main plugin
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_ERROR_NOSELECTION);
+                                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_ERROR_NOSELECTION);
                             }
                             return true;
                         } else if (args[0].equalsIgnoreCase("remove")) {
                             if (rmod.hasRegion(args[1])) {
                                 rmod.removeRegion(args[1]);
-                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
-                                        RegionLangKey.REGION_REMOVED,
+                                MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionLangKey.REGION_REMOVED,
                                         Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), args[1]),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                             } else {
-                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                                        RegionLangKey.REGION_ERROR_NOREGION,
+                                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionLangKey.REGION_ERROR_NOREGION,
                                         Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), args[1]),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                             }
@@ -99,12 +95,12 @@ public class SetRegionCommand extends ASetCommand {
                         }
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), RegionModule.getFactory().getKey().value()));
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
             }
         }
         return false;

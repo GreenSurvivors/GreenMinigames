@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -57,7 +57,7 @@ public class MenuItemTime extends MenuItemLong {
             getMenu().cancelWaitForInput();
             getMenu().displayMenu();
 
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                 MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
         }

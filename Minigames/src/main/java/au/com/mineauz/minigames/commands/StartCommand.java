@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MultiplayerTimer;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -33,12 +33,12 @@ public class StartCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_START_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_START_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_START_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_START_USAGE);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class StartCommand extends ACommand {
             if (mgm != null) {
                 if (mgm.getType() == MinigameType.GLOBAL) {
                     if (mgm.isEnabled()) {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_START_ERROR_GLOBALISRUNNING,
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_START_ERROR_GLOBALISRUNNING,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
                     } else {
                         MinigamePlayer caller = null;
@@ -74,11 +74,11 @@ public class StartCommand extends ACommand {
                         mgm.getMultiplayerTimer().setCurrentLobbyWaitTime(0);
                         mgm.getMultiplayerTimer().startTimer();
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_STARTED);
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_STARTED);
                     }
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
             return true;

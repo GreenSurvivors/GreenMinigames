@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -27,12 +27,12 @@ public class SetPresetCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_PRESET_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_PRESET_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_PRESET_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_PRESET_USAGE);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SetPresetCommand extends ASetCommand {
                 PresetLoader.loadPreset(args[0], minigame, sender);
                 return true;
             } else if (args.length >= 2) {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_PRESET_HEADER);
+                MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_PRESET_HEADER);
                 PresetLoader.getPresetInfo(args[0], sender);
                 return true;
             }

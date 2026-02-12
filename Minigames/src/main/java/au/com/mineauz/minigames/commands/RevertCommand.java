@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -31,12 +31,12 @@ public class RevertCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_REVERT_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_REVERT_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_REVERT_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_REVERT_USAGE);
     }
 
     @Override
@@ -52,10 +52,10 @@ public class RevertCommand extends ACommand {
             if (mgPlayer.isInMinigame() && mgPlayer.getCheckpoint() != null) {
                 PLUGIN.getPlayerManager().revertToCheckpoint(mgPlayer);
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_REVERT_ERROR_NOCHECKPOINTS);
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_REVERT_ERROR_NOCHECKPOINTS);
             }
         } else {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
         }
         return true;
     }

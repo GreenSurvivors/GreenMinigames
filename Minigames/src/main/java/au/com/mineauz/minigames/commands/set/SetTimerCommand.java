@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -31,12 +31,12 @@ public class SetTimerCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_TIMER_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_TIMER_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_TIMER_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_TIMER_USAGE);
     }
 
     @Override
@@ -53,28 +53,28 @@ public class SetTimerCommand extends ASetCommand {
             if (millis != null) {
                 minigame.setTimer(TimeUnit.MILLISECONDS.toSeconds(millis));
                 if (millis <= 0) {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_SUCCESS,
+                    MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TIMER_REMOVE,
+                    MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_TIMER_REMOVE,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("display") && args.length >= 2) {
                 if (args[1].equalsIgnoreCase("xpBar")) {
                     minigame.setTimerDisplayType(MinigameTimer.DisplayType.XP_BAR);
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_XPBAR,
+                    MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_XPBAR,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     return true;
                 } else if (args[1].equalsIgnoreCase("bossBar")) {
                     minigame.setTimerDisplayType(MinigameTimer.DisplayType.BOSS_BAR);
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_BOSSBAR,
+                    MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_BOSSBAR,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     return true;
                 } else if (args[1].equalsIgnoreCase("none")) {
                     minigame.setTimerDisplayType(MinigameTimer.DisplayType.NONE);
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_NONE,
+                    MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_TIMER_NONE,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     return true;
                 } // else here will default to false

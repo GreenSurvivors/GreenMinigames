@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.backend.BackendManager;
 import au.com.mineauz.minigames.backend.Notifier;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -29,12 +29,12 @@ public class BackendCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_BACKEND_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_BACKEND_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_BACKEND_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_BACKEND_USAGE);
     }
 
     @Override
@@ -52,40 +52,40 @@ public class BackendCommand extends ACommand {
         BackendManager manager = PLUGIN.getBackend();
 
         if (args[0].equalsIgnoreCase("export")) {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_BACKEND_EXPORT_START,
+            MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_BACKEND_EXPORT_START,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[1]));
             PLUGIN.getComponentLogger().warn("Started exporting backend. Started by " + sender.getName());
 
             try {
                 CompletableFuture<Void> future = manager.exportTo(args[1], PLUGIN.getConfig(), new ExportNotifier(sender));
                 future.exceptionally(throwable -> {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), throwable.getMessage()));
                     PLUGIN.getComponentLogger().error("An internal error occurred while exporting.", throwable);
                     return null;
                 });
             } catch (IllegalArgumentException e) {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
                 PLUGIN.getComponentLogger().error("An internal error occurred while exporting.", e);
             }
         } else if (args[0].equalsIgnoreCase("switch")) {
             try { // todo why only temporary?
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_BACKEND_SWITCH_START,
+                MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_BACKEND_SWITCH_START,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[1]));
                 CompletableFuture<Void> future = manager.switchBackend(args[1], PLUGIN.getConfig());
                 future.whenComplete((result, throwable) -> {
                     if (throwable == null) {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_BACKEND_SWITCH_SUCCESS);
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.WARNING, MgCommandLangKey.COMMAND_BACKEND_SWITCH_WARNING_TEMP);
+                        MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_BACKEND_SWITCH_SUCCESS);
+                        MessageManager.sendMessage(sender, MinigameMessageType.WARNING, MgCommandLangKey.COMMAND_BACKEND_SWITCH_WARNING_TEMP);
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), throwable.getMessage()));
                         PLUGIN.getComponentLogger().error("An internal error occurred while exporting.", throwable);
                     }
                 });
             } catch (IllegalArgumentException e) {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
                 PLUGIN.getComponentLogger().error("An internal error occurred while exporting.", e);
             }
@@ -109,13 +109,13 @@ public class BackendCommand extends ACommand {
 
         @Override
         public void onComplete() {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_BACKEND_EXPORT_SUCCES);
+            MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_BACKEND_EXPORT_SUCCES);
             PLUGIN.getComponentLogger().info("Exporting complete");
         }
 
         @Override
         public void onError(@NotNull Exception e, @NotNull String state, int count) {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), e.getMessage()));
             PLUGIN.getComponentLogger().error("Exporting error at " + state + ": " + count, e);
         }

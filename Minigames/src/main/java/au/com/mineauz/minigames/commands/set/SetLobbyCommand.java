@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -35,12 +35,12 @@ public class SetLobbyCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LOBBY_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_LOBBY_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LOBBY_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_LOBBY_USAGE);
     }
 
     @Override
@@ -54,10 +54,10 @@ public class SetLobbyCommand extends ASetCommand {
         if (args == null) {
             if (sender instanceof Entity entity) {
                 minigame.setLobbyLocation(new SafeFullLocation(entity.getLocation()));
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_LOBBY_LOCATION,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_LOBBY_LOCATION,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else { // not a player
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
             }
         } else {
             LobbySettingsModule lobby = LobbySettingsModule.getMinigameModule(minigame);
@@ -70,22 +70,22 @@ public class SetLobbyCommand extends ASetCommand {
                             if (args[1].equalsIgnoreCase("playerwait")) {
                                 lobby.setCanMoveOnPlayerWait(canMove);
 
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_CANMOVE_PLAYERWAIT,
-                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_CANMOVE_PLAYERWAIT,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MessageManager.getMessage(
                                                 canMove ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                             } else if (args[1].equalsIgnoreCase("startwait")) {
                                 lobby.setCanMoveOnStartWait(canMove);
 
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_CANMOVE_START,
-                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_CANMOVE_START,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MessageManager.getMessage(
                                                 canMove ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                             } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                                 return false;
                             }
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]));
                         }
                     }
@@ -95,22 +95,22 @@ public class SetLobbyCommand extends ASetCommand {
                             if (args[1].equalsIgnoreCase("playerwait")) {
                                 lobby.setCanInteractPlayerWait(canInteract);
 
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_CANINTERACT_PLAYERWAIT,
-                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_CANINTERACT_PLAYERWAIT,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MessageManager.getMessage(
                                                 canInteract ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                             } else if (args[1].equalsIgnoreCase("startwait")) {
                                 lobby.setCanInteractStartWait(canInteract);
 
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_CANINTERACT_STARTWAIT,
-                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_CANINTERACT_STARTWAIT,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MessageManager.getMessage(
                                                 canInteract ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                             } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                                 return false;
                             }
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]));
                         }
                     }
@@ -120,27 +120,27 @@ public class SetLobbyCommand extends ASetCommand {
                             if (args[1].equalsIgnoreCase("playerwait")) {
                                 lobby.setTeleportOnPlayerWait(teleport);
 
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_TELEPORT_PLAYERWAIT,
-                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_TELEPORT_PLAYERWAIT,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MessageManager.getMessage(
                                                 teleport ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                             } else if (args[1].equalsIgnoreCase("startwait")) {
                                 lobby.setTeleportOnStart(teleport);
 
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_TELEPORT_STARTWAIT,
-                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_LOBBY_TELEPORT_STARTWAIT,
+                                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MessageManager.getMessage(
                                                 teleport ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                             } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                                 return false;
                             }
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]));
                         }
                     }
                     default ->
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
             } else if (args.length == 2) {
@@ -155,10 +155,10 @@ public class SetLobbyCommand extends ASetCommand {
                         lobby.setPlayerWaitTime(TimeUnit.MILLISECONDS.toSeconds(millis));
 
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_LOBBY_PLAYERWAIT_SUCCESS,
+                        MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_LOBBY_PLAYERWAIT_SUCCESS,
                                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(lobby.getPlayerWaitTime()))));
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                         return false;
                     }

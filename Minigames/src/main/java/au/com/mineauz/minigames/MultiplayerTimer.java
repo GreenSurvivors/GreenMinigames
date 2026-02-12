@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -66,14 +66,14 @@ public class MultiplayerTimer {
     private void doTimer() {
         if (currentLobbyWaitTime != 0 && !paused) {
             if (currentLobbyWaitTime == oLobbyWaitTime) {
-                MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_STARTUP_WAITINGFORPLAYERS,
+                MessageManager.sendMinigameMessage(minigame, MessageManager.getMessage(MgMiscLangKey.TIME_STARTUP_WAITINGFORPLAYERS,
                         Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(currentLobbyWaitTime)))),
                     MinigameMessageType.INFO);
                 allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractPlayerWait());
                 freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveOnPlayerWait());
                 minigame.setState(MinigameState.WAITING);
             } else if (timeMsg.contains(currentLobbyWaitTime)) {
-                MinigameMessageManager.sendMinigameMessage(minigame, MinigameUtils.convertTime(Duration.ofSeconds(currentLobbyWaitTime)),
+                MessageManager.sendMinigameMessage(minigame, MinigameUtils.convertTime(Duration.ofSeconds(currentLobbyWaitTime)),
                     MinigameMessageType.INFO);
                 PlayMGSound.playSound(minigame, MGSounds.TIMER_TICK.getSound());
             }
@@ -81,7 +81,7 @@ public class MultiplayerTimer {
             //wait time done game will start.
             if (startWaitTime == oStartWaitTime) {
                 minigame.setState(MinigameState.STARTING);
-                MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_STARTUP_MINIGAMESTARTS),
+                MessageManager.sendMinigameMessage(minigame, MessageManager.getMessage(MgMiscLangKey.TIME_STARTUP_MINIGAMESTARTS),
                     MinigameMessageType.INFO);
 
                 freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveOnStartWait());
@@ -97,13 +97,13 @@ public class MultiplayerTimer {
                     }
                 }
             } else if (timeMsg.contains(startWaitTime)) {
-                MinigameMessageManager.sendMinigameMessage(minigame, MinigameUtils.convertTime(Duration.ofSeconds(startWaitTime)),
+                MessageManager.sendMinigameMessage(minigame, MinigameUtils.convertTime(Duration.ofSeconds(startWaitTime)),
                     MinigameMessageType.INFO);
                 PlayMGSound.playSound(minigame, MGSounds.TIMER_TICK.getSound());
             }
         } else if (currentLobbyWaitTime == 0 && startWaitTime == 0) {
             //game should start...
-            MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_STARTUP_GO),
+            MessageManager.sendMinigameMessage(minigame, MessageManager.getMessage(MgMiscLangKey.TIME_STARTUP_GO),
                 MinigameMessageType.SUCCESS);
             reclearInventories(minigame);
             if (!LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()) {
@@ -132,8 +132,8 @@ public class MultiplayerTimer {
 
             if (minigame.getTimer() > 0) {
                 minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
-                MinigameMessageManager.sendMinigameMessage(minigame,
-                    MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_TIMELEFT,
+                MessageManager.sendMinigameMessage(minigame,
+                    MessageManager.getMessage(MgMiscLangKey.TIME_TIMELEFT,
                         Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(minigame.getTimer())))));
             }
 
@@ -197,7 +197,7 @@ public class MultiplayerTimer {
 
     public void pauseTimer(@NotNull Component reason) {
         paused = true;
-        MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_STARTUP_PAUSED,
+        MessageManager.sendMinigameMessage(minigame, MessageManager.getMessage(MgMiscLangKey.TIME_STARTUP_PAUSED,
             Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), reason)), MinigameMessageType.INFO);
     }
 
@@ -209,8 +209,8 @@ public class MultiplayerTimer {
 
     public void resumeTimer() {
         paused = false;
-        MinigameMessageManager.sendMinigameMessage(minigame,
-            MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_STARTUP_RESUMED), MinigameMessageType.INFO);
+        MessageManager.sendMinigameMessage(minigame,
+            MessageManager.getMessage(MgMiscLangKey.TIME_STARTUP_RESUMED), MinigameMessageType.INFO);
     }
 
     public boolean isPaused() {

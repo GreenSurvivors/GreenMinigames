@@ -2,6 +2,8 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -14,9 +16,9 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +43,7 @@ public class ScoreRangeCondition extends ACondition {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_SCORERANGE_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_CONDITION_SCORERANGE_NAME);
     }
 
     @Override
@@ -52,11 +54,11 @@ public class ScoreRangeCondition extends ACondition {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-            RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_SCORERANGE_NAME),
-            RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_FORMAT,
+            MessageManager.getMessage(RegionLangKey.MENU_CONDITION_SCORERANGE_NAME),
+            MessageManager.getMessage(RegionLangKey.MENU_RANGE_FORMAT,
                 Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(min.getFlag())),
                 Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(max.getFlag()))),
-            RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), teamColor.getFlag().getCompName());
+            MessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), teamColor.getFlag().getCompName());
     }
 
     @Override
@@ -143,15 +145,15 @@ public class ScoreRangeCondition extends ACondition {
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
         menu.addItem(min.getMenuItem(ItemType.STONE_SLAB,
-            RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0, null));
+            MessageManager.getMessage(RegionLangKey.MENU_RANGE_MIN_NAME), 0, null));
         menu.addItem(max.getMenuItem(ItemType.STONE,
-            RegionMessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 0, null));
+            MessageManager.getMessage(RegionLangKey.MENU_RANGE_MAX_NAME), 0, null));
         menu.addItem(scoreHolder.getMenuItem(ItemType.PUFFERFISH_BUCKET,
-            RegionMessageManager.getMessage(RegionLangKey.MENU_SCORE_HOLDER_NAME)));
         List<TeamColor> teams = new ArrayList<>(TeamColor.validColors());
+            MessageManager.getMessage(RegionLangKey.MENU_SCORE_HOLDER_NAME)));
 
         // todo cycle through color material
-        menu.addItem(new MenuItemList<>(getTeamDisplayItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<>() {
+        menu.addItem(new MenuItemList<>(getTeamDisplayItemType(), MessageManager.getMessage(RegionLangKey.MENU_TEAM_NAME), new Callback<>() {
             @Override
             public TeamColor getValue() {
                 return teamColor.getFlag();

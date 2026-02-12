@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -26,12 +26,12 @@ public class SelectCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SELECT_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SELECT_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SELECT_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SELECT_USAGE);
     }
 
     @Override
@@ -47,14 +47,14 @@ public class SelectCommand extends ACommand {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("1")) {
                     mgPlayer.setSelection1(player.getLocation());
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SELECT_POINT1);
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SELECT_POINT1);
                 } else if (args[0].equalsIgnoreCase("2")) {
                     mgPlayer.setSelection2(player.getLocation());
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SELECT_POINT2);
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SELECT_POINT2);
 
                 } else if (args[0].equalsIgnoreCase("clear")) {
                     mgPlayer.clearSelection();
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SELECT_CLEAR);
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SELECT_CLEAR);
                 } else { // unknown param
                     return false;
                 }
@@ -62,7 +62,7 @@ public class SelectCommand extends ACommand {
                 return false;
             }
         } else {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
             return false;
         }
 

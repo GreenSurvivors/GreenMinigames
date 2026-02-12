@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -51,7 +51,7 @@ public class MenuItemComponent extends AMenuItem implements StringConsumer {
     public void updateDescription() {
         @Nullable Component settingComp = callback.getValue();
         if (settingComp == null) {
-            settingComp = MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET);
+            settingComp = MessageManager.getMessage(MgMenuLangKey.MENU_ELEMENTNOTSET);
         }
 
         // limit to a still readable size
@@ -65,11 +65,11 @@ public class MenuItemComponent extends AMenuItem implements StringConsumer {
         final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(20);
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
         if (allowNull) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ALLOWNULL,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ALLOWNULL,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
         }
         getMenu().closeAndWaitForInput(reopenTime, this);

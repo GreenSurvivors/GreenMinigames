@@ -3,7 +3,7 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -14,7 +14,6 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -37,7 +36,7 @@ public class MessageAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME);
     }
 
     @Override
@@ -47,7 +46,7 @@ public class MessageAction extends AAction {
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME),
+        return Map.of(MessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME),
                 MinigameUtils.limitIgnoreFormat(MiniMessage.miniMessage().deserialize(msg.getFlag()), 16));
     }
 
@@ -105,7 +104,7 @@ public class MessageAction extends AAction {
             return;
         }
 
-        MinigameMessageManager.sendMessage(mgPlayer, messageType.getFlag(), MiniMessage.miniMessage().deserialize(msg.getFlag()));
+        MessageManager.sendMessage(mgPlayer, messageType.getFlag(), MiniMessage.miniMessage().deserialize(msg.getFlag()));
 
         ScriptObject base = new ScriptObject() {
             @Override
@@ -141,7 +140,7 @@ public class MessageAction extends AAction {
         String message = msg.getFlag();
 
         message = ExpressionParser.stringResolve(message, base, true, true);
-        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(message));
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(message));
     }
 
     @Override
@@ -158,7 +157,7 @@ public class MessageAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setPreviousPage(previous);
-        menu.addItem(msg.getMenuItem(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME)));
+        menu.addItem(msg.getMenuItem(ItemType.PAPER, MessageManager.getMessage(RegionLangKey.MENU_ACTION_MESSAGE_NAME)));
         menu.setItem(new MenuItemBack(menu.getPreviousPage()), menu.getSize() - 9);
         menu.displayMenu();
         return true;

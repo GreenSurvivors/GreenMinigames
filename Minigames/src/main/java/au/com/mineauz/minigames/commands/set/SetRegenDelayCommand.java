@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -30,12 +30,12 @@ public class SetRegenDelayCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REGENDELAY_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_REGENDELAY_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REGENDELAY_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_REGENDELAY_USAGE);
     }
 
     @Override
@@ -50,12 +50,12 @@ public class SetRegenDelayCommand extends ASetCommand {
             Long millis = MinigameUtils.parsePeriod(args[0]);
             if (millis != null) {
                 minigame.setRegenDelay(TimeUnit.MILLISECONDS.toSeconds(millis));
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_REGENDELAY_SUCCESS,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_REGENDELAY_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                 return true;
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
         }

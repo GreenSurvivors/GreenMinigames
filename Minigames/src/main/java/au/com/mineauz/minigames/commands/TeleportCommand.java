@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -40,12 +40,12 @@ public class TeleportCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_TELEPORT_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_TELEPORT_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_TELEPORT_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_TELEPORT_USAGE);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TeleportCommand extends ACommand {
             if (!matchedPlayer.isEmpty()) {
                 mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(matchedPlayer.getFirst());
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 return true;
             }
@@ -133,7 +133,7 @@ public class TeleportCommand extends ACommand {
                     }
                 }
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_TPCOORDS,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_TPCOORDS,
                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                 mgPlayer.teleport(new Location(player.getWorld(), x, y, z, yaw, pitch));
                 return true;
@@ -159,28 +159,28 @@ public class TeleportCommand extends ACommand {
 
                     if (team != null) {
                         mgPlayer.teleport(team.getStartLocations().get(pos));
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_TEAMSTARTPOS,
+                        MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_TEAMSTARTPOS,
                                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), team.getColoredDisplayName()),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(pos + 1)));
                     } else {
                         mgPlayer.teleport(mgPlayer.getMinigame().getStartLocations().get(pos));
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_STARTPOS,
+                        MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_STARTPOS,
                                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(pos + 1)));
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_SELF,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_SELF,
                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                 }
                 return true;
             } else if (args.length == 2 && args[1].equalsIgnoreCase("checkpoint")) {
                 if (mgPlayer.isInMinigame()) {
                     mgPlayer.teleport(mgPlayer.getCheckpoint());
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_CHEKPOINT,
+                    MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_CHEKPOINT,
                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_PLAYER,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_PLAYER,
                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()));
                 }
                 return true;
@@ -191,13 +191,13 @@ public class TeleportCommand extends ACommand {
                 if (!matchedPlayer.isEmpty()) {
                     mgPlayerSelected = PLUGIN.getPlayerManager().getMinigamePlayer(matchedPlayer.getFirst());
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                     return true;
                 }
 
                 mgPlayer.teleport(mgPlayerSelected.getLocation());
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_PLAYER2PLAYER,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_TELEPORT_PLAYER2PLAYER,
                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                         Placeholder.component(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayerSelected.displayName()));
                 return true;

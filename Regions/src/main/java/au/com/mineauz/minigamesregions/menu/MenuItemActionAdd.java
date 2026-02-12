@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.menu;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.actions.ActionFactory;
@@ -7,7 +8,6 @@ import au.com.mineauz.minigamesregions.actions.ActionRegistry;
 import au.com.mineauz.minigamesregions.actions.IAction;
 import au.com.mineauz.minigamesregions.actions.IActionCategory;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
@@ -31,7 +31,7 @@ public class MenuItemActionAdd extends AMenuItem {
 
     @Override
     public @NonNull ItemStack onClick() {
-        final @NotNull Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), getMenu().getIntendedViewer());
+        final @NotNull Menu menu = new Menu(6, MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), getMenu().getIntendedViewer());
         menu.setPreviousPage(getMenu());
         final @NotNull Map<@NotNull IActionCategory, @NotNull Menu> cats = new HashMap<>();
         final @NotNull List<@NotNull ActionFactory> acts = new ArrayList<>(ActionRegistry.getAllActionFactories());

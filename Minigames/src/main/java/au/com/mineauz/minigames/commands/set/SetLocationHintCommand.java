@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -34,12 +34,12 @@ public class SetLocationHintCommand extends ASetCommand { //todo i feel like thi
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LOCATION_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_LOCATION_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LOCATION_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_LOCATION_USAGE);
     }
 
     @Override
@@ -55,11 +55,11 @@ public class SetLocationHintCommand extends ASetCommand { //todo i feel like thi
                 final @NotNull String locationName = String.join(" ", args);
                 treasureHuntMechanic.setLocationName(locationName);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_LOCATION_SUCCESS,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_LOCATION_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.LOCATION.getKey(), locationName));
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), GameMechanicRegistry.MgDefaultMechanic.TREASURE_HUNT.getKey().value()));
             }

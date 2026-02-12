@@ -3,7 +3,7 @@ package au.com.mineauz.minigamesregions;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
@@ -163,7 +163,7 @@ public class RegionEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void playerQuit(@NotNull QuitMinigameEvent event) {
         if (RegionModule.getMinigameModule(event.getMinigame()) == null) {
-            MinigameMessageManager.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
+            MessageManager.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
             return;
         }
         final @NotNull MinigamePlayer mgPlayer = event.getMinigamePlayer();
@@ -205,7 +205,7 @@ public class RegionEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void playersEndPhase(@NotNull EndPhaseMinigameEvent event) {
         if (RegionModule.getMinigameModule(event.getMinigame()) == null) {
-            MinigameMessageManager.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
+            MessageManager.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
             return;
         }
 
@@ -226,7 +226,7 @@ public class RegionEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void playersEnded(@NotNull EndedMinigameEvent event) {
         if (RegionModule.getMinigameModule(event.getMinigame()) == null) {
-            MinigameMessageManager.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
+            MessageManager.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
             return;
         }
         for (Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()) {

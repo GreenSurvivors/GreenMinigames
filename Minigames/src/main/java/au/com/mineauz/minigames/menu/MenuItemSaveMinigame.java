@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -32,7 +32,7 @@ public class MenuItemSaveMinigame extends AMenuItem {
     @Override
     public @NotNull ItemStack onClick() {
         mgm.saveMinigame();
-        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.SUCCESS,
+        MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.SUCCESS,
             MgMiscLangKey.MINIGAME_SAVED,
             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
         return getDisplayItem();

@@ -1,11 +1,11 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import io.papermc.paper.math.Position;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -42,7 +42,7 @@ public class BarrierAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BARRIER_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_BARRIER_NAME);
     }
 
     @Override

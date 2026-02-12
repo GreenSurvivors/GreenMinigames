@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -32,12 +32,12 @@ public class DeleteCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DELETE_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_DELETE_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DELETE_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_DELETE_USAGE);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class DeleteCommand extends ACommand {
                     PLUGIN.getConfig().set("minigames", ls);
                     PLUGIN.getMinigameManager().removeMinigame(mgm.getName());
                     PLUGIN.saveConfig();
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DELETE_SUCCESS,
+                    MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DELETE_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getName()));
                 }
             }

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -43,12 +43,12 @@ public class SetBlockWhitelistCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_WHITELIST_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_WHITELIST_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_WHITELIST_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_WHITELIST_USAGE);
     }
 
     @Override
@@ -69,14 +69,14 @@ public class SetBlockWhitelistCommand extends ASetCommand {
                     if (blockType != null) {
                         minigame.getRecorderData().addWBBlock(blockType);
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_ADDED,
+                        MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_ADDED,
                             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(blockType.translationKey())),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                         return true;
                     }
                 }
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBLOCKTYPE,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBLOCKTYPE,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
             } else if (args[0].equalsIgnoreCase("remove") && args.length >= 2) {
                 BlockType blockType = null;
@@ -89,18 +89,18 @@ public class SetBlockWhitelistCommand extends ASetCommand {
                 if (blockType != null) {
                     minigame.getRecorderData().removeWBBlock(blockType);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_REMOVE,
+                    MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_REMOVE,
                         Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(blockType.translationKey())),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBLOCKTYPE,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBLOCKTYPE,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                 }
             } else if (args[0].equalsIgnoreCase("clear")) {
                 minigame.getRecorderData().getWBBlocks().clear();
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_CLEAR,
-                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
+                MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_CLEAR,
+                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MessageManager.getMessage(
                         minigame.getRecorderData().getWhitelistMode() ? MgMiscLangKey.CONFIG_WHITELIST : MgMiscLangKey.CONFIG_BLACKLIST)),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else if (args[0].equalsIgnoreCase("list")) { //todo set list doesn't feel right
@@ -108,8 +108,8 @@ public class SetBlockWhitelistCommand extends ASetCommand {
                     map(type -> type.getKey().asMinimalString()).
                     collect(Collectors.joining("<gray>, </gray>"));
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_LIST,
-                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
+                MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_LIST,
+                    Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MessageManager.getMessage(
                         minigame.getRecorderData().getWhitelistMode() ? MgMiscLangKey.CONFIG_WHITELIST : MgMiscLangKey.CONFIG_BLACKLIST)),
                     Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), whiteListedBlocks));
             } else {
@@ -118,12 +118,12 @@ public class SetBlockWhitelistCommand extends ASetCommand {
                 if (bool != null) {
                     minigame.getRecorderData().setWhitelistMode(bool);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_MODE,
+                    MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_WHITELIST_MODE,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
+                        Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MessageManager.getMessage(
                             bool ? MgMiscLangKey.CONFIG_WHITELIST : MgMiscLangKey.CONFIG_BLACKLIST)));
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
             }

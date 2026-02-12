@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -35,12 +35,12 @@ public class SetGamemodeCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_GAMEMODE_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_GAMEMODE_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_GAMEMODE_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_GAMEMODE_USAGE);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class SetGamemodeCommand extends ASetCommand {
             if (gameMode != null) {
                 minigame.setDefaultGamemode(gameMode);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEMODE_SUCCESS,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEMODE_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(gameMode.translationKey())));
             }

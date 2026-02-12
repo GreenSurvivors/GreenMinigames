@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -37,12 +37,12 @@ public class SetLoadoutCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LOADOUT_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_LOADOUT_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_LOADOUT_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_LOADOUT_USAGE);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class SetLoadoutCommand extends ASetCommand {
                     }
 
                     MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(displayType, loadout.getDisplayName(),
-                            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), loadout, minigame);
+                            MessageManager.getMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), loadout, minigame);
 
                     mil.setAllowDelete(loadout.isDeletable());
                     menuItems.add(mil);
@@ -79,12 +79,12 @@ public class SetLoadoutCommand extends ASetCommand {
 
                 loadoutMenu.displayMenu();
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgDefaultModules.LOADOUT.getKey().value()));
             }
         } else {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
         }
 
         return true;

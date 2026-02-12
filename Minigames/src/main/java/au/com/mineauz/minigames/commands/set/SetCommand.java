@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ACommand;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -121,12 +121,12 @@ public class SetCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_USAGE);
     }
 
     @Override
@@ -135,10 +135,10 @@ public class SetCommand extends ACommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
-        ASetCommand comd = null;
-        Minigame minigame = null;
-        String[] shortArgs = null;
+    public boolean onCommand(final @NotNull CommandSender sender, final @NotNull String @NotNull [] args) {
+        @Nullable ASetCommand comd = null;
+        @Nullable Minigame minigame = null;
+        @NotNull String @Nullable[] shortArgs = null;
 
         if (args.length >= 1) {
             if (PLUGIN.getMinigameManager().hasMinigame(args[0])) {
@@ -159,28 +159,28 @@ public class SetCommand extends ACommand {
                 if (comd.getPermission() == null || sender.hasPermission(comd.getPermission())) {
                     boolean returnValue = comd.onCommand(sender, minigame, shortArgs);
                     if (!returnValue) {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_HEADER);
+                        MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_HEADER);
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_DESCRIPTION,
+                        MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_DESCRIPTION,
                                 Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getDescription()));
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_USAGE,
+                        MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_USAGE,
                                 Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getUsage()));
                         if (comd.getAliases() != null) {
                             String aliases = String.join("<gray>, </gray>", comd.getAliases());
 
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_ALIASES,
+                            MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SET_SUBCOMMAND_ALIASES,
                                     Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), aliases));
                         }
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
             }
             return true;
         } else if (minigame == null) {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
         }
         return false;

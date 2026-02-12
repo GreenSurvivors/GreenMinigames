@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.block.BlockType;
@@ -15,7 +15,7 @@ public class MenuItemWhitelistBlock extends AMenuItem {
 
     public MenuItemWhitelistBlock(final @NotNull ItemType displayType, final @NotNull List<@NotNull BlockType> whitelist) {
         super(displayType, Component.translatable(displayType.translationKey()),
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
+            MessageManager.getMessageList(MgMenuLangKey.MENU_DELETE_RIGHTCLICK));
         this.whitelist = whitelist;
     }
 

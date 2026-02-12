@@ -1,12 +1,12 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.HashSet;
 import java.util.Map;
 
 public class ContainsEntireTeamCondition extends ACondition {
@@ -25,7 +24,7 @@ public class ContainsEntireTeamCondition extends ACondition {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSENTIRETEAM_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSENTIRETEAM_NAME);
     }
 
     @Override
@@ -50,7 +49,7 @@ public class ContainsEntireTeamCondition extends ACondition {
 
     @Override
     public boolean checkRegionCondition(final @NotNull MinigamePlayer mgPlayer, final @NotNull Region region) {
-        return new HashSet<>(region.getPlayers()).containsAll(mgPlayer.getTeam().getPlayers());
+        return region.getPlayers().containsAll(mgPlayer.getTeam().getPlayers());
     }
 
     @Override

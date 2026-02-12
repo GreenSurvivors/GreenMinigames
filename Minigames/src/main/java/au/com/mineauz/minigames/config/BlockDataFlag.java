@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Callback;
@@ -55,11 +55,11 @@ public class BlockDataFlag extends AFlag<BlockData> {
     @Deprecated
     @Override
     public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey) {
-        return getMenuItem(MinigameMessageManager.getMgMessage(langKey));
+        return getMenuItem(MessageManager.getMessage(langKey));
     }
 
     public @NotNull AMenuItem getMenuItem(final @NotNull MinigameLangKey langKey) {
-        return getMenuItem(MinigameMessageManager.getMgMessage(langKey));
+        return getMenuItem(MessageManager.getMessage(langKey));
     }
 
     /**
@@ -88,7 +88,7 @@ public class BlockDataFlag extends AFlag<BlockData> {
     @Override
     public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey nameLangKey,
                                           final @NotNull MinigameLangKey descriptionLangKey) {
-        return getMenuItem(MinigameMessageManager.getMgMessage(nameLangKey));
+        return getMenuItem(MessageManager.getMessage(nameLangKey));
     }
 
     public @NotNull AMenuItem getMenuItem(final @Nullable Component name) {

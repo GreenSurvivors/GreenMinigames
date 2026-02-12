@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -44,12 +44,12 @@ public class SetSurvivorTeamCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_USAGE);
     }
 
     @Override
@@ -76,18 +76,18 @@ public class SetSurvivorTeamCommand extends ASetCommand {
                 if (teamColor != null) {
                     if (teamCheck.test(teamColor)) {
                         infectionMechanic.setSurvivorTeam(teamColor);
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_SUCCESS,
+                        MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_SURVIVORTEAM_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]),
                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(
                                 Arrays.stream(TeamColor.values()).filter(teamCheck).collect(Collectors.toSet())).append(MiniMessage.miniMessage().
                                 deserialize("<gray>, </gray><white>Default</white>"))));
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTEAM,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]),
                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), TeamColor.inputColorNamesComp(
                             Arrays.stream(TeamColor.values()).filter(teamCheck).collect(Collectors.toSet())).append(MiniMessage.miniMessage().
@@ -95,7 +95,7 @@ public class SetSurvivorTeamCommand extends ASetCommand {
                     return false;
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), GameMechanicRegistry.MgDefaultMechanic.INFECTION.getKey().value()));
             }

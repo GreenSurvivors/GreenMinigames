@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.minigame.modules.team.Team;
 import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -30,7 +30,7 @@ public abstract class AAction implements IAction, Keyed {
      */
     public void debug(final @Nullable MinigamePlayer mgPlayer, final @NotNull ScriptObject scriptObject) {
         if (Minigames.getPlugin().isDebugging()) {
-            MinigameMessageManager.debugMessage("Debug: Execute on Obj:"
+            MessageManager.debugMessage("Debug: Execute on Obj:"
                     + scriptObject.getAsString() + " as Action: " + this + " Player: "
                     + ((mgPlayer == null) ? "no player" : mgPlayer.getAsString()));
         }

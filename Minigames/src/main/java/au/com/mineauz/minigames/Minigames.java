@@ -10,7 +10,7 @@ import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.managers.PlaceHolderManager;
 import au.com.mineauz.minigames.managers.ResourcePackManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
@@ -50,7 +50,7 @@ public class Minigames extends JavaPlugin { // todo move a lot of these assignme
     private SignBase minigameSigns;
     private ComparableVersion pluginVersion;
     private final @NotNull StartUpLogHandler startUpHandler;
-    private final MinigameMessageManager minigameMessageManager = new MinigameMessageManager();
+    private final @NotNull MessageManager messageManager = new MessageManager();
     private DisplayManager displayManager;
     private ResourcePackManager resourcePackManager;
     private MinigamePlayerManager playerManager;
@@ -130,7 +130,7 @@ public class Minigames extends JavaPlugin { // todo move a lot of these assignme
         try {
             if (checkVersion()) return;
             ConfigurationSerialization.registerClass(ResourcePack.class); // todo
-            MinigameMessageManager.registerCoreLanguage();
+            MessageManager.registerCoreLanguage();
             PresetLoader.initPresets(this);
             setupMinigames();
             if (!setupEconomy()) {
@@ -326,8 +326,8 @@ public class Minigames extends JavaPlugin { // todo move a lot of these assignme
         return plugin;
     }
 
-    public MinigameMessageManager getMinigameMessageManager() {
-        return minigameMessageManager;
+    public @NotNull MessageManager getMessageManager() {
+        return messageManager;
     }
 
     public @NotNull String getStartupLog() {
@@ -355,7 +355,7 @@ public class Minigames extends JavaPlugin { // todo move a lot of these assignme
     }
 
     public void queueStatSave(final @NotNull StoredGameStats saveData, final boolean winner) {
-        MinigameMessageManager.debugMessage("Scheduling SQL data save for " + saveData);
+        MessageManager.debugMessage("Scheduling SQL data save for " + saveData);
 
         final CompletableFuture<Long> winCountFuture = backend.loadSingleStat(saveData.getMinigame(), MinigameStatistics.Wins, StatisticValueField.Total, saveData.getPlayer().getUUID());
         backend.saveStats(saveData);

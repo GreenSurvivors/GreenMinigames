@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.modules.loadout.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.loadout.PlayerLoadout;
@@ -9,7 +10,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
@@ -30,7 +30,7 @@ public class EquipLoadoutAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EQUIPLOADOUT_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_EQUIPLOADOUT_NAME);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class EquipLoadoutAction extends AAction {
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_NAME), Component.text(loadout.getFlag()));
+        return Map.of(MessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_NAME), Component.text(loadout.getFlag()));
     }
 
     @Override
@@ -97,7 +97,7 @@ public class EquipLoadoutAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(new MenuItemString(ItemType.DIAMOND_SWORD, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_NAME), new Callback<>() {
+        menu.addItem(new MenuItemString(ItemType.DIAMOND_SWORD, MessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_NAME), new Callback<>() {
 
             @Override
             public String getValue() {
@@ -110,8 +110,8 @@ public class EquipLoadoutAction extends AAction {
             }
         }));
 
-        menu.addItem(new MenuItemBoolean(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_DESCRIPTION), new Callback<>() {
+        menu.addItem(new MenuItemBoolean(ItemType.PAPER, MessageManager.getMessage(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_ACTION_LOADOUT_ONTRIGGER_DESCRIPTION), new Callback<>() {
             @Override
             public Boolean getValue() {
                 return equipOnTrigger.getFlag();

@@ -6,7 +6,7 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -60,7 +60,7 @@ public class InfectionMechanic extends AGameMechanic {
             !teamsModule.hasTeam(getInfectedTeam()) ||
             !teamsModule.hasTeam(getSurvivorTeam())) {
             if (caller != null) {
-                MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOINFECTION);
+                MessageManager.sendMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOINFECTION);
             } else {
                 Minigames.getPlugin().getComponentLogger().warn("The Infection Minigame \"" + minigame.getName() + "\"is not properly configured! Visit the wiki for help configuring an Infection Minigame.");
             }
@@ -83,9 +83,9 @@ public class InfectionMechanic extends AGameMechanic {
                 if (infectedTeam.getPlayers().size() < Math.ceil(mgPlayers.size() * percent) && infectedTeam.hasRoom()) {
                     MultiplayerType.switchTeam(minigame, mgPlayer, infectedTeam);
                     result.add(mgPlayer);
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(infectedTeam.getPlayerAssignMessage(),
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(infectedTeam.getPlayerAssignMessage(),
                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(infectedTeam.getDisplayName(), infectedTeam.getTextColor()))));
-                    MinigameMessageManager.sendMinigameMessage(minigame, MiniMessage.miniMessage().deserialize(infectedTeam.getJoinAnnounceMessage(),
+                    MessageManager.sendMinigameMessage(minigame, MiniMessage.miniMessage().deserialize(infectedTeam.getJoinAnnounceMessage(),
                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(infectedTeam.getDisplayName(), infectedTeam.getTextColor()))),
                         MinigameMessageType.INFO, mgPlayer);
@@ -94,23 +94,23 @@ public class InfectionMechanic extends AGameMechanic {
                 if (infectedTeam.getPlayers().size() < Math.ceil(mgPlayers.size() * percent) && infectedTeam.hasRoom()) {
                     infectedTeam.addPlayer(mgPlayer);
                     result.add(mgPlayer);
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(infectedTeam.getPlayerAssignMessage(),
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(infectedTeam.getPlayerAssignMessage(),
                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(infectedTeam.getDisplayName(), infectedTeam.getTextColor()))));
-                    MinigameMessageManager.sendMinigameMessage(minigame, MiniMessage.miniMessage().deserialize(infectedTeam.getJoinAnnounceMessage(),
+                    MessageManager.sendMinigameMessage(minigame, MiniMessage.miniMessage().deserialize(infectedTeam.getJoinAnnounceMessage(),
                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(infectedTeam.getDisplayName(), infectedTeam.getTextColor()))),
                         MinigameMessageType.INFO, mgPlayer);
                 } else if (survivorTeam.hasRoom()) {
                     survivorTeam.addPlayer(mgPlayer);
                     result.add(mgPlayer);
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(survivorTeam.getPlayerAssignMessage(),
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(survivorTeam.getPlayerAssignMessage(),
                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(survivorTeam.getDisplayName(), survivorTeam.getTextColor()))));
-                    MinigameMessageManager.sendMinigameMessage(minigame, MiniMessage.miniMessage().deserialize(survivorTeam.getJoinAnnounceMessage(),
+                    MessageManager.sendMinigameMessage(minigame, MiniMessage.miniMessage().deserialize(survivorTeam.getJoinAnnounceMessage(),
                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(survivorTeam.getDisplayName(), survivorTeam.getTextColor()))),
                         MinigameMessageType.INFO, mgPlayer);
                 } else {
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_FULL);
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_FULL);
                     plugin.getPlayerManager().quitMinigame(mgPlayer, false);
                 }
             }
@@ -198,7 +198,7 @@ public class InfectionMechanic extends AGameMechanic {
                         minigame.setScore(player, player.getScore());
 
                         if (minigame.getLives() != player.getDeaths()) {
-                            MinigameMessageManager.sendMinigameMessage(minigame, MiniMessage.miniMessage().deserialize(infectedTeam.getJoinAnnounceMessage(),
+                            MessageManager.sendMinigameMessage(minigame, MiniMessage.miniMessage().deserialize(infectedTeam.getJoinAnnounceMessage(),
                                     Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), player.displayName()),
                                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(infectedTeam.getDisplayName(), infectedTeam.getTextColor()))),
                                 MinigameMessageType.ERROR);

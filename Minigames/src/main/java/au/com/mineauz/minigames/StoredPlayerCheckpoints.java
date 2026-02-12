@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import io.leangen.geantyref.TypeToken;
 import org.bukkit.World;
@@ -139,7 +139,7 @@ public class StoredPlayerCheckpoints {
 
         for (final @NotNull Map.Entry<@NotNull String, @NotNull SafeFullLocation> entry : checkpoints.entrySet()) {
             final @NotNull String minigameName = entry.getKey();
-            MinigameMessageManager.debugMessage("Attempting to save checkpoint for " + minigameName + "...");
+            MessageManager.debugMessage("Attempting to save checkpoint for " + minigameName + "...");
             final @NotNull CommentedConfigurationNode minigameCheckpointNode = rootNode.node(minigameName);
 
             final @NotNull SafeFullLocation location = entry.getValue();
@@ -173,7 +173,7 @@ public class StoredPlayerCheckpoints {
             } else {
                 final @NotNull String minigameName = checkpointNode.key().toString();
 
-                MinigameMessageManager.debugMessage("Attempting to load checkpoint for " + minigameName + "...");
+                MessageManager.debugMessage("Attempting to load checkpoint for " + minigameName + "...");
                 final double x = checkpointNode.node("x").getDouble();
                 final double y = checkpointNode.node("y").getDouble();
                 final double z = checkpointNode.node("z").getDouble();

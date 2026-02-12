@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -39,7 +39,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
     private static void setItemReward(@NotNull Minigame minigame, @NotNull Rewards rewards, @NotNull CommandSender sender,
                                       @NotNull ItemStack item, @NotNull RewardRarity rarity, boolean isPrimary) {
         if (item.getType().isAir()) {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_AIR,
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_AIR,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             return;
         }
@@ -49,7 +49,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
         ir.setRarity(rarity);
         rewards.addReward(ir);
 
-        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS,
+        MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS,
                 isPrimary ? MgCommandLangKey.COMMAND_SET_REWARD_ITEM_SUCCESS : MgCommandLangKey.COMMAND_SET_REWARD2_ITEM_SUCCESS,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(item.getAmount())),
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item.displayName()),
@@ -83,7 +83,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                 rarity = RewardRarity.matchRarity(args[1]);
 
                                 if (rarity == null) {
-                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
+                                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                                     return false;
                                 }
@@ -96,13 +96,13 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                             moneyReward.setRarity(rarity);
                             rewards.addReward(moneyReward);
 
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS,
+                            MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS,
                                     isPrimary ? MgCommandLangKey.COMMAND_SET_REWARD_MONEY_SUCCESS : MgCommandLangKey.COMMAND_SET_REWARD2_MONEY_SUCCESS,
                                     Placeholder.component(MinigamePlaceHolderKey.MONEY.getKey(), MinigameUtils.formatMoney(moneyBet)),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.RARITY.getKey(), rarity.toString().toLowerCase().replace("_", " ")));
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.REWARD_ERROR_NOVAULT,
+                            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.REWARD_ERROR_NOVAULT,
                                     Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(),
                                             Component.text("spigot.net", Style.style(TextDecoration.UNDERLINED)).
                                                     clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/vault.34315/"))));
@@ -126,7 +126,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                             return true;
 
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+                            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
                         }
                     } else {
                         @Nullable ItemType itemType = null;
@@ -142,7 +142,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                 if (args[1].matches("[0-9]+")) {
                                     quantity = Integer.parseInt(args[1]);
                                 } else {
-                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
 
                                     return false;
@@ -156,7 +156,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                                 rarity = RewardRarity.matchRarity(args[2]);
 
                                 if (rarity == null) {
-                                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
+                                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ITEM_ERROR_NOTRARITY,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                                     return false;
                                 }
@@ -168,7 +168,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                             return true;
 
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTITEMTYPE,
+                            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTITEMTYPE,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                         }
                     }
@@ -176,7 +176,7 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
                     return true;
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ERROR_SCHEME);
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REWARD_ERROR_SCHEME);
                 return true;
             }
         }
@@ -196,12 +196,12 @@ public class SetRewardCommand extends ASetCommand { //todo allow commands
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_REWARD_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_REWARD_USAGE);
     }
 
     @Override

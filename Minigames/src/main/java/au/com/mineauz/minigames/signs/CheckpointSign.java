@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
@@ -18,7 +18,7 @@ public class CheckpointSign extends AMinigameSign {
 
     @Override
     public @NotNull Component getName() {
-        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_CHECKPOINT);
+        return MessageManager.getMessage(MgSignLangKey.TYPE_CHECKPOINT);
     }
 
     @Override
@@ -56,13 +56,13 @@ public class CheckpointSign extends AMinigameSign {
                     mgPlayer.getStoredPlayerCheckpoints().setGlobalCheckpoint(newloc);
                 }
 
-                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.SIGN_CHECKPOINT_SET);
+                MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.SIGN_CHECKPOINT_SET);
                 return true;
             } else {
-                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_CHECKPOINT_FAIL);
+                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_CHECKPOINT_FAIL);
             }
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
         }
         return false;
     }

@@ -1,6 +1,6 @@
 package au.com.mineauz.minigamesregions.tool;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -14,7 +14,6 @@ import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
 import au.com.mineauz.minigamesregions.*;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import au.com.mineauz.minigamesregions.menu.MenuItemNode;
 import au.com.mineauz.minigamesregions.menu.MenuItemRegion;
@@ -39,12 +38,12 @@ public class ExecutorHolderEditToolMode implements ToolMode {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_NAME);
+        return MessageManager.getMessage(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_NAME);
     }
 
     @Override
     public @NotNull List<@NotNull Component> getDescription() {
-        return RegionMessageManager.getMessageList(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_DESCRIPTION);
+        return MessageManager.getMessageList(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_DESCRIPTION);
     }
 
     @Override
@@ -125,12 +124,12 @@ public class ExecutorHolderEditToolMode implements ToolMode {
     private void openMenu(final @NotNull MinigamePlayer mgPlayer, final @NotNull Minigame minigame, final @NotNull ExecutableScriptObject hit) {
         final @NotNull Menu menu;
         if (hit instanceof Region region) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO,
                     RegionLangKey.TOOL_REGION_EDIT,
                     Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), region.getName()));
             menu = MenuItemRegion.createMenu(mgPlayer, region);
         } else if (hit instanceof Node node) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO,
                     RegionLangKey.TOOL_NODE_EDIT,
                     Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), node.getName()));
             menu = MenuItemNode.createMenu(mgPlayer, node);
@@ -139,7 +138,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
         }
 
         menu.setItem(new MenuItemSaveMinigame(MenuDisplayTypes.saveType(),
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
+                MessageManager.getMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName())), minigame), menu.getSize() - 9);
 
         menu.displayMenu();
@@ -147,7 +146,7 @@ public class ExecutorHolderEditToolMode implements ToolMode {
 
     private void openChooseMenu(final @NotNull MinigamePlayer mgPlayer, final @NotNull RegionModule module,
                                 final @NotNull Set<@NotNull ExecutableScriptObject> objects) {
-        final @NotNull Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_CHOOSE_NAME), mgPlayer);
+        final @NotNull Menu menu = new Menu(3, MessageManager.getMessage(RegionLangKey.TOOL_EXECUTORHOLDEREDIT_CHOOSE_NAME), mgPlayer);
 
         StringBuilder options = new StringBuilder();
         for (ExecutableScriptObject object : objects) {
@@ -168,13 +167,13 @@ public class ExecutorHolderEditToolMode implements ToolMode {
         }
 
         menu.setItem(new MenuItemSaveMinigame(MenuDisplayTypes.saveType(),
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
+                MessageManager.getMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), module.getMinigame().getDisplayName())),
                 module.getMinigame()), menu.getSize() - 9);
 
         menu.displayMenu();
 
-        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO,
                 RegionLangKey.TOOL_NODEREGION_SELECTED,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), options.toString()));
     }

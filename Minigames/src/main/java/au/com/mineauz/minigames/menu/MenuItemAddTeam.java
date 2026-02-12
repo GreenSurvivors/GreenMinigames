@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -42,7 +42,7 @@ public class MenuItemAddTeam extends AMenuItem implements StringConsumer {
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(30);
 
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TEAM_ADD,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TEAM_ADD,
             Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), TeamColor.inputColorNamesComp(TeamColor.validColors())),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
@@ -61,7 +61,7 @@ public class MenuItemAddTeam extends AMenuItem implements StringConsumer {
 
                 getMenu().addItem(new MenuItemTeam(team.getColoredDisplayName(), team));
             } else {
-                MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.TEAM_ERROR_COLOR_TAKEN);
+                MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.TEAM_ERROR_COLOR_TAKEN);
             }
 
             List<TeamColor> teams = new ArrayList<>(teamsModule.getTeams().size() + 1);
@@ -70,7 +70,7 @@ public class MenuItemAddTeam extends AMenuItem implements StringConsumer {
             }
             teams.add(TeamColor.NONE);
             getMenu().removeItem(0);
-            getMenu().setItem(new MenuItemList<>(ItemType.PAPER, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DEFAULTWINNINGTEAM_NAME), teamsModule.getDefaultWinnerCallback(), teams), 0);
+            getMenu().setItem(new MenuItemList<>(ItemType.PAPER, MessageManager.getMessage(MgMenuLangKey.MENU_DEFAULTWINNINGTEAM_NAME), teamsModule.getDefaultWinnerCallback(), teams), 0);
 
             getMenu().cancelWaitForInput();
             getMenu().displayMenu();
@@ -78,7 +78,7 @@ public class MenuItemAddTeam extends AMenuItem implements StringConsumer {
             getMenu().cancelWaitForInput();
             getMenu().displayMenu();
 
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.TEAM_ERROR_COLOR_INVALID,
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.TEAM_ERROR_COLOR_INVALID,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
         }
     }

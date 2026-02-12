@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.mechanics;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
@@ -130,7 +130,7 @@ public class PlayerKillsMechanic extends AGameMechanic {
 
                     attakerTeam.addScore();
                     if (minigame.getMaxScore() != 0 && minigame.getMaxScorePerPlayer() <= attakerTeam.getScore()) {
-                        MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_KILLS_FINALKILL,
+                        MessageManager.sendMinigameMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_KILLS_FINALKILL,
                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayerAttacker.displayName()),
                             Placeholder.component(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayerWhoDied.displayName())));
 

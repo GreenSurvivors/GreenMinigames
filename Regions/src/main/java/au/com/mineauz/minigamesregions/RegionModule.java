@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.AMinigameModule;
@@ -14,7 +15,6 @@ import au.com.mineauz.minigamesregions.actions.IAction;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.conditions.ConditionRegistry;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.menu.MenuItemNode;
 import au.com.mineauz.minigamesregions.menu.MenuItemRegenRegion;
 import au.com.mineauz.minigamesregions.menu.MenuItemRegion;
@@ -350,7 +350,7 @@ public class RegionModule extends AMinigameModule {
 
     @ApiStatus.Obsolete
     protected void displayMenu(final @NotNull MinigamePlayer viewer, final @Nullable Menu previous) {
-        final @NotNull Menu regionsAndNodesMenu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME), viewer);
+        final @NotNull Menu regionsAndNodesMenu = new Menu(6, MessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME), viewer);
         final @NotNull List<AMenuItem> items = new ArrayList<>(regions.size());
         for (final @NotNull Region region : regions.values()) {
             final @NotNull MenuItemRegion mir = new MenuItemRegion(ItemType.WAXED_COPPER_CHEST, Component.text(region.getName()), region, this);
@@ -380,7 +380,7 @@ public class RegionModule extends AMinigameModule {
 
     @Override
     public void addEditMenuOptions(final @NotNull Menu menu) {
-        final @NotNull MenuItemCustom menuItemCustom = new MenuItemCustom(ItemType.DIAMOND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME));
+        final @NotNull MenuItemCustom menuItemCustom = new MenuItemCustom(ItemType.DIAMOND_BLOCK, MessageManager.getMessage(RegionLangKey.MENU_REGIONSNODES_NAME));
         menuItemCustom.setClick(() -> {
             displayMenu(menu);
             return ItemStack.empty();

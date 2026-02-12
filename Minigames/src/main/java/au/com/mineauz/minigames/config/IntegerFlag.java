@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
@@ -70,7 +70,7 @@ public class IntegerFlag extends AFlag<Integer> {
 
     public @NotNull MenuItemInteger getMenuItem(@Nullable ItemType displayType, @NotNull MinigameLangKey nameLangKey,
                                                 @NotNull MinigameLangKey descriptionLangkey, @Nullable Integer min, @Nullable Integer max) {
-        return new MenuItemInteger(displayType, nameLangKey, MinigameMessageManager.getMgMessageList(descriptionLangkey), new Callback<>() {
+        return new MenuItemInteger(displayType, nameLangKey, MessageManager.getMessageList(descriptionLangkey), new Callback<>() {
 
             @Override
             public Integer getValue() {

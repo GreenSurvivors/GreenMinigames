@@ -1,11 +1,11 @@
 package au.com.mineauz.minigamesregions.menu;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.ActionExecutorHolder;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.TriggerRegistry;
 import net.kyori.adventure.text.Component;
@@ -22,7 +22,7 @@ public class MenuItemActionExecutorAdd extends AMenuItem {
 
     public MenuItemActionExecutorAdd(final @Nullable ItemType displayType, final @Nullable RegionLangKey langKey,
                                      final @NotNull ActionExecutorHolder actionExecutorHolder) {
-        super(displayType, RegionMessageManager.getMessage(langKey));
+        super(displayType, MessageManager.getMessage(langKey));
         this.actionExecutorHolder = actionExecutorHolder;
     }
 
@@ -42,7 +42,7 @@ public class MenuItemActionExecutorAdd extends AMenuItem {
 
     @Override
     public @NonNull ItemStack onClick() {
-        final @NotNull Menu menu = new Menu(6, RegionMessageManager.getMessage(RegionLangKey.MENU_REGIONEXECUTOR_ADD_TRIGGER_NAME),
+        final @NotNull Menu menu = new Menu(6, MessageManager.getMessage(RegionLangKey.MENU_REGIONEXECUTOR_ADD_TRIGGER_NAME),
             getMenu().getIntendedViewer());
 
         for (final @NotNull Trigger trig : TriggerRegistry.getAllRegionTriggers()) {

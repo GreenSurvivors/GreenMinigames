@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.mechanics;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -43,7 +43,7 @@ public class JuggernautMechanic extends AGameMechanic {
     @Override
     public boolean checkCanStart(final @Nullable MinigamePlayer caller) {
         if (minigame.isTeamGame()) { // caller should not be null since that is only possible on global != multiplayer aka team game types
-            MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_JUGGERNAUT_ERROR_TEAM);
+            MessageManager.sendMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_JUGGERNAUT_ERROR_TEAM);
             return false;
         }
         return true;
@@ -82,8 +82,8 @@ public class JuggernautMechanic extends AGameMechanic {
             final Team team = minigame.getScoreboard().getTeam("juggernaut");
             team.addPlayer(mgPlayer.getPlayer());
 
-            MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
-            MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
+            MessageManager.sendMessage(juggernaut, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
+            MessageManager.sendMinigameMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.displayName())
             ), MinigameMessageType.INFO, juggernaut);
 
@@ -104,8 +104,8 @@ public class JuggernautMechanic extends AGameMechanic {
                 final MinigamePlayer juggernaut = assignNewJuggernaut(minigame.getPlayers(), mgPlayer);
 
                 setJuggernaut(juggernaut);
-                MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
-                MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
+                MessageManager.sendMessage(juggernaut, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
+                MessageManager.sendMinigameMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.displayName())),
                     MinigameMessageType.INFO, juggernaut);
             }

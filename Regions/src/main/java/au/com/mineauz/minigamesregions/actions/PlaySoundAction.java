@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
@@ -12,7 +12,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -40,7 +39,7 @@ public class PlaySoundAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLAYSOUND_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_PLAYSOUND_NAME);
     }
 
     @Override
@@ -51,11 +50,11 @@ public class PlaySoundAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME), Component.text(Registry.SOUNDS.getKey(getSound()).asString()),
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME), Component.text(volume.getFlag()),
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME), Component.text(pitch.getFlag()),
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME),
-                MinigameMessageManager.getMgMessage(privatePlayBack.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
+                MessageManager.getMessage(MgMenuLangKey.MENU_PLAYSOUND_SOUND_NAME), Component.text(Registry.SOUNDS.getKey(getSound()).asString()),
+                MessageManager.getMessage(MgMenuLangKey.MENU_PLAYSOUND_VOLUME_NAME), Component.text(volume.getFlag()),
+                MessageManager.getMessage(MgMenuLangKey.MENU_PLAYSOUND_PITCH_NAME), Component.text(pitch.getFlag()),
+                MessageManager.getMessage(MgMenuLangKey.MENU_PLAYSOUND_PRIVATEPLAYBACK_NAME),
+                MessageManager.getMessage(privatePlayBack.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override

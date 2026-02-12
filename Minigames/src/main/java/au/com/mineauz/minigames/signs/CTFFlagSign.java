@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -22,7 +22,7 @@ public class CTFFlagSign extends AMinigameSign {
 
     @Override
     public @NotNull Component getName() {
-        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_CTFFLAG);
+        return MessageManager.getMessage(MgSignLangKey.TYPE_CTFFLAG);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class CTFFlagSign extends AMinigameSign {
     }
 
     public static boolean isCapture(@NotNull Component signLine) {
-        return PlainTextComponentSerializer.plainText().serialize(signLine).equalsIgnoreCase(MinigameMessageManager.getStrippedMgMessage(MgSignLangKey.SUBTYPE_CAPTURE));
+        return PlainTextComponentSerializer.plainText().serialize(signLine).equalsIgnoreCase(MessageManager.getStrippedMessage(MgSignLangKey.SUBTYPE_CAPTURE));
     }
 
     @Override
@@ -49,19 +49,19 @@ public class CTFFlagSign extends AMinigameSign {
         if (col != null) {
             event.line(2, Component.text(WordUtils.capitalizeFully(col.toString()), col.getColor()));
         } else if (isNeutral(event.line(2))) {
-            event.line(2, MinigameMessageManager.getMgMessage(MgSignLangKey.TEAM_NEUTRAL));
+            event.line(2, MessageManager.getMessage(MgSignLangKey.TEAM_NEUTRAL));
         } else if (isCapture(event.line(2)) && !plainSerializer.serialize(event.line(3)).isEmpty()) {
-            event.line(2, MinigameMessageManager.getMgMessage(MgSignLangKey.SUBTYPE_CAPTURE));
+            event.line(2, MessageManager.getMessage(MgSignLangKey.SUBTYPE_CAPTURE));
 
             col = TeamColor.matchColor(plainSerializer.serialize(event.line(3)));
             if (col != null) {
                 event.line(3, Component.text(WordUtils.capitalizeFully(col.toString()), col.getColor()));
             } else if (isNeutral(event.line(3))) {
-                event.line(3, MinigameMessageManager.getMgMessage(MgSignLangKey.TEAM_NEUTRAL));
+                event.line(3, MessageManager.getMessage(MgSignLangKey.TEAM_NEUTRAL));
             } else {
                 event.getBlock().breakNaturally();
-                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_TEAM_INVALIDFORMAT,
-                    Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), MinigameMessageManager.getMgMessage(MgSignLangKey.TEAM_NEUTRAL)));
+                MessageManager.sendMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_TEAM_INVALIDFORMAT,
+                    Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), MessageManager.getMessage(MgSignLangKey.TEAM_NEUTRAL)));
                 return false;
             }
         }
@@ -83,7 +83,7 @@ public class CTFFlagSign extends AMinigameSign {
 
                 // actual handling is in CTFMechanic!
             } else {
-                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
+                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
             }
         }
         return false;

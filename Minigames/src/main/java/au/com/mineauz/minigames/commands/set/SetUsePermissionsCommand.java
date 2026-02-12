@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -34,12 +34,12 @@ public class SetUsePermissionsCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_USEPERMISSIONS_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_USEPERMISSIONS_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_USEPERMISSIONS_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_USEPERMISSIONS_USAGE);
     }
 
     @Override
@@ -55,13 +55,13 @@ public class SetUsePermissionsCommand extends ASetCommand {
             if (bool != null) {
                 minigame.setUsePermissions(bool);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_USEPERMISSIONS_SUCCESS,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_USEPERMISSIONS_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
-                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MessageManager.getMessage(
                                 bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)));
                 return true;
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
         }

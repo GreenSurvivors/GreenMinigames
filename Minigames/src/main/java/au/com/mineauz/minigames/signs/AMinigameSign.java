@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -33,7 +33,7 @@ public abstract class AMinigameSign {
     }
 
     public static boolean isNeutral(@NotNull Component signLine) {
-        return PlainTextComponentSerializer.plainText().serialize(signLine).equalsIgnoreCase(MinigameMessageManager.getStrippedMgMessage(MgSignLangKey.TEAM_NEUTRAL));
+        return PlainTextComponentSerializer.plainText().serialize(signLine).equalsIgnoreCase(MessageManager.getStrippedMessage(MgSignLangKey.TEAM_NEUTRAL));
     }
 
     public abstract @Nullable String getCreatePermission();

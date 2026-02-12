@@ -8,7 +8,7 @@ import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
 import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -97,7 +97,7 @@ public class MinigameManager {
             if (caller == null) {
                 plugin.getComponentLogger().warn("The Minigame Type \"" + MinigameType.GLOBAL.getName() + "\" cannot use the selected Mechanic \"" + minigame.getMechanic().key() + "\"!");
             } else {
-                MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_INVALIDMECHANIC,
+                MessageManager.sendMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_INVALIDMECHANIC,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanic().key().asMinimalString()),
                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MinigameType.GLOBAL.getName()));
             }
@@ -105,7 +105,7 @@ public class MinigameManager {
             if (caller == null) {
                 plugin.getComponentLogger().warn("The Game Mechanic \"" + minigame.getMechanic().key().asMinimalString() + "\" has failed to initiate!");
             } else {
-                MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
+                MessageManager.sendMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanic().key().asMinimalString()));
             }
         }
@@ -192,13 +192,13 @@ public class MinigameManager {
             }
 
             recorderData.setCreatedRegenBlocks(true);
-            MinigameMessageManager.debugMessage("Block Regen Data has been created for " + minigame.getName());
+            MessageManager.debugMessage("Block Regen Data has been created for " + minigame.getName());
         }
     }
 
     public void addMinigameType(final @NotNull MinigameTypeBase minigameType) {
         this.minigameTypes.put(minigameType.getType(), minigameType);
-        MinigameMessageManager.debugMessage("Loaded " + minigameType.getType().getName() + " minigame type."); //DEBUG
+        MessageManager.debugMessage("Loaded " + minigameType.getType().getName() + " minigame type."); //DEBUG
     }
 
     public @Nullable MinigameTypeBase minigameType(final @NotNull MinigameType name) {
@@ -314,17 +314,17 @@ public class MinigameManager {
 
     public boolean minigameStartStateCheck(final @NotNull Minigame minigame, final @NotNull MinigamePlayer mgPlayer) {
         if (!minigame.isEnabled() && !mgPlayer.getPlayer().hasPermission("minigame.join.disabled")) { //todo Permission Manager
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTENABLED);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTENABLED);
             return false;
         } else if (!this.minigameMechanicCheck(minigame, mgPlayer)) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
                 Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanic().key().asMinimalString()));
             return false;
         } else if (minigame.getState() == MinigameState.REGENERATING) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_REGENERATING);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_REGENERATING);
             return false;
         } else if (minigame.getState() == MinigameState.STARTED && !minigame.canLateJoin()) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_STARTED);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_STARTED);
             return false;
         }
         return true;
@@ -332,20 +332,20 @@ public class MinigameManager {
 
     public boolean minigameStartSetupCheck(final @NotNull Minigame minigame, final @NotNull MinigamePlayer mgPlayer) {
         if (minigame.getEndLocation() == null) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOEND);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOEND);
             return false;
         } else if (minigame.getQuitLocation() == null) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOQUITLOC);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOQUITLOC);
             return false;
         } else if (this.minigameType(minigame.getType()).cannotStart(minigame, mgPlayer)) { //type specific reasons we cannot start.
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_INVALIDTYPE);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_INVALIDTYPE);
             return false;
         } else if (!minigame.getMechanic().validTypes().contains(minigame.getType())) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_INVALIDTYPE);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_INVALIDTYPE);
             return false;
         } else if (minigame.getStartLocations().isEmpty() ||
             minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOSTARTLOC);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOSTARTLOC);
             return false;
         }
         return true;

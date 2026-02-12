@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -36,12 +36,12 @@ public class EnableAllCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_ENABLEALL_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_ENABLEALL_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_ENABLEALL_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_ENABLEALL_USAGE);
     }
 
     @Override
@@ -58,14 +58,14 @@ public class EnableAllCommand extends ACommand {
             if (mdata.hasMinigame(arg)) {
                 minigames.remove(mdata.getMinigame(arg));
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), arg));
             }
         }
         for (Minigame mg : minigames) {
             mg.setEnabled(true);
         }
-        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_ENABLEALL_SUCCESS,
+        MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_ENABLEALL_SUCCESS,
             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(minigames.size())));
         return true;
     }

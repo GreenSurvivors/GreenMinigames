@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -29,12 +29,12 @@ public class SetMinTreasureCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_MINTREASURE_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_MINTREASURE_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_MINTREASURE_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_MINTREASURE_USAGE);
     }
 
     @Override
@@ -51,16 +51,16 @@ public class SetMinTreasureCommand extends ASetCommand {
                     final int amount = Integer.parseInt(args[0]); // todo error handling
                     treasureHuntMechanic.setMinTreasure(amount);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_MINTREASURE_SUCCESS,
+                    MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_MINTREASURE_SUCCESS,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(amount)));
                     return true;
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), GameMechanicRegistry.MgDefaultMechanic.TREASURE_HUNT.getKey().value()));
             }

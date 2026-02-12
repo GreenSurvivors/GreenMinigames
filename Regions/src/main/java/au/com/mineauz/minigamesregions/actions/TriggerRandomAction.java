@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -11,7 +11,6 @@ import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -36,7 +35,7 @@ public class TriggerRandomAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_NAME);
     }
 
     @Override
@@ -47,9 +46,9 @@ public class TriggerRandomAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_TIMES_NAME), Component.text(timesTriggered.getFlag()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_NAME),
-                MinigameMessageManager.getMgMessage(allowSameTrigger.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_TIMES_NAME), Component.text(timesTriggered.getFlag()),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_NAME),
+                MessageManager.getMessage(allowSameTrigger.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -142,9 +141,9 @@ public class TriggerRandomAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(timesTriggered.getMenuItem(ItemType.COMMAND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_TIMES_NAME), 1, null));
-        menu.addItem(allowSameTrigger.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_DESCRIPTION)));
+        menu.addItem(timesTriggered.getMenuItem(ItemType.COMMAND_BLOCK, MessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_TIMES_NAME), 1, null));
+        menu.addItem(allowSameTrigger.getMenuItem(ItemType.ENDER_PEARL, MessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_ACTION_TRIGGERRANDOM_SAME_DESCRIPTION)));
         menu.displayMenu();
         return true;
     }

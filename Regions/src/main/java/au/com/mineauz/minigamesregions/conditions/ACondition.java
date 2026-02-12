@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -30,7 +30,7 @@ public abstract class ACondition implements Keyed {
     }
 
     protected void addInvertMenuItem(final @NotNull Menu menu) {
-        menu.setItem(isInverted.getMenuItem(ItemType.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_INVERT_NAME)), menu.getSize() - 1);
+        menu.setItem(isInverted.getMenuItem(ItemType.ENDER_PEARL, MessageManager.getMessage(MgMenuLangKey.MENU_INVERT_NAME)), menu.getSize() - 1);
     }
 
     protected void saveInvertedStatus(final @NotNull CommentedConfigurationNode config) throws SerializationException {

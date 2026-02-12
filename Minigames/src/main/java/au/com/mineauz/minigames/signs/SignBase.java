@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
@@ -57,7 +57,7 @@ public class SignBase implements Listener {
         if (firstLine != null) {
             String firstLineStr = PlainTextComponentSerializer.plainText().serialize(firstLine);
 
-            return (MinigameMessageManager.getStrippedMgMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLineStr) ||
+            return (MessageManager.getStrippedMessage(MgSignLangKey.MINIGAME).equalsIgnoreCase(firstLineStr) ||
                     alternativeMgmPattern.matcher(firstLineStr).matches());
         } else {
             return false;
@@ -86,28 +86,28 @@ public class SignBase implements Listener {
                 AMinigameSign mgSign = getMgSign(event.line(1));
 
                 if (mgSign != null) {
-                    event.line(0, MinigameMessageManager.getMgMessage(MgSignLangKey.MINIGAME));
+                    event.line(0, MessageManager.getMessage(MgSignLangKey.MINIGAME));
                     ((Sign) event.getBlock().getState()).setWaxed(true);
 
                     if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
                         event.setCancelled(true);
                         event.getBlock().breakNaturally();
-                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
+                        MessageManager.sendMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
                         return;
                     }
 
                     if (!mgSign.signCreate(event)) {
                         event.setCancelled(true);
                         event.getBlock().breakNaturally();
-                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_INVALID);
+                        MessageManager.sendMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_INVALID);
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_INVALID);
+                    MessageManager.sendMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_INVALID);
                     event.setCancelled(true);
                     event.getBlock().breakNaturally();
                 }
             } else { //just gives an error but doesn't break the sign in case the front was important
-                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_BACKSIDE);
+                MessageManager.sendMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_BACKSIDE);
                 event.setCancelled(true);
             }
         }
@@ -123,7 +123,7 @@ public class SignBase implements Listener {
 
                     if (mgSign.getUsePermission() != null && !event.getPlayer().hasPermission(mgSign.getUsePermission())) {
                         event.setCancelled(true);
-                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
+                        MessageManager.sendMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
                         return;
                     }
 

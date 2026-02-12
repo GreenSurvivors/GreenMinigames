@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.minigame;
 import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.mechanics.AGameMechanic;
@@ -1162,10 +1162,10 @@ public class Minigame implements ScriptObject {
             MgMenuLangKey.MENU_MINIGAME_STARTPOINT_RANDOMIZE_DESCRIPTION), ++currentPosMainMenu);
 
         mainMenu.setItem(new MenuItemDisplayWhitelist(ItemType.WHITE_BUNDLE,
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME), // Block Whitelist/Blacklist
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_DESCRIPTION_MAIN),
+            MessageManager.getMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME), // Block Whitelist/Blacklist
+            MessageManager.getMessageList(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_DESCRIPTION_MAIN),
             getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback(),
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_DESCRIPTION_SECOND)), ++currentPosMainMenu);
+            MessageManager.getMessageList(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_DESCRIPTION_SECOND)), ++currentPosMainMenu);
 
         mainMenu.setItem(new MenuItemNewLine(), ++currentPosMainMenu);
         currentPosMainMenu += 9 - currentPosMainMenu % 9; // skip to next line
@@ -1173,10 +1173,10 @@ public class Minigame implements ScriptObject {
         // double pack, since the type shows / hides random chance percent
         final int degenChancePos = currentPosMainMenu + 2; // +1 for type at pos before
         final MenuItemInteger randomFloorDegenChanceMenuItem = degenRandomChance.getMenuItem(ItemType.SNOW,
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_DEGEN_RANDOMCHANCE_NAME),
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_DEGEN_RANDOMCHANCE_DESCRIPTION), 1, 100);
+            MessageManager.getMessage(MgMenuLangKey.MENU_MINIGAME_DEGEN_RANDOMCHANCE_NAME),
+            MessageManager.getMessageList(MgMenuLangKey.MENU_MINIGAME_DEGEN_RANDOMCHANCE_DESCRIPTION), 1, 100);
         mainMenu.setItem(new MenuItemList<>(ItemType.SNOW_BLOCK, MgMenuLangKey.MENU_MINIGAME_DEGEN_TYPE_NAME,
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_DEGEN_TYPE_DESCRIPTION), new Callback<>() {
+            MessageManager.getMessageList(MgMenuLangKey.MENU_MINIGAME_DEGEN_TYPE_DESCRIPTION), new Callback<>() {
 
             @Override
             public FloorDegenerator.DegeneratorType getValue() {
@@ -1203,7 +1203,7 @@ public class Minigame implements ScriptObject {
         mainMenu.addItem(floorDegenTime.getMenuItem(MenuDisplayTypes.timeType(), MgMenuLangKey.MENU_MINIGAME_DEGEN_DELAY_NAME, 1L, null));
 
         mainMenu.addItem(regenDelay.getMenuItem(MenuDisplayTypes.timeType(), MgMenuLangKey.MENU_MINIGAME_REGENDELAY_NAME,
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_REGENDELAY_DESCRIPTION), 0L, null));
+            MessageManager.getMessageList(MgMenuLangKey.MENU_MINIGAME_REGENDELAY_DESCRIPTION), 0L, null));
 
         mainMenu.addItem(new MenuItemNewLine());
         currentPosMainMenu += 9 - currentPosMainMenu % 9; // skip to next line
@@ -1228,7 +1228,7 @@ public class Minigame implements ScriptObject {
         currentPosMainMenu += 9 - currentPosMainMenu % 9; // skip to next line
 
         mainMenu.setItem(new MenuItemSaveMinigame(MenuDisplayTypes.saveType(),
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
+            MessageManager.getMessage(MgMenuLangKey.MENU_MINIGAME_SAVE_NAME,
                 Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), getDisplayName())),
             this), mainMenu.getSize() - 1);
 
@@ -1258,7 +1258,7 @@ public class Minigame implements ScriptObject {
             itemsPlayer.add(saveCheckpoints.getMenuItem(ItemType.OAK_SIGN, MgMenuLangKey.MENU_PLAYERSETTINGS_CHECKPOINT_SAVE_NAME,
                 MgMenuLangKey.MENU_MINIGAME_SINGLEPLAYERONLY_DESCRIPTION));
             itemsPlayer.add(new MenuItemPage(ItemType.OAK_SIGN, MgMenuLangKey.MENU_PLAYERSETTINGS_SINGLEPLAYERFLAG_NAME,
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_MINIGAME_SINGLEPLAYERONLY_DESCRIPTION), singlplayerFlagsMenu));
+                MessageManager.getMessageList(MgMenuLangKey.MENU_MINIGAME_SINGLEPLAYERONLY_DESCRIPTION), singlplayerFlagsMenu));
         }
         itemsPlayer.add(allowFlight.getMenuItem(ItemType.FEATHER, MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_NAME,
             MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_DESCRIPTION));
@@ -1288,10 +1288,10 @@ public class Minigame implements ScriptObject {
         if (getType() == MinigameType.SINGLEPLAYER) {
             final @NotNull List<@NotNull AMenuItem> itemsFlags = new ArrayList<>(getSinglePlayerFlags().size());
             for (final @NotNull String flag : getSinglePlayerFlags()) {
-                itemsFlags.add(new MenuItemFlag(ItemType.OAK_SIGN, flag, this::removeSinglePlayerFlag));
+                itemsFlags.add(new MenuItemSingleplayerFlag(ItemType.OAK_SIGN, flag, this::removeSinglePlayerFlag));
             }
             singlplayerFlagsMenu.setItem(new MenuItemBack(playerMenu), singlplayerFlagsMenu.getSize() - 9);
-            singlplayerFlagsMenu.setItem(new MenuItemAddFlag(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_FLAGADD_NAME,
+            singlplayerFlagsMenu.setItem(new MenuItemAddSingleplayerFlag(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_FLAGADD_NAME,
                 this), singlplayerFlagsMenu.getSize() - 1);
             singlplayerFlagsMenu.addItems(itemsFlags);
         }

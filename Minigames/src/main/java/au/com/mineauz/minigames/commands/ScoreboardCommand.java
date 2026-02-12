@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -36,12 +36,12 @@ public class ScoreboardCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SCOREBOARD_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SCOREBOARD_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SCOREBOARD_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SCOREBOARD_USAGE);
     }
 
     @Override
@@ -58,14 +58,14 @@ public class ScoreboardCommand extends ACommand {
         // Decode arguments
         final Minigame minigame = plugin.getMinigameManager().getMinigame(args[0]);
         if (minigame == null) {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             return true;
         }
 
         final MinigameStat stat = MinigameStatistics.getStat(args[1]);
         if (stat == null) {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SCOREBOARD_ERROR_NOTSTAT,
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SCOREBOARD_ERROR_NOTSTAT,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
             return true;
         }
@@ -81,7 +81,7 @@ public class ScoreboardCommand extends ACommand {
         }
 
         if (field == null) {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SCOREBOARD_ERROR_NOTFIELD,
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SCOREBOARD_ERROR_NOTFIELD,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]),
                 Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), stat.getDisplayName()));
             return true;
@@ -105,7 +105,7 @@ public class ScoreboardCommand extends ACommand {
                 } else if (args[i + 1].equalsIgnoreCase("desc") || args[i + 1].equalsIgnoreCase("descending")) {
                     order = ScoreboardOrder.DESCENDING;
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SCOREBOARD_ERROR_NOTORDER,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SCOREBOARD_ERROR_NOTORDER,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[i + 1]));
                     return false;
                 }
@@ -114,7 +114,7 @@ public class ScoreboardCommand extends ACommand {
                 if (args[i + 1].matches("[1-9][0-9]*")) {
                     length = Integer.parseInt(args[i + 1]);
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[i + 1]));
                     return false;
                 }
@@ -123,7 +123,7 @@ public class ScoreboardCommand extends ACommand {
                 if (args[i + 1].matches("[1-9][0-9]*")) {
                     start = Integer.parseInt(args[i + 1]) - 1;
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[i + 1]));
                     return false;
                 }
@@ -135,22 +135,22 @@ public class ScoreboardCommand extends ACommand {
         final ScoreboardOrder fOrder = order;
         final StatisticValueField fField = field;
 
-        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SCOREBOARD_LOAD);
+        MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SCOREBOARD_LOAD);
         // Now load the values
         CompletableFuture<List<StoredStat>> future = plugin.getBackend().loadStats(minigame, stat, field, order, start, length);
         future.whenComplete((result, throwable) -> {
             if (throwable == null) {
-                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
+                MessageManager.sendMessage(sender, MinigameMessageType.NONE,
                     minigame.getDisplayName().append( //todo don't hardcode this
                         Component.text(" Scoreboard: " + settings.getDisplayName() + " - " + fField.getTitle() + " " + fOrder.toString().toLowerCase(), NamedTextColor.GREEN)
                     ));
                 for (StoredStat playerStat : result) {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SCOREBOARD_LIST_PLAYER,
+                    MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_SCOREBOARD_LIST_PLAYER,
                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), playerStat.getPlayerDisplayName()),
                         Placeholder.component(MinigamePlaceHolderKey.NUMBER.getKey(), stat.displayValue(playerStat.getValue(), settings)));
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL);
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_INTERNAL);
                 Minigames.getPlugin().getComponentLogger().error("An internal error occurred while loading the statistics.", throwable);
             }
         });

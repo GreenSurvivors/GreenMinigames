@@ -1,8 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -22,11 +21,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LoadoutSign extends AMinigameSign {
-    private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
     public @NotNull Component getName() {
-        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_LOADOUT);
+        return MessageManager.getMessage(MgSignLangKey.TYPE_LOADOUT);
     }
 
     @Override
@@ -74,16 +72,16 @@ public class LoadoutSign extends AMinigameSign {
                 if (loadout != null) {
                     if (!loadout.usesPermissions() || player.hasPermission("minigame.loadout." + sign.getSide(Side.FRONT).getLine(2).toLowerCase())) {
                         if (mgPlayer.setLoadout(loadout)) {
-                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_EQUIPPED,
+                            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_EQUIPPED,
                                 Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), sign.getSide(Side.FRONT).line(2)));
 
                             if (mgm.getType() == MinigameType.SINGLEPLAYER ||
                                 mgm.hasStarted()) {
                                 if (sign.getSide(Side.FRONT).getLine(3).equalsIgnoreCase("respawn")) {
-                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
+                                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
                                         Placeholder.component(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getDisplayName()));
                                 } else if (sign.getSide(Side.FRONT).getLine(3).equalsIgnoreCase("temporary")) {
-                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_TEMPORARILY);
+                                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_LOADOUT_TEMPORARILY);
                                     loadout.equipLoadout(mgPlayer);
                                     mgPlayer.setLoadout(mgPlayer.getDefaultLoadout());
                                 } else {
@@ -93,14 +91,14 @@ public class LoadoutSign extends AMinigameSign {
                         }
                         return true;
                     } else {
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
+                        MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_ERROR_NOLOADOUT);
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_ERROR_NOLOADOUT);
                 }
             }
         } else if (player != null && !player.getInventory().getItemInMainHand().isEmpty()) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
         }
         return false;
     }

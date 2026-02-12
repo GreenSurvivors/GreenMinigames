@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -34,12 +34,12 @@ public class SetGameOverCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_GAMEOVER_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_GAMEOVER_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_GAMEOVER_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_GAMEOVER_USAGE);
     }
 
     @Override
@@ -58,11 +58,11 @@ public class SetGameOverCommand extends ASetCommand {
                     Long millis = MinigameUtils.parsePeriod(args[1]);
                     if (millis != null) {
                         gameOverModule.setTimer(TimeUnit.MICROSECONDS.toSeconds(millis));
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_TIME,
+                        MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_TIME,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofMillis(millis))));
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                     }
                     return true;
@@ -71,13 +71,13 @@ public class SetGameOverCommand extends ASetCommand {
                     if (bool != null) {
                         gameOverModule.setInvincible(bool);
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_INVINCIBLE,
+                        MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_INVINCIBLE,
                                 Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(),
-                                        MinigameMessageManager.getMgMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)),
+                                        MessageManager.getMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                         return true;
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                     }
                 } else if (args[0].equalsIgnoreCase("humiliation") && args.length == 2) {
@@ -85,13 +85,13 @@ public class SetGameOverCommand extends ASetCommand {
                     if (bool != null) {
                         gameOverModule.setHumiliationMode(bool);
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_HUMILIATION,
+                        MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_HUMILIATION,
                                 Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(),
-                                        MinigameMessageManager.getMgMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)),
+                                        MessageManager.getMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                         return true;
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                     }
                 } else if (args[0].equalsIgnoreCase("interact") && args.length == 2) {
@@ -99,17 +99,17 @@ public class SetGameOverCommand extends ASetCommand {
                     if (bool != null) {
                         gameOverModule.setInteractAllowed(bool);
 
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_INTERACTION,
+                        MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_GAMEOVER_INTERACTION,
                                 Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(),
-                                        MinigameMessageManager.getMgMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)),
+                                        MessageManager.getMessage(bool ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBOOL,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                     }
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgDefaultModules.GAME_OVER.getKey().value()));
             }

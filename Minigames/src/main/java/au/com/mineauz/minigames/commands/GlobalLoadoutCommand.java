@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -38,12 +38,12 @@ public class GlobalLoadoutCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_GLOBALLOADOUT_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_GLOBALLOADOUT_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_GLOBALLOADOUT_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_GLOBALLOADOUT_USAGE);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class GlobalLoadoutCommand extends ACommand {
                     displayType = globalLoadout.getItem((Integer) globalLoadout.getItemSlots().toArray()[0]).getType().asItemType();
                 }
                 menuItems.add(new MenuItemDisplayLoadout(displayType, globalLoadout.getDisplayName(),
-                    MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), globalLoadout));
+                    MessageManager.getMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK), globalLoadout));
             }
             globalLoadoutMenu.setItem(new MenuItemLoadoutAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_LOADOUT_ADD_NAME,
                 LoadoutModule.getGlobalLoadoutMap()), 53);
@@ -73,7 +73,7 @@ public class GlobalLoadoutCommand extends ACommand {
 
             globalLoadoutMenu.displayMenu();
         } else {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
         }
 
         return true;

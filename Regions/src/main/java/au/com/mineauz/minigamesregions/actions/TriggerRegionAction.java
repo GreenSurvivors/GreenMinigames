@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -9,7 +10,6 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -30,7 +30,7 @@ public class TriggerRegionAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERREGION_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERREGION_NAME);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TriggerRegionAction extends AAction {
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERREGION_REGION_NAME), Component.text(region.getFlag()));
+        return Map.of(MessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERREGION_REGION_NAME), Component.text(region.getFlag()));
     }
 
     @Override
@@ -92,7 +92,7 @@ public class TriggerRegionAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(region.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERREGION_REGION_NAME)));
+        menu.addItem(region.getMenuItem(ItemType.ENDER_EYE, MessageManager.getMessage(RegionLangKey.MENU_ACTION_TRIGGERREGION_REGION_NAME)));
         menu.displayMenu();
         return true;
     }

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -29,7 +29,7 @@ public class ScoreSign extends AMinigameSign {
 
     @Override
     public @NotNull Component getName() {
-        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_SCORE);
+        return MessageManager.getMessage(MgSignLangKey.TYPE_SCORE);
     }
 
     @Override
@@ -71,12 +71,12 @@ public class ScoreSign extends AMinigameSign {
 
                 if (!mg.isTeamGame()) {
                     if (mgPlayer.hasClaimedScore(sign.getLocation())) {
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_SCORE_ERROR_ALREADYUSED);
+                        MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_SCORE_ERROR_ALREADYUSED);
                         return true;
                     }
                     mgPlayer.addScore(score);
                     mg.setScore(mgPlayer, mgPlayer.getScore());
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.SIGN_SCORE_ADDSCORE,
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.SIGN_SCORE_ADDSCORE,
                         Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(score)),
                         Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())));
                     if (mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= mgPlayer.getScore()) {
@@ -88,14 +88,14 @@ public class ScoreSign extends AMinigameSign {
                     Team pteam = mgPlayer.getTeam();
                     if (steam == null || !TeamsModule.getMinigameModule(mg).hasTeam(steam) || pteam.getColor() == steam) {
                         if (Minigames.getPlugin().getMinigameManager().hasClaimedScore(mg, sign.getLocation(), 0)) {
-                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_SCORE_ERROR_ALREADYUSEDTEAM);
+                            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_SCORE_ERROR_ALREADYUSEDTEAM);
                             return true;
                         }
                         mgPlayer.addScore(score);
                         mg.setScore(mgPlayer, mgPlayer.getScore());
 
                         pteam.addScore(score);
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.SIGN_SCORE_ADDSCORETEAM,
+                        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.SIGN_SCORE_ADDSCORETEAM,
                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(score)),
                             Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(pteam.getScore())));
                         Minigames.getPlugin().getMinigameManager().addClaimedScore(mg, sign.getLocation(), 0);

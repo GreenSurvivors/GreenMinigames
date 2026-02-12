@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -22,7 +22,7 @@ public class SpectateSign extends AMinigameSign {
 
     @Override
     public @NotNull Component getName() {
-        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_SPECTATE);
+        return MessageManager.getMessage(MgSignLangKey.TYPE_SPECTATE);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SpectateSign extends AMinigameSign {
             setPersistentMinigame(sign, minigame);
             return true;
         } else {
-            MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
+            MessageManager.sendMessage(event.getPlayer(), MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                     Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), Objects.requireNonNullElse(event.line(2), Component.empty())));
             return false;
         }
@@ -62,13 +62,13 @@ public class SpectateSign extends AMinigameSign {
                     plugin.getPlayerManager().spectateMinigame(mgm, mgPlayer);
                     return true;
                 } else if (!mgm.isEnabled()) {
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTENABLED);
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTENABLED);
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME);
+                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME);
             }
         } else if (!mgPlayer.isInMinigame()) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
         }
         return false;
     }

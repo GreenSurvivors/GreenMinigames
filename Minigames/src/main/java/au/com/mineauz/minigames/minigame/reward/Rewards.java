@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
@@ -136,7 +136,7 @@ public class Rewards {
             MgMenuLangKey.MENU_REWARD_GROUP_ADD_NAME, this), 42);
         rewardMenu.setItem(new MenuItemRewardAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME, this), 43);
         rewardMenu.setItem(new MenuItemPage(MenuDisplayTypes.saveType(),
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
+            MessageManager.getMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
                 Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), name)),
             parent), 44);
 
@@ -145,10 +145,10 @@ public class Rewards {
             mi.add(item.getMenuItem());
         }
 
-        final @NotNull List<@NotNull Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_EDIT_SHIFTLEFT);
+        final @NotNull List<@NotNull Component> des = MessageManager.getMessageList(MgMenuLangKey.MENU_EDIT_SHIFTLEFT);
         for (final @NotNull RewardGroup group : getGroups()) {
             final @NotNull MenuItemRewardGroup rwg = new MenuItemRewardGroup(ItemType.BUNDLE,
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
+                MessageManager.getMessage(MgMenuLangKey.MENU_REWARD_GROUP_NAME,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), group.getName())),
                 des, group, this);
             mi.add(rwg);

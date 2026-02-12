@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.FloatFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
@@ -32,7 +31,7 @@ public class ExplodeAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_NAME);
     }
 
     @Override
@@ -43,8 +42,8 @@ public class ExplodeAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_POWER_NAME), Component.text(power.getFlag()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_FIRE_NAME), MinigameMessageManager.getMgMessage(
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_POWER_NAME), Component.text(power.getFlag()),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_FIRE_NAME), MessageManager.getMessage(
                         fire.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED
                 ));
     }
@@ -107,8 +106,8 @@ public class ExplodeAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(power.getMenuItem(ItemType.TNT, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_POWER_NAME)));
-        menu.addItem(fire.getMenuItem(ItemType.FLINT_AND_STEEL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_FIRE_NAME)));
+        menu.addItem(power.getMenuItem(ItemType.TNT, MessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_POWER_NAME)));
+        menu.addItem(fire.getMenuItem(ItemType.FLINT_AND_STEEL, MessageManager.getMessage(RegionLangKey.MENU_ACTION_EXPLODE_FIRE_NAME)));
         menu.displayMenu();
         return true;
     }

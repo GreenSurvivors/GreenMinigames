@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -36,12 +36,12 @@ public class ListPlaceholder extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_LISTPLACEHOLDERS_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_LISTPLACEHOLDERS_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_LISTPLACEHOLDERS_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_LISTPLACEHOLDERS_USAGE);
     }
 
     @Override
@@ -64,10 +64,10 @@ public class ListPlaceholder extends ACommand {
             map(pHolder -> Component.text("%" + PLUGIN.getName() + "_" + pHolder + "%")).toList());
 
         // footer / header
-        final Component header = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_LISTPLACEHOLDERS_HEADER,
+        final Component header = MessageManager.getMessage(MgCommandLangKey.COMMAND_LISTPLACEHOLDERS_HEADER,
             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(pageNumber)),
             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(numPages)));
-        final Component footer = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DIVIDER_LARGE); //todo clickable next/back buttons on footer
+        final Component footer = MessageManager.getMessage(MgCommandLangKey.COMMAND_DIVIDER_LARGE); //todo clickable next/back buttons on footer
 
         return header.appendNewline().append(pageCore).appendNewline().append(footer);
     }
@@ -77,12 +77,12 @@ public class ListPlaceholder extends ACommand {
                              @NotNull String @NotNull [] args) {
         if (args.length > 0) {
             if (NUM_PATTERN.matcher(args[0]).matches()) {
-                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, makePage(Integer.parseInt(args[0])));
+                MessageManager.sendMessage(sender, MinigameMessageType.NONE, makePage(Integer.parseInt(args[0])));
             } else {
                 return false;
             }
         } else {
-            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, makePage(1));
+            MessageManager.sendMessage(sender, MinigameMessageType.NONE, makePage(1));
         }
         return true;
     }

@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -47,7 +47,7 @@ public class ItemReward extends ARewardType {
         } else {
             mgPlayer.getPlayer().give(item);
 
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WIN, MgMiscLangKey.REWARD_ITEM,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.WIN, MgMiscLangKey.REWARD_ITEM,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(item.getAmount())),
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), item.displayName()));
         }
@@ -127,7 +127,7 @@ public class ItemReward extends ARewardType {
             description.add(rarities.get(before).getDisplayName().color(NamedTextColor.GRAY));
             description.add(getRarity().getDisplayName().color(NamedTextColor.GREEN));
             description.add(rarities.get(after).getDisplayName().color(NamedTextColor.GRAY));
-            description.add(MinigameMessageManager.getMgMessage(
+            description.add(MessageManager.getMessage(
                 MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK).color(NamedTextColor.DARK_PURPLE));
 
             setDescriptionPartAtIndex(DESCRIPTION_REWARD_TOKEN, 0, description);

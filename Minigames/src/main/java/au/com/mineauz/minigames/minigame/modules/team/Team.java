@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
@@ -41,10 +41,10 @@ public class Team implements ScriptObject, ScoreHolder {
     private final @NotNull Minigames plugin = Minigames.getPlugin();
     private final @NotNull IntegerFlag maxPlayers = new IntegerFlag("maxPlayers", 0);
     private final @NotNull List<SafeFullLocation> startLocations = new ArrayList<>();
-    private final @NotNull StringFlag playerAssignMsg = new StringFlag("assignMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM));
-    private final @NotNull StringFlag joinAnnounceMsg = new StringFlag("gameAssignMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE));
-    private final @NotNull StringFlag playerAutobalanceMsg = new StringFlag("autobalanceMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG));
-    private final @NotNull StringFlag gameAutobalanceMsg = new StringFlag("gameAutobalanceMsg", MinigameMessageManager.getUnformattedMgMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG));
+    private final @NotNull StringFlag playerAssignMsg = new StringFlag("assignMsg", MessageManager.getRawMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM));
+    private final @NotNull StringFlag joinAnnounceMsg = new StringFlag("gameAssignMsg", MessageManager.getRawMessage(MgMiscLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE));
+    private final @NotNull StringFlag playerAutobalanceMsg = new StringFlag("autobalanceMsg", MessageManager.getRawMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG));
+    private final @NotNull StringFlag gameAutobalanceMsg = new StringFlag("gameAutobalanceMsg", MessageManager.getRawMessage(MgMiscLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG));
     private final @NotNull EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>("nametagVisibility", OptionStatus.ALWAYS);
     private final @NotNull EnumFlag<OptionStatus> collisionRule = new EnumFlag<>("collision", OptionStatus.ALWAYS);
     private final EnumFlag<OptionStatus> showDeathMessage = new EnumFlag<>("deathMessage", OptionStatus.ALWAYS);  // todo does this need a helper like the visibility?
@@ -624,7 +624,7 @@ public class Team implements ScriptObject, ScoreHolder {
 
         CollisionRuleMapper(@NotNull OptionStatus status, @NotNull MinigameLangKey langKey) {
             this.status = status;
-            this.name = MinigameMessageManager.getUnformattedMgMessage(langKey);
+            this.name = MessageManager.getRawMessage(langKey);
         }
 
         static @NotNull CollisionRuleMapper getMapping(@NotNull OptionStatus status) {
@@ -674,7 +674,7 @@ public class Team implements ScriptObject, ScoreHolder {
 
         VisibilityMapper(@NotNull OptionStatus status, @NotNull MinigameLangKey langKey) {
             this.status = status;
-            this.name = MinigameMessageManager.getUnformattedMgMessage(langKey);
+            this.name = MessageManager.getRawMessage(langKey);
         }
 
         static @NotNull VisibilityMapper getMapping(@NotNull OptionStatus status) {

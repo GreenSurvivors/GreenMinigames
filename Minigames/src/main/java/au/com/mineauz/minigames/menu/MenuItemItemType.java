@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import net.kyori.adventure.text.Component;
@@ -42,7 +42,7 @@ public class MenuItemItemType extends AMenuItem {
 
     public void updateDescription() {
         setDescriptionPart(DESCRIPTION_TOKEN, List.of(
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ITEMTYPE_DESCRIPTION,
+            MessageManager.getMessage(MgMenuLangKey.MENU_ITEMTYPE_DESCRIPTION,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(),
                     Component.translatable(itemTypeCallback.getValue().translationKey())))));
 

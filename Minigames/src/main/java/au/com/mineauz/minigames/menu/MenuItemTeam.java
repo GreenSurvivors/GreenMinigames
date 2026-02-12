@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.modules.team.Team;
 import au.com.mineauz.minigames.minigame.modules.team.TeamsModule;
@@ -29,7 +29,7 @@ public class MenuItemTeam extends AMenuItem {
                         final @NotNull Team team) {
         super(ItemType.LEATHER_CHESTPLATE, name, description);
 
-        setDescriptionPart(DELETE_DESCRIPTION_PART, List.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK)));
+        setDescriptionPart(DELETE_DESCRIPTION_PART, List.of(MessageManager.getMessage(MgMenuLangKey.MENU_DELETE_RIGHTCLICK)));
         this.team = team;
         setTeamIcon();
     }

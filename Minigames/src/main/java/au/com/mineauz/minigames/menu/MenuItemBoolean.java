@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
@@ -44,7 +44,7 @@ public class MenuItemBoolean extends AMenuItem {
     @Override
     public void update() {
         MinigameLangKey boolKey = toggle.getValue() ? MgMiscLangKey.BOOL_TRUE : MgMiscLangKey.BOOL_FALSE;
-        setDescriptionPart(DESCRIPTION_TOKEN, MinigameMessageManager.getMgMessageList(boolKey));
+        setDescriptionPart(DESCRIPTION_TOKEN, MessageManager.getMessageList(boolKey));
     }
 
     @Override

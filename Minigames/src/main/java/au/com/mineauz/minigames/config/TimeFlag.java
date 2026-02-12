@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Callback;
@@ -59,7 +59,7 @@ public class TimeFlag extends AFlag<Long> {
 
     public @NotNull MenuItemTime getMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
                                              final @Nullable List<@NotNull Component> description, final @Nullable Long min, final @Nullable Long max) {
-        return getMenuItem(displayType, MinigameMessageManager.getMgMessage(langKey), description, min, max);
+        return getMenuItem(displayType, MessageManager.getMessage(langKey), description, min, max);
     }
 
     public @NotNull MenuItemTime getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name,

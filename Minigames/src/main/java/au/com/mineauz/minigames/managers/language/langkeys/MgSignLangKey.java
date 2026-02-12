@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.managers.language.langkeys;
 
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 
 public enum MgSignLangKey implements MinigameLangKey {
@@ -27,7 +28,12 @@ public enum MgSignLangKey implements MinigameLangKey {
     }
 
     @Override
-    public @NotNull String getPath() {
+    public @NotNull String path() {
         return path;
+    }
+
+    @Override
+    public @NotNull Key bundleKey() {
+        return BUNDLE_KEY;
     }
 }

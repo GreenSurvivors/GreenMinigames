@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
@@ -31,7 +30,7 @@ public class FlightAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_FLIGHT_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_FLIGHT_NAME);
     }
 
     @Override
@@ -41,11 +40,11 @@ public class FlightAction extends AAction {
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        return Map.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_NAME),
-                MinigameMessageManager.getMgMessage(
+        return Map.of(MessageManager.getMessage(MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ALLOW_NAME),
+                MessageManager.getMessage(
                         setFly.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED),
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ENABLE_NAME),
-                MinigameMessageManager.getMgMessage(
+                MessageManager.getMessage(MgMenuLangKey.MENU_PLAYERSETTINGS_FLIGHT_ENABLE_NAME),
+                MessageManager.getMessage(
                         startFly.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED)
         );
     }

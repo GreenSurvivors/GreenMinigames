@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -30,11 +30,11 @@ public class MenuItemModifyStatSetting extends AMenuItem {
 
     @Override
     public @NotNull ItemStack onClick() {
-        final @NotNull Menu subMenu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_EDIT_NAME,
+        final @NotNull Menu subMenu = new Menu(6, MessageManager.getMessage(MgMenuLangKey.MENU_STAT_EDIT_NAME,
             Placeholder.component(MinigamePlaceHolderKey.STAT.getKey(), stat.getDisplayName())), getMenu().getIntendedViewer());
 
         subMenu.addItem(new MenuItemComponent(MenuDisplayTypes.nameType(),
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DISPLAYNAME_NAME), new Callback<>() {
+            MessageManager.getMessage(MgMenuLangKey.MENU_DISPLAYNAME_NAME), new Callback<>() {
             @Override
             public Component getValue() {
                 return minigame.getSettings(stat).getDisplayName();

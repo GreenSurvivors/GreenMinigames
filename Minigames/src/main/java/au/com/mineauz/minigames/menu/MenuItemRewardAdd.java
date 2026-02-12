@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.reward.ARewardType;
@@ -58,9 +58,9 @@ public class MenuItemRewardAdd extends AMenuItem {
 
     @Override
     public @NotNull ItemStack onClick() {
-        final @NotNull Menu menu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SELECTTYPE_NAME), getMenu().getIntendedViewer());
+        final @NotNull Menu menu = new Menu(6, MessageManager.getMessage(MgMenuLangKey.MENU_REWARD_SELECTTYPE_NAME), getMenu().getIntendedViewer());
         for (final @NotNull RewardTypes.RewardTypeFactory factory : RewardTypes.getRewardTypeFactories()) {
-            final @NotNull MenuItemCustom custom = new MenuItemCustom(ItemType.STONE, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_TYPE_NAME));
+            final @NotNull MenuItemCustom custom = new MenuItemCustom(ItemType.STONE, MessageManager.getMessage(MgMenuLangKey.MENU_REWARD_TYPE_NAME));
             final @NotNull ARewardType rewType = factory.makeNewType(rewards);
 
             if (rewType.isUsable()) {

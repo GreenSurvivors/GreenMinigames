@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.tool;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -27,12 +27,12 @@ public class SpectatorLocationMode implements ToolMode { //todo waring if other 
 
     @Override
     public @NotNull Component getDisplayName() {
-        return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_TOOL_LOCATION_SPECTATORSTART_NAME);
+        return MessageManager.getMessage(MgMenuLangKey.MENU_TOOL_LOCATION_SPECTATORSTART_NAME);
     }
 
     @Override
     public @NotNull List<@NotNull Component> getDescription() {
-        return MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_LOCATION_SPECTATORSTART_DESCRIPTION);
+        return MessageManager.getMessageList(MgMenuLangKey.MENU_TOOL_LOCATION_SPECTATORSTART_DESCRIPTION);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class SpectatorLocationMode implements ToolMode { //todo waring if other 
     public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
                              @Nullable Team team, @NotNull PlayerInteractEvent event) {
         minigame.setSpectatorLocation(new SafeFullLocation(mgPlayer.getLocation()));
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SET_SPECTATORLOCATION);
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SET_SPECTATORLOCATION);
     }
 
     @Override
@@ -59,9 +59,9 @@ public class SpectatorLocationMode implements ToolMode { //todo waring if other 
             if (player != null && player.getWorld().equals(minigame.getSpectatorLocation().getWorld())) {
                 player.sendBlockChange(minigame.getSpectatorLocation().toLocation(), BlockType.SKELETON_SKULL.createBlockData());
             }
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_SPECTATORLOCATION);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_SPECTATORLOCATION);
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOSPECTATORLOCATION);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOSPECTATORLOCATION);
         }
     }
 
@@ -73,9 +73,9 @@ public class SpectatorLocationMode implements ToolMode { //todo waring if other 
                 player.sendBlockChange(minigame.getSpectatorLocation().toLocation(),
                     minigame.getSpectatorLocation().getBlockAt().getBlockData());
             }
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_SPECTATORLOCATION);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_SPECTATORLOCATION);
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOSPECTATORLOCATION);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOSPECTATORLOCATION);
         }
     }
 

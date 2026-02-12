@@ -3,13 +3,13 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -32,7 +32,7 @@ public class SetBlockAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETBLOCK_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_SETBLOCK_NAME);
     }
 
     @Override
@@ -43,10 +43,10 @@ public class SetBlockAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         if (useBlockData.getFlag()) {
-            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
+            return Map.of(MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
                     MinigameUtils.limitIgnoreFormat(Component.text(blockDataFlag.getFlag().getAsString()), 16));
         } else {
-            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
+            return Map.of(MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
                     Component.text(blockDataFlag.getFlag().getMaterial().translationKey()));
         }
     }
@@ -117,8 +117,8 @@ public class SetBlockAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(blockDataFlag.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME)));
-        menu.addItem(useBlockData.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME)));
+        menu.addItem(blockDataFlag.getMenuItem(MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME)));
+        menu.addItem(useBlockData.getMenuItem(ItemType.ENDER_PEARL, MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME)));
         menu.displayMenu();
         return true;
     }

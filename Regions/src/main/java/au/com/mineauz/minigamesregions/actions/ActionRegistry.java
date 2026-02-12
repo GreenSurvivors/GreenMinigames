@@ -1,11 +1,11 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuDisplayTypes;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.menu.MenuItemAction;
 import au.com.mineauz.minigamesregions.menu.MenuItemActionAdd;
 import net.kyori.adventure.key.Key;
@@ -76,14 +76,14 @@ public class ActionRegistry {
     }
 
     public static @NotNull Menu createMenu(final @NotNull ActionExecutor exec, final @NotNull Menu prev) {
-        final @NotNull Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), prev.getIntendedViewer());
+        final @NotNull Menu menu = new Menu(3, MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_NAME), prev.getIntendedViewer());
         menu.setPreviousPage(prev);
         for (final @NotNull IAction act : exec.getActions()) {
             menu.addItem(new MenuItemAction(ItemType.PAPER, act.getDisplayname(), exec, act));
         }
         menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
         menu.setItem(new MenuItemActionAdd(MenuDisplayTypes.createType(),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_ADD_NAME), exec), menu.getSize() - 1);
+                MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_ADD_NAME), exec), menu.getSize() - 1);
         return menu;
     }
 }

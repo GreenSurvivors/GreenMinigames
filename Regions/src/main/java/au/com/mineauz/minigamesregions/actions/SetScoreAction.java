@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -9,7 +9,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
@@ -29,7 +28,7 @@ public class SetScoreAction extends AScoreAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETSCORE_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_SETSCORE_NAME);
     }
 
     @Override
@@ -39,7 +38,7 @@ public class SetScoreAction extends AScoreAction {
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        return Map.of(MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), Component.text(amount.getFlag()));
+        return Map.of(MessageManager.getMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), Component.text(amount.getFlag()));
     }
 
     @Override
@@ -83,7 +82,7 @@ public class SetScoreAction extends AScoreAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.addItem(amount.getMenuItem(ItemType.ENDER_PEARL,
-                MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), null, null));
+                MessageManager.getMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), null, null));
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
         menu.displayMenu();
         return true;

@@ -6,7 +6,7 @@ import au.com.mineauz.minigames.StoredPlayerCheckpoints;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.display.DisplayCuboid;
 import au.com.mineauz.minigames.managers.DependencyManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.AMenuItem;
@@ -581,30 +581,30 @@ public class MinigamePlayer implements ScriptObject, ScoreHolder, ForwardingAudi
                 if (DependencyManager.getLocation2(player) != null) {
                     DependencyManager.clearSelection(player);
                     DependencyManager.setPos1(player, loc);
-                    MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_RESTART);
-                    MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS1);
+                    MessageManager.sendMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_RESTART);
+                    MessageManager.sendMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS1);
                 } else {
                     DependencyManager.setPos2(player, loc);
-                    MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS2);
+                    MessageManager.sendMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS2);
                 }
             } else {
                 DependencyManager.setPos1(player, loc);
-                MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS1);
+                MessageManager.sendMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS1);
             }
         } else {
             if (selection1 == null) {
                 selection1 = new SafeFineLocation(loc);
                 showSelection(true);
-                MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS1);
+                MessageManager.sendMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS1);
             } else if (selection2 == null) {
                 selection2 = new SafeFineLocation(loc);
                 showSelection(true);
-                MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS2);
+                MessageManager.sendMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS2);
             } else {
                 showSelection(false);
                 selection1 = new SafeFineLocation(loc);
-                MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_RESTART);
-                MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS1);
+                MessageManager.sendMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_RESTART);
+                MessageManager.sendMessage(this, MinigameMessageType.INFO, MgMiscLangKey.PLAYER_SELECT_POS1);
                 selection2 = null;
                 showSelection(true);
             }

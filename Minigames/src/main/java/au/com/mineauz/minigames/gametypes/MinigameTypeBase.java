@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.gametypes;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -63,7 +63,7 @@ public abstract class MinigameTypeBase implements Listener {
                 if (player.getWorld() != location.getWorld() && player.hasPermission("minigame.set.quit") &&
                     plugin.getConfig().getBoolean("warnings")) {
 
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.WARNING, MgMiscLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
                 }
 
                 mgPlayer.teleport(location);

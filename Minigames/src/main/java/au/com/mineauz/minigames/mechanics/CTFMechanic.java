@@ -7,7 +7,7 @@ import au.com.mineauz.minigames.events.DropFlagEvent;
 import au.com.mineauz.minigames.events.FlagCaptureEvent;
 import au.com.mineauz.minigames.events.TakeCTFFlagEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -72,7 +72,7 @@ public class CTFMechanic extends AGameMechanic {
         if (!minigame.getShowCTFBroadcasts()) {
             return;
         }
-        MinigameMessageManager.sendBroadcastMessageUnchecked(minigame, message, MinigameMessageType.INFO, null);
+        MessageManager.sendBroadcastMessageUnchecked(minigame, message, MinigameMessageType.INFO, null);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class CTFMechanic extends AGameMechanic {
 
         } else {
             if (caller != null) {
-                MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_START_NOT_ENOUGH_TEAMS);
+                MessageManager.sendMessage(caller, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_START_NOT_ENOUGH_TEAMS);
             }
 
             return false;
@@ -182,7 +182,7 @@ public class CTFMechanic extends AGameMechanic {
                             addDroppedFlag(newID, flag);
                             flag.respawnFlag();
 
-                            MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_FLAG_RETURNEDTEAM,
+                            MessageManager.sendMinigameMessage(minigame, MessageManager.getMessage(MgMiscLangKey.MINIGAME_FLAG_RETURNEDTEAM,
                                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName(), team.getTextColor()))), MinigameMessageType.INFO);
                         }
                     } else if ((colorOnLine2 != team.getColor() && !CTFFlagSign.isCapture(signFrontSide.line(2))) ||
@@ -215,7 +215,7 @@ public class CTFMechanic extends AGameMechanic {
                                 if (getCarriedFlag(mgPlayer).getTeam() != null) {
                                     if (takeCTFFlagEvent.shouldDisplayMessage()) {
                                         final @NotNull Team flagTeam = getCarriedFlag(mgPlayer).getTeam();
-                                        sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_STOLE,
+                                        sendCTFMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_CTF_STOLE,
                                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(flagTeam.getDisplayName(), flagTeam.getTextColor())))
                                         );
@@ -223,7 +223,7 @@ public class CTFMechanic extends AGameMechanic {
                                     getCarriedFlag(mgPlayer).startCarrierParticleEffect(mgPlayer.getUUID());
                                 } else {
                                     if (takeCTFFlagEvent.shouldDisplayMessage()) {
-                                        sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_STOLE,
+                                        sendCTFMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_STOLE,
                                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()))
                                         );
                                     }
@@ -257,7 +257,7 @@ public class CTFMechanic extends AGameMechanic {
                                     }
 
                                     if (!end && flagCaptureEvent.shouldDisplayMessage()) {
-                                        sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_CAPTURE,
+                                        sendCTFMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_CTF_CAPTURE,
                                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(mgPlayer.getTeam().getDisplayName(), mgPlayer.getTeam().getTextColor()))
                                         ));
@@ -268,7 +268,7 @@ public class CTFMechanic extends AGameMechanic {
 
                                     if (end) {
                                         if (flagCaptureEvent.shouldDisplayMessage()) {
-                                            sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_CAPTUREFINAL,
+                                            sendCTFMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_CTF_CAPTUREFINAL,
                                                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                                                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(mgPlayer.getTeam().getDisplayName(), mgPlayer.getTeam().getTextColor())))
                                             );
@@ -290,14 +290,14 @@ public class CTFMechanic extends AGameMechanic {
                                     }
 
                                     if (flagCaptureEvent.shouldDisplayMessage()) {
-                                        sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_CAPTURE,
+                                        sendCTFMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_CAPTURE,
                                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName())));
                                     }
                                     flag.stopCarrierParticleEffect();
 
                                     if (end) {
                                         if (flagCaptureEvent.shouldDisplayMessage()) {
-                                            sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_CAPTUREFINAL,
+                                            sendCTFMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_CAPTUREFINAL,
                                                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName())));
                                         }
 
@@ -315,12 +315,12 @@ public class CTFMechanic extends AGameMechanic {
                             }
                             flag.respawnFlag();
 
-                            sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_RETURNED,
+                            sendCTFMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_CTF_RETURNED,
                                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(mgPlayer.getTeam().getDisplayName(), mgPlayer.getTeam().getTextColor())))
                             );
                         } else if (getCarriedFlag(mgPlayer) != null && hasDroppedFlag(clickID) && !getDroppedFlag(clickID).isAtHome()) {
-                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.LOSS, MgMiscLangKey.PLAYER_CTF_RETURNFAIL);
+                            MessageManager.sendMessage(mgPlayer, MinigameMessageType.LOSS, MgMiscLangKey.PLAYER_CTF_RETURNFAIL);
                         }
                     }
                 }
@@ -340,13 +340,13 @@ public class CTFMechanic extends AGameMechanic {
 
                 if (team != null) {
                     if (dropFlagEvent.shouldDisplayMessage()) {
-                        sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_DROPPED,
+                        sendCTFMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_CTF_DROPPED,
                             Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName(), team.getTextColor())))
                         );
                     }
                 } else {
-                    sendCTFMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_DROPPED,
+                    sendCTFMessage(minigame, MessageManager.getMessage(MgMiscLangKey.PLAYER_CTF_NEUTRAL_DROPPED,
                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()))
                     );
                 }
@@ -427,7 +427,7 @@ public class CTFMechanic extends AGameMechanic {
                 if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
                     event.setCancelled(true);
                 } else { // waring: may lead to floating flags, or them maybe plopping of upon returning
-                    MinigameMessageManager.sendMgMessage(plugin.getPlayerManager().getMinigamePlayer(event.getPlayer()),
+                    MessageManager.sendMessage(plugin.getPlayerManager().getMinigamePlayer(event.getPlayer()),
                         MinigameMessageType.WARNING, MgMiscLangKey.SIGN_CTF_FLAG_BROKEN_SUPPORT);
                 }
 

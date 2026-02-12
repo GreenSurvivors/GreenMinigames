@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -56,7 +56,7 @@ public class MenuItemStatusEffectAdd extends AMenuItem implements StringConsumer
 
         // time for a player to write a valid potion into chat
         final @NotNull Duration reopenTime = Duration.ofSeconds(30);
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STATUSEFFECTADD_ENTERCHAT,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STATUSEFFECTADD_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
         getMenu().closeAndWaitForInput(reopenTime, this);
@@ -79,7 +79,7 @@ public class MenuItemStatusEffectAdd extends AMenuItem implements StringConsumer
                         dur = TimeUnit.MILLISECONDS.toSeconds(dur) * 20; // millis to ticks
 
                         final @NotNull List<@NotNull Component> description = new ArrayList<>();
-                        description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK));
+                        description.add(MessageManager.getMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK));
 
                         final @NotNull PotionEffect potionEffect = new PotionEffect(potionEffectType, dur.intValue(), level);
                         for (final int slot : getMenu().getUsedSlots()) {
@@ -98,15 +98,15 @@ public class MenuItemStatusEffectAdd extends AMenuItem implements StringConsumer
                             }
                         }
                     } else {
-                        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,
+                        MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTIME,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                    MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTSTATUSEFFECT,
+                MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTSTATUSEFFECT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), split[2]));
             }
 
@@ -116,7 +116,7 @@ public class MenuItemStatusEffectAdd extends AMenuItem implements StringConsumer
             getMenu().cancelWaitForInput();
             getMenu().displayMenu();
 
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_STATUSEFFECTADD_ERROR_SYNTAX);
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_STATUSEFFECTADD_ERROR_SYNTAX);
         }
     }
 }

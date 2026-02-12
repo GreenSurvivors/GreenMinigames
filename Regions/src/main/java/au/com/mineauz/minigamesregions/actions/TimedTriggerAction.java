@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.events.EndedMinigameEvent;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -14,7 +14,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigamesregions.*;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -59,7 +58,7 @@ public class TimedTriggerAction extends AAction implements Listener {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME);
     }
 
     @Override
@@ -70,11 +69,11 @@ public class TimedTriggerAction extends AAction implements Listener {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME),
                 Component.text(toTrigger.getFlag()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME),
-                MinigameMessageManager.getMgMessage(isRegion.getFlag() ? MgMiscLangKey.BOOL_TRUE : MgMiscLangKey.BOOL_FALSE),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME),
+                MessageManager.getMessage(isRegion.getFlag() ? MgMiscLangKey.BOOL_TRUE : MgMiscLangKey.BOOL_FALSE),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME),
                 MinigameUtils.convertTime(Duration.ofSeconds(delay.getFlag() / 20)));
     }
 
@@ -142,9 +141,9 @@ public class TimedTriggerAction extends AAction implements Listener {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(toTrigger.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME)));
-        menu.addItem(isRegion.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME)));
-        menu.addItem(delay.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME), 0L, null));
+        menu.addItem(toTrigger.getMenuItem(ItemType.ENDER_EYE, MessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_NAME_NAME)));
+        menu.addItem(isRegion.getMenuItem(ItemType.ENDER_PEARL, MessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_ISREGION_NAME)));
+        menu.addItem(delay.getMenuItem(ItemType.ENDER_PEARL, MessageManager.getMessage(RegionLangKey.MENU_ACTION_TIMEDTRIGGER_DELAY_NAME), 0L, null));
         menu.displayMenu();
         return true;
     }

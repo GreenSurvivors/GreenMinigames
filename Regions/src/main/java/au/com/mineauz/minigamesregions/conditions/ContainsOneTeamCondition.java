@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.minigame.modules.team.Team;
@@ -7,7 +8,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class ContainsOneTeamCondition extends ACondition {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSONETEAM_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSONETEAM_NAME);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
@@ -18,7 +18,7 @@ public class QuitSign extends AMinigameSign {
 
     @Override
     public @NotNull Component getName() {
-        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_QUIT);
+        return MessageManager.getMessage(MgSignLangKey.TYPE_QUIT);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class QuitSign extends AMinigameSign {
             plugin.getPlayerManager().quitMinigame(mgPlayer, false);
             return true;
         } else if (!inventory.getItemInMainHand().isEmpty()) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_ERROR_EMPTYHAND);
         }
         return false;
     }

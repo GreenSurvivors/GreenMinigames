@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -134,7 +134,7 @@ public class MenuItemInteger extends AMenuItem implements StringConsumer {
         final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)),
             Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()), //todo don't hardcode N/A
@@ -154,13 +154,13 @@ public class MenuItemInteger extends AMenuItem implements StringConsumer {
                 updateDescription();
 
             } else {
-                MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
+                MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                     MgCommandLangKey.COMMAND_ERROR_OUTOFBOUNDS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), this.max == null ? "N/A" : this.max.toString()));
             }
         } else {
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                 MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
         }

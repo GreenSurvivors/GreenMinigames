@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -83,7 +83,7 @@ public class GameOverModule extends AMinigameModule {
     }
 
     public void startEndGameTimer() {
-        MinigameMessageManager.sendMinigameMessage(getMinigame(), MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_GAMEOVERQUIT,
+        MessageManager.sendMinigameMessage(getMinigame(), MessageManager.getMessage(MgMiscLangKey.MINIGAME_GAMEOVERQUIT,
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(Duration.ofSeconds(timer.getFlag())))));
         getMinigame().setState(MinigameState.ENDED);
 

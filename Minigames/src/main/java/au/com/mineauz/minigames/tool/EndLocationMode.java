@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.tool;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -27,12 +27,12 @@ public class EndLocationMode implements ToolMode {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_TOOL_LOCATION_END_NAME);
+        return MessageManager.getMessage(MgMenuLangKey.MENU_TOOL_LOCATION_END_NAME);
     }
 
     @Override
     public @NotNull List<@NotNull Component> getDescription() {
-        return MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_LOCATION_END_DESCRIPTION);
+        return MessageManager.getMessageList(MgMenuLangKey.MENU_TOOL_LOCATION_END_DESCRIPTION);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class EndLocationMode implements ToolMode {
     public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
                              @Nullable Team team, @NotNull PlayerInteractEvent event) {
         minigame.setEndLocation(new SafeFullLocation(mgPlayer.getLocation()));
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SET_ENDLOCATION);
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SET_ENDLOCATION);
     }
 
     @Override
@@ -61,9 +61,9 @@ public class EndLocationMode implements ToolMode {
                 player.sendBlockChange(minigame.getEndLocation().toLocation(),
                     BlockType.SKELETON_SKULL.createBlockData());
             }
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_ENDLOCATION);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_ENDLOCATION);
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOENDLOCATION);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOENDLOCATION);
         }
     }
 
@@ -75,9 +75,9 @@ public class EndLocationMode implements ToolMode {
                 player.sendBlockChange(minigame.getEndLocation().toLocation(),
                     minigame.getEndLocation().getBlockAt().getBlockData());
             }
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_ENDLOCATION);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_ENDLOCATION);
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOENDLOCATION);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOENDLOCATION);
         }
     }
 

@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.*;
 import au.com.mineauz.minigames.backend.common.SQLExport;
 import au.com.mineauz.minigames.backend.common.SQLImport;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.scoreboard.ScoreboardOrder;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -47,7 +47,7 @@ public class MySQLBackend extends Backend {
 
             // Create the pool
             String url = String.format("jdbc:mysql://%s/%s", config.getString("host", "localhost:3306"), database);
-            MinigameMessageManager.debugMessage("URL: " + url);
+            MessageManager.debugMessage("URL: " + url);
             Properties props = new Properties();
             props.put("user", config.getString("username", "username"));
             props.put("password", config.getString("password", "password"));
@@ -57,7 +57,7 @@ public class MySQLBackend extends Backend {
                     props.put(entry.getKey(), entry.getValue().toString());
                 }
             }
-            MinigameMessageManager.debugMessage("Properties: " + props);
+            MessageManager.debugMessage("Properties: " + props);
             pool = new ConnectionPool(url, props);
 
             createStatements();

@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuDisplayTypes;
@@ -13,7 +13,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -40,7 +39,7 @@ public class PulseRedstoneAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_NAME);
     }
 
     @Override
@@ -50,10 +49,10 @@ public class PulseRedstoneAction extends AAction {
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TIME_NAME),
+        return Map.of(MessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TIME_NAME),
                 MinigameUtils.convertTime(Duration.ofSeconds(time.getFlag()), true),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TORCH_NAME),
-                MinigameMessageManager.getMgMessage(torch.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TORCH_NAME),
+                MessageManager.getMessage(torch.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -111,8 +110,8 @@ public class PulseRedstoneAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(time.getMenuItem(MenuDisplayTypes.timeType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TIME_NAME), 0L, null));
-        menu.addItem(torch.getMenuItem(ItemType.REDSTONE_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TORCH_NAME)));
+        menu.addItem(time.getMenuItem(MenuDisplayTypes.timeType(), MessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TIME_NAME), 0L, null));
+        menu.addItem(torch.getMenuItem(ItemType.REDSTONE_BLOCK, MessageManager.getMessage(RegionLangKey.MENU_ACTION_PLUSEREDSTONE_TORCH_NAME)));
         menu.displayMenu();
         return true;
     }

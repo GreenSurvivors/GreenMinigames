@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -58,7 +58,7 @@ public class MenuItemString extends AMenuItem implements StringConsumer {
         String setting = stringCallback.getValue();
         if (setting == null) {
             setDescriptionPart(DESCRIPTION_TOKEN, List.of(
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).color(NamedTextColor.GRAY)));
+                MessageManager.getMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).color(NamedTextColor.GRAY)));
         } else if (setting.length() > 20) {
             setting = setting.substring(0, 17) + "...";
             setDescriptionPart(DESCRIPTION_TOKEN, List.of(Component.text(setting, NamedTextColor.GREEN)));
@@ -69,11 +69,11 @@ public class MenuItemString extends AMenuItem implements StringConsumer {
     public @NotNull ItemStack onDoubleClick() {
         final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final @NotNull Duration reopenTime = Duration.ofSeconds(20);
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
         if (allowNull) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ALLOWNULL,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ALLOWNULL,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()));
         }
         getMenu().closeAndWaitForInput(reopenTime, this);

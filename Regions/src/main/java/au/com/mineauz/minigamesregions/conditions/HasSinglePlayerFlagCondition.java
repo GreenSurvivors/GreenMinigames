@@ -1,13 +1,13 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
@@ -27,7 +27,7 @@ public class HasSinglePlayerFlagCondition extends ACondition { // the whole sing
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_NAME);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class HasSinglePlayerFlagCondition extends ACondition { // the whole sing
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME), Component.text(flagName.getFlag()));
+        return Map.of(MessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME), Component.text(flagName.getFlag()));
     }
 
     @Override
@@ -83,7 +83,7 @@ public class HasSinglePlayerFlagCondition extends ACondition { // the whole sing
     public boolean displayMenu(final @NotNull Menu prev) {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
         menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
-        menu.addItem(flagName.getMenuItem(ItemType.WRITTEN_BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME)));
+        menu.addItem(flagName.getMenuItem(ItemType.WRITTEN_BOOK, MessageManager.getMessage(RegionLangKey.MENU_CONDITION_HASSINGLEPLAYERFLAG_FLAG_NAME)));
         addInvertMenuItem(menu);
         menu.displayMenu();
         return true;

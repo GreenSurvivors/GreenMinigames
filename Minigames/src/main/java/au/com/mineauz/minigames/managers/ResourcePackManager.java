@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.managers;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import io.leangen.geantyref.TypeToken;
@@ -51,7 +51,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
     private boolean loadEmptyPack() {
         try {
             URL url = new URI("https://github.com/AddstarMC/Minigames/blob/master/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip").parseServerAuthority().toURL();
-            ResourcePack empty = new ResourcePack(MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME), url);
+            ResourcePack empty = new ResourcePack(MessageManager.getMessage(MgMiscLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME), url);
             addResourcePack(empty);
             return true;
         } catch (MalformedURLException | URISyntaxException e) {
@@ -99,7 +99,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
         }
 
         for (final @NotNull ResourcePack pack : resources) {
-            if (pack.getName().equals(MinigameMessageManager.getStrippedMgMessage(MgMiscLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME))) {
+            if (pack.getName().equals(MessageManager.getStrippedMessage(MgMiscLangKey.MINIGAME_RESSOURCEPACK_EMPTY_NAME))) {
                 emptyPresent = true;
                 enabled = true;
             }

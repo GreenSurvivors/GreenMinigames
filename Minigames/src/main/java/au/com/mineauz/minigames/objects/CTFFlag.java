@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.objects;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.mechanics.CTFMechanic;
@@ -269,10 +269,10 @@ public class CTFFlag {
             respawnFlag();
 
             if (getTeam() != null) {
-                MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_FLAG_RETURNEDTEAM,
+                MessageManager.sendMinigameMessage(minigame, MessageManager.getMessage(MgMiscLangKey.MINIGAME_FLAG_RETURNEDTEAM,
                     Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(getTeam().getDisplayName(), getTeam().getTextColor()))));
             } else {
-                MinigameMessageManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MgMiscLangKey.MINIGAME_FLAG_RETURNEDNEUTRAL));
+                MessageManager.sendMinigameMessage(minigame, MessageManager.getMessage(MgMiscLangKey.MINIGAME_FLAG_RETURNEDNEUTRAL));
             }
             taskID = -1;
         }, respawnTime * 20L);
@@ -316,7 +316,7 @@ public class CTFFlag {
             if (stack.editMeta(itemMeta -> {
                 itemMeta.getPersistentDataContainer().set(flagKey, PersistentDataType.BOOLEAN, Boolean.TRUE);
                 itemMeta.customName(Component.text().append(signText.get(2).append()).append(Component.text(" Flag")).build());
-                itemMeta.lore(MinigameMessageManager.getMgMessageList(MgMiscLangKey.SIGN_CTF_FLAG_DESCRIPTION));
+                itemMeta.lore(MessageManager.getMessageList(MgMiscLangKey.SIGN_CTF_FLAG_DESCRIPTION));
             })) {
                 return stack;
             }

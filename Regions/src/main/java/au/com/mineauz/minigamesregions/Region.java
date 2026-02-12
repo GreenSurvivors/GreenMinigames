@@ -1,6 +1,6 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
@@ -14,7 +14,6 @@ import au.com.mineauz.minigamesregions.actions.IAction;
 import au.com.mineauz.minigamesregions.actions.RegionActions;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.triggers.MgRegTrigger;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import io.papermc.paper.math.FinePosition;
@@ -25,13 +24,14 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 public class Region extends MgRegion implements ActionExecutorHolder {
     private static final int GAME_TICK_DELAY = 1;
     private final @NotNull List<@NotNull ActionExecutor> executors = new ArrayList<>();
-    private final @NotNull List<@NotNull MinigamePlayer> players = new ArrayList<>();
+    private final @NotNull Set<@NotNull MinigamePlayer> players = new LinkedHashSet<>(); // sequenced set to keep track of order the players have entered
     private final @NotNull Minigame minigame; // todo how to acquire this when loaded by Configurate?
     @Setting("tickDelay")
     private long configuredDelay = 20; //todo make ingame configurable
@@ -77,7 +77,7 @@ public class Region extends MgRegion implements ActionExecutorHolder {
         players.remove(player);
     }
 
-    public @NotNull List<@NotNull MinigamePlayer> getPlayers() {
+    public @NotNull Set<@NotNull MinigamePlayer> getPlayers() {
         return players;
     }
 
@@ -227,8 +227,7 @@ public class Region extends MgRegion implements ActionExecutorHolder {
                     }
                 } catch (Exception e) {
                     for (MinigamePlayer mgPlayer : players) {
-                        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                                RegionLangKey.TRIGGER_TICK_ERROR_CONDITION);
+                        MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionLangKey.TRIGGER_TICK_ERROR_CONDITION);
                     }
                 }
             }

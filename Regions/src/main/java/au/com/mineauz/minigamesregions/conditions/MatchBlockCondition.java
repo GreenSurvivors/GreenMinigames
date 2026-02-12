@@ -3,6 +3,7 @@ package au.com.mineauz.minigamesregions.conditions;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -11,7 +12,6 @@ import au.com.mineauz.minigames.objects.safelocation.SafeFullLocation;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
@@ -34,7 +34,7 @@ public class MatchBlockCondition extends ACondition {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MATCHBLOCK_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_CONDITION_MATCHBLOCK_NAME);
     }
 
     @Override
@@ -45,10 +45,10 @@ public class MatchBlockCondition extends ACondition {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         if (useFullBlockData.getFlag()) {
-            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
+            return Map.of(MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
                     MinigameUtils.limitIgnoreFormat(Component.text(blockData.getFlag().getAsString()), 16));
         } else {
-            return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
+            return Map.of(MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME),
                     Component.text(blockData.getFlag().getMaterial().translationKey()));
         }
     }
@@ -98,9 +98,9 @@ public class MatchBlockCondition extends ACondition {
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
         menu.setItem(new MenuItemBack(prev), menu.getSize() - 9);
 
-        final @NotNull AMenuItem menuItemBData = blockData.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME));
+        final @NotNull AMenuItem menuItemBData = blockData.getMenuItem(MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_BLOCK_NAME));
         menu.addItem(menuItemBData);
-        final @NotNull AMenuItem menuItemUseData = useFullBlockData.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME));
+        final @NotNull AMenuItem menuItemUseData = useFullBlockData.getMenuItem(ItemType.ENDER_PEARL, MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_USEBLOCKDATA_NAME));
         menu.addItem(menuItemUseData);
 
         addInvertMenuItem(menu);

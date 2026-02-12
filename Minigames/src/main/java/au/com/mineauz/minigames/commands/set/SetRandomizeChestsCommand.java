@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -32,12 +32,12 @@ public class SetRandomizeChestsCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_RNGCHEST_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_RNGCHEST_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_RNGCHEST_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_RNGCHEST_USAGE);
     }
 
     @Override
@@ -56,22 +56,22 @@ public class SetRandomizeChestsCommand extends ASetCommand {
                         int max = Integer.parseInt(args[1]);
 
                         if (minigame.setChestRandoms(min, max)) {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_RNGCHEST_ENABLED,
+                            MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_RNGCHEST_ENABLED,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), String.valueOf(min)),
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(max)));
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_RNGCHEST_DISABLED,
+                            MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_RNGCHEST_DISABLED,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                         }
 
                         return true;
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
             } // not enough args

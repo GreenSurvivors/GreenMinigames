@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -29,12 +29,12 @@ public class SetEndLocationCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_END_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_END_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_END_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_END_USAGE);
     }
 
     @Override
@@ -47,10 +47,10 @@ public class SetEndLocationCommand extends ASetCommand {
                              @NotNull String @Nullable [] args) {
         if (sender instanceof Entity entity) {
             minigame.setEndLocation(new SafeFullLocation(entity.getLocation()));
-            MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_END_SUCCESS,
+            MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_END_SUCCESS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
         }
         return true;
     }

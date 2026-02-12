@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.FloatFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Menu;
@@ -11,7 +11,6 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionsMain;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -36,7 +35,7 @@ public class VelocityAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_NAME);
     }
 
     @Override
@@ -47,8 +46,8 @@ public class VelocityAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_NAME),
-                MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_NAME),
+                MessageManager.getMessage(MgMiscLangKey.POSITION,
                         Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(x.getFlag())),
                         Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(y.getFlag())),
                         Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(z.getFlag()))));
@@ -99,9 +98,9 @@ public class VelocityAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(x.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_X_NAME), 0.5d, 1d, null, null));
-        menu.addItem(y.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Y_NAME), 0.5d, 1d, null, null));
-        menu.addItem(z.getMenuItem(ItemType.STONE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Z_NAME), 0.5d, 1d, null, null));
+        menu.addItem(x.getMenuItem(ItemType.STONE, MessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_X_NAME), 0.5d, 1d, null, null));
+        menu.addItem(y.getMenuItem(ItemType.STONE, MessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Y_NAME), 0.5d, 1d, null, null));
+        menu.addItem(z.getMenuItem(ItemType.STONE, MessageManager.getMessage(RegionLangKey.MENU_ACTION_VELOCITY_Z_NAME), 0.5d, 1d, null, null));
         menu.displayMenu();
         return true;
     }

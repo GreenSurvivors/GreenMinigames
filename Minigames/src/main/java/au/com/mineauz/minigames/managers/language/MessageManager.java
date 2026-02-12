@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -40,20 +41,19 @@ import java.util.zip.ZipInputStream;
 /**
  * Class will hold and store all messages that are required for minigames
  */
-public class MinigameMessageManager { // todo cache unformatted // todo clean all the different sendMessages - there are to many similar
-    private static final String BUNDLE_KEY = "minigames";
-    private static final String BUNDLE_NAME = "messages";
-    private static final Pattern LIST_PATTERN = Pattern.compile("<newline>");
+public class MessageManager { // todo cache unformatted // todo clean all the different sendMessages - there are to many similar
+    private static final @NotNull String BUNDLE_NAME = "messages";
+    private static final @NotNull Pattern LIST_PATTERN = Pattern.compile("<newline>");
 
     /**
      * Stores each prop file with an identifier
      */
-    private static final @NotNull ConcurrentHashMap<String, ResourceBundle> propertiesHashMap = new ConcurrentHashMap<>();
-    public static final Component DEBUG_PREFIX = Component.text("[Debug]", NamedTextColor.RED);
+    private static final @NotNull ConcurrentHashMap<@NotNull Key, @NotNull ResourceBundle> propertiesHashMap = new ConcurrentHashMap<>();
+    public static final @NotNull Component DEBUG_PREFIX = Component.text("[Debug]", NamedTextColor.RED);
     private static final @MonotonicNonNull Minigames PLUGIN = Minigames.getPlugin();
 
     public static void registerCoreLanguage() {
-        CodeSource src = Minigames.class.getProtectionDomain().getCodeSource();
+        final @NotNull CodeSource src = Minigames.class.getProtectionDomain().getCodeSource();
         if (src != null) {
             initLangFiles(src, BUNDLE_NAME);
         } else {
@@ -74,16 +74,16 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         registerCoreLanguage(file, locale);
     }
 
-    private static @NotNull String saveConvert(@NotNull String theString, boolean escapeSpace) {
-        int len = theString.length();
+    private static @NotNull String saveConvert(final @NotNull String theString, final boolean escapeSpace) {
+        final int len = theString.length();
         int bufLen = len * 2;
         if (bufLen < 0) {
             bufLen = Integer.MAX_VALUE;
         }
-        StringBuilder convertedStrBuilder = new StringBuilder(bufLen);
+        final @NotNull StringBuilder convertedStrBuilder = new StringBuilder(bufLen);
 
         for (int i = 0; i < theString.length(); i++) {
-            char aChar = theString.charAt(i);
+            final char aChar = theString.charAt(i);
             // Handle common case first
             if ((aChar > 61) && (aChar < 127)) {
                 if (aChar == '\\') {
@@ -135,7 +135,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
 
     // Thanks, @Feuerreiter, for code from Padlock. Nice Plugin, check it out!
     // #self-marketing
-    public static void initLangFiles(@NotNull CodeSource src, @NotNull String bundleName) {
+    public static void initLangFiles(final @NotNull CodeSource src, final @NotNull String bundleName) {
         final Pattern bundleFileNamePattern = Pattern.compile(bundleName + "(?:_.*)?.properties");
 
         URL jarUrl = src.getLocation();
@@ -169,7 +169,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
                         // we are NOT using Properties#store since it gets rid of comments and doesn't guarantee ordering
                         try (final @NotNull BufferedWriter bw = Files.newBufferedWriter(langFile, StandardCharsets.UTF_8, StandardOpenOption.WRITE, StandardOpenOption.APPEND, StandardOpenOption.CREATE)) {
                             boolean updated = false; // only write comment once
-                            for (Map.Entry<Object, Object> translationPair : defaults.entrySet()) { //todo guarantee ordering; default Properties are backed up by hashmap!
+                            for (final @NotNull Map.Entry<@NotNull Object, @NotNull Object> translationPair : defaults.entrySet()) { //todo guarantee ordering; default Properties are backed up by hashmap!
                                 if (current.get(translationPair.getKey()) == null) {
                                     if (!updated) {
                                         // most likely this will generate an empty line, since the last line should be empty.
@@ -201,7 +201,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         }
     }
 
-    public static void registerCoreLanguage(@NotNull Path file, @NotNull Locale locale) {
+    public static void registerCoreLanguage(final @NotNull Path file, final @NotNull Locale locale) {
         ResourceBundle langBundleMinigames = null;
         if (Files.isRegularFile(file)) {
             try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(file), StandardCharsets.UTF_8)) {
@@ -217,7 +217,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
             }
         }
         if (langBundleMinigames != null) {
-            registerMessageFile(BUNDLE_KEY, langBundleMinigames);
+            registerMessageFile(MinigameLangKey.BUNDLE_KEY, langBundleMinigames);
         } else {
             PLUGIN.getComponentLogger().error("No Core Language Resource Could be loaded...messaging will be broken");
         }
@@ -232,7 +232,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @param bundle     the ResourceBundle
      * @return true on success.
      */
-    public static boolean registerMessageFile(@NotNull String identifier, @NotNull ResourceBundle bundle) {
+    public static boolean registerMessageFile(final @NotNull Key identifier, final @NotNull ResourceBundle bundle) {
         if (propertiesHashMap.containsKey(identifier)) {
             return false;
         } else {
@@ -246,54 +246,36 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         }
     }
 
-    public static boolean deRegisterMessageFile(@NotNull String identifier) {
+    public static boolean unregisterMessageFile(final @NotNull Key identifier) {
         return (propertiesHashMap.remove(identifier) != null);
     }
 
-    public static @NotNull Component formatBlockLocation(@NotNull Location location) {
+    public static @NotNull Component formatBlockLocation(final @NotNull Location location) {
         return Component.text(location.blockX() + ", " + location.blockY() + " ," + location.blockZ());
-    }
-
-    public static @NotNull Component getMgMessage(@NotNull MinigameLangKey key, TagResolver... resolvers) {
-        return getMessage(null, key, resolvers);
     }
 
     /**
      * If the identifier is null this uses the core language file
      *
-     * @param identifier Unique identifier of the bundle to search
      * @param key        key
      * @param resolvers  resolver of placeholders
      * @return Formatted String.
      */
-    public static @NotNull Component getMessage(@Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
-        String unformatted = getUnformattedMessage(identifier, key);
+    public static @NotNull Component getMessage(final @NotNull LangKey key, final @NotNull TagResolver @NotNull... resolvers) {
+        final @NotNull String raw = getRawMessage(key);
 
-        return MiniMessage.miniMessage().deserialize(unformatted, resolvers);
-    }
-
-    public static @NotNull String getStrippedMgMessage(@NotNull MinigameLangKey key, TagResolver... resolvers) {
-        return getStrippedMessage(null, key, resolvers);
+        return MiniMessage.miniMessage().deserialize(raw, resolvers);
     }
 
     /**
      * If the identifier is null this uses the core language file
      *
-     * @param identifier Unique identifier of the bundle to search
      * @param key        key
      * @param resolvers  resolver of placeholders
      * @return String stripped of format.
      */
-    public static @NotNull String getStrippedMessage(@Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
-        return PlainTextComponentSerializer.plainText().serialize(MiniMessage.miniMessage().deserialize(getUnformattedMessage(identifier, key), resolvers));
-    }
-
-    public static @NotNull String getUnformattedMgMessage(@NotNull MinigameLangKey key) throws MissingResourceException {
-        return getUnformattedMessage(null, key);
-    }
-
-    public static @NotNull List<Component> getMgMessageList(@NotNull MinigameLangKey key, TagResolver... resolvers) {
-        return getMessageList(null, key, resolvers);
+    public static @NotNull String getStrippedMessage(final @NotNull LangKey key, final @NotNull TagResolver @NotNull ... resolvers) {
+        return PlainTextComponentSerializer.plainText().serialize(MiniMessage.miniMessage().deserialize(getRawMessage(key), resolvers));
     }
 
     /**
@@ -305,34 +287,32 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * This way a Component read by getMessage would look the same as getMessageList in different scenarios.
      * And be hopefully intuitive how to make multiline lore in the translation files.
      */
-    public static @NotNull List<Component> getMessageList(@Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
+    public static @NotNull List<Component> getMessageList(final @NotNull LangKey key, final @NotNull TagResolver @NotNull... resolvers) {
         MiniMessage miniMessage = MiniMessage.miniMessage(); // cached to use multiple times in stream
 
-        String unformatted = getUnformattedMessage(identifier, key);
+        final @NotNull String raw = getRawMessage(key);
         //split at new line then deserialize to component
-        return Arrays.stream(LIST_PATTERN.split(unformatted)).map(str -> miniMessage.deserialize(str, resolvers)).collect(Collectors.toCollection(ArrayList::new));
+        return Arrays.stream(LIST_PATTERN.split(raw)).map(str -> miniMessage.deserialize(str, resolvers)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
-     * @param identifier Unique identifier of the bundle to search
-     * @param key        key
+     * @param langKey        key
      * @return Unformatted (raw) String.
      * @throws MissingResourceException If bundle not found.
      */
-    public static @NotNull String getUnformattedMessage(@Nullable String identifier, @NotNull LangKey key) throws MissingResourceException { //todo don't crash if bundle is missing or can't get string. simply return key
-        ResourceBundle bundle = propertiesHashMap.get(Objects.requireNonNullElse(identifier, BUNDLE_KEY));
+    public static @NotNull String getRawMessage(final @NotNull LangKey langKey) throws MissingResourceException { //todo don't crash if bundle is missing or can't get string. simply return key
+        final @Nullable ResourceBundle bundle = propertiesHashMap.get(langKey.bundleKey());
         if (bundle == null) {
-            String err = (identifier == null) ? "NULL" : identifier;
-            throw new MissingResourceException(err, "MessageManager", key.getPath());
+            throw new MissingResourceException(langKey.bundleKey().asString(), "MessageManager", langKey.path());
         }
-        return bundle.getString(key.getPath());
+        return bundle.getString(langKey.path());
     }
 
-    public static void sendClickCommandMessage(@NotNull Audience target, @NotNull String command,
-                                               @Nullable String identifier, @NotNull LangKey key,
-                                               @NotNull TagResolver... resolvers) {
+    public static void sendClickCommandMessage(final @NotNull Audience target, final @NotNull String command,
+                                               final @NotNull LangKey key,
+                                               final @NotNull TagResolver @NotNull... resolvers) {
         Component init = getPluginPrefix(MinigameMessageType.INFO);
-        Component message = getMessage(identifier, key, resolvers).
+        Component message = getMessage(key, resolvers).
             clickEvent(ClickEvent.runCommand(command));
 
         // don't use color of prefix
@@ -341,10 +321,10 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         target.sendMessage(init.append(message));
     }
 
-    public static void sendMessage(@NotNull Audience target, @NotNull MinigameMessageType type, @Nullable String identifier, @NotNull LangKey key,
-                                   TagResolver... resolvers) {
+    public static void sendMessage(final @NotNull Audience target, final @NotNull MinigameMessageType type, final @NotNull LangKey key,
+                                   final @NotNull TagResolver @NotNull... resolvers) {
         Component init = getPluginPrefix(type);
-        Component message = getMessage(identifier, key, resolvers);
+        Component message = getMessage(key, resolvers);
 
         // don't use color of prefix
         message = message.colorIfAbsent(NamedTextColor.WHITE);
@@ -352,8 +332,8 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         target.sendMessage(init.append(message));
     }
 
-    private static @NotNull Component getPluginPrefix(@NotNull MinigameMessageType type) {
-        Component init = getMessage(BUNDLE_KEY, MgMiscLangKey.PLUGIN_PREFIX).appendSpace();
+    private static @NotNull Component getPluginPrefix(final @NotNull MinigameMessageType type) {
+        Component init = getMessage(MgMiscLangKey.PLUGIN_PREFIX).appendSpace();
         return switch (type) {
             case ERROR, TIE -> init.color(NamedTextColor.RED);
             case WARNING -> init.color(NamedTextColor.GOLD);
@@ -371,7 +351,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @param minigame   - The Minigame this broadcast is related to.
      * @param permission - The permission required to see this broadcastServer message.
      */
-    public static void broadcastServer(@NotNull Component message, @NotNull Minigame minigame, @NotNull String permission) {
+    public static void broadcastServer(@NotNull Component message, final @NotNull Minigame minigame, final @NotNull String permission) {
         // don't use color of prefix
         message = message.colorIfAbsent(NamedTextColor.WHITE);
 
@@ -384,7 +364,6 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         }
     }
 
-
     /**
      * Broadcasts a server message without a permission for everyone on a server.
      *
@@ -392,16 +371,15 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @param minigame - The Minigame this broadcast is related to.
      * @param type     - The color to be used in the prefix.
      */
-    public static void broadcastServer(@NotNull Component message, @NotNull Minigame minigame, @NotNull MinigameMessageType type) {
+    public static void broadcastServer(@NotNull Component message, final @NotNull Minigame minigame, final @NotNull MinigameMessageType type) {
         // don't use color of prefix
         message = message.colorIfAbsent(NamedTextColor.WHITE);
 
-        Component init = getPluginPrefix(type);
-        MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(init, message, minigame);
-        Bukkit.getPluginManager().callEvent(ev);
+        final @NotNull Component init = getPluginPrefix(type);
+        final @NotNull MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(init, message, minigame);
 
         // Only send broadcastServer if event was not cancelled and is not empty
-        if (!ev.isCancelled()) {
+        if (ev.callEvent()) {
             Bukkit.getServer().broadcast(ev.getMessageWithPrefix());
         }
     }
@@ -424,7 +402,8 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @param message  The message
      * @param type     Message Type
      */
-    public static void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message, final @Nullable MinigameMessageType type) {
+    public static void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message,
+                                           final @Nullable MinigameMessageType type) {
         sendMinigameMessage(minigame, message, type, (List<MinigamePlayer>) null);
     }
 
@@ -436,8 +415,8 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @param type     Message Type
      * @param exclude  Player, who shall not get this message
      */
-    public static void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message, final @Nullable MinigameMessageType type,
-                                           final @NotNull MinigamePlayer exclude) {
+    public static void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message,
+                                           final @Nullable MinigameMessageType type, final @NotNull MinigamePlayer exclude) {
         sendMinigameMessage(minigame, message, type, Collections.singletonList(exclude));
     }
 
@@ -449,7 +428,8 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @param type     Message Type
      * @param exclude  Players, which shall not get this message
      */
-    public static void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message, @Nullable MinigameMessageType type,
+    public static void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message,
+                                           @Nullable MinigameMessageType type,
                                            final @Nullable List<@NotNull MinigamePlayer> exclude) {
         if (!minigame.getShowPlayerBroadcasts()) {
             return;
@@ -458,55 +438,46 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
     }
 
     // This sends a message to every player which is not excluded from the exclude list
-    public static void sendBroadcastMessageUnchecked(@NotNull Minigame minigame, final @NotNull Component message,
+    public static void sendBroadcastMessageUnchecked(final @NotNull Minigame minigame, final @NotNull Component message,
                                                      @Nullable MinigameMessageType type,
-                                                     @Nullable List<@NotNull MinigamePlayer> exclude) {
+                                                     final @Nullable List<@NotNull MinigamePlayer> exclude) {
         if (type == null) {
             type = MinigameMessageType.INFO;
         }
 
-        final List<MinigamePlayer> playersSendTo = new ArrayList<>();
+        final @NotNull List<@NotNull MinigamePlayer> playersSendTo = new ArrayList<>();
         playersSendTo.addAll(minigame.getPlayers());
         playersSendTo.addAll(minigame.getSpectators());
         if (exclude != null) {
             playersSendTo.removeAll(exclude);
         }
 
-        for (final MinigamePlayer player : playersSendTo) {
-            MinigameMessageManager.sendMessage(player, type, message);
+        for (final @NotNull MinigamePlayer player : playersSendTo) {
+            MessageManager.sendMessage(player, type, message);
         }
     }
 
-    public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType,
-                                   @Nullable String identifier, @NotNull LangKey key) {
+    public static void sendMessage(final @NotNull Audience audience, final @NotNull MinigameMessageType messageType,
+                                   final @NotNull LangKey key) {
         // don't use color of prefix
-        Component message = getMessage(identifier, key);
+        Component message = getMessage(key);
         message = message.colorIfAbsent(NamedTextColor.WHITE);
 
         audience.sendMessage(getPluginPrefix(messageType).append(message));
     }
 
-    public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull MinigameLangKey key) {
-        sendMessage(audience, messageType, null, key);
-    }
-
-    public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType,
-                                     @NotNull MinigameLangKey key, @NotNull TagResolver... resolvers) {
-        sendMessage(audience, messageType, null, key, resolvers);
-    }
-
-    public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType,
+    public static void sendMessage(final @NotNull Audience audience, final @NotNull MinigameMessageType messageType,
                                    @NotNull Component message) {
         // don't use color of prefix
         message = message.colorIfAbsent(NamedTextColor.WHITE);
         audience.sendMessage(getPluginPrefix(messageType).append(message));
     }
 
-    public static void debugMessage(@NotNull String message) {
+    public static void debugMessage(final @NotNull String message) {
         debugMessage(Component.text(message));
     }
 
-    public static void debugMessage(@NotNull Component message) {
+    public static void debugMessage(final @NotNull Component message) {
         if (PLUGIN.isDebugging()) {
             PLUGIN.getComponentLogger().info(Component.text().append(DEBUG_PREFIX).appendSpace().append(message).asComponent());
         }

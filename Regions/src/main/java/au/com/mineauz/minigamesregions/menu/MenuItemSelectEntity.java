@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.AMenuItem;
@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.menu.consumer.EntityConsumer;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.RegionsMain;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
@@ -75,8 +74,8 @@ public class MenuItemSelectEntity extends AMenuItem implements EntityConsumer {
         final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
 
-        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO,
-            RegionMessageManager.getMessage(RegionLangKey.MENU_SELECT_ENTITY_CLICK_ENTITY,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO,
+            MessageManager.getMessage(RegionLangKey.MENU_SELECT_ENTITY_CLICK_ENTITY,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime))));
         getMenu().closeAndWaitForInput(reopenTime, this);
@@ -119,7 +118,7 @@ public class MenuItemSelectEntity extends AMenuItem implements EntityConsumer {
         setDisplayItem(newDisplayItem);
 
         setDescriptionPart(DESCRIPTION_TOKEN, List.of(
-            RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME,
+            MessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME,
                 Placeholder.component(MinigamePlaceHolderKey.ENTITY.getKey(),
                     Component.translatable(entitySnapshotCallback.getValue().getEntityType().translationKey())))));
     }

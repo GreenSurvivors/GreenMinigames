@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.stats;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
@@ -25,7 +25,7 @@ public enum StatisticValueField {
     }
 
     public @NotNull Component getTitle() {
-        return MinigameMessageManager.getMgMessage(titleLangKey);
+        return MessageManager.getMessage(titleLangKey);
     }
 
     public String getSuffix() {

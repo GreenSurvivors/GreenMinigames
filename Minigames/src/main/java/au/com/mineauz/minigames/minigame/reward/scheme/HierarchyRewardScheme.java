@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.minigame.reward.scheme;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -222,8 +222,8 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
         private void updateDescription() {
             final @NotNull List<@NotNull Component> description = List.of(
                 getMenuItemDescName(value).color(NamedTextColor.GREEN),
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARDPAIR_EDIT),
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK)
+                MessageManager.getMessage(MgMenuLangKey.MENU_REWARDPAIR_EDIT),
+                MessageManager.getMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK)
             );
 
             setDescriptionPart(DESCRIPTION_TOKEN, description);
@@ -273,7 +273,7 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
         public @NotNull ItemStack onDoubleClick() {
             final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
             final @NotNull Duration reopenTime = Duration.ofSeconds(10);
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_HIERARCHY_ENTERCHAT,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_HIERARCHY_ENTERCHAT,
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
             getMenu().closeAndWaitForInput(reopenTime, this);
@@ -286,13 +286,13 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
             try {
                 final T value = loadKey(entry);
                 if (map.containsKey(value)) {
-                    MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_DUPLICATE);
+                    MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_DUPLICATE);
                 } else {
                     updateValue(value);
                     updateDescription();
                 }
             } catch (IllegalArgumentException e) {
-                MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_INVALID);
+                MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_INVALID);
             }
 
             getMenu().cancelWaitForInput();
@@ -339,7 +339,7 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
         public @NotNull ItemStack onClick() {
             final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
             final @NotNull Duration reopenTime = Duration.ofSeconds(10);
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_HIERARCHY_ENTERCHAT,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_HIERARCHY_ENTERCHAT,
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
             getMenu().closeAndWaitForInput(reopenTime, this);
@@ -356,14 +356,14 @@ public abstract class HierarchyRewardScheme<T extends @NotNull Comparable<T>> ex
                 final @NotNull Rewards reward = new Rewards();
 
                 if (map.containsKey(value)) {
-                    MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_DUPLICATE);
+                    MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_DUPLICATE);
                 } else {
                     map.put(value, reward);
                     createRewardsMenu(map, getMenu().getPreviousPage()).displayMenu();
                     show = false;
                 }
             } catch (final @NotNull IllegalArgumentException e) {
-                MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_INVALID);
+                MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMiscLangKey.REWARDSCHEME_ERROR_INVALID);
             }
 
             getMenu().cancelWaitForInput();

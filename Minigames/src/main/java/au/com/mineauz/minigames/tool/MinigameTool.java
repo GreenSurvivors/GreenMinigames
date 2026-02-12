@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.tool;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -45,7 +45,7 @@ public class MinigameTool {
 
         if (lore != null && lore.size() >= 3) {
             final @NotNull Pattern minigamePattern = Pattern.compile(
-                MinigameMessageManager.getStrippedMgMessage(MgMiscLangKey.TOOL_SELECTED_MINIGAME_DESCRIPTION,
+                MessageManager.getStrippedMessage(MgMiscLangKey.TOOL_SELECTED_MINIGAME_DESCRIPTION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), "(.*)")),
                 Pattern.CASE_INSENSITIVE);
             final @NotNull Matcher mgMatcher = minigamePattern.matcher(plainSerializer.serialize(lore.getFirst()));
@@ -55,7 +55,7 @@ public class MinigameTool {
             }
 
             final @NotNull Pattern modePattern = Pattern.compile(
-                MinigameMessageManager.getStrippedMgMessage(MgMiscLangKey.TOOL_SELECTED_MODE_DESCRIPTION,
+                MessageManager.getStrippedMessage(MgMiscLangKey.TOOL_SELECTED_MODE_DESCRIPTION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), "(.*)")),
                 Pattern.CASE_INSENSITIVE);
             final @NotNull Matcher modeMatcher = modePattern.matcher(plainSerializer.serialize(lore.get(1)));
@@ -65,7 +65,7 @@ public class MinigameTool {
             }
 
             final @NotNull Pattern teamPattern = Pattern.compile(
-                MinigameMessageManager.getStrippedMgMessage(MgMiscLangKey.TOOL_SELECTED_TEAM_DESCRIPTION,
+                MessageManager.getStrippedMessage(MgMiscLangKey.TOOL_SELECTED_TEAM_DESCRIPTION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), "(.*)")),
                 Pattern.CASE_INSENSITIVE);
             final @NotNull Matcher teamMatcher = teamPattern.matcher(plainSerializer.serialize(lore.get(2)));
@@ -74,17 +74,17 @@ public class MinigameTool {
                 teamColor = TeamColor.matchColor(teamMatcher.group(1));
             }
         } else {
-            meta.displayName(MinigameMessageManager.getMgMessage(MgMiscLangKey.TOOL_NAME));
+            meta.displayName(MessageManager.getMessage(MgMiscLangKey.TOOL_NAME));
             lore = new ArrayList<>();
-            lore.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TOOL_SELECTED_MINIGAME_DESCRIPTION,
+            lore.add(MessageManager.getMessage(MgMiscLangKey.TOOL_SELECTED_MINIGAME_DESCRIPTION,
                 Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(),
-                    MinigameMessageManager.getMgMessage(MgMiscLangKey.QUANTIFIER_NONE))));
-            lore.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TOOL_SELECTED_MODE_DESCRIPTION,
+                    MessageManager.getMessage(MgMiscLangKey.QUANTIFIER_NONE))));
+            lore.add(MessageManager.getMessage(MgMiscLangKey.TOOL_SELECTED_MODE_DESCRIPTION,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(),
-                    MinigameMessageManager.getMgMessage(MgMiscLangKey.QUANTIFIER_NONE))));
-            lore.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TOOL_SELECTED_TEAM_DESCRIPTION,
+                    MessageManager.getMessage(MgMiscLangKey.QUANTIFIER_NONE))));
+            lore.add(MessageManager.getMessage(MgMiscLangKey.TOOL_SELECTED_TEAM_DESCRIPTION,
                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(),
-                    MinigameMessageManager.getMgMessage(MgMiscLangKey.QUANTIFIER_NONE))));
+                    MessageManager.getMessage(MgMiscLangKey.QUANTIFIER_NONE))));
             meta.lore(lore);
             tool.setItemMeta(meta);
         }
@@ -110,7 +110,7 @@ public class MinigameTool {
 
         if (toolType == null) {
             toolType = ItemType.BLAZE_ROD;
-            MinigameMessageManager.sendMgMessage(player, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NODEFAULTTOOL);
+            MessageManager.sendMessage(player, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NODEFAULTTOOL);
         }
 
         ItemStack tool = toolType.createItemStack();
@@ -144,7 +144,7 @@ public class MinigameTool {
      */
     public static boolean isMinigameTool(final @Nullable ItemStack item) {
         return item != null && item.getItemMeta() != null && item.getItemMeta().displayName() != null &&// todo check something else to be sure
-            MinigameMessageManager.getMgMessage(MgMiscLangKey.TOOL_NAME).contains(item.getItemMeta().displayName(), Component.EQUALS);
+            MessageManager.getMessage(MgMiscLangKey.TOOL_NAME).contains(item.getItemMeta().displayName(), Component.EQUALS);
     }
 
     /**
@@ -186,7 +186,7 @@ public class MinigameTool {
     public void setMinigame(@NotNull Minigame minigame) {
         ItemMeta meta = tool.getItemMeta();
         List<Component> lore = Objects.requireNonNullElse(meta.lore(), new ArrayList<>());
-        lore.set(0, MinigameMessageManager.getMgMessage(MgMiscLangKey.TOOL_SELECTED_MINIGAME_DESCRIPTION,
+        lore.set(0, MessageManager.getMessage(MgMiscLangKey.TOOL_SELECTED_MINIGAME_DESCRIPTION,
             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName())));
         meta.lore(lore);
         tool.setItemMeta(meta);
@@ -200,7 +200,7 @@ public class MinigameTool {
     public void setMode(@NotNull ToolMode mode) {
         ItemMeta meta = tool.getItemMeta();
         List<Component> lore = Objects.requireNonNullElse(meta.lore(), new ArrayList<>());
-        lore.set(1, MinigameMessageManager.getMgMessage(MgMiscLangKey.TOOL_SELECTED_MODE_DESCRIPTION,
+        lore.set(1, MessageManager.getMessage(MgMiscLangKey.TOOL_SELECTED_MODE_DESCRIPTION,
             Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), WordUtils.capitalizeFully(mode.getName().replace("_", " ")))));
         meta.lore(lore);
         tool.setItemMeta(meta);
@@ -216,11 +216,11 @@ public class MinigameTool {
         List<Component> lore = Objects.requireNonNullElse(meta.lore(), new ArrayList<>());
 
         if (color == null) {
-            lore.set(2, MinigameMessageManager.getMgMessage(MgMiscLangKey.TOOL_SELECTED_TEAM_DESCRIPTION,
+            lore.set(2, MessageManager.getMessage(MgMiscLangKey.TOOL_SELECTED_TEAM_DESCRIPTION,
                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(),
-                    MinigameMessageManager.getMgMessage(MgMiscLangKey.QUANTIFIER_NONE))));
+                    MessageManager.getMessage(MgMiscLangKey.QUANTIFIER_NONE))));
         } else {
-            lore.set(2, MinigameMessageManager.getMgMessage(MgMiscLangKey.TOOL_SELECTED_TEAM_DESCRIPTION,
+            lore.set(2, MessageManager.getMessage(MgMiscLangKey.TOOL_SELECTED_TEAM_DESCRIPTION,
                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), color.getCompName())));
         }
 
@@ -231,7 +231,7 @@ public class MinigameTool {
 
     public @NotNull String getSetting(@NotNull String name) {
         return Objects.requireNonNullElse(customSetting.get(name),
-            MinigameMessageManager.getStrippedMgMessage(MgMiscLangKey.QUANTIFIER_NONE));
+            MessageManager.getStrippedMessage(MgMiscLangKey.QUANTIFIER_NONE));
     }
 
     public void setSetting(@NotNull String name, @NotNull String setting) {
@@ -243,7 +243,7 @@ public class MinigameTool {
 
         ItemMeta meta = tool.getItemMeta();
         List<Component> lore = Objects.requireNonNullElse(meta.lore(), new ArrayList<>());
-        lore.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TOOL_SELECTED_CUSTOM_DESCRIPTION,
+        lore.add(MessageManager.getMessage(MgMiscLangKey.TOOL_SELECTED_CUSTOM_DESCRIPTION,
             Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), name),
             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setting)));
         meta.lore(lore);
@@ -272,7 +272,7 @@ public class MinigameTool {
         final @NotNull Menu menu = new Menu(2, MgMenuLangKey.MENU_TOOL_SETMODE_NAME, player);
 
         final @NotNull MenuItemCustom miselect = new MenuItemCustom(ItemType.DIAMOND_BLOCK, MgMenuLangKey.MENU_TOOL_SELECT_NAME,
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_SELECT_DESCRIPTION));
+            MessageManager.getMessageList(MgMenuLangKey.MENU_TOOL_SELECT_DESCRIPTION));
         miselect.setClick(() -> {
             if (minigame != null && mode != null) {
                 mode.select(player, minigame, TeamsModule.getMinigameModule(minigame).getTeam(teamColor));
@@ -283,7 +283,7 @@ public class MinigameTool {
 
 
         final @NotNull MenuItemCustom mideselect = new MenuItemCustom(ItemType.GLASS, MgMenuLangKey.MENU_TOOL_DESELECT_NAME,
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_DESELECT_DESCRIPTION));
+            MessageManager.getMessageList(MgMenuLangKey.MENU_TOOL_DESELECT_DESCRIPTION));
         mideselect.setClick(() -> {
             if (minigame != null && mode != null) {
                 mode.deselect(player, minigame, TeamsModule.getMinigameModule(minigame).getTeam(teamColor));

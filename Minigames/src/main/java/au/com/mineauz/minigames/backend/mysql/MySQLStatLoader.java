@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.backend.mysql;
 
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.StatementKey;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.scoreboard.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
@@ -38,7 +38,7 @@ class MySQLStatLoader {
     }
 
     public @NotNull List<@NotNull StoredStat> loadStatValues(@NotNull Minigame minigame, @NotNull MinigameStat stat, @NotNull StatisticValueField field, @NotNull ScoreboardOrder order, int offset, int length) {
-        MinigameMessageManager.debugMessage("MySQL beginning stat load for " + minigame.getName() + ", " + stat + ", " + field);
+        MessageManager.debugMessage("MySQL beginning stat load for " + minigame.getName() + ", " + stat + ", " + field);
         ConnectionHandler handler = null;
         try {
             handler = backend.getPool().getConnection();
@@ -52,7 +52,7 @@ class MySQLStatLoader {
             if (handler != null) {
                 handler.release();
             }
-            MinigameMessageManager.debugMessage("MySQL completed stat load for " + minigame.getName());
+            MessageManager.debugMessage("MySQL completed stat load for " + minigame.getName());
         }
     }
 

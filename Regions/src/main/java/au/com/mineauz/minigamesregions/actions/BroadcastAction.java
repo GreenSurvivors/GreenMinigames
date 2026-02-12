@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Menu;
@@ -16,7 +16,6 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -40,7 +39,7 @@ public class BroadcastAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_NAME);
     }
 
     @Override
@@ -51,14 +50,14 @@ public class BroadcastAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MESSAGE_NAME),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MESSAGE_NAME),
                 MinigameUtils.limitIgnoreFormat(MiniMessage.miniMessage().deserialize(message.getFlag()), 16),
 
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_EXCLUDING_NAME),
-                MinigameMessageManager.getMgMessage(
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_EXCLUDING_NAME),
+                MessageManager.getMessage(
                         excludeExecutor.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED),
 
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MSGTYPE_NAME),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MSGTYPE_NAME),
                 Component.text(messageType.getFlag().toString()));
     }
 
@@ -150,9 +149,9 @@ public class BroadcastAction extends AAction {
         // New expression system
         message = ExpressionParser.stringResolve(message, base, true, true);
         if (exclude != null) {
-            MinigameMessageManager.sendMinigameMessage(mgPlayer.getMinigame(), MiniMessage.miniMessage().deserialize(message), messageType.getFlag(), exclude);
+            MessageManager.sendMinigameMessage(mgPlayer.getMinigame(), MiniMessage.miniMessage().deserialize(message), messageType.getFlag(), exclude);
         } else {
-            MinigameMessageManager.sendMinigameMessage(mgPlayer.getMinigame(), MiniMessage.miniMessage().deserialize(message), messageType.getFlag());
+            MessageManager.sendMinigameMessage(mgPlayer.getMinigame(), MiniMessage.miniMessage().deserialize(message), messageType.getFlag());
         }
 
     }
@@ -185,9 +184,9 @@ public class BroadcastAction extends AAction {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        menu.addItem(message.getMenuItem(ItemType.WRITTEN_BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MESSAGE_NAME)));
-        menu.addItem(excludeExecutor.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_EXCLUDING_NAME)));
-        menu.addItem(messageType.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MSGTYPE_NAME)));
+        menu.addItem(message.getMenuItem(ItemType.WRITTEN_BOOK, MessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MESSAGE_NAME)));
+        menu.addItem(excludeExecutor.getMenuItem(ItemType.ENDER_PEARL, MessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_EXCLUDING_NAME)));
+        menu.addItem(messageType.getMenuItem(ItemType.ENDER_PEARL, MessageManager.getMessage(RegionLangKey.MENU_ACTION_BROADCAST_MSGTYPE_NAME)));
 
         menu.displayMenu();
         return true;

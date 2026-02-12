@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -75,7 +75,7 @@ public class MenuItemLoadoutAdd extends AMenuItem implements StringConsumer {
     public @NotNull ItemStack onClick() {
         MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final @NotNull Duration reopenTime = Duration.ofSeconds(30);
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LOADOUT_ADD_ENTERCHAT,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LOADOUT_ADD_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
         getMenu().closeAndWaitForInput(reopenTime, this);
@@ -90,7 +90,7 @@ public class MenuItemLoadoutAdd extends AMenuItem implements StringConsumer {
                 if (!getMenu().hasMenuItem(i)) {
                     final @NotNull PlayerLoadout loadout = new PlayerLoadout(string);
                     loadouts.put(string, loadout);
-                    final @NotNull List<@NotNull Component> des = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
+                    final @NotNull List<@NotNull Component> des = MessageManager.getMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
 
                     getMenu().setItem(new MenuItemDisplayLoadout(ItemType.DIAMOND_SWORD, loadout.getDisplayName(), des, loadout, minigame), i);
                     break;
@@ -103,7 +103,7 @@ public class MenuItemLoadoutAdd extends AMenuItem implements StringConsumer {
             getMenu().cancelWaitForInput();
             getMenu().displayMenu();
 
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_LOADOUT_ERROR_ALREADYEXISTS,
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_LOADOUT_ERROR_ALREADYEXISTS,
                 Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), string));
         }
     }

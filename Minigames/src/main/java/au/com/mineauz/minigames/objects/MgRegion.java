@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.objects;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.objects.safelocation.ASafeLocation;
@@ -240,14 +240,14 @@ public class MgRegion {
     }
 
     public @NotNull Component describe() {
-        return MinigameMessageManager.getMgMessage(MgMiscLangKey.REGION_DESCRIBE,
+        return MessageManager.getMessage(MgMiscLangKey.REGION_DESCRIBE,
             Placeholder.component(MinigamePlaceHolderKey.POSITION_1.getKey(),
-                MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
+                MessageManager.getMessage(MgMiscLangKey.POSITION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(getMinX())),
                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(getMinY())),
                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(getMinZ())))),
             Placeholder.component(MinigamePlaceHolderKey.POSITION_2.getKey(),
-                MinigameMessageManager.getMgMessage(MgMiscLangKey.POSITION,
+                MessageManager.getMessage(MgMiscLangKey.POSITION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_X.getKey(), String.valueOf(getMaxX())),
                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Y.getKey(), String.valueOf(getMaxY())),
                     Placeholder.unparsed(MinigamePlaceHolderKey.COORDINATE_Z.getKey(), String.valueOf(getMaxZ())))));

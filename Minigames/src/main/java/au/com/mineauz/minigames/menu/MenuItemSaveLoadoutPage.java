@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -60,7 +60,7 @@ public class MenuItemSaveLoadoutPage extends MenuItemPage {
                 }
             }
         }
-        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_LOADOUT_SAVE,
+        MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_LOADOUT_SAVE,
             Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName()));
 
         return super.onClick();

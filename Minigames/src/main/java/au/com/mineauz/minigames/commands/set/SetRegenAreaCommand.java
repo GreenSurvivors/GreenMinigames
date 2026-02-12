@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -39,12 +39,12 @@ public class SetRegenAreaCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REGENAREA_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_REGENAREA_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REGENAREA_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_REGENAREA_USAGE);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class SetRegenAreaCommand extends ASetCommand {
         final int MAX_BOOKS_THIS_PAGE = Math.min(NUM_OF_REGIONS, PAGE * REGIONS_PER_PAGE);
 
         TextComponent.Builder listBuilder = Component.text();
-        listBuilder.append(MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REGENAREA_LIST_HEADER,
+        listBuilder.append(MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_REGENAREA_LIST_HEADER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(PAGE)),
                 Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(NUM_OF_PAGES))));
 
@@ -122,7 +122,7 @@ public class SetRegenAreaCommand extends ASetCommand {
                 final @NotNull MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
 
                 if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
-                    MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, makeList(minigame, 1));
+                    MessageManager.sendMessage(sender, MinigameMessageType.NONE, makeList(minigame, 1));
 
                 } else if (args.length == 2) {
                     switch (args[0].toLowerCase()) {
@@ -135,13 +135,13 @@ public class SetRegenAreaCommand extends ASetCommand {
 
                                 if (result.success()) {
                                     if (region == null) {
-                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.SUCCESS, MgMiscLangKey.REGION_REGENREGION_CREATED,
+                                        MessageManager.sendMessage(mgPlayer, MinigameMessageType.SUCCESS, MgMiscLangKey.REGION_REGENREGION_CREATED,
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                                     } else {
-                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.REGION_REGENREGION_UPDATED,
+                                        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.REGION_REGENREGION_UPDATED,
                                                 Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                                                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
@@ -150,21 +150,21 @@ public class SetRegenAreaCommand extends ASetCommand {
 
                                     mgPlayer.clearSelection();
                                 } else {
-                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_REGENREGION_ERROR_LIMIT,
+                                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_REGENREGION_ERROR_LIMIT,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                                             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                                 }
                             } else {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REGENAREA_ERROR_NOTSELECTED);
+                                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_SET_REGENAREA_ERROR_NOTSELECTED);
                             }
 
                             return true;
                         }
                         case "list" -> {
                             if (args[1].matches("\\d+")) {
-                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.NONE, makeList(minigame, Integer.parseInt(args[1])));
+                                MessageManager.sendMessage(mgPlayer, MinigameMessageType.NONE, makeList(minigame, Integer.parseInt(args[1])));
                             } else {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
+                                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                             }
                         }
@@ -172,13 +172,13 @@ public class SetRegenAreaCommand extends ASetCommand {
                             final @NotNull RegenRegionChangeResult result = minigame.removeRegenRegion(args[1]);
 
                             if (result.success()) {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WARNING, MgMiscLangKey.REGION_REGENREGION_REMOVED,
+                                MessageManager.sendMessage(mgPlayer, MinigameMessageType.WARNING, MgMiscLangKey.REGION_REGENREGION_REMOVED,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), args[1]),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                             } else {
-                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_ERROR_NOREGENREION,
+                                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_ERROR_NOREGENREION,
                                         Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), args[1]));
                             }
                             return true;
@@ -186,7 +186,7 @@ public class SetRegenAreaCommand extends ASetCommand {
                     }
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
                 return false;
             }
 

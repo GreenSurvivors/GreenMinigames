@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions.language;
 
 import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 
 public enum RegionLangKey implements LangKey {
@@ -281,13 +282,19 @@ public enum RegionLangKey implements LangKey {
     TRIGGER_TIME_TIMER_NAME("trigger.time.timer.name");
 
     private final @NotNull String path;
+    public static final @NotNull Key BUNDLE_KEY = RegionMessageManager.getBundleKey();
 
     RegionLangKey(@NotNull String path) {
         this.path = path;
     }
 
     @Override
-    public @NotNull String getPath() {
+    public @NotNull String path() {
         return path;
+    }
+
+    @Override
+    public @NotNull Key bundleKey() {
+        return BUNDLE_KEY;
     }
 }

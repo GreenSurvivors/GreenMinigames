@@ -3,12 +3,12 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.ItemFlag;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -42,7 +42,7 @@ public class TakeItemAction extends AAction { // todo make ItemType match option
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_NAME);
     }
 
     @Override
@@ -53,9 +53,9 @@ public class TakeItemAction extends AAction { // todo make ItemType match option
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME),
+                MessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME),
                 Component.translatable(itemToSearchFor.getFlag().getType().translationKey()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME),
+                MessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME),
                 Component.text(count.getFlag()));
     }
 
@@ -197,7 +197,7 @@ public class TakeItemAction extends AAction { // todo make ItemType match option
         final @NotNull CompletableFuture<@NotNull MenuItemString> futureLoreItem = new CompletableFuture<>();
 
         final @NotNull MenuItemItemNbt itemMenuItem = new MenuItemItemNbt(itemToSearchFor.getFlagOrDefault(),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_ITEM_NAME), new Callback<>() {
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_ITEM_NAME), new Callback<>() {
             @Override
             public ItemStack getValue() {
                 return itemToSearchFor.getFlagOrDefault();
@@ -223,14 +223,14 @@ public class TakeItemAction extends AAction { // todo make ItemType match option
         });
 
         menu.addItem(itemMenuItem);
-        menu.addItem(count.getMenuItem(ItemType.STONE_SLAB, RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 999));
+        menu.addItem(count.getMenuItem(ItemType.STONE_SLAB, MessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 999));
 
         menu.addItem(new MenuItemNewLine());
 
-        menu.addItem(matchName.getMenuItem(MenuDisplayTypes.nameType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_NAME_NAME)));
+        menu.addItem(matchName.getMenuItem(MenuDisplayTypes.nameType(), MessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_NAME_NAME)));
         final @NotNull MenuItemString nameMenuItem = new MenuItemString(MenuDisplayTypes.nameType(),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TAKEITEM_NAME_DESCRIPTION), new Callback<>() {
+                MessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_ACTION_TAKEITEM_NAME_DESCRIPTION), new Callback<>() {
             private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();
 
             @Override
@@ -249,10 +249,10 @@ public class TakeItemAction extends AAction { // todo make ItemType match option
         futureNameItem.complete(nameMenuItem);
         menu.addItem(nameMenuItem);
 
-        menu.addItem(matchLore.getMenuItem(ItemType.BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_LORE_NAME)));
+        menu.addItem(matchLore.getMenuItem(ItemType.BOOK, MessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_LORE_NAME)));
         final MenuItemString loreMenuItem = new MenuItemString(ItemType.BOOK,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_TAKEITEM_LORE_DESCRIPTION), new Callback<>() {
+                MessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_ACTION_TAKEITEM_LORE_DESCRIPTION), new Callback<>() {
             private @Nullable String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
 
             @Override
@@ -279,9 +279,9 @@ public class TakeItemAction extends AAction { // todo make ItemType match option
         menu.addItem(loreMenuItem);
 
         menu.addItem(matchEnchantments.getMenuItem(ItemType.ENCHANTED_BOOK,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_ENCHANTMENTS_NAME)));
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_ENCHANTMENTS_NAME)));
         menu.addItem(matchExact.getMenuItem(ItemType.BOOKSHELF,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_EXACT_NAME))); //todo with callback to turn the others on/off
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_TAKEITEM_MATCH_EXACT_NAME))); //todo with callback to turn the others on/off
 
         menu.displayMenu();
         return true;

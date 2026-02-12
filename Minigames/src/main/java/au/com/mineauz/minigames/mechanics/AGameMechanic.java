@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.mechanics;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -98,7 +98,7 @@ public abstract class AGameMechanic implements Listener, Keyed {
                     }
                     if (teamToJoin == null) {
                         plugin.getPlayerManager().quitMinigame(mgPlayer, false);
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_FULL);
+                        MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_FULL);
                     } else {
                         teamToJoin.addPlayer(mgPlayer);
                         broadcastAutobalance(minigame, mgPlayer, teamToJoin);
@@ -133,11 +133,11 @@ public abstract class AGameMechanic implements Listener, Keyed {
     }
 
     private void broadcastAutobalance(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer, @NotNull Team teamToJoin) {
-        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(
             teamToJoin.getAutobalanceMessage(),
             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor())))); //todo is NOT backwards compatible!!
 
-        MinigameMessageManager.sendMinigameMessage(minigame,
+        MessageManager.sendMinigameMessage(minigame,
             MiniMessage.miniMessage().deserialize(teamToJoin.getGameAutobalanceMessage(),
                 Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.displayName()),
                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor()))) //todo is NOT backwards compatible!!

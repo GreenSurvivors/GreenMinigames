@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -12,7 +13,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
@@ -34,7 +34,7 @@ public class SwitchTeamAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_NAME);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class SwitchTeamAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_NAME), Component.text(teamFrom.getFlag()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_NAME), Component.text(teamTo.getFlag()));
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_NAME), Component.text(teamFrom.getFlag()),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_NAME), Component.text(teamTo.getFlag()));
     }
 
     @Override
@@ -113,8 +113,8 @@ public class SwitchTeamAction extends AAction {
 
         final @NotNull List<@NotNull String> teams = Arrays.stream(TeamColor.values()).map(TeamColor::getUserFriendlyName).collect(Collectors.toCollection(ArrayList::new));
         teams.add("All"); //todo ?
-        menu.addItem(new MenuItemList<>(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_DESCRIPTION), new Callback<>() {
+        menu.addItem(new MenuItemList<>(ItemType.PAPER, MessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_FROM_DESCRIPTION), new Callback<>() {
 
             @Override
             public @NotNull String getValue() {
@@ -127,8 +127,8 @@ public class SwitchTeamAction extends AAction {
             }
         }, teams));
 
-        menu.addItem(new MenuItemList<>(ItemType.PAPER, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_DESCRIPTION), new Callback<>() {
+        menu.addItem(new MenuItemList<>(ItemType.PAPER, MessageManager.getMessage(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWITCHTEAM_TO_DESCRIPTION), new Callback<>() {
 
             @Override
             public @Nullable String getValue() {

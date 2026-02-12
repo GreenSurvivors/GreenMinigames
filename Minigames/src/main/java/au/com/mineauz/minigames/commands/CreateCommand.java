@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -33,12 +33,12 @@ public class CreateCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_CREATE_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_CREATE_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_CREATE_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_CREATE_USAGE);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class CreateCommand extends ACommand {
                     if (MinigameType.hasValue(args[1].toUpperCase())) {
                         type = MinigameType.valueOf(args[1].toUpperCase());
                     } else {
-                        MinigameMessageManager.sendMgMessage(player, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTYPE,
+                        MessageManager.sendMessage(player, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTTYPE,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                         return false;
                     }
@@ -68,7 +68,7 @@ public class CreateCommand extends ACommand {
                     type = MinigameType.SINGLEPLAYER;
                 }
                 Minigame mgm = new Minigame(mgmName, type, new SafeFullLocation(player.getLocation()));
-                MinigameMessageManager.sendMgMessage(player, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_CREATE_SUCCESS,
+                MessageManager.sendMessage(player, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_CREATE_SUCCESS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
                 List<String> mgs;
                 if (PLUGIN.getConfig().contains("minigames")) {
@@ -83,7 +83,7 @@ public class CreateCommand extends ACommand {
                 mgm.saveMinigame();
                 PLUGIN.getMinigameManager().addMinigame(mgm);
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_CREATE_ERROR_EXISTS);
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_CREATE_ERROR_EXISTS);
             }
             return true;
         }

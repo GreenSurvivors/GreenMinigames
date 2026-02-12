@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.commands.set.ASetCommand;
 import au.com.mineauz.minigames.commands.set.SetCommand;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -34,14 +34,14 @@ public class HelpCommand extends ACommand {
                 TextComponent.Builder info = Component.text();
                 info.append(Component.join(JoinConfiguration.arrayLike(), Arrays.stream(setCommand.getAliases()).map(Component::text).toList()));
 
-                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
-                    MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
+                MessageManager.sendMessage(sender, MinigameMessageType.NONE,
+                    MessageManager.getMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
                         append(info.appendNewline().append(setCommand.getUsage()).appendNewline().append(setCommand.getDescription()).
                             colorIfAbsent(NamedTextColor.WHITE)));//todo needs formatting (not hardcoded)
             } else {
-                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
-                    MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
+                MessageManager.sendMessage(sender, MinigameMessageType.NONE,
+                    MessageManager.getMessage(MgCommandLangKey.COMMAND_HELP_INFO_HEADER,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), setCommand.getName())).appendNewline().
                         append(setCommand.getUsage().appendNewline().append(setCommand.getDescription()).
                             colorIfAbsent(NamedTextColor.WHITE)));//todo needs formatting (not hardcoded)
@@ -64,12 +64,12 @@ public class HelpCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_HELP_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_HELP_USAGE);
     }
 
     @Override
@@ -92,10 +92,10 @@ public class HelpCommand extends ACommand {
             map(cmd -> Component.text(cmd.getName()).append(Component.text(" - ")).append(cmd.getDescription()).
                 clickEvent(ClickEvent.suggestCommand("/minigame help " + cmd.getName()))).toList()).colorIfAbsent(NamedTextColor.WHITE); //todo needs formatting (not hardcoded)
 
-        final Component header = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HELP_LIST_HEADER,
+        final Component header = MessageManager.getMessage(MgCommandLangKey.COMMAND_HELP_LIST_HEADER,
             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(pageNumber)),
             Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(numPages)));
-        final Component footer = MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DIVIDER_LARGE); //todo clickable next/back buttons on footer
+        final Component footer = MessageManager.getMessage(MgCommandLangKey.COMMAND_DIVIDER_LARGE); //todo clickable next/back buttons on footer
 
         return header.appendNewline().append(pageCore).appendNewline().append(footer);
     }
@@ -104,7 +104,7 @@ public class HelpCommand extends ACommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         if (args.length > 0) {
             if (NUM_PATTERN.matcher(args[0]).matches()) {
-                MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, makePage(sender, Integer.parseInt(args[0])));
+                MessageManager.sendMessage(sender, MinigameMessageType.NONE, makePage(sender, Integer.parseInt(args[0])));
             } else {
                 ACommand subCommand = CommandDispatcher.getCommand(args[0]);
 
@@ -121,7 +121,7 @@ public class HelpCommand extends ACommand {
                 }
             }
         } else {
-            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, makePage(sender, 1));
+            MessageManager.sendMessage(sender, MinigameMessageType.NONE, makePage(sender, 1));
         }
         return true;
     }

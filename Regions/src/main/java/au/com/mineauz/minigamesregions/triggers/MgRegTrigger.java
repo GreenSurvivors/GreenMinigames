@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.triggers;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,14 +49,14 @@ public enum MgRegTrigger implements Trigger {
         this.useInNodes = useInNodes;
         this.triggerOnPlayerAvailable = triggerOnPlayerAvailable;
         this.legacyName = null;
-        this.displayName = RegionMessageManager.getMessage(langKey);
+        this.displayName = MessageManager.getMessage(langKey);
     }
 
     MgRegTrigger(boolean useInRegions, boolean useInNodes, boolean triggerOnPlayerAvailable, @NotNull RegionLangKey langKey, @NotNull String legacyName) {
         this.useInRegions = useInRegions;
         this.useInNodes = useInNodes;
         this.triggerOnPlayerAvailable = triggerOnPlayerAvailable;
-        this.displayName = RegionMessageManager.getMessage(langKey);
+        this.displayName = MessageManager.getMessage(langKey);
         this.legacyName = legacyName;
     }
 

@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.modules.loadout.PlayerLoadout;
@@ -36,15 +36,15 @@ public class MenuItemStatusEffect extends AMenuItem {
 
     public void updateDescription() {
         final @NotNull List<@NotNull Component> description = new ArrayList<>();
-        description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STATUSEFFECT_LEVEL,
+        description.add(MessageManager.getMessage(MgMenuLangKey.MENU_STATUSEFFECT_LEVEL,
             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(eff.getAmplifier() + 1))));
 
         if (eff.isInfinite()) {
-            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STATUSEFFECT_DURATION,
+            description.add(MessageManager.getMessage(MgMenuLangKey.MENU_STATUSEFFECT_DURATION,
                 Placeholder.component(MinigamePlaceHolderKey.NUMBER.getKey(),
-                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_NUMBER_INFINITE))));
+                    MessageManager.getMessage(MgMenuLangKey.MENU_NUMBER_INFINITE))));
         } else {
-            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STATUSEFFECT_DURATION,
+            description.add(MessageManager.getMessage(MgMenuLangKey.MENU_STATUSEFFECT_DURATION,
                 Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(eff.getDuration()))));
         }
 

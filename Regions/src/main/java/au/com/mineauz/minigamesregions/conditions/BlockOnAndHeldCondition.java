@@ -1,12 +1,12 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -32,7 +32,7 @@ public class BlockOnAndHeldCondition extends ACondition {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_BLOCKONANDHELD_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_CONDITION_BLOCKONANDHELD_NAME);
     }
 
     @Override

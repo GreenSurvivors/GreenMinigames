@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -29,12 +29,12 @@ public class JoinCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_JOIN_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_JOIN_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_JOIN_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_JOIN_USAGE);
     }
 
     @Override
@@ -50,16 +50,16 @@ public class JoinCommand extends ACommand {
             if (mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName().toLowerCase()))) {
                 if (!PLUGIN.getPlayerManager().getMinigamePlayer(player).isInMinigame()) {
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JOIN_JOINING,
+                    MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgMiscLangKey.PLAYER_JOIN_JOINING,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()));
                     PLUGIN.getPlayerManager().joinMinigame(mgm, PLUGIN.getPlayerManager().getMinigamePlayer(player), false, 0.0);
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_JOIN_ERROR_ALREADYPLAYING);
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_JOIN_ERROR_ALREADYPLAYING);
                 }
             } else if (mgm != null && mgm.getUsePermissions()) {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
             return true;

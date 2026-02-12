@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -30,11 +30,11 @@ public class LoadoutCommand extends ACommand {
     }
 
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_LOADOUT_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_LOADOUT_DESCRIPTION);
     }
 
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_LOADOUT_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_LOADOUT_USAGE);
     }
 
     public @Nullable String getPermission() {
@@ -54,25 +54,25 @@ public class LoadoutCommand extends ACommand {
                         if (module.hasLoadout(loadoutName)) {
                             mgPlayer.setLoadout(module.getLoadout(loadoutName));
 
-                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
+                            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_NEXTRESPAWN,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
                         } else {
-                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_ERROR_NOLOADOUT,
+                            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_LOADOUT_ERROR_NOLOADOUT,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
                         }
                     } else {
                         module.displaySelectionMenu(mgPlayer, false);
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgPlayer.getMinigame().getDisplayName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MgDefaultModules.LOADOUT.getKey().value()));
                 }
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_SELF);
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTINMINIGAME_SELF);
             }
         } else {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
         }
         return true;
     }

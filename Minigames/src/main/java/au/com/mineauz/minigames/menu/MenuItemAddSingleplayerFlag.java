@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -19,23 +19,23 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.List;
 
-public class MenuItemAddFlag extends AMenuItem implements StringConsumer {
+public class MenuItemAddSingleplayerFlag extends AMenuItem implements StringConsumer {
     private final @NotNull Minigame minigame;
 
-    public MenuItemAddFlag(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
-                           final @NotNull Minigame minigame) {
+    public MenuItemAddSingleplayerFlag(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
+                                       final @NotNull Minigame minigame) {
         super(displayType, langKey);
         this.minigame = minigame;
     }
 
-    public MenuItemAddFlag(final @Nullable ItemType displayType, final @NotNull Component name,
-                           final @NotNull Minigame minigame) {
+    public MenuItemAddSingleplayerFlag(final @Nullable ItemType displayType, final @NotNull Component name,
+                                       final @NotNull Minigame minigame) {
         this(displayType, name, null, minigame);
     }
 
-    public MenuItemAddFlag(final @Nullable ItemType displayType, final @Nullable Component name,
-                           final @Nullable List<@NotNull Component> description,
-                           final @NotNull Minigame minigame) {
+    public MenuItemAddSingleplayerFlag(final @Nullable ItemType displayType, final @Nullable Component name,
+                                       final @Nullable List<@NotNull Component> description,
+                                       final @NotNull Minigame minigame) {
         super(displayType, name, description);
         this.minigame = minigame;
     }
@@ -45,7 +45,7 @@ public class MenuItemAddFlag extends AMenuItem implements StringConsumer {
         MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(20);
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_FLAGADD_ENTERCHAT,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_FLAGADD_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
         getMenu().closeAndWaitForInput(reopenTime, this);
@@ -56,7 +56,7 @@ public class MenuItemAddFlag extends AMenuItem implements StringConsumer {
     @Override
     public void acceptString(final @NotNull String string) {
         minigame.addSinglePlayerFlag(string);
-        getMenu().addItem(new MenuItemFlag(ItemType.OAK_SIGN, string, minigame::removeSinglePlayerFlag));
+        getMenu().addItem(new MenuItemSingleplayerFlag(ItemType.OAK_SIGN, string, minigame::removeSinglePlayerFlag));
 
         getMenu().cancelWaitForInput();
         getMenu().displayMenu();

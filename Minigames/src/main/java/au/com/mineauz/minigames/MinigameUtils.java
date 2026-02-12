@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.objects.safelocation.ASafeLocation;
@@ -92,54 +92,54 @@ public class MinigameUtils {
 
         if (small) {
             if (weeks != 0) {
-                timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_WEEKS_SHORT,
+                timeComponents.add(MessageManager.getMessage(MgMiscLangKey.TIME_WEEKS_SHORT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(weeks))));
             }
             if (days != 0) {
-                timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_DAYS_SHORT,
+                timeComponents.add(MessageManager.getMessage(MgMiscLangKey.TIME_DAYS_SHORT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(days))));
             }
             if (hours != 0) {
-                timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_HOURS_SHORT,
+                timeComponents.add(MessageManager.getMessage(MgMiscLangKey.TIME_HOURS_SHORT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(hours))));
             }
             if (minutes != 0) {
-                timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_MINUTES_SHORT,
+                timeComponents.add(MessageManager.getMessage(MgMiscLangKey.TIME_MINUTES_SHORT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minutes))));
             }
 
             if (seconds != 0 || timeComponents.isEmpty()) {
-                timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_SECONDS_SHORT,
+                timeComponents.add(MessageManager.getMessage(MgMiscLangKey.TIME_SECONDS_SHORT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(seconds))));
             }
 
             return Component.join(JoinConfiguration.separator(Component.text(":")), timeComponents);
         } else {
             if (weeks != 0) {
-                timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_WEEKS_LONG,
+                timeComponents.add(MessageManager.getMessage(MgMiscLangKey.TIME_WEEKS_LONG,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(weeks))));
             }
             if (days != 0) {
-                timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_DAYS_LONG,
+                timeComponents.add(MessageManager.getMessage(MgMiscLangKey.TIME_DAYS_LONG,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(days))));
             }
             if (hours != 0) {
-                timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_HOURS_LONG,
+                timeComponents.add(MessageManager.getMessage(MgMiscLangKey.TIME_HOURS_LONG,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(hours))));
             }
             if (minutes != 0) {
-                timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_MINUTES_LONG,
+                timeComponents.add(MessageManager.getMessage(MgMiscLangKey.TIME_MINUTES_LONG,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minutes))));
             }
             if (seconds != 0 || timeComponents.isEmpty()) {
-                timeComponents.add(MinigameMessageManager.getMgMessage(MgMiscLangKey.TIME_SECONDS_LONG,
+                timeComponents.add(MessageManager.getMessage(MgMiscLangKey.TIME_SECONDS_LONG,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(seconds))));
             }
 
             Component lastTimeComponent = timeComponents.pop();
             if (!timeComponents.isEmpty()) {
                 return Component.join(JoinConfiguration.commas(true), timeComponents).
-                    appendSpace().append(MinigameMessageManager.getMgMessage(MgMiscLangKey.AND)).appendSpace().
+                    appendSpace().append(MessageManager.getMessage(MgMiscLangKey.AND)).appendSpace().
                     append(lastTimeComponent);
             } else {
                 return lastTimeComponent;

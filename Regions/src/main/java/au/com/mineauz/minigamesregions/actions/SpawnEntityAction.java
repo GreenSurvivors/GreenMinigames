@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.recorder.EntityData;
@@ -9,7 +10,6 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionsMain;
 import au.com.mineauz.minigamesregions.config.EntitySnapshotFlag;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import com.mojang.serialization.DataResult;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.key.Key;
@@ -57,7 +57,7 @@ public class SpawnEntityAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_SPAWNENTITY_NAME);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class SpawnEntityAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         final @NotNull Map<@NotNull Component, @NotNull Component> out = new LinkedHashMap<>(2);
-        out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME), Component.translatable(entitySnapshotFlag.getFlagOrDefault().getEntityType().translationKey()));
+        out.put(MessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME), Component.translatable(entitySnapshotFlag.getFlagOrDefault().getEntityType().translationKey()));
 
         if (entitySnapshotFlag.getFlagOrDefault().getEntityType().isAlive()) {
             String customName = ((CraftEntitySnapshot) entitySnapshotFlag.getFlagOrDefault()).getData().getString("CustomName").get();
@@ -90,7 +90,7 @@ public class SpawnEntityAction extends AAction {
             }
 
             if (!customName.isBlank()) {
-                out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
+                out.put(MessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
                     PaperAdventure.asAdventure(ccc));
             }
         }
@@ -145,7 +145,7 @@ public class SpawnEntityAction extends AAction {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        final AMenuItem entitySelector = entitySnapshotFlag.getMenuItem(ItemType.SPAWNER, RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_SELECT_NAME));
+        final AMenuItem entitySelector = entitySnapshotFlag.getMenuItem(ItemType.SPAWNER, MessageManager.getMessage(RegionLangKey.MENU_ENTITY_SELECT_NAME));
         entitySelector.update();
 
         final @NotNull EntityType @NotNull [] entityTypes = EntityType.values();
@@ -155,7 +155,7 @@ public class SpawnEntityAction extends AAction {
                 options.add(type);
             }
         }
-        menu.addItem(new MenuItemList<>(ItemType.SKELETON_SKULL, RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME), new Callback<>() {
+        menu.addItem(new MenuItemList<>(ItemType.SKELETON_SKULL, MessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME), new Callback<>() {
             @Override
             public EntityType getValue() {
                 return entitySnapshotFlag.getFlagOrDefault().getEntityType();

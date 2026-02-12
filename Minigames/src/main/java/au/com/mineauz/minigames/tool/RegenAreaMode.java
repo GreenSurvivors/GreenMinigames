@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.tool;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.display.IDisplayObject;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -35,12 +35,12 @@ public class RegenAreaMode implements ToolMode {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_TOOL_REGENAREA_NAME);
+        return MessageManager.getMessage(MgMenuLangKey.MENU_TOOL_REGENAREA_NAME);
     }
 
     @Override
     public @NotNull List<@NotNull Component> getDescription() {
-        return MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_TOOL_REGENAREA_DESCRIPTION);
+        return MessageManager.getMessageList(MgMenuLangKey.MENU_TOOL_REGENAREA_DESCRIPTION);
     }
 
     @Override
@@ -113,13 +113,13 @@ public class RegenAreaMode implements ToolMode {
 
             if (result.success()) {
                 if (region == null) {
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.REGION_REGENREGION_CREATED,
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.REGION_REGENREGION_CREATED,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                         Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                 } else {
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.REGION_REGENREGION_UPDATED,
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.REGION_REGENREGION_UPDATED,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                         Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
@@ -128,12 +128,12 @@ public class RegenAreaMode implements ToolMode {
 
                 mgPlayer.clearSelection();
             } else {
-                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_REGENREGION_ERROR_LIMIT,
+                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_REGENREGION_ERROR_LIMIT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
                     Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
             }
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOREGIONSELECTED);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.TOOL_ERROR_NOREGIONSELECTED);
         }
     }
 
@@ -143,7 +143,7 @@ public class RegenAreaMode implements ToolMode {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             mgPlayer.addSelectionPoint(event.getClickedBlock().getLocation());
             if (mgPlayer.hasSelection()) {
-                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_REGION);
+                MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_REGION);
             }
         }
     }
@@ -154,11 +154,11 @@ public class RegenAreaMode implements ToolMode {
         if (minigame.getRegenRegion(name) != null) {
             displayedRegions.put(mgPlayer.getUUID(),
                 Minigames.getPlugin().getDisplayManager().displayCuboid(mgPlayer.getPlayer(), minigame.getRegenRegion(name)));
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_REGENREGION,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_SELECTED_REGENREGION,
                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_ERROR_NOREGENREION,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_ERROR_NOREGENREION,
                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name));
         }
     }
@@ -175,9 +175,9 @@ public class RegenAreaMode implements ToolMode {
 
             mgPlayer.clearSelection();
 
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_REGION);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.TOOL_DESELECTED_REGION);
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_ERROR_NOREGENREION,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.REGION_ERROR_NOREGENREION,
                 Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name));
         }
     }

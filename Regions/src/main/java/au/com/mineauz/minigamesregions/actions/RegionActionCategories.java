@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +23,6 @@ public enum RegionActionCategories implements IActionCategory {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(langKey);
+        return MessageManager.getMessage(langKey);
     }
 }

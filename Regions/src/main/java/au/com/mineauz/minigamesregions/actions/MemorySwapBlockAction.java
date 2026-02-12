@@ -3,7 +3,7 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.config.BlockTypeFlag;
 import au.com.mineauz.minigames.config.BlockTypeListFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -232,7 +232,7 @@ public class MemorySwapBlockAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_NAME);
     }
 
     @Override
@@ -243,11 +243,11 @@ public class MemorySwapBlockAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), Component.translatable(matchType.getFlag().translationKey()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_POOLSIZE), Component.text(blockPool.size()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_MODE_NAME),
-                MinigameMessageManager.getMgMessage(whitelistMode.getFlag() ? MgMiscLangKey.BOOL_TRUE : MgMiscLangKey.BOOL_FALSE),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_SIZE), Component.text(wbList.getFlag().size())
+                MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), Component.translatable(matchType.getFlag().translationKey()),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_POOLSIZE), Component.text(blockPool.size()),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_MODE_NAME),
+                MessageManager.getMessage(whitelistMode.getFlag() ? MgMiscLangKey.BOOL_TRUE : MgMiscLangKey.BOOL_FALSE),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_SIZE), Component.text(wbList.getFlag().size())
         );
     }
 
@@ -293,16 +293,14 @@ public class MemorySwapBlockAction extends AAction {
         //Sanity checks that can be handled without throwing an exception but need a warning to player
         if (blocksToSwap.size() % 2 != 0) {
             if (mgPlayer != null) {
-                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                        RegionLangKey.ACTION_MEMORYSWAPBLOCK_ERROR_ODD);
+                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionLangKey.ACTION_MEMORYSWAPBLOCK_ERROR_ODD);
             } else {
                 RegionMessageManager.debugMessage("This game board of \"" + region.getName() + "\" has an odd amount of playing fields, there will be unmatched blocks!");
             }
         }
         if (blocksToSwap.size() > 2 * localBockTypePool.size()) {
             if (mgPlayer != null) {
-                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                        RegionLangKey.ACTION_MEMORYSWAPBLOCK_ERROR_TOOBIG,
+                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionLangKey.ACTION_MEMORYSWAPBLOCK_ERROR_TOOBIG,
                         Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(localBockTypePool.size())));
             }
         }
@@ -365,12 +363,12 @@ public class MemorySwapBlockAction extends AAction {
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         //The menu entry for the from-block, aka the block that will be replaced
-        menu.addItem(matchType.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_MATCHBLOCK_NAME)));
+        menu.addItem(matchType.getMenuItem(MessageManager.getMessage(RegionLangKey.MENU_CONDITION_MATCHBLOCK_NAME)));
 
         //Menu entry for the white/blacklist entry, aka the blocks that will be only accounted for / removed from the block pool
         menu.addItem(new MenuItemNewLine());
-        menu.addItem(new MenuItemDisplayWhitelist(ItemType.BOOK, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_DESCRIPTION),
+        menu.addItem(new MenuItemDisplayWhitelist(ItemType.BOOK, MessageManager.getMessage(MgMenuLangKey.MENU_MINIGAME_WHITELIST_BLOCK_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_DESCRIPTION),
                 wbList.getFlag(), new Callback<>() {
 
             @Override
@@ -382,7 +380,7 @@ public class MemorySwapBlockAction extends AAction {
             public void setValue(Boolean value) {
                 whitelistMode.setFlag(value);
             }
-        }, RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_MODE_DESCRIPTION)));
+        }, MessageManager.getMessageList(RegionLangKey.MENU_ACTION_MEMORYSWAPBLOCK_WHITELIST_MODE_DESCRIPTION)));
 
         menu.displayMenu();
         return false;

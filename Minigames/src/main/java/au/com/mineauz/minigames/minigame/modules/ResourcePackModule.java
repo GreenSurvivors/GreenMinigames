@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.ComponentFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -106,7 +106,7 @@ public class ResourcePackModule extends AMinigameModule { //todo rework to work 
                 if (pack == null) {
                     getMenu().cancelWaitForInput();
                     getMenu().displayMenu();
-                    MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
+                    MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                         MgMiscLangKey.MINIGAME_RESSOURCEPACK_NORESSOURCEPACK,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
                 } else {

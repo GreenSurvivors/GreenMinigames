@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgSignLangKey;
@@ -23,7 +23,7 @@ public class TeleportSign extends AMinigameSign {
 
     @Override
     public @NotNull Component getName() {
-        return MinigameMessageManager.getMgMessage(MgSignLangKey.TYPE_TELEPORT);
+        return MessageManager.getMessage(MgSignLangKey.TYPE_TELEPORT);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class TeleportSign extends AMinigameSign {
             mgPlayer.teleport(new Location(playerLocation.getWorld(), x + 0.5, y, z + 0.5));
             return true;
         }
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_TELEPORT_INVALID);
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.SIGN_TELEPORT_INVALID);
         return false;
     }
 

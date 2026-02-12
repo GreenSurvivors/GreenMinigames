@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -40,7 +40,7 @@ public class RevertsRewardScheme extends HierarchyRewardScheme<@NotNull Integer>
 
     @Override
     protected @NotNull Component getMenuItemDescName(final @NotNull Integer value) {
-        return MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_REVERTS_DESCRIPTION,
+        return MessageManager.getMessage(MgMenuLangKey.MENU_REWARD_REVERTS_DESCRIPTION,
             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(value)));
     }
 

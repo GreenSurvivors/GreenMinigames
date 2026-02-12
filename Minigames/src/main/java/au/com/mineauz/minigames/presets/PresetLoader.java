@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.presets;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.AFlag;
 import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -72,8 +72,8 @@ public class PresetLoader {
                     }
                 }
 
-                MinigameMessageManager.sendMessage(audience, MinigameMessageType.SUCCESS,
-                    MinigameMessageManager.getMgMessage(MgMiscLangKey.PRESET_LOAD_SUCCESS,
+                MessageManager.sendMessage(audience, MinigameMessageType.SUCCESS,
+                    MessageManager.getMessage(MgMiscLangKey.PRESET_LOAD_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.PRESET.getKey(), WordUtils.capitalizeFully(preset)),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName())));
             } catch (final @NotNull ConfigurateException e) {
@@ -84,8 +84,8 @@ public class PresetLoader {
                 Minigames.getPlugin().getComponentLogger().error("Couldn't load preset", e);
             }
         } else {
-            MinigameMessageManager.sendMessage(audience, MinigameMessageType.ERROR,
-                MinigameMessageManager.getMgMessage(MgMiscLangKey.PRESET_LOAD_ERROR_NOTFOUND,
+            MessageManager.sendMessage(audience, MinigameMessageType.ERROR,
+                MessageManager.getMessage(MgMiscLangKey.PRESET_LOAD_ERROR_NOTFOUND,
                     Placeholder.unparsed(MinigamePlaceHolderKey.PRESET.getKey(), WordUtils.capitalize(preset))));
         }
     }
@@ -99,21 +99,21 @@ public class PresetLoader {
 
                 final @Nullable String info = presetNode.node("info").getString();
                 if (info != null) {
-                    MinigameMessageManager.sendMessage(audience, MinigameMessageType.INFO,
+                    MessageManager.sendMessage(audience, MinigameMessageType.INFO,
                         MiniMessage.miniMessage().deserialize(info));
                 } else {
-                    MinigameMessageManager.sendMgMessage(audience, MinigameMessageType.WARNING,
+                    MessageManager.sendMessage(audience, MinigameMessageType.WARNING,
                         MgMiscLangKey.PRESET_INFO_NOINFO);
                 }
             } catch (final @NotNull ConfigurateException e) {
                 if (e.getMessage() != null) {
-                    MinigameMessageManager.sendMessage(audience, MinigameMessageType.ERROR, Component.text(e.getMessage()));
+                    MessageManager.sendMessage(audience, MinigameMessageType.ERROR, Component.text(e.getMessage()));
                 }
                 Minigames.getPlugin().getComponentLogger().error("Couldn't get preset info for the preset named " + preset, e);
             }
         } else {
-            MinigameMessageManager.sendMessage(audience, MinigameMessageType.ERROR,
-                MinigameMessageManager.getMgMessage(MgMiscLangKey.PRESET_LOAD_ERROR_NOTFOUND,
+            MessageManager.sendMessage(audience, MinigameMessageType.ERROR,
+                MessageManager.getMessage(MgMiscLangKey.PRESET_LOAD_ERROR_NOTFOUND,
                     Placeholder.unparsed(MinigamePlaceHolderKey.PRESET.getKey(), WordUtils.capitalize(preset))));
         }
     }

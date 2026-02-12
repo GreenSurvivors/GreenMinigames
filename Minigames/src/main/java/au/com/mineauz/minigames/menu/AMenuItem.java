@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
@@ -38,12 +38,12 @@ public abstract class AMenuItem {
     }
 
     public AMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey) {
-        this(displayType, MinigameMessageManager.getMgMessage(langKey), null);
+        this(displayType, MessageManager.getMessage(langKey), null);
     }
 
     public AMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey,
                      final @Nullable List<Component> description) {
-        this(displayType, MinigameMessageManager.getMgMessage(langKey), description);
+        this(displayType, MessageManager.getMessage(langKey), description);
     }
 
     public AMenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {

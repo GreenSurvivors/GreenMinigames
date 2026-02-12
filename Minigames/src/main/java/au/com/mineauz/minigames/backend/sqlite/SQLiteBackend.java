@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.*;
 import au.com.mineauz.minigames.backend.common.SQLExport;
 import au.com.mineauz.minigames.backend.common.SQLImport;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.scoreboard.ScoreboardOrder;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -64,13 +64,13 @@ public class SQLiteBackend extends Backend {
                 return false;
             }
             String url = "jdbc:sqlite:" + database.toAbsolutePath();
-            MinigameMessageManager.debugMessage("URL: " + url);
+            MessageManager.debugMessage("URL: " + url);
             Properties properties = new Properties();
             properties.put("username", "");
             properties.put("password", "");
-            MinigameMessageManager.debugMessage("Properties: " + properties);
+            MessageManager.debugMessage("Properties: " + properties);
             pool = new ConnectionPool(url, properties);
-            MinigameMessageManager.debugMessage("Pool: " + pool);
+            MessageManager.debugMessage("Pool: " + pool);
             createStatements();
 
             // Test the connection

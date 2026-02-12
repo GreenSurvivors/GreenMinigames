@@ -5,12 +5,12 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.ItemFlag;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.util.RegionUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -49,7 +49,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_NAME);
     }
 
     @Override
@@ -61,21 +61,21 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         final Map<@NotNull Component, @NotNull Component> out = new HashMap<>();
 
-        out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME),
+        out.put(MessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME),
                 Component.translatable(itemToSearchFor.getFlag().translationKey()));
-        out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), Component.text(count.getFlag()));
-        out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_WHERE_NAME), where.getFlag().getTranslation());
+        out.put(MessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), Component.text(count.getFlag()));
+        out.put(MessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_WHERE_NAME), where.getFlag().getTranslation());
         if (where.getFlag() == PositionType.SLOT) {
-            out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_SLOT_NAME), Component.text(slot.getFlag()));
+            out.put(MessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_SLOT_NAME), Component.text(slot.getFlag()));
         }
 
         if (matchName.getFlag()) {
-            out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
+            out.put(MessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
                     itemToSearchFor.getFlag().getItemMeta().displayName());
         }
 
         if (matchLore.getFlag() && itemToSearchFor.getFlag().getItemMeta().lore() != null) {
-            out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
+            out.put(MessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
                     MinigameUtils.limitIgnoreFormat(Component.join(JoinConfiguration.commas(true),
                             itemToSearchFor.getFlag().getItemMeta().lore()), 16));
         }
@@ -314,7 +314,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         final @NotNull CompletableFuture<MenuItemString> futureLoreItem = new CompletableFuture<>();
 
         final MenuItemItemNbt itemMenuItem = new MenuItemItemNbt(itemToSearchFor.getFlagOrDefault(),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME), new Callback<>() {
+                MessageManager.getMessage(RegionLangKey.MENU_ITEM_NAME), new Callback<>() {
             @Override
             public ItemStack getValue() {
                 return itemToSearchFor.getFlagOrDefault();
@@ -341,12 +341,12 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
 
         menu.addItem(itemMenuItem);
         menu.addItem(count.getMenuItem(ItemType.STONE_SLAB,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 999));
+                MessageManager.getMessage(RegionLangKey.MENU_ITEM_AMOUNT_NAME), 1, 999));
 
         final @NotNull MenuItemInteger slotMenuItem = slot.getMenuItem(ItemType.DIAMOND,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_SLOT_NAME), null, 0, 40);
+                MessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_SLOT_NAME), null, 0, 40);
         final @NotNull MenuItemEnum<PositionType> whereMenuItem = new MenuItemEnum<>(ItemType.COMPASS,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_WHERE_NAME), new Callback<>() {
+                MessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_WHERE_NAME), new Callback<>() {
             @Override
             public PositionType getValue() {
                 return where.getFlag();
@@ -369,10 +369,10 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         menu.addItem(new MenuItemNewLine());
 
         menu.addItem(matchName.getMenuItem(ItemType.NAME_TAG,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_DISPLAYNAME_NAME)));
+                MessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_DISPLAYNAME_NAME)));
         final @NotNull MenuItemString nameMenuItem = new MenuItemString(MenuDisplayTypes.nameType(),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_DESCRIPTION),
+                MessageManager.getMessage(RegionLangKey.MENU_ITEM_DISPLAYNAME_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_DISPLAYNAME_DESCRIPTION),
                 new Callback<>() {
                     private String localCache = itemToSearchFor.getFlag().getItemMeta().getDisplayName();
 
@@ -393,10 +393,10 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         menu.addItem(nameMenuItem);
 
         menu.addItem(matchLore.getMenuItem(ItemType.WRITTEN_BOOK,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_LORE_NAME)));
+                MessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_LORE_NAME)));
         final @NotNull MenuItemString loreMenuItem = new MenuItemString(ItemType.BOOK,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_LORE_DESCRIPTION),
+                MessageManager.getMessage(RegionLangKey.MENU_ITEM_LORE_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_LORE_DESCRIPTION),
                 new Callback<>() {
                     private @Nullable String localCache = itemToSearchFor.getFlag().getLore() == null ? null : String.join(";", itemToSearchFor.getFlag().getLore());
 
@@ -424,9 +424,9 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         menu.addItem(loreMenuItem);
 
         menu.addItem(matchEnchantments.getMenuItem(ItemType.ENCHANTED_BOOK,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_ENCHANTMENTS_NAME)));
+                MessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_ENCHANTMENTS_NAME)));
         menu.addItem(matchExact.getMenuItem(ItemType.BOOKSHELF,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_EXACT_NAME))); //todo with callback to turn the others on
+                MessageManager.getMessage(RegionLangKey.MENU_CONDITION_PLAYERHASITEM_MATCH_EXACT_NAME))); //todo with callback to turn the others on
 
         addInvertMenuItem(menu);
         menu.displayMenu();
@@ -452,7 +452,7 @@ public class PlayerHasItemCondition extends ACondition { //todo amount
         }
 
         public @NotNull Component getTranslation() {
-            return RegionMessageManager.getMessage(langKey);
+            return MessageManager.getMessage(langKey);
         }
     }
 }

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.CommandDispatcher;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
@@ -32,12 +32,12 @@ public class SetSecondaryRewardCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD2_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_REWARD2_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_REWARD2_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_REWARD2_USAGE);
     }
 
     @Override

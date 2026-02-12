@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -40,12 +40,12 @@ public class ResourcePackCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_RESSOUCEPACK_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_RESSOUCEPACK_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_RESSOUCEPACK_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_RESSOUCEPACK_USAGE);
     }
 
     @Override
@@ -68,21 +68,21 @@ public class ResourcePackCommand extends ACommand {
                         if (sender instanceof Player player) {
                             mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(player);
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+                            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
                             return true;
                         }
                     } else {
                         mgPlayer = PLUGIN.getPlayerManager().getMinigamePlayer(args[2]);
 
                         if (mgPlayer == null) {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
+                            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[2]));
                             return true;
                         }
                     }
 
                     mgPlayer.applyResourcePack(pack);
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_RESSOURCEPACK_APPLY);
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_RESSOURCEPACK_APPLY);
                 }
                 return true;
             }
@@ -91,7 +91,7 @@ public class ResourcePackCommand extends ACommand {
                     pack = PLUGIN.getResourcePackManager().getResourcePack(args[1]);
                     PLUGIN.getResourcePackManager().removeResourcePack(pack);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_RESSOURCEPACK_REMOVE);
+                    MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_RESSOURCEPACK_REMOVE);
                     sendList(sender);
                     return true;
                 } else {
@@ -106,16 +106,16 @@ public class ResourcePackCommand extends ACommand {
                         PLUGIN.getServer().getScheduler().runTaskLaterAsynchronously(PLUGIN, () -> {
                             if (newPack.isValid()) {
                                 PLUGIN.getResourcePackManager().addResourcePack(newPack);
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_SUCCESS);
+                                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_SUCCESS);
                                 sendList(sender);
                             } else {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_ERROR_INVALID);
+                                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_ERROR_INVALID);
                             }
                         }, 100);
                         return true;
 
                     } catch (MalformedURLException | URISyntaxException e) {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_ERROR_BADURL);
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_RESSOUCEPACK_ADDRESOURCE_ERROR_BADURL);
                         return false;
                     }
                 } else {
@@ -137,11 +137,11 @@ public class ResourcePackCommand extends ACommand {
     }
 
     private void sendList(@NotNull CommandSender sender) {
-        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_RESSOUCEPACK_LIST_HEADER);
-        MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
+        MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_RESSOUCEPACK_LIST_HEADER);
+        MessageManager.sendMessage(sender, MinigameMessageType.NONE,
             Component.join(JoinConfiguration.commas(true),
                 PLUGIN.getResourcePackManager().getResourcePacks().stream().map(ResourcePack::getDisplayName).toList()));
-        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_DIVIDER_LARGE);
+        MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_DIVIDER_LARGE);
     }
 
     @Override

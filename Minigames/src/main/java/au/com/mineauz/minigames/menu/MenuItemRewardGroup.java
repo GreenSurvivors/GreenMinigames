@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -54,7 +54,7 @@ public class MenuItemRewardGroup extends MenuItemList<@NotNull RewardRarity> imp
         final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_REWARD_GROUP_ENTERCHAT,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_REWARD_GROUP_ENTERCHAT,
             Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), group.getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
@@ -68,9 +68,9 @@ public class MenuItemRewardGroup extends MenuItemList<@NotNull RewardRarity> imp
         rewardMenu.setPreviousPage(getMenu());
 
         rewardMenu.setItem(new MenuItemRewardAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_REWARD_ITEM_ADD_NAME,
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_REWARD_ITEM_ADD_DESCRIPTION), rewards, group), 43);
+            MessageManager.getMessageList(MgMenuLangKey.MENU_REWARD_ITEM_ADD_DESCRIPTION), rewards, group), 43);
         rewardMenu.setItem(new MenuItemPage(MenuDisplayTypes.saveType(),
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
+            MessageManager.getMessage(MgMenuLangKey.MENU_REWARD_SAVE_NAME,
                 Placeholder.component(MinigamePlaceHolderKey.REWARD.getKey(), getName())), rewardMenu.getPreviousPage()), 44);
 
         final @NotNull List<@NotNull AMenuItem> menuItems = new ArrayList<>(group.getItems().size());
@@ -93,7 +93,7 @@ public class MenuItemRewardGroup extends MenuItemList<@NotNull RewardRarity> imp
 
             getMenu().displayMenu();
         } else {
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_REWARD_NOTREMOVED);
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_REWARD_NOTREMOVED);
 
             getMenu().displayMenu();
         }

@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.menu;
 
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuDisplayTypes;
@@ -9,7 +10,6 @@ import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -51,7 +51,7 @@ public class MenuItemNode extends AMenuItem { // todo merge with MenuItemRegion
 
     @ApiStatus.Obsolete
     protected static @NotNull Menu createMenu(final @NotNull MinigamePlayer viewer, final @Nullable Menu previousPage, final @NotNull Node node) {
-        final @NotNull Menu menu = new Menu(3, RegionMessageManager.getMessage(RegionLangKey.MENU_NODE_NAME,
+        final @NotNull Menu menu = new Menu(3, MessageManager.getMessage(RegionLangKey.MENU_NODE_NAME,
                 Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), node.getName())), viewer);
         menu.setPreviousPage(previousPage);
         final @NotNull List<@NotNull AMenuItem> items = new ArrayList<>();

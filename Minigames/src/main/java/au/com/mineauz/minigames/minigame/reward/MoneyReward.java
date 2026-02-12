@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -48,10 +48,10 @@ public class MoneyReward extends ARewardType {
 
         if (economy != null) {
             economy.depositPlayer(mgPlayer.getPlayer().getPlayer(), money);
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WIN, MgMiscLangKey.REWARD_MONEY,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.WIN, MgMiscLangKey.REWARD_MONEY,
                 Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), economy.format(money)));
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_WARNING_NOVAULT);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_WARNING_NOVAULT);
         }
     }
 
@@ -97,8 +97,8 @@ public class MoneyReward extends ARewardType {
             this.reward = reward;
 
             final @NotNull List<@NotNull Component> description = new ArrayList<>();
-            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_CHANGE_SHIFTCLICK).color(NamedTextColor.DARK_PURPLE));
-            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK).color(NamedTextColor.DARK_PURPLE));
+            description.add(MessageManager.getMessage(MgMenuLangKey.MENU_CHANGE_SHIFTCLICK).color(NamedTextColor.DARK_PURPLE));
+            description.add(MessageManager.getMessage(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK).color(NamedTextColor.DARK_PURPLE));
 
             setDescriptionPart(DESCRIPTION_TOKEN, description);
         }
@@ -107,7 +107,7 @@ public class MoneyReward extends ARewardType {
         public @NotNull ItemStack onShiftClick() {
             final @NotNull Menu menu = new Menu(3, MgMenuLangKey.MENU_MONEYREWARD_MENU_NAME, getMenu().getIntendedViewer());
             final @NotNull MenuItemDecimal dec = new MenuItemDecimal(ItemType.PAPER,
-                MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MONEYREWARD_ITEM_NAME),
+                MessageManager.getMessage(MgMenuLangKey.MENU_MONEYREWARD_ITEM_NAME),
                 new Callback<>() {
                     @Override
                     public @NotNull Double getValue() {

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -99,8 +99,8 @@ public class CommandReward extends ARewardType {
             description.add(options.get(before).getDisplayName().color(NamedTextColor.GRAY));
             description.add(getRarity().getDisplayName().color(NamedTextColor.GREEN));
             description.add(options.get(after).getDisplayName().color(NamedTextColor.GRAY));
-            description.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_EDIT_SHIFTLEFT).color(NamedTextColor.DARK_PURPLE));
-            description.addAll(MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK));
+            description.add(MessageManager.getMessage(MgMenuLangKey.MENU_EDIT_SHIFTLEFT).color(NamedTextColor.DARK_PURPLE));
+            description.addAll(MessageManager.getMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK));
 
             setDescriptionPart(DESCRIPTION_TOKEN, description);
         }
@@ -144,7 +144,7 @@ public class CommandReward extends ARewardType {
         public @NotNull ItemStack onShiftClick() {
             MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
             final @NotNull Duration reopenTime = Duration.ofSeconds(40);
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_STRING_ENTERCHAT,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 

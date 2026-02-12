@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -33,12 +33,12 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HINT_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_HINT_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_HINT_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_HINT_USAGE);
     }
 
     @Override
@@ -59,11 +59,11 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
                     if (treasureHuntMechanic.hasTreasureLocation() && !treasureHuntMechanic.isTreasureFound()) {
                         treasureHuntMechanic.getHints(mgPlayer);
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED,
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
                     }
                 } else if (minigame == null || minigame.getType() != MinigameType.GLOBAL) {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NOTTREASUREHUNT,
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NOTTREASUREHUNT,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
                 }
             } else {
@@ -75,7 +75,7 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
                 }
                 if (!minigames.isEmpty()) {
                     if (minigames.size() > 1) {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_HINT_LISTHUNTS,
+                        MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_HINT_LISTHUNTS,
                             Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(),
                                 Component.join(JoinConfiguration.commas(true), minigames.keySet().stream().map(Minigame::getDisplayName).toList())));
 
@@ -85,16 +85,16 @@ public class HintCommand extends ACommand { //todo make subcommands for all trea
                         if (first.getValue().hasTreasureLocation() && !first.getValue().isTreasureFound()) {
                             first.getValue().getHints(mgPlayer);
                         } else {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED,
+                            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOTSTARTED,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(),first.getKey().getName()));
                         }
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NORUNNING);
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_HINT_ERROR_NORUNNING);
                 }
             }
         } else {
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER);
+            MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAD_ERROR_NOTPLAYER);
         }
         return true;
     }

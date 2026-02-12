@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -44,7 +44,7 @@ public class MenuItemBlockData extends AMenuItem implements BlockDataConsumer, S
      */
     private @NotNull List<@NotNull Component> createDescription(final @NotNull BlockData data) {
         List<Component> result = new ArrayList<>();
-        result.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_BLOCKTYPE_DESCRIPTION,
+        result.add(MessageManager.getMessage(MgMenuLangKey.MENU_BLOCKTYPE_DESCRIPTION,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(data.getMaterial().translationKey()))));
         final @NotNull String dataString = data.getAsString();
 
@@ -68,7 +68,7 @@ public class MenuItemBlockData extends AMenuItem implements BlockDataConsumer, S
 
             int extraStart = dataString.indexOf('{', secondBracket);
             if (extraStart > 0) {
-                result.add(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_BLOCKDATA_DESCRIOPTION_EXTRA,
+                result.add(MessageManager.getMessage(MgMenuLangKey.MENU_BLOCKDATA_DESCRIOPTION_EXTRA,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), dataString.substring(extraStart))));
             }
         }
@@ -84,7 +84,7 @@ public class MenuItemBlockData extends AMenuItem implements BlockDataConsumer, S
             ItemStack stackUpdate = getDisplayItem();
             setDisplayItem(stackUpdate.withType(item.getType()));
         } else {
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_BLOCKDATA_ERROR_INVALID,
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_BLOCKDATA_ERROR_INVALID,
                 Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(item.getType().translationKey())));
         }
         return getDisplayItem();
@@ -94,7 +94,7 @@ public class MenuItemBlockData extends AMenuItem implements BlockDataConsumer, S
     public @NotNull ItemStack onDoubleClick() {
         final @NotNull MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_BLOCKDATA_CLICKBLOCK,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_BLOCKDATA_CLICKBLOCK,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
         getMenu().closeAndWaitForInput(reopenTime, this);
@@ -106,7 +106,7 @@ public class MenuItemBlockData extends AMenuItem implements BlockDataConsumer, S
         try {
             acceptBlockData(Bukkit.createBlockData(string));
         } catch (IllegalArgumentException e) {
-            MinigameMessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, Component.text(e.getLocalizedMessage()));
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, Component.text(e.getLocalizedMessage()));
         }
     }
 

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -88,7 +88,7 @@ public class MenuItemList<T> extends AMenuItem implements StringConsumer {
 
         final int pos = options.indexOf(callback.getValue());
         if (pos == -1) {
-            setDescriptionPart(DESCRIPTION_TOKEN, MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_ERROR_UNKNOWN));
+            setDescriptionPart(DESCRIPTION_TOKEN, MessageManager.getMessageList(MgMenuLangKey.MENU_ERROR_UNKNOWN));
         } else {
             final @NotNull List<@NotNull Component> description = new ArrayList<>(3);
 
@@ -160,15 +160,15 @@ public class MenuItemList<T> extends AMenuItem implements StringConsumer {
         MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
 
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LIST_ENTERCHAT,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LIST_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
         String optionsStr = String.join(", ", options.stream().map(displayFunction).toList());
         if (MiniMessage.miniMessage().stripTags(optionsStr).length() > 8000) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMenuLangKey.MENU_LIST_ERROR_TOOLONG);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMenuLangKey.MENU_LIST_ERROR_TOOLONG);
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LIST_OPTION,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_LIST_OPTION,
                 Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), optionsStr));
         }
 
@@ -194,7 +194,7 @@ public class MenuItemList<T> extends AMenuItem implements StringConsumer {
         getMenu().cancelWaitForInput();
         getMenu().displayMenu();
 
-        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_LIST_ERROR_INVALID);
+        MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_LIST_ERROR_INVALID);
     }
 
     protected @Nullable T increaseValue(T current, boolean shift) {

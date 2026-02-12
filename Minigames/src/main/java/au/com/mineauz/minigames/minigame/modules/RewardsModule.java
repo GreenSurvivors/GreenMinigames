@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -86,7 +86,7 @@ public class RewardsModule extends AMinigameModule {
     @Override
     public void addEditMenuOptions(final @NotNull Menu menu) {
         final @NotNull MenuItemPage launcher = new MenuItemPage(ItemType.DIAMOND,
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME),
+            MessageManager.getMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME),
             createSubMenu(menu));
 
         menu.addItem(launcher);
@@ -94,11 +94,11 @@ public class RewardsModule extends AMinigameModule {
 
     private @NotNull Menu createSubMenu(final @NotNull Menu parent) {
         final Menu submenu = new Menu(6,
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME), parent.getIntendedViewer());
+            MessageManager.getMessage(MgMenuLangKey.MENU_REWARD_SETTINGS_NAME), parent.getIntendedViewer());
         scheme.addMenuItems(submenu);
 
         submenu.setItem(RewardSchemeRegistry.newMenuItem(ItemType.PAPER,
-            MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_REWARD_SCHEME_NAME), new Callback<>() {
+            MessageManager.getMessage(MgMenuLangKey.MENU_REWARD_SCHEME_NAME), new Callback<>() {
                 @Override
                 public @NotNull Key getValue() {
                     return scheme.key();

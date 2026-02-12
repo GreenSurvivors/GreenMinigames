@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.gametypes;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.StoredPlayerCheckpoints;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
@@ -35,7 +35,7 @@ public class SingleplayerType extends MinigameTypeBase {
     public boolean cannotStart(@NotNull Minigame mgm, @NotNull MinigamePlayer mgPlayer) {
         boolean cannotStart = mgm.isSpMaxPlayers() && mgm.getPlayers().size() >= mgm.getMaxPlayers();
         if (cannotStart) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_FULL);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_FULL);
         }
 
         return cannotStart;
@@ -53,7 +53,7 @@ public class SingleplayerType extends MinigameTypeBase {
         boolean result = mgPlayer.teleport(locs.getFirst());
         if (plugin.getConfig().getBoolean("warnings") && mgPlayer.getPlayer().getWorld() != locs.getFirst().getWorld() &&
                 mgPlayer.getPlayer().hasPermission("minigame.set.start")) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
         }
         return result;
     }
@@ -61,7 +61,7 @@ public class SingleplayerType extends MinigameTypeBase {
     @Override
     public boolean joinMinigame(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {
         if (mgm.getLives() > 0 && Math.abs(mgm.getLives()) < Integer.MAX_VALUE) {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_LIVES_LIVESLEFT,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMiscLangKey.MINIGAME_LIVES_LIVESLEFT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(mgm.getLives())));
         }
         if (mgm.isAllowedFlight()) {
@@ -167,7 +167,7 @@ public class SingleplayerType extends MinigameTypeBase {
                 final SafeFullLocation checkpoint = mgPlayer.getCheckpoint();
                 if (checkpoint != null) {
                     event.setRespawnLocation(checkpoint.toLocation());
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_CHECKPOINT_DEATHREVERT);
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgMiscLangKey.PLAYER_CHECKPOINT_DEATHREVERT);
 
                     mgPlayer.getLoadout().equipLoadout(mgPlayer);
                 }

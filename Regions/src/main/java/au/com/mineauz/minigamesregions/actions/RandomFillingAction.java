@@ -3,7 +3,7 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -11,7 +11,6 @@ import au.com.mineauz.minigames.recorder.RecorderData;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -43,7 +42,7 @@ public class RandomFillingAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_NAME);
     }
 
     @Override
@@ -54,10 +53,10 @@ public class RandomFillingAction extends AAction {
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME), Component.text(toData.getFlag().getMaterial().translationKey()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME), Component.text(percentageChance.getFlag()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_MISSES_NAME),
-                MinigameMessageManager.getMgMessage(replaceAll.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
+                MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME), Component.text(toData.getFlag().getMaterial().translationKey()),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME), Component.text(percentageChance.getFlag()),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_MISSES_NAME),
+                MessageManager.getMessage(replaceAll.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -137,11 +136,11 @@ public class RandomFillingAction extends AAction {
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
         //The menu entry for the block that will be placed
-        toData.getMenuItem(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME));
+        toData.getMenuItem(MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME));
 
         //Percentage of blocks that will get replaced
         menu.addItem(new MenuItemNewLine());
-        menu.addItem(new MenuItemInteger(ItemType.BOOK, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME),
+        menu.addItem(new MenuItemInteger(ItemType.BOOK, MessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_PERCENT_NAME),
                 new Callback<>() {
 
                     @Override
@@ -158,7 +157,7 @@ public class RandomFillingAction extends AAction {
 
         //Replace all or replace selectively
         menu.addItem(new MenuItemNewLine());
-        menu.addItem(replaceAll.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_MISSES_NAME)));
+        menu.addItem(replaceAll.getMenuItem(ItemType.ENDER_PEARL, MessageManager.getMessage(RegionLangKey.MENU_ACTION_RANDOMFILLING_MISSES_NAME)));
 
         menu.displayMenu();
 

@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -16,7 +16,6 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -52,7 +51,7 @@ public class RegionSwapAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_NAME);
     }
 
     @Override
@@ -62,10 +61,10 @@ public class RegionSwapAction extends AAction {
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_FROM_NAME), Component.text(fromRegion.getFlag()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_TO_NAME), Component.text(toRegion.getFlag()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_SWAP_NAME),
-                MinigameMessageManager.getMgMessage(swapRegion.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
+        return Map.of(MessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_FROM_NAME), Component.text(fromRegion.getFlag()),
+            MessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_TO_NAME), Component.text(toRegion.getFlag()),
+            MessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_SWAP_NAME),
+            MessageManager.getMessage(swapRegion.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -106,8 +105,7 @@ public class RegionSwapAction extends AAction {
             if (rmod.hasRegion(fromRegion.getFlag())) {
                 startRegion = rmod.getRegion(fromRegion.getFlag());
             } else {
-                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                        RegionLangKey.ACTION_ERROR_NOREGION,
+                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionLangKey.ACTION_ERROR_NOREGION,
                         Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), fromRegion.getFlag()));
                 return;
             }
@@ -115,8 +113,7 @@ public class RegionSwapAction extends AAction {
             if (rmod.hasRegion(toRegion.getFlag())) {
                 targetRegion = rmod.getRegion(toRegion.getFlag());
             } else {
-                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                        RegionLangKey.ACTION_ERROR_NOREGION,
+                MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionLangKey.ACTION_ERROR_NOREGION,
                         Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), toRegion.getFlag()));
                 return;
             }
@@ -159,12 +156,11 @@ public class RegionSwapAction extends AAction {
                         }
                     }
                 } else {
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                        RegionLangKey.ACTION_REGIONSWAP_ERROR_SIZE);
+                    MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionLangKey.ACTION_REGIONSWAP_ERROR_SIZE);
                 }
             }
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), RegionModule.getFactory().getKey().value()),
                 Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), mgm.getDisplayName()));
         }
@@ -203,11 +199,11 @@ public class RegionSwapAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(fromRegion.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_FROM_NAME)));
-        menu.addItem(swapRegion.getMenuItem(ItemType.ENDER_PEARL, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_SWAP_NAME)));
+        menu.addItem(fromRegion.getMenuItem(ItemType.ENDER_EYE, MessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_FROM_NAME)));
+        menu.addItem(swapRegion.getMenuItem(ItemType.ENDER_PEARL, MessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_SWAP_NAME)));
 
         menu.addItem(new MenuItemNewLine());
-        menu.addItem(toRegion.getMenuItem(ItemType.ENDER_EYE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_TO_NAME)));
+        menu.addItem(toRegion.getMenuItem(ItemType.ENDER_EYE, MessageManager.getMessage(RegionLangKey.MENU_ACTION_REGIONSWAP_TO_NAME)));
 
         menu.displayMenu();
         return true;

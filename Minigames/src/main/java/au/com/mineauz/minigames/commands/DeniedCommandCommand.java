@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -31,12 +31,12 @@ public class DeniedCommandCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DENIEDCMDS_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_DENIEDCMDS_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_DENIEDCMDS_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_DENIEDCMDS_USAGE);
     }
 
     @Override
@@ -50,17 +50,17 @@ public class DeniedCommandCommand extends ACommand {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("add") && args.length >= 2) {
                 PLUGIN.getPlayerManager().addDeniedCommand(args[1]);
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DENIEDCMDS_ADD_SUCCESS,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DENIEDCMDS_ADD_SUCCESS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.COMMAND.getKey(), args[1]));
                 return true;
             } else if (args[0].equalsIgnoreCase("remove") && args.length >= 2) {
                 PLUGIN.getPlayerManager().removeDeniedCommand(args[1]);
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DENIEDCMDS_REMOVE_SUCCESS,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DENIEDCMDS_REMOVE_SUCCESS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.COMMAND.getKey(), args[1]));
                 return true;
             } else if (args[0].equalsIgnoreCase("list")) {
                 String coms = String.join(", ", PLUGIN.getPlayerManager().getDeniedCommands());
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DENIEDCMDS_LIST_SUCCESS,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_DENIEDCMDS_LIST_SUCCESS,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), coms));
                 return true;
             }

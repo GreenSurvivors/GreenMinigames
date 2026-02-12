@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -12,7 +12,6 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
@@ -32,7 +31,7 @@ public class AddScoreAction extends AScoreAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SCOREADD_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_SCOREADD_NAME);
     }
 
     @Override
@@ -42,7 +41,7 @@ public class AddScoreAction extends AScoreAction {
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        return Map.of(MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), Component.text(amount.getFlag()));
+        return Map.of(MessageManager.getMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), Component.text(amount.getFlag()));
     }
 
     @Override
@@ -88,7 +87,7 @@ public class AddScoreAction extends AScoreAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.addItem(new MenuItemInteger(ItemType.ENDER_PEARL,
-                MinigameMessageManager.getMgMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), new Callback<>() {
+                MessageManager.getMessage(MgMiscLangKey.STATISTIC_SCORE_NAME), new Callback<>() {
 
             @Override
             public Integer getValue() {

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
@@ -71,7 +71,7 @@ public class MenuItemDisplayLoadout extends AMenuItem implements StringConsumer 
         if (!loadout.getName().equals("default")) {
             menuItems.add(new MenuItemBoolean(ItemType.GOLD_INGOT,
                 MgMenuLangKey.MENU_DISPLAYLOADOUT_USEPERMISSIONS_NAME,
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DISPLAYLOADOUT_USEPERMISSIONS_DESCRIPTION,
+                MessageManager.getMessageList(MgMenuLangKey.MENU_DISPLAYLOADOUT_USEPERMISSIONS_DESCRIPTION,
                     Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName().toLowerCase())),
                 loadout.getUsePermissionsCallback()));
         }
@@ -84,7 +84,7 @@ public class MenuItemDisplayLoadout extends AMenuItem implements StringConsumer 
             MgMenuLangKey.MENU_DISPLAYLOADOUT_ALLOWHUNGER_NAME, loadout.getHungerCallback()));
         menuItems.add(new MenuItemInteger(ItemType.EXPERIENCE_BOTTLE,
             MgMenuLangKey.MENU_DISPLAYLOADOUT_XPLEVEL_NAME,
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DISPLAYLOADOUT_XPLEVEL_DESCRIPTION),
+            MessageManager.getMessageList(MgMenuLangKey.MENU_DISPLAYLOADOUT_XPLEVEL_DESCRIPTION),
             loadout.getLevelCallback(), -1, null));
         menuItems.add(new MenuItemBoolean(ItemType.HONEY_BLOCK,
             MgMenuLangKey.MENU_DISPLAYLOADOUT_LOCKINVENTORY_NAME,
@@ -113,7 +113,7 @@ public class MenuItemDisplayLoadout extends AMenuItem implements StringConsumer 
         potionMenu.setItem(new MenuItemStatusEffectAdd(MenuDisplayTypes.createType(), MgMenuLangKey.MENU_STATUSEFFECTADD_NAME, loadout), potionMenu.getSize() - 1);
         potionMenu.setItem(menuItemBack, potionMenu.getSize() - 2);
 
-        final @NotNull List<@NotNull Component> description = MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
+        final @NotNull List<@NotNull Component> description = MessageManager.getMessageList(MgMenuLangKey.MENU_DELETE_SHIFTRIGHTCLICK);
         final @NotNull List<@NotNull AMenuItem> potionMenuItems = new ArrayList<>();
 
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
@@ -159,7 +159,7 @@ public class MenuItemDisplayLoadout extends AMenuItem implements StringConsumer 
         if (allowDelete) {
             MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
             final @NotNull Duration reopenTime = Duration.ofSeconds(10);
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_DISPLAYLOADOUT_ENTERCHAT,
+            MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_DISPLAYLOADOUT_ENTERCHAT,
                 Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), getName()),
                 Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName()),
                 Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
@@ -183,10 +183,10 @@ public class MenuItemDisplayLoadout extends AMenuItem implements StringConsumer 
             getMenu().removeItem(getSlot());
             getMenu().cancelWaitForInput();
             getMenu().displayMenu();
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.SUCCESS, MgMenuLangKey.MENU_DISPLAYLOADOUT_DELETE,
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.SUCCESS, MgMenuLangKey.MENU_DISPLAYLOADOUT_DELETE,
                 Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
         } else {
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.WARNING, MgMenuLangKey.MENU_DISPLAYLOADOUT_NOTDELETE,
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.WARNING, MgMenuLangKey.MENU_DISPLAYLOADOUT_NOTDELETE,
                 Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadoutName));
             getMenu().cancelWaitForInput();
             getMenu().displayMenu();

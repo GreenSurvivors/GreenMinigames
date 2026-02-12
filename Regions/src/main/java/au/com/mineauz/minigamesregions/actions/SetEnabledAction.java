@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.Menu;
@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
@@ -30,7 +29,7 @@ public class SetEnabledAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SETENABLED_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_SETENABLED_NAME);
     }
 
     @Override
@@ -40,8 +39,8 @@ public class SetEnabledAction extends AAction {
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        return Map.of(MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_ENABLED_NAME),
-                MinigameMessageManager.getMgMessage(state.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
+        return Map.of(MessageManager.getMessage(MgMenuLangKey.MENU_MINIGAME_ENABLED_NAME),
+                MessageManager.getMessage(state.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -81,7 +80,7 @@ public class SetEnabledAction extends AAction {
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(state.getMenuItem(ItemType.ENDER_PEARL, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_MINIGAME_ENABLED_NAME)));
+        menu.addItem(state.getMenuItem(ItemType.ENDER_PEARL, MessageManager.getMessage(MgMenuLangKey.MENU_MINIGAME_ENABLED_NAME)));
         menu.displayMenu();
         return true;
     }

@@ -1,13 +1,12 @@
 package au.com.mineauz.minigamesregions.language;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
-import au.com.mineauz.minigames.managers.language.langkeys.LangKey;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigamesregions.RegionsMain;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -16,7 +15,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
-import java.util.*;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 
 public class RegionMessageManager {
     private static final String BUNDLE_KEY = "minigames-regions";
@@ -24,7 +26,7 @@ public class RegionMessageManager {
     public static void register() {
         CodeSource src = RegionsMain.class.getProtectionDomain().getCodeSource();
         if (src != null) {
-            MinigameMessageManager.initLangFiles(src, BUNDLE_KEY);
+            MessageManager.initLangFiles(src, BUNDLE_KEY);
         } else {
             RegionsMain.getPlugin().getComponentLogger().warn("Couldn't save lang files: no CodeSource!");
         }
@@ -54,25 +56,17 @@ public class RegionMessageManager {
             }
         }
         if (langBundleMinigameRegions != null) {
-            MinigameMessageManager.registerMessageFile(BUNDLE_KEY, langBundleMinigameRegions);
+            MessageManager.registerMessageFile(getBundleKey(), langBundleMinigameRegions);
         } else {
             RegionsMain.getPlugin().getComponentLogger().error("No region language Resource Could be loaded...messaging will be broken");
         }
     }
 
-    public static @NotNull Component getMessage(@NotNull RegionLangKey key, TagResolver... resolvers) {
-        return MinigameMessageManager.getMessage(BUNDLE_KEY, key, resolvers);
+    public static @NotNull Key getBundleKey() {
+        return new NamespacedKey(RegionsMain.getPlugin(), BUNDLE_KEY);
     }
 
-    public static @NotNull List<Component> getMessageList(@NotNull LangKey key, TagResolver... resolvers) {
-        return MinigameMessageManager.getMessageList(BUNDLE_KEY, key, resolvers);
-    }
-
-    public static @NotNull String getBundleKey() {
-        return BUNDLE_KEY;
-    }
-
-    public static void debugMessage(@NotNull String message) { //todo
+    public static void debugMessage(final @NotNull String message) { //todo
         if (Minigames.getPlugin().isDebugging()) {
             RegionsMain.getPlugin().getComponentLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
         }

@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -34,12 +34,12 @@ public class SaveCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SAVE_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SAVE_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SAVE_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SAVE_USAGE);
     }
 
     @Override
@@ -54,10 +54,10 @@ public class SaveCommand extends ACommand {
             Minigame minigame = PLUGIN.getMinigameManager().getMinigame(args[0]);
             if (minigame != null) {
                 minigame.saveMinigame();
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgMiscLangKey.MINIGAME_SAVED,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgMiscLangKey.MINIGAME_SAVED,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName()));
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
+                MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOMINIGAME,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
             return true;

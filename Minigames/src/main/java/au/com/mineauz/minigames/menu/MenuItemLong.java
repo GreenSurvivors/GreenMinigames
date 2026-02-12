@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -127,7 +127,7 @@ public class MenuItemLong extends AMenuItem implements StringConsumer {
     @Override
     public @NotNull ItemStack onDoubleClick() {
         final @NotNull Duration reopenTime = Duration.ofSeconds(10);
-        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,
+        MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.INFO, MgMenuLangKey.MENU_NUMBER_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), getName()),
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)),
             Placeholder.unparsed(MinigamePlaceHolderKey.MIN.getKey(), this.min == null ? "N/A" : this.min.toString()),
@@ -152,7 +152,7 @@ public class MenuItemLong extends AMenuItem implements StringConsumer {
             getMenu().cancelWaitForInput();
             getMenu().displayMenu();
 
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR,
                 MgCommandLangKey.COMMAND_ERROR_NOTNUMBER,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
         }

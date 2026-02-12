@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -31,7 +31,7 @@ public class Menu {
     private @MonotonicNonNull Inventory inv = null;
 
     public Menu(final int rows, final @NotNull MinigameLangKey langKey, final @NotNull MinigamePlayer intendedViewer) {
-        this(rows, MinigameMessageManager.getMgMessage(langKey), intendedViewer);
+        this(rows, MessageManager.getMessage(langKey), intendedViewer);
     }
 
     public Menu(final @Range(from = 1, to = 6) int rows, final @NotNull Component title, final @NotNull MinigamePlayer intendedViewer) {

@@ -1,14 +1,13 @@
 package au.com.mineauz.minigamesregions.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigamesregions.ActionExecutor;
 import au.com.mineauz.minigamesregions.conditions.ACondition;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -52,11 +51,11 @@ public class MenuItemCondition extends AMenuItem {
         List<Component> description = new ArrayList<>();
         for (Entry<Component, Component> entry : out.entrySet()) {
             Component value = entry.getValue() == null ?
-                    MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).
+                    MessageManager.getMessage(MgMenuLangKey.MENU_ELEMENTNOTSET).
                             color(NamedTextColor.YELLOW) :
                     entry.getValue();
 
-            Component line = RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_DESCRIPTION,
+            Component line = MessageManager.getMessage(RegionLangKey.MENU_ACTION_DESCRIPTION,
                     Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), entry.getKey()),
                     Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), value));
 

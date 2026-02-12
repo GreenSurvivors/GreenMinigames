@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -15,7 +15,6 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.util.NullCommandSender;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -40,7 +39,7 @@ public class ExecuteCommandAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EXECUTECMD_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_EXECUTECMD_NAME);
     }
 
     @Override
@@ -50,9 +49,9 @@ public class ExecuteCommandAction extends AAction {
 
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
-        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME), Component.text(comd.getFlag()),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME),
-                MinigameMessageManager.getMgMessage(silentExecute.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
+        return Map.of(MessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME), Component.text(comd.getFlag()),
+                MessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME),
+                MessageManager.getMessage(silentExecute.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -65,7 +64,7 @@ public class ExecuteCommandAction extends AAction {
         return true;
     }
 
-    private @NotNull String replacePlayerTags(@Nullable MinigamePlayer player, @NotNull String string) { //todo dataFixerUpper
+    private @NotNull String replacePlayerTags(final @Nullable MinigamePlayer player, final @NotNull String string) { //todo dataFixerUpper
         if (player == null) {
             return string;
         }
@@ -197,8 +196,8 @@ public class ExecuteCommandAction extends AAction {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
 
-        menu.addItem(new MenuItemString(ItemType.COMMAND_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_COMMAND_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_COMMANDACTION_COMMAND_DESCRIPTION), new Callback<>() {
+        menu.addItem(new MenuItemString(ItemType.COMMAND_BLOCK, MessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_COMMAND_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_COMMANDACTION_COMMAND_DESCRIPTION), new Callback<>() {
 
             @Override
             public String getValue() {
@@ -214,8 +213,8 @@ public class ExecuteCommandAction extends AAction {
             }
         }));
 
-        menu.addItem(silentExecute.getMenuItem(ItemType.NOTE_BLOCK, RegionMessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_COMMANDACTION_SILENT_DESCRIPTION)));
+        menu.addItem(silentExecute.getMenuItem(ItemType.NOTE_BLOCK, MessageManager.getMessage(RegionLangKey.MENU_COMMANDACTION_SILENT_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_COMMANDACTION_SILENT_DESCRIPTION)));
         menu.displayMenu();
         return true;
     }

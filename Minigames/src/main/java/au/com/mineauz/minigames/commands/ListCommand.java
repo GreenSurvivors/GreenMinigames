@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -29,12 +29,12 @@ public class ListCommand extends ACommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_LIST_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_LIST_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_LIST_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_LIST_USAGE);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ListCommand extends ACommand {
                     }
                 }).toList());
 
-        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_LIST_LIST,
+        MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_LIST_LIST,
             Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), result));
         return true;
     }

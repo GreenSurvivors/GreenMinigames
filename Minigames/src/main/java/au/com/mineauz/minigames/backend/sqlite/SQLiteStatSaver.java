@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.backend.sqlite;
 
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.StatementKey;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatFormat;
 import au.com.mineauz.minigames.stats.StatisticValueField;
@@ -48,7 +48,7 @@ class SQLiteStatSaver {
     }
 
     public void saveData(@NotNull StoredGameStats data) {
-        MinigameMessageManager.debugMessage("SQLite beginning save of " + data);
+        MessageManager.debugMessage("SQLite beginning save of " + data);
 
         ConnectionHandler handler = null;
         try {
@@ -69,7 +69,7 @@ class SQLiteStatSaver {
 
                 handler.endTransactionFail();
             } finally {
-                MinigameMessageManager.debugMessage("SQLite completed save of " + data);
+                MessageManager.debugMessage("SQLite completed save of " + data);
             }
         } catch (SQLException e) {
             logger.warn("", e);
@@ -82,7 +82,7 @@ class SQLiteStatSaver {
 
     private void saveStats(@NotNull ConnectionHandler handler, @NotNull StoredGameStats data,
                            @NotNull UUID player, int minigameId) throws SQLException {
-        MinigameMessageManager.debugMessage("SQLite saving stats for " + player + ", game " + minigameId);
+        MessageManager.debugMessage("SQLite saving stats for " + player + ", game " + minigameId);
 
         // Prepare all updates
         for (Entry<MinigameStat, Long> entry : data.getStats().entrySet()) {
@@ -99,7 +99,7 @@ class SQLiteStatSaver {
         handler.executeBatch(insertStatMin);
         handler.executeBatch(insertStatMax);
 
-        MinigameMessageManager.debugMessage("SQLite completed save for " + player + ", game " + minigameId);
+        MessageManager.debugMessage("SQLite completed save for " + player + ", game " + minigameId);
     }
 
     private void queueStat(@NotNull ConnectionHandler handler, @NotNull MinigameStat stat, long value, @NotNull StatFormat format, @NotNull UUID player, int minigameId) throws SQLException {

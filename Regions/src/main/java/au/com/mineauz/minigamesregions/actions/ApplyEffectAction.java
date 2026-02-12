@@ -4,14 +4,13 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
@@ -40,7 +39,7 @@ public class ApplyEffectAction extends AAction {
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_NAME);
     }
 
     @Override
@@ -52,17 +51,17 @@ public class ApplyEffectAction extends AAction {
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         Component typeComp;
         if (type == null) {
-            typeComp = MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_ERROR_UNKNOWN);
+            typeComp = MessageManager.getMessage(MgMenuLangKey.MENU_ERROR_UNKNOWN);
         } else {
             typeComp = Component.translatable(type.translationKey());
         }
 
-        return Map.of(RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_EFFECT_NAME),
+        return Map.of(MessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_EFFECT_NAME),
                 typeComp.append(Component.text(" " + amp.getFlag())),
 
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_DURATION_NAME),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_DURATION_NAME),
                 dur.getFlag() == PotionEffect.INFINITE_DURATION ?
-                        MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_NUMBER_INFINITE) :
+                        MessageManager.getMessage(MgMenuLangKey.MENU_NUMBER_INFINITE) :
                         Component.text(dur.getFlag()));
     }
 
@@ -146,7 +145,7 @@ public class ApplyEffectAction extends AAction {
 
         final @NotNull List<@NotNull PotionEffectType> pots = Registry.EFFECT.stream().toList();
 
-        menu.addItem(new MenuItemList<>(MenuDisplayTypes.potionEffectType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_EFFECT_NAME),
+        menu.addItem(new MenuItemList<>(MenuDisplayTypes.potionEffectType(), MessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_EFFECT_NAME),
             new Callback<>() {
                 @Override
                 public @Nullable PotionEffectType getValue() {
@@ -159,8 +158,8 @@ public class ApplyEffectAction extends AAction {
                     type = value;
                 }
             }, pots));
-        menu.addItem(dur.getMenuItem(MenuDisplayTypes.timeType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_DURATION_NAME), 0L, 86400L));
-        menu.addItem(new MenuItemInteger(ItemType.EXPERIENCE_BOTTLE, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_LEVEL_NAME), new Callback<>() {
+        menu.addItem(dur.getMenuItem(MenuDisplayTypes.timeType(), MessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_DURATION_NAME), 0L, 86400L));
+        menu.addItem(new MenuItemInteger(ItemType.EXPERIENCE_BOTTLE, MessageManager.getMessage(RegionLangKey.MENU_ACTION_EFFECTAPPLY_LEVEL_NAME), new Callback<>() {
 
             @Override
             public Integer getValue() {

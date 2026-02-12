@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -29,12 +29,12 @@ public class MenuItemAddWhitelistBlock extends AMenuItem implements StringConsum
     protected final @NotNull List<@NotNull BlockType> whitelist;
 
     public MenuItemAddWhitelistBlock(final @NotNull MinigameLangKey langKey, final @NotNull List<@NotNull BlockType> whitelist) {
-        this(MinigameMessageManager.getMgMessage(langKey), whitelist);
+        this(MessageManager.getMessage(langKey), whitelist);
     }
 
     public MenuItemAddWhitelistBlock(final @NotNull Component name, final @NotNull List<@NotNull BlockType> whitelist) {
         super(MenuDisplayTypes.createType(), name,
-            MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_WHITELIST_INTERACT));
+            MessageManager.getMessageList(MgMenuLangKey.MENU_WHITELIST_INTERACT));
         this.whitelist = whitelist;
     }
 
@@ -47,7 +47,7 @@ public class MenuItemAddWhitelistBlock extends AMenuItem implements StringConsum
                 whitelist.add(blockType);
                 getMenu().addItem(new MenuItemWhitelistBlock(item.getType().asItemType(), whitelist));
             } else {
-                MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
+                MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
             }
         } else {
             // todo
@@ -59,7 +59,7 @@ public class MenuItemAddWhitelistBlock extends AMenuItem implements StringConsum
     public @NotNull ItemStack onClick() {
         MinigamePlayer mgPlayer = getMenu().getIntendedViewer();
         final @NotNull Duration reopenTime = Duration.ofSeconds(30);
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_WHITELIST_ENTERCHAT,
+        MessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MgMenuLangKey.MENU_WHITELIST_ENTERCHAT,
             Placeholder.component(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(reopenTime)));
 
         getMenu().closeAndWaitForInput(reopenTime, this);
@@ -87,7 +87,7 @@ public class MenuItemAddWhitelistBlock extends AMenuItem implements StringConsum
         getMenu().cancelWaitForInput();
         getMenu().displayMenu();
 
-        MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBLOCKTYPE,
+        MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_NOTBLOCKTYPE,
             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), string));
 
         /* cancel automatic reopening and reopen {@link MenuItemDisplayWhitelist}*/
@@ -108,7 +108,7 @@ public class MenuItemAddWhitelistBlock extends AMenuItem implements StringConsum
                 // todo add placeholder here
             }
         } else {
-            MinigameMessageManager.sendMgMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
+            MessageManager.sendMessage(getMenu().getIntendedViewer(), MinigameMessageType.ERROR, MgMenuLangKey.MENU_WHITELIST_ERROR_CONTAINS);
         }
 
         /* cancel automatic reopening and reopen {@link MenuItemDisplayWhitelist}*/

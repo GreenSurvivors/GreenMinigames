@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -29,7 +29,7 @@ public class MenuItemStatisticsSettings extends AMenuItem {
 
     @Override
     public @NotNull ItemStack onClick() {
-        final @NotNull Menu subMenu = new Menu(6, MinigameMessageManager.getMgMessage(MgMenuLangKey.MENU_STAT_SETTINGS_NAME),
+        final @NotNull Menu subMenu = new Menu(6, MessageManager.getMessage(MgMenuLangKey.MENU_STAT_SETTINGS_NAME),
             getMenu().getIntendedViewer());
 
         for (final @NotNull MinigameStat stat : MinigameStatistics.getAllStats().values()) {

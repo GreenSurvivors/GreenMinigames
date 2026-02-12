@@ -3,7 +3,7 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -11,7 +11,6 @@ import au.com.mineauz.minigames.recorder.RecorderData;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
@@ -38,7 +37,7 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
 
     @Override
     public @NotNull Component getDisplayname() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWAPBLOCK_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_ACTION_SWAPBLOCK_NAME);
     }
 
     @Override
@@ -49,12 +48,12 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
     @Override
     public @NotNull Map<@NotNull Component, @Nullable Component> describe() {
         return Map.of(
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME),
                 MinigameUtils.limitIgnoreFormat(Component.text(matchType.getFlag().getAsString()), 16),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME),
+                MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME),
                 MinigameUtils.limitIgnoreFormat(Component.text(toData.getFlag().getAsString()), 16),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_NAME),
-                MinigameMessageManager.getMgMessage(keepAttachment.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
+                MessageManager.getMessage(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_NAME),
+                MessageManager.getMessage(keepAttachment.getFlag() ? MgCommandLangKey.COMMAND_STATE_ENABLED : MgCommandLangKey.COMMAND_STATE_DISABLED));
     }
 
     @Override
@@ -125,7 +124,7 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
     public boolean displayMenu(final @NotNull Menu previous) {
         final @NotNull Menu menu = new Menu(3, getDisplayname(), previous.getIntendedViewer());
         menu.setItem(new MenuItemBack(previous), menu.getSize() - 9);
-        menu.addItem(new MenuItemBlockData(matchType.getFlag().getPlacementMaterial().asItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), new Callback<>() {
+        menu.addItem(new MenuItemBlockData(matchType.getFlag().getPlacementMaterial().asItemType(), MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_FROMBLOCK_NAME), new Callback<>() {
 
             @Override
             public BlockData getValue() {
@@ -140,7 +139,7 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
 
         }));
         menu.addItem(new MenuItemNewLine());
-        menu.addItem(new MenuItemBlockData(toData.getFlag().getPlacementMaterial().asItemType(), RegionMessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME), new Callback<>() {
+        menu.addItem(new MenuItemBlockData(toData.getFlag().getPlacementMaterial().asItemType(), MessageManager.getMessage(RegionLangKey.MENU_ACTIONS_TOBLOCK_NAME), new Callback<>() {
 
             @Override
             public BlockData getValue() {
@@ -153,8 +152,8 @@ public class SwapBlockAction extends AAction { // todo once paper no longer relo
             }
         }));
 
-        menu.addItem(keepAttachment.getMenuItem(ItemType.PISTON, RegionMessageManager.getMessage(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_DESCRIPTION)));
+        menu.addItem(keepAttachment.getMenuItem(ItemType.PISTON, MessageManager.getMessage(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_ACTION_SWAPBLOCK_KEEP_DESCRIPTION)));
         menu.displayMenu();
         return true;
     }

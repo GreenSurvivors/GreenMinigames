@@ -3,12 +3,12 @@ package au.com.mineauz.minigamesregions.conditions;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.language.RegionLangKey;
-import au.com.mineauz.minigamesregions.language.RegionMessageManager;
 import au.com.mineauz.minigamesregions.util.RegionUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -39,7 +39,7 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
 
     @Override
     public @NotNull Component getDisplayName() {
-        return RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_NAME);
+        return MessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_NAME);
     }
 
     @Override
@@ -121,14 +121,14 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
         final @NotNull Menu menu = new Menu(3, getDisplayName(), prev.getIntendedViewer());
 
         menu.addItem(entityType.getMenuItem(ItemType.CHICKEN_SPAWN_EGG,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME)));
+                MessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME)));
         menu.addItem(new MenuItemNewLine());
 
         menu.addItem(matchName.getMenuItem(ItemType.NAME_TAG,
-                RegionMessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_MATCH_CUSTOMNAME_NAME)));
+                MessageManager.getMessage(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_MATCH_CUSTOMNAME_NAME)));
         final @NotNull MenuItemString menuItem = customName.getMenuItem(MenuDisplayTypes.nameType(),
-                RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
-                RegionMessageManager.getMessageList(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_CUSTOMNAME_DESCRIPTION));
+                MessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
+                MessageManager.getMessageList(RegionLangKey.MENU_CONDITION_CONTAINSENTITY_CUSTOMNAME_DESCRIPTION));
         menuItem.setAllowNull(true);
         menu.addItem(menuItem);
 
@@ -142,10 +142,10 @@ public class ContainsEntityCondition extends ACondition { // todo same entity se
     public @NotNull Map<@NotNull Component, @NotNull Component> describe() {
         final @NotNull Map<@NotNull Component, @NotNull Component> out = new HashMap<>();
 
-        out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME),
+        out.put(MessageManager.getMessage(RegionLangKey.MENU_ENTITY_TYPE_NAME),
                 Component.translatable(entityType.getFlag().translationKey()));
         if (matchName.getFlag()) {
-            out.put(RegionMessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
+            out.put(MessageManager.getMessage(RegionLangKey.MENU_ENTITY_CUSTOMNAME_NAME),
                     MiniMessage.miniMessage().deserialize(customName.getFlag()));
         }
 

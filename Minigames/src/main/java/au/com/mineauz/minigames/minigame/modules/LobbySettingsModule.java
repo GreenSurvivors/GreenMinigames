@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.minigame.modules;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.TimeFlag;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMenuLangKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -120,6 +120,7 @@ public class LobbySettingsModule extends AMinigameModule {
         playerWaitTime.setFlag(time);
     }
 
+    @SuppressWarnings("UnstableApiUsage") // shutup ItemType
     @Override
     public void addEditMenuOptions(final @NotNull Menu superMenu) {
         if (getMinigame().getType() == MinigameType.MULTIPLAYER) {
@@ -135,7 +136,7 @@ public class LobbySettingsModule extends AMinigameModule {
             itemsLobby.add(teleportOnStart.getMenuItem(ItemType.ENDER_PEARL, MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_NAME,
                 MgMenuLangKey.MENU_LOBBY_WAIT_START_TELEPORT_DESCRIPTION));
             itemsLobby.add(playerWaitTime.getMenuItem(MenuDisplayTypes.timeType(), MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_NAME,
-                MinigameMessageManager.getMgMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_DESCRIPTION),
+                MessageManager.getMessageList(MgMenuLangKey.MENU_LOBBY_WAIT_PLAYER_TIME_DESCRIPTION),
                 0L, Long.MAX_VALUE));
             lobbyMenu.addItems(itemsLobby);
             lobbyMenu.setItem(new MenuItemBack(superMenu), lobbyMenu.getSize() - 9);

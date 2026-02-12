@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.util;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -22,14 +22,14 @@ import java.util.UUID;
 public class NullCommandSender implements ConsoleCommandSender {
     @Override
     public void sendMessage(@NotNull String message) {
-        MinigameMessageManager.debugMessage("[Suppressed] " + message);
+        MessageManager.debugMessage("[Suppressed] " + message);
     }
 
     @Override
     public void sendMessage(@NotNull String @NotNull [] messages) {
         if (Minigames.getPlugin().isDebugging()) {
             for (String message : messages) {
-                MinigameMessageManager.debugMessage("[Suppressed] " + message);
+                MessageManager.debugMessage("[Suppressed] " + message);
             }
         }
     }
@@ -46,7 +46,7 @@ public class NullCommandSender implements ConsoleCommandSender {
 
     @Override
     public void sendRawMessage(@NotNull String message) {
-        MinigameMessageManager.debugMessage("[Suppressed] " + message);
+        MessageManager.debugMessage("[Suppressed] " + message);
     }
 
     @Override

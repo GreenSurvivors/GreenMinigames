@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -33,12 +33,12 @@ public class SetDisplayNameCommand extends ASetCommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_DISPLAYNAME_DESCRIPTION);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_DISPLAYNAME_DESCRIPTION);
     }
 
     @Override
     public @NotNull Component getUsage() {
-        return MinigameMessageManager.getMgMessage(MgCommandLangKey.COMMAND_SET_DISPLAYNAME_USAGE);
+        return MessageManager.getMessage(MgCommandLangKey.COMMAND_SET_DISPLAYNAME_USAGE);
     }
 
     @Override
@@ -54,11 +54,11 @@ public class SetDisplayNameCommand extends ASetCommand {
 
             if (name.equalsIgnoreCase("null")) {
                 minigame.setDisplayName(null);
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_DISPLAYNAME_REMOVED,
+                MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_SET_DISPLAYNAME_REMOVED,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()));
             } else {
                 minigame.setDisplayName(MiniMessage.miniMessage().deserialize(name));
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_DISPLAYNAME_SUCCESS,
+                MessageManager.sendMessage(sender, MinigameMessageType.SUCCESS, MgCommandLangKey.COMMAND_SET_DISPLAYNAME_SUCCESS,
                         Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getDisplayName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), name));
             }

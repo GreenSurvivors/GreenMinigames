@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.set.SetCommand;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MgCommandLangKey;
@@ -130,31 +130,31 @@ public class CommandDispatcher extends Command {
                     if (player == null || (cmd.getPermission() == null || player.hasPermission(cmd.getPermission()))) {
                         boolean returnValue = cmd.onCommand(sender, shortArgs);
                         if (!returnValue) {
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_HEADER);
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_DESCRIPTION,
+                            MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_HEADER);
+                            MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_DESCRIPTION,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), this.getDescription()));
-                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_USAGE,
+                            MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_USAGE,
                                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), this.getUsage()));
                             if (cmd.getAliases() != null) {
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_ALIASES,
+                                MessageManager.sendMessage(sender, MinigameMessageType.NONE, MgCommandLangKey.COMMAND_ERROR_INFO_ALIASES,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", this.getAliases())));
                             }
                         }
                     } else {
-                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
+                        MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgMiscLangKey.MINIGAME_ERROR_NOPERMISSION);
                     }
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, MgCommandLangKey.COMMAND_ERROR_SENDERNOTAPLAYER);
                 }
                 return true;
             }
         } else {
-            MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE, Component.text(plugin.getPluginMeta().getName()));
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_AUTHORS,
+            MessageManager.sendMessage(sender, MinigameMessageType.NONE, Component.text(plugin.getPluginMeta().getName()));
+            MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_AUTHORS,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), String.join(", ", plugin.getPluginMeta().getAuthors())));
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_VERSION,
+            MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_VERSION,
                 Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), plugin.getPluginMeta().getVersion()));
-            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_HELP);
+            MessageManager.sendMessage(sender, MinigameMessageType.INFO, MgCommandLangKey.COMMAND_MINIGAMES_HELP);
             return true;
         }
         return false;

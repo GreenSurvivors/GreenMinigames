@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import au.com.mineauz.minigames.menu.AMenuItem;
 import au.com.mineauz.minigames.menu.Callback;
@@ -83,7 +83,7 @@ public abstract class AFlag<T> {
     public abstract void loadValue(final @NotNull CommentedConfigurationNode config) throws ConfigurateException;
 
     public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey langKey) {
-        return getMenuItem(displayType, MinigameMessageManager.getMgMessage(langKey));
+        return getMenuItem(displayType, MessageManager.getMessage(langKey));
     }
 
     public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name) {
@@ -92,8 +92,8 @@ public abstract class AFlag<T> {
 
     public @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @NotNull MinigameLangKey nameLangKey,
                                           final @NotNull MinigameLangKey descriptionLangKey) {
-        return getMenuItem(displayType, MinigameMessageManager.getMgMessage(nameLangKey),
-            MinigameMessageManager.getMgMessageList(descriptionLangKey));
+        return getMenuItem(displayType, MessageManager.getMessage(nameLangKey),
+            MessageManager.getMessageList(descriptionLangKey));
     }
 
     public abstract @NotNull AMenuItem getMenuItem(final @Nullable ItemType displayType, final @Nullable Component name,

@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.managers.language.langkeys.MgMiscLangKey;
 import au.com.mineauz.minigames.managers.language.langkeys.MinigameLangKey;
 import net.kyori.adventure.text.Component;
@@ -20,7 +20,7 @@ public enum RewardRarity {
 
     RewardRarity(double rarity, @NotNull MinigameLangKey langKey) {
         this.rarity = rarity;
-        displayName = MinigameMessageManager.getMgMessage(langKey);
+        displayName = MessageManager.getMessage(langKey);
     }
 
     @Contract("null -> null")

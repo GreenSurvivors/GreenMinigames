@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.backend.mysql;
 
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.StatementKey;
-import au.com.mineauz.minigames.managers.language.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MessageManager;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatFormat;
 import au.com.mineauz.minigames.stats.StatisticValueField;
@@ -43,7 +43,7 @@ class MySQLStatSaver {
     }
 
     public void saveData(@NotNull StoredGameStats data) {
-        MinigameMessageManager.debugMessage("MySQL beginning save of " + data);
+        MessageManager.debugMessage("MySQL beginning save of " + data);
 
         ConnectionHandler handler = null;
         try {
@@ -64,7 +64,7 @@ class MySQLStatSaver {
 
                 handler.endTransactionFail();
             } finally {
-                MinigameMessageManager.debugMessage("MySQL completed save of " + data);
+                MessageManager.debugMessage("MySQL completed save of " + data);
             }
         } catch (SQLException e) {
             logger.error("", e);
@@ -76,7 +76,7 @@ class MySQLStatSaver {
     }
 
     private void saveStats(@NotNull ConnectionHandler handler, @NotNull StoredGameStats data, @NotNull UUID player, int minigameId) throws SQLException {
-        MinigameMessageManager.debugMessage("MySQL saving stats for " + player + ", game " + minigameId);
+        MessageManager.debugMessage("MySQL saving stats for " + player + ", game " + minigameId);
 
         // Prepare all updates
         for (Entry<MinigameStat, Long> entry : data.getStats().entrySet()) {
@@ -93,7 +93,7 @@ class MySQLStatSaver {
         handler.executeBatch(insertStatMin);
         handler.executeBatch(insertStatMax);
 
-        MinigameMessageManager.debugMessage("MySQL completed save for " + player + ", game " + minigameId);
+        MessageManager.debugMessage("MySQL completed save for " + player + ", game " + minigameId);
     }
 
     private void queueStat(@NotNull ConnectionHandler handler, @NotNull MinigameStat stat, long value, @NotNull StatFormat format, @NotNull UUID player, int minigameId) throws SQLException {
