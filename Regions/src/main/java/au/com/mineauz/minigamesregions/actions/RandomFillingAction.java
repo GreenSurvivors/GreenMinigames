@@ -25,7 +25,6 @@ import java.util.Random;
  * or "replace selective" where blocks in the region are only replaced by the chosen block. 
  *
  */
-
 public class RandomFillingAction extends AbstractAction {
     private final StringFlag toType = new StringFlag("WOOL", "totype");
     private final IntegerFlag percentageChance = new IntegerFlag(50, "percentagechance");

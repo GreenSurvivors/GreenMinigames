@@ -50,7 +50,7 @@ public abstract class MinigameTypeBase implements Listener {
             }
             player.teleport(minigame.getQuitLocation());
         } else {
-            player.setQuitPos(minigame.getQuitLocation());
+            player.setQuitLocation(minigame.getQuitLocation());
             player.setRequiredQuit(true);
         }
     }

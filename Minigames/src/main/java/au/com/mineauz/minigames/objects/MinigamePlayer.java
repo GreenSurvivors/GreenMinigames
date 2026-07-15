@@ -49,7 +49,7 @@ public class MinigamePlayer implements ScriptObject {
     private @Nullable PlayerLoadout loadout;
     private boolean requiredQuit;
     private @Nullable Location startPos;
-    private @Nullable Location quitPos;
+    private @Nullable Location quitLocation;
     private @Nullable Location checkpoint;
     private int kills;
     private int deaths;
@@ -300,12 +300,12 @@ public class MinigamePlayer implements ScriptObject {
         this.requiredQuit = requiredQuit;
     }
 
-    public @Nullable Location getQuitPos() {
-        return this.quitPos;
+    public @Nullable Location getQuitLocation() {
+        return this.quitLocation;
     }
 
-    public void setQuitPos(final @Nullable Location quitPos) {
-        this.quitPos = quitPos;
+    public void setQuitLocation(final @Nullable Location quitLocation) {
+        this.quitLocation = quitLocation;
     }
 
     /**

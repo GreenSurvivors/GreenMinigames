@@ -83,7 +83,7 @@ public class JoinSign implements MinigameSign {
         boolean fullInv;
         if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
             fullInv = true;
-            for (ItemStack item : player.getPlayer().getInventory().getContents()) {
+            for (ItemStack item : player.getPlayer().getInventory().getContents()) { // todo
                 if (item != null) {
                     System.out.println("Found: " + item);
                     invOk = false;
@@ -106,7 +106,7 @@ public class JoinSign implements MinigameSign {
             Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getLine(2));
             if (mgm != null && (!mgm.getUsePermissions() ||
                     player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
-                if (mgm.isEnabled()) {
+                if (mgm.isEnabled()) { // todo minigame.join.disabled
                     if (!sign.getLine(3).isEmpty() && Minigames.getPlugin().hasEconomy()) {
                         double amount = Double.parseDouble(sign.getLine(3).replace("$", ""));
                         if (Minigames.getPlugin().getEconomy().getBalance(player.getPlayer().getPlayer()) >= amount) {
@@ -118,7 +118,7 @@ public class JoinSign implements MinigameSign {
                     }
                     plugin.getPlayerManager().joinMinigame(mgm, player, false, 0.0);
                     return true;
-                } else if (!mgm.isEnabled()) {
+                } else  {
                     player.sendInfoMessage(ChatColor.WHITE + MessageManager.getMessage(null, "minigame.error.notEnabled"));
                 }
             } else if (mgm == null) {

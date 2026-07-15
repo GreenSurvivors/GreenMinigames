@@ -48,7 +48,6 @@ public class RegionSwapAction extends AbstractAction {
         out.put("From: ", fromRegion.getFlag());
         out.put("To: ", toRegion.getFlag());
         out.put("Swap: ", swapRegion.getFlag());
-
     }
 
     @Override

@@ -615,9 +615,9 @@ public class MinigamePlayerManager {
                     }
                 } else {
                     if (!isWinner) {
-                        player.setQuitPos(minigame.getQuitLocation());
+                        player.setQuitLocation(minigame.getQuitLocation());
                     } else {
-                        player.setQuitPos(minigame.getEndLocation());
+                        player.setQuitLocation(minigame.getEndLocation());
                     }
                     player.setRequiredQuit(true);
                 }

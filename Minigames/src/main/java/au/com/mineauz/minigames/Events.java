@@ -39,6 +39,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -142,10 +143,16 @@ public class Events implements Listener {
         }
         if (ply.isRequiredQuit()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, ply::restorePlayerData);
-            event.setRespawnLocation(ply.getQuitPos());
+
+            final @Nullable Location quitLocation = ply.getQuitLocation();
+            if (quitLocation == null) {
+                Minigames.log.warning("Minigame " + ply.getMinigame().getName(true) + " has no end location set! Can't respawn. (Player: " + ply.getName() + ")");
+            } else {
+                event.setRespawnLocation(ply.getQuitLocation());
+            }
 
             ply.setRequiredQuit(false);
-            ply.setQuitPos(null);
+            ply.setQuitLocation(null);
         }
     }
 
@@ -188,7 +195,7 @@ public class Events implements Listener {
 
             playerManager.quitMinigame(ply, false);
         } else if (ply.isRequiredQuit()) {
-            ply.getOfflineMinigamePlayer().setLoginLocation(ply.getQuitPos());
+            ply.getOfflineMinigamePlayer().setLoginLocation(ply.getQuitLocation());
             ply.getOfflineMinigamePlayer().savePlayerData();
         }
 
@@ -214,15 +221,13 @@ public class Events implements Listener {
         if (pldata.exists()) {
             mgPlayer.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getUniqueId()));
             final Location floc = mgPlayer.getOfflineMinigamePlayer().getLoginLocation();
-            mgPlayer.setRequiredQuit(true);
-            mgPlayer.setQuitPos(floc);
+            mgPlayer.setQuitLocation(floc);
 
             if (!mgPlayer.getPlayer().isDead() && mgPlayer.isRequiredQuit()) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, mgPlayer::restorePlayerData);
                 mgPlayer.teleport(floc);
 
-                mgPlayer.setRequiredQuit(false);
-                mgPlayer.setQuitPos(null);
+                mgPlayer.setQuitLocation(null);
             }
 
             plugin.getLogger().info(mgPlayer.getName() + "'s data has been restored from file.");
@@ -282,7 +287,7 @@ public class Events implements Listener {
                     if ((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !ply.isInMinigame()) {
                         Minigame mgm = minigameManager.getMinigame(sign.getLine(2));
                         if (mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
-                            if (!mgm.isEnabled()) {
+                            if (!mgm.isEnabled()) { // todo minigame.join.disabled
                                 event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
                             } else {
                                 event.getPlayer().sendMessage(ChatColor.GREEN + MinigameUtils.getLang("minigame.info.description"));

@@ -68,50 +68,50 @@ public class InfoCommand implements ICommand {
             output.add(ChatColor.GOLD + "<-------------------------------------->");
             output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.description", minigame.getObjective()));
             output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.gameType", minigame.getType().getName()));
-            if (minigame.isEnabled() && minigame.hasStarted()) {
-                if (minigame.getMinigameTimer() != null && minigame.getMinigameTimer().getTimeLeft() > 0) {
-                    output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.Timer", minigame.getMinigameTimer().getTimeLeft()));
-                }
-                if (minigame.hasPlayers()) {
-                    output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.playerHeader", minigame.getPlayers().size(), minigame.getMaxPlayers()));
-                    if (minigame.isTeamGame()) {
-                        for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
-                            String teamData = MessageManager.getMessage(null, "command.info.output.teamData", t.getDisplayName(), t.getScore(), t.getChatColor().name());
-                            output.add(teamData);
-                            output.add(ChatColor.GOLD + "~~~~~~~~~~~~~~~~~");
-                            for (MinigamePlayer ply : t.getPlayers()) {
+            if (minigame.isEnabled()) {
+                if (minigame.hasStarted()) {
+                    if (minigame.getMinigameTimer() != null && minigame.getMinigameTimer().getTimeLeft() > 0) {
+                        output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.Timer", minigame.getMinigameTimer().getTimeLeft()));
+                    }
+                    if (minigame.hasPlayers()) {
+                        output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.playerHeader", minigame.getPlayers().size(), minigame.getMaxPlayers()));
+                        if (minigame.isTeamGame()) {
+                            for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
+                                String teamData = MessageManager.getMessage(null, "command.info.output.teamData", t.getDisplayName(), t.getScore(), t.getChatColor().name());
+                                output.add(teamData);
+                                output.add(ChatColor.GOLD + "~~~~~~~~~~~~~~~~~");
+                                for (MinigamePlayer ply : t.getPlayers()) {
+                                    Integer score = ply.getScore();
+                                    Integer deaths = ply.getDeaths();
+                                    Integer reverts = ply.getReverts();
+                                    Integer kills = ply.getKills();
+                                    String name = ply.getTeam().getChatColor() + ply.getDisplayName(minigame.usePlayerDisplayNames()) + ChatColor.GRAY;
+                                    String playerData = MessageManager.getMessage(null, "command.info.output.playerData", name, score, deaths, reverts, kills);
+                                    output.add(playerData + ChatColor.GRAY);
+                                }
+                            }
+                        } else {
+                            for (MinigamePlayer ply : minigame.getPlayers()) {
                                 Integer score = ply.getScore();
                                 Integer deaths = ply.getDeaths();
                                 Integer reverts = ply.getReverts();
                                 Integer kills = ply.getKills();
-                                String name = ply.getTeam().getChatColor() + ply.getDisplayName(minigame.usePlayerDisplayNames()) + ChatColor.GRAY;
+                                String name = ply.getDisplayName(minigame.usePlayerDisplayNames());
+                                if (minigame.isTeamGame()) {
+                                    name = ply.getTeam().getChatColor() + name;
+                                }
                                 String playerData = MessageManager.getMessage(null, "command.info.output.playerData", name, score, deaths, reverts, kills);
-                                output.add(playerData + ChatColor.GRAY);
+                                output.add(ChatColor.GRAY + playerData + ChatColor.GRAY);
                             }
                         }
                     } else {
-                        for (MinigamePlayer ply : minigame.getPlayers()) {
-                            Integer score = ply.getScore();
-                            Integer deaths = ply.getDeaths();
-                            Integer reverts = ply.getReverts();
-                            Integer kills = ply.getKills();
-                            String name = ply.getDisplayName(minigame.usePlayerDisplayNames());
-                            if (minigame.isTeamGame()) {
-                                name = ply.getTeam().getChatColor() + name;
-                            }
-                            String playerData = MessageManager.getMessage(null, "command.info.output.playerData", name, score, deaths, reverts, kills);
-                            output.add(ChatColor.GRAY + playerData + ChatColor.GRAY);
-                        }
+                        output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "command.info.output.noPlayer"));
                     }
                 } else {
-                    output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "command.info.output.noPlayer"));
+                    output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "command.info.output.notStarted"));
                 }
             } else {
-                if (minigame.isEnabled()) {
-                    output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "command.info.output.notStarted"));
-                } else {
-                    output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "minigame.error.notEnabled"));
-                }
+                output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "minigame.error.notEnabled"));
             }
             for (String out : output) {
                 sender.sendMessage(out);

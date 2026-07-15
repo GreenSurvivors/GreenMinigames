@@ -48,7 +48,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> floordegenerator <Parameters...>"};
+        return new String[]{"/minigame set <minigame> floordegenerator <Parameters...>"};
     }
 
     @Override

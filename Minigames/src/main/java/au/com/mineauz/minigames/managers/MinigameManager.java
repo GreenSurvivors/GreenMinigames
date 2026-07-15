@@ -439,15 +439,8 @@ public class MinigameManager {
         } else if (minigame.getState() == MinigameState.STARTED && !minigame.canLateJoin()) {
             player.sendMessage(MinigameUtils.getLang("minigame.started"), MinigameMessageType.ERROR);
             return false;
-        }
-        return true;
-    }
-
-    public boolean minigameStartSetupCheck(final Minigame minigame, final MinigamePlayer player) {
-        if (minigame.getEndLocation() == null) {
-            player.sendMessage(MinigameUtils.getLang("minigame.error.noEnd"), MinigameMessageType.ERROR);
-            return false;
-        } else if (minigame.getQuitLocation() == null) {
+        } else if (minigame.getQuitLocation() == null && minigame.getEndLocation() == null) {
+            player.sendMessage(MinigameUtils.getLang("minigame.error.noEnd"), MinigameMessageType.WARN);
             player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), MinigameMessageType.ERROR);
             return false;
         } else if (minigame.getType() == null || this.minigameType(minigame.getType()).cannotStart(minigame, player)) { //type specific reasons we cannot start.
@@ -456,7 +449,7 @@ public class MinigameManager {
         } else if (!minigame.getMechanic().validTypes().contains(minigame.getType())) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.invalidType"), MinigameMessageType.ERROR);
             return false;
-        } else if (minigame.getStartLocations().size() == 0 ||
+        } else if (minigame.getStartLocations().isEmpty() ||
                 minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), MinigameMessageType.ERROR);
             return false;
